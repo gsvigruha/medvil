@@ -1,0 +1,17 @@
+{
+	"baseShape": [
+		[false, false, false, false, false],
+		[false, false, false, false, false],
+		[false, true, true, true, false],
+		[false, false, false, true, false],
+		[false, false, false, false, false]
+	],
+	"windowStartFloor": [0, 0, 0, 0],
+	"floors": [
+		{"material": "wood"}
+	],
+	"roof": {"material": "hay", "flat": "false"},
+	"doorX": 2,
+	"doorY": 2,
+	"doorD": 0	
+}
