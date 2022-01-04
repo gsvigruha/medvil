@@ -1,4 +1,4 @@
-package model
+package building
 
 import (
 	"medvil/model/materials"

@@ -1,4 +1,4 @@
-package model
+package building
 
 type Building struct {
 	Plan *BuildingPlan

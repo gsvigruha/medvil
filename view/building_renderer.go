@@ -6,12 +6,12 @@ import (
 	"image/color"
 	"math"
 	"medvil/controller"
-	"medvil/model"
+	"medvil/model/building"
 )
 
 const BuildingUnitHeight = 3
 
-func RenderBuildingUnit(cv *canvas.Canvas, unit model.BuildingUnit, rf RenderedField, k int) {
+func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf RenderedField, k int) {
 	startI := 2 + controller.Perspective
 	for i := uint8(startI); i < 4+startI; i++ {
 		wall := unit.Walls[i%4]
@@ -82,7 +82,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit model.BuildingUnit, rf RenderedF
 	}
 }
 
-func RenderBuildingRoof(cv *canvas.Canvas, roof *model.Roof, rf RenderedField, k int) {
+func RenderBuildingRoof(cv *canvas.Canvas, roof *building.Roof, rf RenderedField, k int) {
 	if roof == nil {
 		return
 	}

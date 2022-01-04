@@ -5,6 +5,7 @@ import (
 	//"fmt"
 	"math/rand"
 	"medvil/model"
+	"medvil/model/building"
 	"medvil/model/terrain"
 	"medvil/util"
 )
@@ -42,7 +43,7 @@ func setupTerrain(fields [][]model.Field) {
 }
 
 func addHouse(name string, x int, y int, m model.Map) {
-	bp := model.BuildingPlanFromJSON(name)
+	bp := building.BuildingPlanFromJSON(name)
 	for bx := 0; bx < 5; bx++ {
 		for by := 0; by < 5; by++ {
 			m.Fields[x+bx][y+by].BuildingUnits = bp.ToBuildingUnits(uint8(bx), uint8(by))
