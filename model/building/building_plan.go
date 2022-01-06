@@ -127,11 +127,17 @@ func (b BuildingPlan) Windows() uint16 {
 	return uint16(windows)
 }
 
-func (b BuildingPlan) GetRoof(x uint8, y uint8) *Roof {
+func (b BuildingPlan) GetRoof(x uint8, y uint8) *RoofUnit {
 	if !b.BaseShape[x][y] {
 		return nil
 	}
-	return &b.Roof
+	return &RoofUnit{
+		Roof: b.Roof,
+		Elevated: [4]bool{
+			y > 0 && b.BaseShape[x][y-1],
+			x < BuildingBaseMaxSize-1 && b.BaseShape[x+1][y],
+			y < BuildingBaseMaxSize-1 && b.BaseShape[x][y+1],
+			x > 0 && b.BaseShape[x-1][y]}}
 }
 
 func (b BuildingPlan) ToBuildingUnits(x uint8, y uint8) []BuildingUnit {

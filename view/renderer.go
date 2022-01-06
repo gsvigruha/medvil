@@ -73,11 +73,11 @@ func Render(cv *canvas.Canvas, m model.Map) {
 			cv.Fill()
 			cv.Stroke()
 
-			units := m.Fields[pi][pj].BuildingUnits
+			units := m.Fields[pi][pj].Building.BuildingUnits
 			for k := 0; k < len(units); k++ {
 				RenderBuildingUnit(cv, units[k], rf, k)
 			}
-			roof := m.Fields[pi][pj].Roof
+			roof := m.Fields[pi][pj].Building.RoofUnit
 			RenderBuildingRoof(cv, roof, rf, len(units))
 		}
 	}

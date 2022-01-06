@@ -4,6 +4,11 @@ import (
 	"medvil/model/materials"
 )
 
+type RoofUnit struct {
+	Roof     Roof
+	Elevated [4]bool
+}
+
 type BuildingWall struct {
 	M       *materials.Material
 	Windows bool

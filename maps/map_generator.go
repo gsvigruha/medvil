@@ -46,8 +46,8 @@ func addHouse(name string, x int, y int, m model.Map) {
 	bp := building.BuildingPlanFromJSON(name)
 	for bx := 0; bx < 5; bx++ {
 		for by := 0; by < 5; by++ {
-			m.Fields[x+bx][y+by].BuildingUnits = bp.ToBuildingUnits(uint8(bx), uint8(by))
-			m.Fields[x+bx][y+by].Roof = bp.GetRoof(uint8(bx), uint8(by))
+			m.Fields[x+bx][y+by].Building.BuildingUnits = bp.ToBuildingUnits(uint8(bx), uint8(by))
+			m.Fields[x+bx][y+by].Building.RoofUnit = bp.GetRoof(uint8(bx), uint8(by))
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package model
 
 import (
-	"medvil/model/building"
 	"medvil/model/terrain"
 )
 
@@ -11,9 +10,8 @@ type Field struct {
 	SW uint8
 	NW uint8
 
-	Terrain       terrain.Terrain
-	BuildingUnits []building.BuildingUnit
-	Roof          *building.Roof
+	Terrain  terrain.Terrain
+	Building FieldBuildingObjects
 }
 
 func (f Field) Walkable() bool {
