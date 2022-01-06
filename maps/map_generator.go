@@ -31,7 +31,7 @@ func setupTerrain(fields [][]model.Field) {
 				r := max - min
 				var h = uint8(0)
 				if r > 0 {
-					//	h = uint8(rand.Intn(r) + min)
+					h = uint8(rand.Intn(r) + min)
 				}
 				fields[i-1][j-1].SE = h
 				fields[i][j-1].SW = h

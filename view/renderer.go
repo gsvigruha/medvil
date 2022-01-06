@@ -73,6 +73,18 @@ func Render(cv *canvas.Canvas, m model.Map) {
 			cv.Fill()
 			cv.Stroke()
 
+			if (f.SE + f.SW) > (f.NE + f.NW) {
+				slope := (f.SE + f.SW) - (f.NE + f.NW)
+				cv.SetFillStyle(color.RGBA{R: 255, G: 255, B: 255, A: slope * 4})
+				rf.Draw(cv)
+				cv.Fill()
+			} else if (f.SE + f.SW) < (f.NE + f.NW) {
+				slope := (f.NE + f.NW) - (f.SE + f.SW)
+				cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: slope * 16})
+				rf.Draw(cv)
+				cv.Fill()
+			}
+
 			units := m.Fields[pi][pj].Building.BuildingUnits
 			for k := 0; k < len(units); k++ {
 				RenderBuildingUnit(cv, units[k], rf, k)

@@ -12,7 +12,7 @@
 		{"material": "stone"},
 		{"material": "wood"}
 	],
-	"roof": {"material": "tile", "flat": "true"},
+	"roof": {"material": "tile", "flat": "false"},
 	"doorX": 1,
 	"doorY": 2,
 	"doorD": 2

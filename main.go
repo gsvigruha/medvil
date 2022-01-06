@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	sx uint16 = 15
-	sy uint16 = 15
+	sx uint16 = 25
+	sy uint16 = 25
 )
 
 func main() {

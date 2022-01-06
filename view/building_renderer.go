@@ -25,8 +25,6 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf Render
 			suffix = "_flipped"
 		}
 		cv.SetFillStyle("texture/building/" + wall.M.Name + suffix + ".png")
-		cv.SetStrokeStyle(color.RGBA{R: 192, G: 192, B: 192, A: 24})
-		cv.SetLineWidth(2)
 		z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 
 		cv.BeginPath()
@@ -36,10 +34,12 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf Render
 		cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z)
 		cv.ClosePath()
 		cv.Fill()
-		cv.Stroke()
 
 		if wall.Windows {
 			cv.SetFillStyle("texture/building/glass.png")
+			cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
+			cv.SetLineWidth(2)
+
 			cv.BeginPath()
 			cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 			cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
@@ -47,6 +47,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf Render
 			cv.LineTo((5*rf.X[rfIdx1]+2*rf.X[rfIdx2])/7, (5*rf.Y[rfIdx1]+2*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 			cv.ClosePath()
 			cv.Fill()
+			cv.Stroke()
 
 			cv.BeginPath()
 			cv.LineTo((4*rf.X[rfIdx1]+3*rf.X[rfIdx2])/7, (4*rf.Y[rfIdx1]+3*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
@@ -55,6 +56,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf Render
 			cv.LineTo((3*rf.X[rfIdx1]+4*rf.X[rfIdx2])/7, (3*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 			cv.ClosePath()
 			cv.Fill()
+			cv.Stroke()
 
 			cv.BeginPath()
 			cv.LineTo((2*rf.X[rfIdx1]+5*rf.X[rfIdx2])/7, (2*rf.Y[rfIdx1]+5*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
@@ -63,6 +65,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf Render
 			cv.LineTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 			cv.ClosePath()
 			cv.Fill()
+			cv.Stroke()
 		}
 
 		if wall.Door {
@@ -100,6 +103,8 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf RenderedF
 					suffix = "_flipped"
 				}
 				cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + suffix + ".png")
+				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 32})
+				cv.SetLineWidth(3)
 
 				sideMidX := (rf.X[rfIdx1] + rf.X[rfIdx2]) / 2
 				sideMidY := (rf.Y[rfIdx1] + rf.Y[rfIdx2]) / 2
@@ -109,6 +114,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf RenderedF
 				cv.LineTo(midX, midY-z-BuildingUnitHeight*DZ)
 				cv.ClosePath()
 				cv.Fill()
+				cv.Stroke()
 
 				cv.BeginPath()
 				cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z)
@@ -116,12 +122,15 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf RenderedF
 				cv.LineTo(midX, midY-z-BuildingUnitHeight*DZ)
 				cv.ClosePath()
 				cv.Fill()
+				cv.Stroke()
 			} else {
 				var suffix = ""
 				if rfIdx1%2 == 1 {
 					suffix = "_flipped"
 				}
 				cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + suffix + ".png")
+				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 32})
+				cv.SetLineWidth(3)
 
 				cv.BeginPath()
 				cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z)
@@ -129,6 +138,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf RenderedF
 				cv.LineTo(midX, midY-z-BuildingUnitHeight*DZ)
 				cv.ClosePath()
 				cv.Fill()
+				cv.Stroke()
 			}
 		}
 	} else {
