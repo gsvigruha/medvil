@@ -19,8 +19,8 @@ var All = [...]Material{
 	Material{Name: "iron", Density: 7800},
 	Material{Name: "copper", Density: 9000},
 	Material{Name: "silver", Density: 10000},
-	Material{Name: "gold", Density: 19000}}
-
+	Material{Name: "gold", Density: 19000},
+	Material{Name: "organic", Density: 1000}}
 func GetMaterial(name string) *Material {
 	for i := 0; i < len(All); i++ {
 		if All[i].Name == name {

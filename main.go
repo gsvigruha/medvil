@@ -10,6 +10,8 @@ import (
 	"medvil/view"
 
 	"github.com/tfriedel6/canvas/glfwcanvas"
+	"github.com/pkg/profile"
+
 )
 
 const (
@@ -18,6 +20,8 @@ const (
 )
 
 func main() {
+	defer profile.Start().Stop()
+
 	wnd, cv, err := glfwcanvas.CreateWindow(1280, 720, "Hello")
 	if err != nil {
 		panic(err)
@@ -36,6 +40,11 @@ func main() {
 		start := time.Now()
 		view.Render(cv, m)
 		elapsed := time.Since(start)
+		/*
+			if elapsed.Nanoseconds() < 50000000 {
+			    time.Sleep(30000000 * time.Nanosecond)
+			}
+		*/
 		if 0 == 1 {
 			log.Printf("Binomial took %s", elapsed)
 		}

@@ -20,6 +20,9 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf Render
 		}
 		rfIdx1 := (3 - (-controller.Perspective + i)) % 4
 		rfIdx2 := (2 - (-controller.Perspective + i)) % 4
+		if rfIdx1 == 0 || rfIdx1 == 1 {
+			continue
+		}
 		var suffix = ""
 		if rfIdx1%2 == 1 {
 			suffix = "_flipped"

@@ -1,7 +1,7 @@
 package terrain
 
 import (
-	"medvil/model/materials"
+	"medvil/model/artifacts"
 )
 
 type TerrainType struct {
@@ -21,5 +21,5 @@ var Rock = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: fal
 
 type Terrain struct {
 	T         TerrainType
-	Resources []materials.RawResource
+	Resources []artifacts.RawResource
 }

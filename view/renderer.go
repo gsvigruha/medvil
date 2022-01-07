@@ -9,13 +9,16 @@ import (
 )
 
 const (
-	DX float64 = 60.0
-	DY float64 = 40.0
-	DZ float64 = 15.0
+	DX     float64 = 60.0
+	DY     float64 = 40.0
+	DZ     float64 = 15.0
+	ViewSX uint8   = 12
+	ViewSY uint8   = 10
 )
 
 func Render(cv *canvas.Canvas, m model.Map) {
 	w := float64(cv.Width())
+	h := float64(cv.Height())
 	for i := uint16(0); i < m.SX; i++ {
 		for j := uint16(0); j < m.SY; j++ {
 			var pi = i
@@ -64,6 +67,9 @@ func Render(cv *canvas.Canvas, m model.Map) {
 			cv.SetLineWidth(2)
 			x := w/2 - float64(i)*DX + float64(j)*DX + float64(controller.ScrollX)
 			y := float64(i)*DY + float64(j)*DY + float64(controller.ScrollY)
+			if x < -DX || x > w+DX || y < -DY*2 || y > h+DY {
+				continue
+			}
 
 			rf := RenderedField{
 				X: [4]float64{float64(x), float64(x - DX), float64(x), float64(x + DX)},
