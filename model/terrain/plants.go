@@ -5,9 +5,9 @@ type PlanType struct {
 }
 
 type Plant struct {
-	T *PlanType
-	X uint16
-	Y uint16
-	Age uint8
+	T     *PlanType
+	X     uint16
+	Y     uint16
+	Age   uint8
 	Shape uint8
 }

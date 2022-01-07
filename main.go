@@ -9,9 +9,8 @@ import (
 	"medvil/maps"
 	"medvil/view"
 
-	"github.com/tfriedel6/canvas/glfwcanvas"
 	"github.com/pkg/profile"
-
+	"github.com/tfriedel6/canvas/glfwcanvas"
 )
 
 const (

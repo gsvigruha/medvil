@@ -4,23 +4,33 @@ type Material struct {
 	Name string
 	// kg/m3
 	Density uint16
+	Liquid  bool
 }
 
 var All = [...]Material{
-	Material{Name: "stone", Density: 1800},
-	Material{Name: "sandstone", Density: 2400},
-	Material{Name: "wood", Density: 700},
-	Material{Name: "brick", Density: 2000},
-	Material{Name: "marble", Density: 2600},
-	Material{Name: "hay", Density: 150},
-	Material{Name: "tile", Density: 2000},
-	Material{Name: "clay", Density: 1600},
-	Material{Name: "limestone", Density: 2000},
-	Material{Name: "iron", Density: 7800},
-	Material{Name: "copper", Density: 9000},
-	Material{Name: "silver", Density: 10000},
-	Material{Name: "gold", Density: 19000},
-	Material{Name: "organic", Density: 1000}}
+	Material{Name: "water", Density: 1000, Liquid: true},
+	Material{Name: "stone", Density: 1800, Liquid: false},
+	Material{Name: "sandstone", Density: 2400, Liquid: false},
+	Material{Name: "wood", Density: 700, Liquid: false},
+	Material{Name: "brick", Density: 2000, Liquid: false},
+	Material{Name: "marble", Density: 2600, Liquid: false},
+	Material{Name: "hay", Density: 150, Liquid: false},
+	Material{Name: "tile", Density: 2000, Liquid: false},
+	Material{Name: "clay", Density: 1600, Liquid: true},
+	Material{Name: "limestone", Density: 2000, Liquid: false},
+	Material{Name: "iron", Density: 7800, Liquid: false},
+	Material{Name: "copper", Density: 9000, Liquid: false},
+	Material{Name: "silver", Density: 10000, Liquid: false},
+	Material{Name: "gold", Density: 19000, Liquid: false},
+	Material{Name: "organic", Density: 1000, Liquid: false},
+
+	Material{Name: "leather", Density: 800, Liquid: false},
+	Material{Name: "linen", Density: 150, Liquid: false},
+	Material{Name: "wool", Density: 150, Liquid: false},
+	Material{Name: "paper", Density: 150, Liquid: false},
+	Material{Name: "parchment", Density: 150, Liquid: false},
+}
+
 func GetMaterial(name string) *Material {
 	for i := 0; i < len(All); i++ {
 		if All[i].Name == name {
