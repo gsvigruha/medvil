@@ -97,6 +97,9 @@ func Render(cv *canvas.Canvas, m model.Map) {
 			}
 			roof := m.Fields[pi][pj].Building.RoofUnit
 			RenderBuildingRoof(cv, roof, rf, len(units))
+			if m.Fields[pi][pj].Plant != nil {
+				RenderPlant(cv, m.Fields[pi][pj].Plant, rf)
+			}
 		}
 	}
 }

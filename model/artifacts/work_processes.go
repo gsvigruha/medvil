@@ -2,6 +2,6 @@ package artifacts
 
 type WorkProcess struct {
 	Name    string
-	Inputs  []*Artifact
-	Outputs []*Artifact
+	Inputs  []*Artifacts
+	Outputs []*Artifacts
 }

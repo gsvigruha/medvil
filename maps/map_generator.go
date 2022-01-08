@@ -38,6 +38,9 @@ func setupTerrain(fields [][]model.Field) {
 				fields[i][j].NW = h
 				fields[i-1][j].NE = h
 			}
+			if fields[i][j].Terrain.T == terrain.Grass && rand.Intn(2) == 0 {
+				fields[i][j].Plant = &terrain.Plant{T: &terrain.AllPlantTypes[0], X: uint16(i), Y: uint16(j), Age: uint8(rand.Intn(20)), Shape: uint8(rand.Intn(10))}
+			}
 		}
 	}
 }

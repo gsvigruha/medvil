@@ -1,6 +1,6 @@
 package artifacts
 
-type RawResource struct {
+type Artifacts struct {
 	artifact Artifact
 	quantity uint16
 }

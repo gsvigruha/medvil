@@ -12,6 +12,7 @@ type Field struct {
 
 	Terrain  terrain.Terrain
 	Building FieldBuildingObjects
+	Plant    *terrain.Plant
 }
 
 func (f Field) Walkable() bool {

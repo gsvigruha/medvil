@@ -9,7 +9,7 @@ import (
 	"medvil/maps"
 	"medvil/view"
 
-	"github.com/pkg/profile"
+	//"github.com/pkg/profile"
 	"github.com/tfriedel6/canvas/glfwcanvas"
 )
 
@@ -19,9 +19,7 @@ const (
 )
 
 func main() {
-	defer profile.Start().Stop()
-
-	wnd, cv, err := glfwcanvas.CreateWindow(1280, 720, "Hello")
+	wnd, cv, err := glfwcanvas.CreateWindow(1280, 720, "Medvil")
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +43,11 @@ func main() {
 			}
 		*/
 		if 0 == 1 {
-			log.Printf("Binomial took %s", elapsed)
+			log.Printf("Rendering took %s", elapsed)
+			log.Printf("%s", controller.Calendar)
+		}
+		for i := 1; i < 10; i++ {
+			controller.Calendar.Tick()
 		}
 
 	})
