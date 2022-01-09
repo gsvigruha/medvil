@@ -69,6 +69,6 @@ func NewMap(sizeX uint16, sizeY uint16) model.Map {
 	setupTerrain(fields)
 	m := model.Map{SX: sizeX, SY: sizeY, Fields: fields}
 	addHouse("samples/building/townhouse_1.building.json", 2, 2, m)
-	addHouse("samples/building/rural_1.building.json", 6, 6, m)
+	addHouse("samples/building/rural_2.building.json", 6, 6, m)
 	return m
 }
