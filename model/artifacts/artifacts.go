@@ -29,6 +29,7 @@ var All = [...]Artifact{
 	// Food
 	Artifact{Name: "fruit", M: materials.GetMaterial("organic")},
 	Artifact{Name: "vegetable", M: materials.GetMaterial("organic")},
+	Artifact{Name: "grain", M: materials.GetMaterial("organic")},
 	Artifact{Name: "bread", M: materials.GetMaterial("organic")},
 	Artifact{Name: "meat", M: materials.GetMaterial("organic")},
 	Artifact{Name: "water", M: materials.GetMaterial("water")},
@@ -45,4 +46,13 @@ var All = [...]Artifact{
 	Artifact{Name: "clothes", M: materials.GetMaterial("linen")},
 	Artifact{Name: "clothes", M: materials.GetMaterial("wool")},
 	// Tools
+}
+
+func GetArtifact(name string) *Artifact {
+	for i := 0; i < len(All); i++ {
+		if All[i].Name == name {
+			return &All[i]
+		}
+	}
+	return nil
 }

@@ -26,7 +26,7 @@ func main() {
 
 	controller.Link(wnd.Window)
 
-	m := maps.NewMap(sx, sy)
+	m := maps.LoadMap("samples/map/coast_1")
 
 	fmt.Println("Init done")
 
@@ -42,7 +42,7 @@ func main() {
 			    time.Sleep(30000000 * time.Nanosecond)
 			}
 		*/
-		if 0 == 0 {
+		if 0 == 1 {
 			log.Printf("Rendering took %s", elapsed)
 			log.Printf("%s", controller.Calendar)
 		}

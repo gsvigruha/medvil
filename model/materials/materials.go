@@ -18,6 +18,7 @@ var All = [...]Material{
 	Material{Name: "reed", Density: 150, Liquid: false},
 	Material{Name: "tile", Density: 2000, Liquid: false},
 	Material{Name: "clay", Density: 1600, Liquid: true},
+	Material{Name: "whitewash", Density: 1000, Liquid: false},
 	Material{Name: "limestone", Density: 2000, Liquid: false},
 	Material{Name: "iron", Density: 7800, Liquid: false},
 	Material{Name: "copper", Density: 9000, Liquid: false},

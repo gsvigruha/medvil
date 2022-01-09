@@ -1,9 +1,11 @@
 package model
 
 import (
+	"medvil/model/social"
 	"medvil/model/terrain"
 )
 
+// Implements social.FarmField
 type Field struct {
 	NE uint8
 	SE uint8
@@ -13,6 +15,7 @@ type Field struct {
 	Terrain  terrain.Terrain
 	Building FieldBuildingObjects
 	Plant    *terrain.Plant
+	Farm     *social.Farm
 }
 
 func (f Field) Walkable() bool {

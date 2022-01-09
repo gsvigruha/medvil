@@ -121,9 +121,21 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 	}
 }
 
-func RenderPlant(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField) {
+func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField) {
 	r := rand.New(rand.NewSource(int64(plant.Shape)))
 	midX := (rf.X[0] + rf.X[1] + rf.X[2] + rf.X[3]) / 4
 	midY := (rf.Y[0] + rf.Y[1] + rf.Y[2] + rf.Y[3]) / 4
 	DrawBranch(cv, plant, r, midX, midY, plant.T.TreeT.BranchWidth0, plant.T.TreeT.BranchLength0, -math.Pi/2, 0, 30)
+}
+
+func RenderRegularPlant(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField) {
+	cv.DrawImage("texture/terrain/"+plant.T.Name+".png", rf.X[1], rf.Y[2]-108, 120, 108)
+}
+
+func RenderPlant(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField) {
+	if plant.T.TreeT != nil {
+		RenderTree(cv, plant, rf)
+	} else {
+		RenderRegularPlant(cv, plant, rf)
+	}
 }
