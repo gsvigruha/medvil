@@ -3,14 +3,14 @@ package model
 import (
 	//"math/rand"
 	"medvil/controller"
-	"medvil/model/building"
+	"medvil/model/social"
 )
 
 type Map struct {
 	SX        uint16
 	SY        uint16
 	Fields    [][]Field
-	Buildings []building.Building
+	Countries []social.Country
 }
 
 func (m *Map) ElapseTime(Calendar *controller.CalendarType) {

@@ -4,6 +4,6 @@ type FarmField interface {
 }
 
 type Farm struct {
-	H    HouseHold
+	Household   Household
 	Land []*FarmField
 }

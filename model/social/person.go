@@ -10,5 +10,5 @@ type Person struct {
 	Thirst    uint8
 	Happiness uint8
 	Health    uint8
-	HouseHold *HouseHold
+	Household *Household
 }

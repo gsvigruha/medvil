@@ -39,16 +39,16 @@ func KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, action glfw.Acti
 	}
 	if action == glfw.Press {
 		if key == glfw.KeyUp {
-			ScrollY -= 128
+			ScrollY -= 256
 		}
 		if key == glfw.KeyDown {
-			ScrollY += 128
+			ScrollY += 256
 		}
 		if key == glfw.KeyLeft {
-			ScrollX -= 128
+			ScrollX -= 256
 		}
 		if key == glfw.KeyRight {
-			ScrollX += 128
+			ScrollX += 256
 		}
 	}
 }

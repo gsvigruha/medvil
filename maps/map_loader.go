@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"medvil/model"
+	"medvil/model/social"
 	"medvil/model/terrain"
 	"os"
 	"strconv"
@@ -104,6 +105,36 @@ func LoadFields(dir string, m *model.Map) {
 	}
 }
 
+func LoadSociety(dir string, m *model.Map) {
+	jsonFile, err := os.Open(dir + "/society.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var cm map[string][]social.Country
+	if err := json.Unmarshal(byteValue, &cm); err != nil {
+		fmt.Println(err)
+	}
+	countries := cm["countries"]
+	for i := range countries {
+		country := countries[i]
+		for j := range countries[i].Towns {
+			town := countries[i].Towns[j]
+			town.Country = &country
+			for k := range town.Farms {
+				farm := town.Farms[k]
+				farm.Household.Town = town
+			}
+		}
+	}
+	m.Countries = countries
+}
+
 func LoadMap(dir string) model.Map {
 	jsonFile, err := os.Open(dir + "/meta.json")
 	if err != nil {
@@ -130,5 +161,6 @@ func LoadMap(dir string) model.Map {
 
 	LoadFields(dir, &m)
 	LoadPlants(dir, &m)
+	LoadSociety(dir, &m)
 	return m
 }

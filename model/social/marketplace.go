@@ -4,9 +4,6 @@ import (
 	"medvil/model/building"
 )
 
-type Household struct {
-	People   []*Person
-	Money    uint32
+type Marketplace struct {
 	Building *building.Building
-	Town     *Town
 }
