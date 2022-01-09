@@ -42,13 +42,14 @@ func main() {
 			    time.Sleep(30000000 * time.Nanosecond)
 			}
 		*/
-		if 0 == 1 {
+		if 0 == 0 {
 			log.Printf("Rendering took %s", elapsed)
 			log.Printf("%s", controller.Calendar)
 		}
 		for i := 1; i < 10; i++ {
 			controller.Calendar.Tick()
 		}
+		m.ElapseTime(controller.Calendar)
 
 	})
 }

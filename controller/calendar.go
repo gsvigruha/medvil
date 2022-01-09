@@ -20,10 +20,12 @@ const (
 
 var Calendar = &CalendarType{
 	Year:  1000,
-	Month: 3,
+	Month: 4,
 	Day:   1,
 	Hour:  0,
 }
+
+const StartDateDays uint32 = 1000 * 12 * 30
 
 func (c *CalendarType) Tick() {
 	c.Hour++
@@ -52,4 +54,8 @@ func (c *CalendarType) Season() uint8 {
 		return Autumn
 	}
 	return Winter
+}
+
+func (c *CalendarType) DaysElapsed() uint32 {
+	return uint32(c.Year)*12*30 + uint32(c.Month)*30 + uint32(c.Day)
 }
