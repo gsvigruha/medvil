@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"medvil/model"
+	"medvil/model/building"
 	"medvil/model/social"
 	"medvil/model/terrain"
 	"os"
@@ -105,6 +106,15 @@ func LoadFields(dir string, m *model.Map) {
 	}
 }
 
+func AddBuilding(b *building.Building, m *model.Map) {
+	for bx := uint16(0); bx < 5; bx++ {
+		for by := uint16(0); by < 5; by++ {
+			m.Fields[b.X+bx][b.Y+by].Building.BuildingUnits = b.Plan.ToBuildingUnits(uint8(bx), uint8(by))
+			m.Fields[b.X+bx][b.Y+by].Building.RoofUnit = b.Plan.GetRoof(uint8(bx), uint8(by))
+		}
+	}
+}
+
 func LoadSociety(dir string, m *model.Map) {
 	jsonFile, err := os.Open(dir + "/society.json")
 	if err != nil {
@@ -129,6 +139,7 @@ func LoadSociety(dir string, m *model.Map) {
 			for k := range town.Farms {
 				farm := town.Farms[k]
 				farm.Household.Town = town
+				AddBuilding(farm.Household.Building, m)
 			}
 		}
 	}
