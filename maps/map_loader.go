@@ -140,6 +140,11 @@ func LoadSociety(dir string, m *model.Map) {
 				farm := town.Farms[k]
 				farm.Household.Town = town
 				AddBuilding(farm.Household.Building, m)
+				for l := range farm.Land {
+					land := farm.Land[l]
+					land.F = &m.Fields[land.X][land.Y]
+					m.Fields[land.X][land.Y].Farm = farm
+				}
 			}
 		}
 	}

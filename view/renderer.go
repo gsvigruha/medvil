@@ -91,6 +91,12 @@ func Render(cv *canvas.Canvas, m model.Map) {
 				cv.Fill()
 			}
 
+			if f.Farm != nil {
+				cv.SetStrokeStyle("#00F")
+				rf.Draw(cv)
+				cv.Stroke()
+			}
+
 			units := m.Fields[pi][pj].Building.BuildingUnits
 			for k := 0; k < len(units); k++ {
 				RenderBuildingUnit(cv, units[k], rf, k)
