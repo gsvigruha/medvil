@@ -17,5 +17,5 @@ type Town struct {
 	Country     *Country
 	Townhall    *Townhall
 	Marketplace *Marketplace
-	Farms  []*Farm
+	Farms       []*Farm
 }

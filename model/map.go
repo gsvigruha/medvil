@@ -14,10 +14,18 @@ type Map struct {
 }
 
 func (m *Map) ElapseTime(Calendar *controller.CalendarType) {
-	for i := uint16(0); i < m.SX; i++ {
-		for j := uint16(0); j < m.SY; j++ {
-			//f := m.Fields[i][j]
-
+	for i := range m.Countries {
+		country := m.Countries[i]
+		for j := range country.Towns {
+			town := country.Towns[j]
+			for k := range town.Farms {
+				farm := town.Farms[k]
+				farm.ElapseTime(Calendar)
+				for l := range farm.Household.People {
+					person := farm.Household.People[l]
+					person.ElapseTime(Calendar, m)
+				}
+			}
 		}
 	}
 }

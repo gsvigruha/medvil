@@ -2,20 +2,21 @@ package social
 
 import (
 	"encoding/json"
+	"medvil/controller"
+	"medvil/model/economy"
+	"medvil/model/navigation"
 )
-
-type FarmField interface {
-}
 
 type FarmLand struct {
 	X uint16
 	Y uint16
-	F FarmField
+	F navigation.IField
 }
 
 type Farm struct {
-	Household   Household
-	Land []FarmLand
+	Household Household
+	Land      []FarmLand
+	Tasks     []*economy.AgriculturalTask
 }
 
 func (f *Farm) UnmarshalJSON(data []byte) error {
@@ -36,4 +37,23 @@ func (f *Farm) UnmarshalJSON(data []byte) error {
 		f.Land[i].Y = l[i][1]
 	}
 	return nil
+}
+
+func (f *Farm) HasTask() bool {
+	return len(f.Tasks) > 0
+}
+
+func (f *Farm) getNextTask() economy.Task {
+	t := f.Tasks[0]
+	f.Tasks = f.Tasks[1:]
+	return t
+}
+
+func (f *Farm) ElapseTime(Calendar *controller.CalendarType) {
+	for i := range f.Household.People {
+		person := f.Household.People[i]
+		if person.Task == nil && person.IsHome && f.HasTask() {
+			person.Task = f.getNextTask()
+		}
+	}
 }

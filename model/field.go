@@ -5,7 +5,7 @@ import (
 	"medvil/model/terrain"
 )
 
-// Implements social.FarmField
+// Implements navigation.IField
 type Field struct {
 	NE uint8
 	SE uint8
