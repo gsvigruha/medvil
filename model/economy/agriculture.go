@@ -5,7 +5,6 @@ import (
 	"medvil/model/terrain"
 	"medvil/model/time"
 	"math/rand"
-	//"fmt"
 )
 
 var ArgicultureCycleStartTime = time.TimeOfYear{Month: 3, Day: 1}
@@ -14,9 +13,9 @@ const AgriculturalTaskPloughing = 1
 const AgriculturalTaskSowing = 2
 const AgriculturalTaskHarvesting = 3
 
-const AgriculturalTaskDurationPloughing = 24 * 10
-const AgriculturalTaskDurationSowing = 24 * 5
-const AgriculturalTaskDurationHarvesting = 24 * 10
+const AgriculturalTaskDurationPloughing = 24 * 30
+const AgriculturalTaskDurationSowing = 24 * 15
+const AgriculturalTaskDurationHarvesting = 24 * 30
 
 
 const FarmFieldUseTypeBarren uint8 = 0
@@ -63,7 +62,11 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 			return true
 		}
 	case AgriculturalTaskHarvesting:
-		return t.Progress >= AgriculturalTaskDurationHarvesting
+		if t.Progress >= AgriculturalTaskDurationHarvesting {
+			t.L.F.Terrain.Artifacts = append(t.L.F.Terrain.Artifacts, t.L.F.Plant.T.Yield)
+			t.L.F.Plant = nil
+			return true
+		}
 	}
 	return false
 }

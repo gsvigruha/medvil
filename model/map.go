@@ -29,6 +29,17 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			}
 		}
 	}
+	for i := uint16(0); i < m.SX; i++ {
+		for j := uint16(0); j < m.SY; j++ {
+			f := m.Fields[i][j]
+			if f.Plant != nil {
+				f.Plant.ElapseTime(Calendar)
+				if f.Plant.T.IsAnnual() && Calendar.Season() == time.Winter {
+					f.Plant = nil
+				}
+			}
+		}
+	}
 }
 
 func (m *Map) GetField(x uint16, y uint16) *navigation.Field {

@@ -5,6 +5,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"medvil/model/artifacts"
 	//"fmt"
 )
 
@@ -14,6 +15,7 @@ type Household struct {
 	Building *building.Building
 	Town     *Town
 	Tasks    []economy.Task
+	Artifacts artifacts.Artifacts
 }
 
 func (h *Household) HasTask() bool {

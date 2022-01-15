@@ -33,3 +33,15 @@ func (p *Plant) Maturity(Calendar *time.CalendarType) float64 {
 func (p *Plant) AgeYears(Calendar *time.CalendarType) uint32 {
 	return (Calendar.DaysElapsed() - p.BirthDateDays) / (30 * 12)
 }
+
+func (p *Plant) ElapseTime(Calendar *time.CalendarType) {
+	if p.T.IsAnnual() {
+		p.Ripe = (Calendar.DaysElapsed() - p.BirthDateDays) > 90
+	}
+}
+
+
+func (p *PlantType) IsAnnual() bool {
+	return p.TreeT == nil
+}
+
