@@ -1,4 +1,4 @@
-package model
+package navigation
 
 import (
 	"medvil/model/building"

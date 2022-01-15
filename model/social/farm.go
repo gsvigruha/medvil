@@ -2,14 +2,18 @@ package social
 
 import (
 	"encoding/json"
+	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/terrain"
 	"medvil/model/time"
+	//"fmt"
 )
 
 type FarmLand struct {
-	X uint16
-	Y uint16
-	F navigation.IField
+	X       uint16
+	Y       uint16
+	UseType uint8
+	F       *navigation.Field
 }
 
 type Farm struct {
@@ -33,11 +37,29 @@ func (f *Farm) UnmarshalJSON(data []byte) error {
 	for i := range l {
 		f.Land[i].X = l[i][0]
 		f.Land[i].Y = l[i][1]
+		f.Land[i].UseType = uint8(l[i][2])
 	}
 	return nil
 }
 
 func (f *Farm) ElapseTime(Calendar *time.CalendarType) {
 	f.Household.ElapseTime(Calendar)
-
+	if economy.ArgicultureCycleStartTime.Matches(Calendar) {
+		for i := range f.Land {
+			l := f.Land[i]
+			location := navigation.Location{X: l.X, Y: l.Y, F: l.F}
+			if (l.UseType == economy.FarmFieldUseTypeWheat || l.UseType == economy.FarmFieldUseTypeVegetables) && l.F.Plant == nil {
+				if l.F.Terrain.T == terrain.Dirt {
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskSowing, L: location, UseType: l.UseType})
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, L: location, UseType: l.UseType})
+				} else if l.F.Terrain.T == terrain.Grass {
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPloughing, L: location, UseType: l.UseType})
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskSowing, L: location, UseType: l.UseType})
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, L: location, UseType: l.UseType})
+				}
+			} else if l.UseType == economy.FarmFieldUseTypeOrchard && l.F.Plant != nil && l.F.Plant.T.TreeT == &terrain.Apple {
+				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, L: location, UseType: l.UseType})
+			}
+		}
+	}
 }

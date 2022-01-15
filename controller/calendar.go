@@ -6,7 +6,7 @@ import (
 
 var Calendar = &time.CalendarType{
 	Year:  1000,
-	Month: 4,
-	Day:   1,
+	Month: 2,
+	Day:   15,
 	Hour:  0,
 }

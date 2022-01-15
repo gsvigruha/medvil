@@ -2,6 +2,7 @@ package model
 
 import (
 	//"math/rand"
+	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/model/time"
 )
@@ -9,7 +10,7 @@ import (
 type Map struct {
 	SX        uint16
 	SY        uint16
-	Fields    [][]Field
+	Fields    [][]navigation.Field
 	Countries []social.Country
 }
 
@@ -28,4 +29,8 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			}
 		}
 	}
+}
+
+func (m *Map) GetField(x uint16, y uint16) *navigation.Field {
+	return &m.Fields[x][y]
 }

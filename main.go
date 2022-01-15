@@ -46,7 +46,7 @@ func main() {
 			log.Printf("Rendering took %s", elapsed)
 			log.Printf("%s", controller.Calendar)
 		}
-		for i := 1; i < 10; i++ {
+		for i := 1; i < 5; i++ {
 			controller.Calendar.Tick()
 			m.ElapseTime(controller.Calendar)
 		}

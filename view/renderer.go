@@ -92,12 +92,6 @@ func Render(cv *canvas.Canvas, m model.Map, c *time.CalendarType) {
 				cv.Fill()
 			}
 
-			if f.Farm != nil {
-				cv.SetStrokeStyle("#00F")
-				rf.Draw(cv)
-				cv.Stroke()
-			}
-
 			units := m.Fields[pi][pj].Building.BuildingUnits
 			for k := 0; k < len(units); k++ {
 				RenderBuildingUnit(cv, units[k], rf, k, c)
@@ -106,6 +100,9 @@ func Render(cv *canvas.Canvas, m model.Map, c *time.CalendarType) {
 			RenderBuildingRoof(cv, roof, rf, len(units), c)
 			if m.Fields[pi][pj].Plant != nil {
 				RenderPlant(cv, m.Fields[pi][pj].Plant, rf, c)
+			}
+			if m.Fields[pi][pj].Travellers != nil {
+				RenderTravellers(cv, m.Fields[pi][pj].Travellers, rf, c)
 			}
 		}
 	}

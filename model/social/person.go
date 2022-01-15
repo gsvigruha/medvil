@@ -6,15 +6,9 @@ import (
 	"medvil/model/time"
 )
 
-const MaxPX = 10
-const MaxPY = 10
+const MaxPersonState = 100
 
 type Person struct {
-	FX        uint16
-	FY        uint16
-	FZ        uint8
-	PX        uint8
-	PY        uint8
 	Hunger    uint8
 	Thirst    uint8
 	Happiness uint8
@@ -22,57 +16,22 @@ type Person struct {
 	Household *Household
 	Task      economy.Task
 	IsHome    bool
-}
-
-func (p *Person) MoveLeft() {
-	if p.PX > 0 {
-		p.PX--
-	} else {
-		p.PX = MaxPX
-		p.FX--
-	}
-}
-
-func (p *Person) MoveRight() {
-	if p.PX < MaxPX {
-		p.PX++
-	} else {
-		p.PX = 0
-		p.FX++
-	}
-}
-
-func (p *Person) MoveUp() {
-	if p.PY > 0 {
-		p.PY--
-	} else {
-		p.PY = MaxPY
-		p.FY--
-	}
-}
-
-func (p *Person) MoveDown() {
-	if p.PY < MaxPY {
-		p.PY++
-	} else {
-		p.PY = 0
-		p.FY++
-	}
+	Traveller *navigation.Traveller
 }
 
 func (p *Person) ElapseTime(Calendar *time.CalendarType, Map navigation.IMap) {
 	if p.Task != nil {
-		if p.FX == p.Task.Location().X && p.FY == p.Task.Location().Y {
-			p.Task.Tick()
+		if p.Traveller.FX == p.Task.Location().X && p.Traveller.FY == p.Task.Location().Y {
+			if p.Task.Complete(Calendar) {
+				p.Task = nil
+			}
 		} else {
-			if p.FX > p.Task.Location().X {
-				p.MoveLeft()
-			} else if p.FX < p.Task.Location().X {
-				p.MoveRight()
-			} else if p.FY > p.Task.Location().Y {
-				p.MoveDown()
-			} else if p.FY < p.Task.Location().Y {
-				p.MoveUp()
+			if p.IsHome {
+				p.IsHome = false
+				b := p.Household.Building
+				Map.GetField(b.X, b.Y).RegisterTraveller(p.Traveller)
+			} else {
+				p.Traveller.Move(p.Task.Location(), Map)
 			}
 		}
 	}

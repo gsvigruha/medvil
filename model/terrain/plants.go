@@ -19,6 +19,7 @@ type Plant struct {
 	Y             uint16
 	BirthDateDays uint32
 	Shape         uint8
+	Ripe          bool
 }
 
 func (p *Plant) IsTree() bool {

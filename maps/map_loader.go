@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"medvil/model"
 	"medvil/model/building"
+	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/model/terrain"
 	"os"
@@ -142,9 +143,9 @@ func LoadSociety(dir string, m *model.Map) {
 				AddBuilding(farm.Household.Building, m)
 				for l := range farm.Land {
 					land := farm.Land[l]
-					land.F = &m.Fields[land.X][land.Y]
-					m.Fields[land.X][land.Y].Farm = farm
+					farm.Land[l].F = &m.Fields[land.X][land.Y]
 				}
+				farm.Household.People = []*social.Person{farm.Household.NewPerson(), farm.Household.NewPerson()}
 			}
 		}
 	}
@@ -169,9 +170,9 @@ func LoadMap(dir string) model.Map {
 	sx := meta["SX"]
 	sy := meta["SY"]
 
-	fields := make([][]model.Field, sx)
+	fields := make([][]navigation.Field, sx)
 	for i := range fields {
-		fields[i] = make([]model.Field, sy)
+		fields[i] = make([]navigation.Field, sy)
 	}
 	m := model.Map{SX: sx, SY: sy, Fields: fields}
 
