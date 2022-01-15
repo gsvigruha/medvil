@@ -1,9 +1,9 @@
 package social
 
 import (
-	"medvil/controller"
 	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/time"
 )
 
 const MaxPX = 10
@@ -60,7 +60,7 @@ func (p *Person) MoveDown() {
 	}
 }
 
-func (p *Person) ElapseTime(Calendar *controller.CalendarType, Map navigation.IMap) {
+func (p *Person) ElapseTime(Calendar *time.CalendarType, Map navigation.IMap) {
 	if p.Task != nil {
 		if p.FX == p.Task.Location().X && p.FY == p.Task.Location().Y {
 			p.Task.Tick()

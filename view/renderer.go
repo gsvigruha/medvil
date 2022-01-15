@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"medvil/controller"
 	"medvil/model"
+	"medvil/model/time"
 	//"fmt"
 )
 
@@ -16,7 +17,7 @@ const (
 	ViewSY uint8   = 10
 )
 
-func Render(cv *canvas.Canvas, m model.Map) {
+func Render(cv *canvas.Canvas, m model.Map, c *time.CalendarType) {
 	w := float64(cv.Width())
 	h := float64(cv.Height())
 	for i := uint16(0); i < m.SX; i++ {
@@ -99,12 +100,12 @@ func Render(cv *canvas.Canvas, m model.Map) {
 
 			units := m.Fields[pi][pj].Building.BuildingUnits
 			for k := 0; k < len(units); k++ {
-				RenderBuildingUnit(cv, units[k], rf, k)
+				RenderBuildingUnit(cv, units[k], rf, k, c)
 			}
 			roof := m.Fields[pi][pj].Building.RoofUnit
-			RenderBuildingRoof(cv, roof, rf, len(units))
+			RenderBuildingRoof(cv, roof, rf, len(units), c)
 			if m.Fields[pi][pj].Plant != nil {
-				RenderPlant(cv, m.Fields[pi][pj].Plant, rf)
+				RenderPlant(cv, m.Fields[pi][pj].Plant, rf, c)
 			}
 		}
 	}

@@ -2,8 +2,8 @@ package terrain
 
 import (
 	"math"
-	"medvil/controller"
 	"medvil/model/artifacts"
+	"medvil/model/time"
 )
 
 type PlantType struct {
@@ -25,10 +25,10 @@ func (p *Plant) IsTree() bool {
 	return p.T.TreeT != nil
 }
 
-func (p *Plant) Maturity(Calendar *controller.CalendarType) float64 {
+func (p *Plant) Maturity(Calendar *time.CalendarType) float64 {
 	return math.Min(float64(p.AgeYears(Calendar)), float64(p.T.MaturityAgeYears)) / float64(p.T.MaturityAgeYears)
 }
 
-func (p *Plant) AgeYears(Calendar *controller.CalendarType) uint32 {
+func (p *Plant) AgeYears(Calendar *time.CalendarType) uint32 {
 	return (Calendar.DaysElapsed() - p.BirthDateDays) / (30 * 12)
 }

@@ -6,12 +6,12 @@ import (
 	//"image/color"
 	"math"
 	"math/rand"
-	"medvil/controller"
 	"medvil/model/terrain"
+	"medvil/model/time"
 )
 
-func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float64, sy float64, width float64, length float64, angle float64, i uint8, prevSeasonPhase uint8) {
-	maturity := plant.Maturity(controller.Calendar)
+func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float64, sy float64, width float64, length float64, angle float64, i uint8, prevSeasonPhase uint8, c *time.CalendarType) {
+	maturity := plant.Maturity(c)
 	ex := sx + math.Cos(angle)*length
 	ey := sy + math.Sin(angle)*length
 
@@ -32,13 +32,13 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 		seasonPhase = prevSeasonPhase - seasonPhase
 	}
 
-	if controller.Calendar.Season() != controller.Winter {
+	if c.Season() != time.Winter {
 		if i > plant.T.TreeT.LeavesMinIterarion {
 			dxL := math.Cos(angle+math.Pi/2) * plant.T.TreeT.LeavesSize
 			dyL := math.Sin(angle+math.Pi/2) * plant.T.TreeT.LeavesSize
 			var draw = false
-			if (controller.Calendar.Month == 3 && seasonPhase <= controller.Calendar.Day) ||
-				(controller.Calendar.Month == 4 && seasonPhase > controller.Calendar.Day) {
+			if (c.Month == 3 && seasonPhase <= c.Day) ||
+				(c.Month == 4 && seasonPhase > c.Day) {
 				if plant.T.TreeT.Blooms {
 					cv.SetFillStyle("texture/terrain/leaves_blooming.png")
 				} else {
@@ -46,15 +46,15 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 				}
 				draw = true
 			}
-			if (controller.Calendar.Month == 4 && seasonPhase <= controller.Calendar.Day) ||
-				(controller.Calendar.Month > 4 && controller.Calendar.Month < 9) ||
-				(controller.Calendar.Month == 9 && seasonPhase > controller.Calendar.Day) {
+			if (c.Month == 4 && seasonPhase <= c.Day) ||
+				(c.Month > 4 && c.Month < 9) ||
+				(c.Month == 9 && seasonPhase > c.Day) {
 				cv.SetFillStyle("texture/terrain/leaves_regular.png")
 				draw = true
 			}
-			if (controller.Calendar.Month == 9 && seasonPhase <= controller.Calendar.Day) ||
-				(controller.Calendar.Month == 10) ||
-				(controller.Calendar.Month == 11 && seasonPhase > controller.Calendar.Day) {
+			if (c.Month == 9 && seasonPhase <= c.Day) ||
+				(c.Month == 10) ||
+				(c.Month == 11 && seasonPhase > c.Day) {
 				cv.SetFillStyle("texture/terrain/leaves_colored.png")
 				draw = true
 			}
@@ -68,9 +68,9 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 				cv.Fill()
 			}
 			if plant.T.TreeT.Blooms {
-				if (controller.Calendar.Month == 6 && seasonPhase <= controller.Calendar.Day) ||
-					(controller.Calendar.Month == 7) ||
-					(controller.Calendar.Month == 8 && seasonPhase > controller.Calendar.Day) {
+				if (c.Month == 6 && seasonPhase <= c.Day) ||
+					(c.Month == 7) ||
+					(c.Month == 8 && seasonPhase > c.Day) {
 					cv.SetFillStyle("texture/terrain/fruit.png")
 					cv.BeginPath()
 					cv.LineTo(sx-dxL, sy-dyL)
@@ -85,9 +85,9 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 		}
 	}
 
-	if (controller.Calendar.Month == 12 && seasonPhase < controller.Calendar.Day) ||
-		(controller.Calendar.Month == 1) ||
-		(controller.Calendar.Month == 2 && seasonPhase > controller.Calendar.Day) {
+	if (c.Month == 12 && seasonPhase < c.Day) ||
+		(c.Month == 1) ||
+		(c.Month == 2 && seasonPhase > c.Day) {
 		if angle < -math.Pi/2-math.Pi/4 || angle > -math.Pi/2+math.Pi/4 {
 			cv.SetFillStyle("texture/terrain/snow_patches.png")
 			cv.BeginPath()
@@ -116,26 +116,26 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 		for branchI, _ := range plant.T.TreeT.BranchAngles {
 			nextWidth := width * plant.T.TreeT.BranchWidthD[branchI]
 			nextLength := length * plant.T.TreeT.BranchLengthD[branchI]
-			DrawBranch(cv, plant, r, ex, ey, nextWidth, nextLength, nextAngles[branchI], i+1, seasonPhase)
+			DrawBranch(cv, plant, r, ex, ey, nextWidth, nextLength, nextAngles[branchI], i+1, seasonPhase, c)
 		}
 	}
 }
 
-func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField) {
+func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField, c *time.CalendarType) {
 	r := rand.New(rand.NewSource(int64(plant.Shape)))
 	midX := (rf.X[0] + rf.X[1] + rf.X[2] + rf.X[3]) / 4
 	midY := (rf.Y[0] + rf.Y[1] + rf.Y[2] + rf.Y[3]) / 4
-	DrawBranch(cv, plant, r, midX, midY, plant.T.TreeT.BranchWidth0, plant.T.TreeT.BranchLength0, -math.Pi/2, 0, 30)
+	DrawBranch(cv, plant, r, midX, midY, plant.T.TreeT.BranchWidth0, plant.T.TreeT.BranchLength0, -math.Pi/2, 0, 30, c)
 }
 
-func RenderRegularPlant(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField) {
+func RenderRegularPlant(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField, c *time.CalendarType) {
 	cv.DrawImage("texture/terrain/"+plant.T.Name+".png", rf.X[1], rf.Y[2]-108, 120, 108)
 }
 
-func RenderPlant(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField) {
+func RenderPlant(cv *canvas.Canvas, plant *terrain.Plant, rf RenderedField, c *time.CalendarType) {
 	if plant.T.TreeT != nil {
-		RenderTree(cv, plant, rf)
+		RenderTree(cv, plant, rf, c)
 	} else {
-		RenderRegularPlant(cv, plant, rf)
+		RenderRegularPlant(cv, plant, rf, c)
 	}
 }

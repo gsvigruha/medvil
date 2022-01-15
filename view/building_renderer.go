@@ -7,11 +7,12 @@ import (
 	"math"
 	"medvil/controller"
 	"medvil/model/building"
+	"medvil/model/time"
 )
 
 const BuildingUnitHeight = 3
 
-func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf RenderedField, k int) {
+func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf RenderedField, k int, c *time.CalendarType) {
 	startI := 2 + controller.Perspective
 	for i := uint8(startI); i < 4+startI; i++ {
 		wall := unit.Walls[i%4]
@@ -88,7 +89,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf Render
 	}
 }
 
-func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf RenderedField, k int) {
+func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf RenderedField, k int, c *time.CalendarType) {
 	if roof == nil {
 		return
 	}

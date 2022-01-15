@@ -2,8 +2,8 @@ package model
 
 import (
 	//"math/rand"
-	"medvil/controller"
 	"medvil/model/social"
+	"medvil/model/time"
 )
 
 type Map struct {
@@ -13,7 +13,7 @@ type Map struct {
 	Countries []social.Country
 }
 
-func (m *Map) ElapseTime(Calendar *controller.CalendarType) {
+func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 	for i := range m.Countries {
 		country := m.Countries[i]
 		for j := range country.Towns {

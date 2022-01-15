@@ -35,7 +35,7 @@ func main() {
 		cv.SetFillStyle("#000")
 		cv.FillRect(0, 0, w, h)
 		start := time.Now()
-		view.Render(cv, m)
+		view.Render(cv, m, controller.Calendar)
 		elapsed := time.Since(start)
 		/*
 			if elapsed.Nanoseconds() < 50000000 {
@@ -48,8 +48,7 @@ func main() {
 		}
 		for i := 1; i < 10; i++ {
 			controller.Calendar.Tick()
+			m.ElapseTime(controller.Calendar)
 		}
-		m.ElapseTime(controller.Calendar)
-
 	})
 }
