@@ -110,8 +110,8 @@ func LoadFields(dir string, m *model.Map) {
 func AddBuilding(b *building.Building, m *model.Map) {
 	for bx := uint16(0); bx < 5; bx++ {
 		for by := uint16(0); by < 5; by++ {
-			m.Fields[b.X+bx][b.Y+by].Building.BuildingUnits = b.Plan.ToBuildingUnits(uint8(bx), uint8(by))
-			m.Fields[b.X+bx][b.Y+by].Building.RoofUnit = b.Plan.GetRoof(uint8(bx), uint8(by))
+			m.Fields[b.X+bx][b.Y+by].Building.BuildingUnits = b.ToBuildingUnits(uint8(bx), uint8(by))
+			m.Fields[b.X+bx][b.Y+by].Building.RoofUnit = b.GetRoof(uint8(bx), uint8(by))
 		}
 	}
 }

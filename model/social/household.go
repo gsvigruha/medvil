@@ -15,7 +15,7 @@ type Household struct {
 	Building  *building.Building
 	Town      *Town
 	Tasks     []economy.Task
-	Artifacts artifacts.Artifacts
+	Artifacts []artifacts.Artifacts
 }
 
 func (h *Household) HasTask() bool {

@@ -7,16 +7,19 @@ import (
 type RoofUnit struct {
 	Roof     Roof
 	Elevated [4]bool
+	B        *Building
 }
 
 type BuildingWall struct {
 	M       *materials.Material
 	Windows bool
 	Door    bool
+	B       *Building
 }
 
 type BuildingUnit struct {
 	Walls []*BuildingWall
+	B     *Building
 }
 
 func (b BuildingUnit) Walkable() bool { return false }

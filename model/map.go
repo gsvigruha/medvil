@@ -45,3 +45,8 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 func (m *Map) GetField(x uint16, y uint16) *navigation.Field {
 	return &m.Fields[x][y]
 }
+
+func (m *Map) ReverseReferences() *ReverseReferences {
+	rr := BuildReverseReferences(m)
+	return &rr
+}

@@ -5,7 +5,7 @@ import (
 	//"fmt"
 	"math/rand"
 	"medvil/model"
-	"medvil/model/building"
+	//"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/terrain"
 	"medvil/util"
@@ -61,6 +61,7 @@ func setupTerrain(fields [][]navigation.Field) {
 	}
 }
 
+/*
 func addHouse(name string, x int, y int, m model.Map) {
 	bp := building.BuildingPlanFromJSON(name)
 	for bx := 0; bx < 5; bx++ {
@@ -70,6 +71,7 @@ func addHouse(name string, x int, y int, m model.Map) {
 		}
 	}
 }
+*/
 
 func NewMap(sizeX uint16, sizeY uint16) model.Map {
 	fields := make([][]navigation.Field, sizeX)
@@ -78,7 +80,7 @@ func NewMap(sizeX uint16, sizeY uint16) model.Map {
 	}
 	setupTerrain(fields)
 	m := model.Map{SX: sizeX, SY: sizeY, Fields: fields}
-	addHouse("samples/building/townhouse_1.building.json", 2, 2, m)
-	addHouse("samples/building/rural_2.building.json", 6, 6, m)
+	//addHouse("samples/building/townhouse_1.building.json", 2, 2, m)
+	//addHouse("samples/building/rural_2.building.json", 6, 6, m)
 	return m
 }

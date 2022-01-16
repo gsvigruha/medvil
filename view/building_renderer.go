@@ -12,7 +12,8 @@ import (
 
 const BuildingUnitHeight = 3
 
-func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf renderer.RenderedField, k int, c *controller.Controller) {
+func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer.RenderedField, k int, c *controller.Controller) renderer.RenderedBuildingUnit {
+	var rws = []renderer.RenderedWall{}
 	startI := 2 + c.Perspective
 	for i := uint8(startI); i < 4+startI; i++ {
 		wall := unit.Walls[i%4]
@@ -31,12 +32,13 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf render
 		cv.SetFillStyle("texture/building/" + wall.M.Name + suffix + ".png")
 		z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 
-		cv.BeginPath()
-		cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z)
-		cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z-BuildingUnitHeight*DZ)
-		cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z-BuildingUnitHeight*DZ)
-		cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z)
-		cv.ClosePath()
+		rw := renderer.RenderedWall{
+			X:    [4]float64{rf.X[rfIdx1], rf.X[rfIdx1], rf.X[rfIdx2], rf.X[rfIdx2]},
+			Y:    [4]float64{rf.Y[rfIdx1] - z, rf.Y[rfIdx1] - z - BuildingUnitHeight*DZ, rf.Y[rfIdx2] - z - BuildingUnitHeight*DZ, rf.Y[rfIdx2] - z},
+			Wall: wall,
+		}
+		rws = append(rws, rw)
+		rw.Draw(cv)
 		cv.Fill()
 
 		if wall.Windows {
@@ -87,6 +89,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf render
 			cv.Stroke()
 		}
 	}
+	return renderer.RenderedBuildingUnit{Walls: rws, Unit: unit}
 }
 
 func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.RenderedField, k int, c *controller.Controller) {

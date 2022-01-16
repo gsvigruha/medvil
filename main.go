@@ -35,6 +35,7 @@ func main() {
 		cv.SetFillStyle("#000")
 		cv.FillRect(0, 0, w, h)
 		start := time.Now()
+		c.UpdateReverseReferences(m.ReverseReferences())
 		view.Render(cv, m, c)
 		elapsed := time.Since(start)
 		/*

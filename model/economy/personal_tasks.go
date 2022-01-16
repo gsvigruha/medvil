@@ -33,6 +33,10 @@ func (t *EatTask) Blocked() bool {
 	return false
 }
 
+func (t *EatTask) Name() string {
+	return "eat"
+}
+
 func (t *DrinkTask) Location() navigation.Location {
 	return t.L
 }
@@ -44,4 +48,8 @@ func (t *DrinkTask) Complete(Calendar *time.CalendarType) bool {
 
 func (t *DrinkTask) Blocked() bool {
 	return false
+}
+
+func (t *DrinkTask) Name() string {
+	return "drink"
 }

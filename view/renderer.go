@@ -18,9 +18,9 @@ const (
 )
 
 func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
+	c.ResetRenderedObjects()
 	w := float64(cv.Width())
 	h := float64(cv.Height())
-	var renderedFields = []*renderer.RenderedField{}
 	for i := uint16(0); i < m.SX; i++ {
 		for j := uint16(0); j < m.SY; j++ {
 			var pi = i
@@ -69,7 +69,7 @@ func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 			cv.SetLineWidth(2)
 			x := w/2 - float64(i)*DX + float64(j)*DX + float64(c.ScrollX)
 			y := float64(i)*DY + float64(j)*DY + float64(c.ScrollY)
-			if x < -DX || x > w+DX || y < -DY*2 || y > h+DY {
+			if x < c.ControlPanel.SX-DX || x > w+DX || y < -DY*2 || y > h+DY {
 				continue
 			}
 
@@ -82,7 +82,6 @@ func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 			rf.Draw(cv)
 			cv.Fill()
 			cv.Stroke()
-			renderedFields = append(renderedFields, &rf)
 
 			if (f.SE + f.SW) > (f.NE + f.NW) {
 				slope := (f.SE + f.SW) - (f.NE + f.NW)
@@ -98,7 +97,8 @@ func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 
 			units := m.Fields[pi][pj].Building.BuildingUnits
 			for k := 0; k < len(units); k++ {
-				RenderBuildingUnit(cv, units[k], rf, k, c)
+				rbu := RenderBuildingUnit(cv, &units[k], rf, k, c)
+				c.AddRenderedBuildingUnit(&rbu)
 			}
 			roof := m.Fields[pi][pj].Building.RoofUnit
 			RenderBuildingRoof(cv, roof, rf, len(units), c)
@@ -108,7 +108,8 @@ func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 			if m.Fields[pi][pj].Travellers != nil {
 				RenderTravellers(cv, m.Fields[pi][pj].Travellers, rf, c)
 			}
+			c.AddRenderedField(&rf)
 		}
 	}
-	c.RenderedFields = renderedFields
+	c.ControlPanel.Render(cv)
 }

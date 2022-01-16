@@ -80,3 +80,15 @@ func (t *AgriculturalTask) Blocked() bool {
 	}
 	return false
 }
+
+func (t *AgriculturalTask) Name() string {
+	switch t.T {
+	case AgriculturalTaskPloughing:
+		return "ploughing"
+	case AgriculturalTaskSowing:
+		return "sowing"
+	case AgriculturalTaskHarvesting:
+		return "harvesting"
+	}
+	return ""
+}

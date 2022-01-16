@@ -9,4 +9,5 @@ type Task interface {
 	Complete(Calendar *time.CalendarType) bool
 	Location() navigation.Location
 	Blocked() bool
+	Name() string
 }

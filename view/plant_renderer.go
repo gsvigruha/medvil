@@ -6,10 +6,10 @@ import (
 	//"image/color"
 	"math"
 	"math/rand"
+	"medvil/controller"
 	"medvil/model/terrain"
 	"medvil/model/time"
 	"medvil/renderer"
-	"medvil/controller"
 )
 
 func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float64, sy float64, width float64, length float64, angle float64, i uint8, prevSeasonPhase uint8, c *controller.Controller) {

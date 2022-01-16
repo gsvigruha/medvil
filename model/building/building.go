@@ -29,3 +29,83 @@ func (b *Building) UnmarshalJSON(data []byte) error {
 	b.Plan = &plan
 	return nil
 }
+
+func (b *Building) Windows() uint16 {
+	p := b.Plan
+	windows := 0
+	for i := 0; i < BuildingBaseMaxSize; i++ {
+		if p.BaseShape[i][0] {
+			windows += len(p.Floors) - int(p.WindowStartFloor[DirectionN])
+		}
+		if p.BaseShape[i][BuildingBaseMaxSize-1] {
+			windows += len(p.Floors) - int(p.WindowStartFloor[DirectionS])
+		}
+		if p.BaseShape[0][i] {
+			windows += len(p.Floors) - int(p.WindowStartFloor[DirectionW])
+		}
+		if p.BaseShape[BuildingBaseMaxSize-1][i] {
+			windows += len(p.Floors) - int(p.WindowStartFloor[DirectionE])
+		}
+	}
+	for i := 0; i < BuildingBaseMaxSize-1; i++ {
+		for j := 0; j < BuildingBaseMaxSize-1; j++ {
+			if p.BaseShape[i][j] != p.BaseShape[i+1][j] {
+				windows += len(p.Floors)
+			}
+			if p.BaseShape[i][j] != p.BaseShape[i][j+1] {
+				windows += len(p.Floors)
+			}
+		}
+	}
+	return uint16(windows)
+}
+
+func (b *Building) GetRoof(x uint8, y uint8) *RoofUnit {
+	p := b.Plan
+	if !p.BaseShape[x][y] {
+		return nil
+	}
+	return &RoofUnit{
+		B:    b,
+		Roof: p.Roof,
+		Elevated: [4]bool{
+			y > 0 && p.BaseShape[x][y-1],
+			x < BuildingBaseMaxSize-1 && p.BaseShape[x+1][y],
+			y < BuildingBaseMaxSize-1 && p.BaseShape[x][y+1],
+			x > 0 && p.BaseShape[x-1][y]}}
+}
+
+func (b *Building) ToBuildingUnits(x uint8, y uint8) []BuildingUnit {
+	p := b.Plan
+	if !p.BaseShape[x][y] {
+		return []BuildingUnit{}
+	}
+	numFloors := uint8(len(p.Floors))
+	units := make([]BuildingUnit, numFloors)
+	for i := uint8(0); i < numFloors; i++ {
+		unitDoor := (i == 0 && p.DoorX == x && p.DoorY == y)
+		var n *BuildingWall
+		if y == 0 || !p.BaseShape[x][y-1] {
+			door := (unitDoor && p.DoorD == DirectionN)
+			n = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionN] <= i, Door: door, B: b}
+		}
+		var e *BuildingWall
+		if x == BuildingBaseMaxSize-1 || !p.BaseShape[x+1][y] {
+			door := (unitDoor && p.DoorD == DirectionE)
+			e = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionE] <= i, Door: door, B: b}
+		}
+		var s *BuildingWall
+		if y == BuildingBaseMaxSize-1 || !p.BaseShape[x][y+1] {
+			door := (unitDoor && p.DoorD == DirectionS)
+			s = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionS] <= i, Door: door, B: b}
+		}
+		var w *BuildingWall
+		if x == 0 || !p.BaseShape[x-1][y] {
+			door := (unitDoor && p.DoorD == DirectionW)
+			w = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionW] <= i, Door: door, B: b}
+		}
+		units[i].Walls = []*BuildingWall{n, e, s, w}
+		units[i].B = b
+	}
+	return units
+}
