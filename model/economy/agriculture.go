@@ -1,10 +1,10 @@
 package economy
 
 import (
+	"math/rand"
 	"medvil/model/navigation"
 	"medvil/model/terrain"
 	"medvil/model/time"
-	"math/rand"
 )
 
 var ArgicultureCycleStartTime = time.TimeOfYear{Month: 3, Day: 1}
@@ -17,19 +17,17 @@ const AgriculturalTaskDurationPloughing = 24 * 30
 const AgriculturalTaskDurationSowing = 24 * 15
 const AgriculturalTaskDurationHarvesting = 24 * 30
 
-
 const FarmFieldUseTypeBarren uint8 = 0
 const FarmFieldUseTypeWheat uint8 = 1
 const FarmFieldUseTypeOrchard uint8 = 2
 const FarmFieldUseTypePasture uint8 = 3
 const FarmFieldUseTypeVegetables uint8 = 4
 
-
 type AgriculturalTask struct {
 	T        uint8
 	L        navigation.Location
 	Progress uint16
-	UseType uint8
+	UseType  uint8
 }
 
 func (t *AgriculturalTask) Location() navigation.Location {

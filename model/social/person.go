@@ -1,16 +1,19 @@
 package social
 
 import (
+	//"fmt"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
 )
 
-const MaxPersonState = 100
+const MaxPersonState = 250
+const WaterThreshold = 100
+const FoodThreshold = 100
 
 type Person struct {
-	Hunger    uint8
-	Thirst    uint8
+	Food      uint8
+	Water     uint8
 	Happiness uint8
 	Health    uint8
 	Household *Household
@@ -34,5 +37,28 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, Map navigation.IMap) {
 				p.Traveller.Move(p.Task.Location(), Map)
 			}
 		}
+	} else {
+		home := navigation.Location{X: p.Household.Building.X, Y: p.Household.Building.Y, F: Map.GetField(p.Household.Building.X, p.Household.Building.Y)}
+		if p.Water < WaterThreshold {
+			p.Task = &economy.DrinkTask{L: home, P: p}
+		} else if p.Food < FoodThreshold {
+			p.Task = &economy.EatTask{L: home, P: p}
+		}
 	}
+	if Calendar.Hour == 0 {
+		if p.Food > 0 {
+			p.Food--
+		}
+		if p.Water > 0 {
+			p.Water--
+		}
+	}
+}
+
+func (p *Person) Eat() {
+	p.Food = MaxPersonState
+}
+
+func (p *Person) Drink() {
+	p.Water = MaxPersonState
 }

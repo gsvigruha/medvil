@@ -2,72 +2,81 @@ package controller
 
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"medvil/model/time"
+	"medvil/model/navigation"
+	"medvil/renderer"
+	"fmt"
 )
-
-var X int
-var Y int
-var W int
-var H int
-
-var ScrollX int = 0
-var ScrollY int = 0
 
 const PerspectiveNE uint8 = 0
 const PerspectiveSE uint8 = 1
 const PerspectiveSW uint8 = 2
 const PerspectiveNW uint8 = 3
 
-var Perspective uint8 = PerspectiveNE
-
-// Interface for keyboard input events.
-// Implement and register to receive keyboard input.
-type KeyboardListener interface {
-	OnKeyEvent(glfw.Key, int, glfw.Action, glfw.ModifierKey)
+type Controller struct {
+	X              float64
+	Y              float64
+	W              int
+	H              int
+	ScrollX        int
+	ScrollY        int
+	Perspective    uint8
+	Calendar       *time.CalendarType
+	RenderedFields []*renderer.RenderedField
+	SelectedField *navigation.Field
 }
 
-// Interface for mouse input events.
-// Implement and register to receive mouse input.
-type MouseListener interface {
-	OnMouseButton(glfw.MouseButton, glfw.Action, glfw.ModifierKey)
-	OnMouseMove(float64, float64)
-	OnMouseScroll(float64, float64)
-}
-
-func KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, action glfw.Action, mod glfw.ModifierKey) {
+func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, action glfw.Action, mod glfw.ModifierKey) {
 	if key == glfw.KeyEnter && action == glfw.Release {
-		Perspective = (Perspective + 1) % 4
+		c.Perspective = (c.Perspective + 1) % 4
 	}
 	if action == glfw.Press {
 		if key == glfw.KeyUp {
-			ScrollY -= 256
+			c.ScrollY -= 256
 		}
 		if key == glfw.KeyDown {
-			ScrollY += 256
+			c.ScrollY += 256
 		}
 		if key == glfw.KeyLeft {
-			ScrollX -= 256
+			c.ScrollX -= 256
 		}
 		if key == glfw.KeyRight {
-			ScrollX += 256
+			c.ScrollX += 256
 		}
 	}
 }
 
-func MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
+func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
+	if action == glfw.Press && button == glfw.MouseButton1 {
+		for i := range c.RenderedFields {
+			f := c.RenderedFields[i]
+			if f.Contains(c.X, c.Y) {
+				c.SelectedField = f.F
+			}
+		}
+	}
 }
 
-func MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
-	X = int(x)
-	Y = int(y)
+func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
+	c.X = x
+	c.Y = y
 }
 
-func MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
+func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
 }
 
-func Link(wnd *glfw.Window) {
-	W, H = wnd.GetSize()
-	wnd.SetKeyCallback(KeyboardCallback)
-	wnd.SetMouseButtonCallback(MouseButtonCallback)
-	wnd.SetCursorPosCallback(MouseMoveCallback)
-	wnd.SetScrollCallback(MouseScrollCallback)
+func Link(wnd *glfw.Window) *Controller {
+	W, H := wnd.GetSize()
+	Calendar := &time.CalendarType{
+		Year:  1000,
+		Month: 2,
+		Day:   1,
+		Hour:  0,
+	}
+	C := Controller{H: H, W: W, Calendar: Calendar}
+	wnd.SetKeyCallback(C.KeyboardCallback)
+	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
+	wnd.SetCursorPosCallback(C.MouseMoveCallback)
+	wnd.SetScrollCallback(C.MouseScrollCallback)
+	return &C
 }

@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"medvil/controller"
 	"medvil/model"
-	"medvil/model/time"
+	"medvil/renderer"
 	//"fmt"
 )
 
@@ -17,9 +17,10 @@ const (
 	ViewSY uint8   = 10
 )
 
-func Render(cv *canvas.Canvas, m model.Map, c *time.CalendarType) {
+func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 	w := float64(cv.Width())
 	h := float64(cv.Height())
+	var renderedFields = []*renderer.RenderedField{}
 	for i := uint16(0); i < m.SX; i++ {
 		for j := uint16(0); j < m.SY; j++ {
 			var pi = i
@@ -29,7 +30,7 @@ func Render(cv *canvas.Canvas, m model.Map, c *time.CalendarType) {
 			var r = uint8(0)
 			var b = uint8(0)
 			var l = uint8(0)
-			switch controller.Perspective {
+			switch c.Perspective {
 			case controller.PerspectiveNE:
 				pi = i
 				pj = m.SY - 1 - j
@@ -66,19 +67,22 @@ func Render(cv *canvas.Canvas, m model.Map, c *time.CalendarType) {
 			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
 			cv.SetStrokeStyle(color.RGBA{R: 192, G: 192, B: 192, A: 24})
 			cv.SetLineWidth(2)
-			x := w/2 - float64(i)*DX + float64(j)*DX + float64(controller.ScrollX)
-			y := float64(i)*DY + float64(j)*DY + float64(controller.ScrollY)
+			x := w/2 - float64(i)*DX + float64(j)*DX + float64(c.ScrollX)
+			y := float64(i)*DY + float64(j)*DY + float64(c.ScrollY)
 			if x < -DX || x > w+DX || y < -DY*2 || y > h+DY {
 				continue
 			}
 
-			rf := RenderedField{
+			rf := renderer.RenderedField{
 				X: [4]float64{float64(x), float64(x - DX), float64(x), float64(x + DX)},
 				Y: [4]float64{float64(y), float64(y + DY), float64(y + DY*2.0), float64(y + DY)},
-				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)}}
+				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)},
+				F: &f,
+			}
 			rf.Draw(cv)
 			cv.Fill()
 			cv.Stroke()
+			renderedFields = append(renderedFields, &rf)
 
 			if (f.SE + f.SW) > (f.NE + f.NW) {
 				slope := (f.SE + f.SW) - (f.NE + f.NW)
@@ -106,4 +110,5 @@ func Render(cv *canvas.Canvas, m model.Map, c *time.CalendarType) {
 			}
 		}
 	}
+	c.RenderedFields = renderedFields
 }

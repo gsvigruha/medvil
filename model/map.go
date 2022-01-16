@@ -21,11 +21,11 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			town := country.Towns[j]
 			for k := range town.Farms {
 				farm := town.Farms[k]
-				farm.ElapseTime(Calendar)
 				for l := range farm.Household.People {
 					person := farm.Household.People[l]
 					person.ElapseTime(Calendar, m)
 				}
+				farm.ElapseTime(Calendar)
 			}
 		}
 	}

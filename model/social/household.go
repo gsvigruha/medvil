@@ -1,20 +1,20 @@
 package social
 
 import (
+	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
-	"medvil/model/artifacts"
 	//"fmt"
 )
 
 type Household struct {
-	People   []*Person
-	Money    uint32
-	Building *building.Building
-	Town     *Town
-	Tasks    []economy.Task
+	People    []*Person
+	Money     uint32
+	Building  *building.Building
+	Town      *Town
+	Tasks     []economy.Task
 	Artifacts artifacts.Artifacts
 }
 
@@ -55,8 +55,8 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType) {
 
 func (h *Household) NewPerson() *Person {
 	return &Person{
-		Hunger:    MaxPersonState,
-		Thirst:    MaxPersonState,
+		Food:      MaxPersonState,
+		Water:     MaxPersonState,
 		Happiness: MaxPersonState,
 		Health:    MaxPersonState,
 		Household: h,

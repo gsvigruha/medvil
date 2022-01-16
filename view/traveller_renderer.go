@@ -4,25 +4,25 @@ import (
 	"github.com/tfriedel6/canvas"
 	"medvil/controller"
 	"medvil/model/navigation"
-	"medvil/model/time"
+	"medvil/renderer"
 )
 
 const MaxPX = navigation.MaxPX
 const MaxPY = navigation.MaxPY
 
-func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf RenderedField, c *time.CalendarType) {
+func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) {
 	for i := range travellers {
 		t := travellers[i]
 		px := float64(t.PX)
 		py := float64(t.PY)
-		NEPX := rf.X[(2+controller.Perspective)%4]
-		NEPY := rf.Y[(2+controller.Perspective)%4]
-		SEPX := rf.X[(1+controller.Perspective)%4]
-		SEPY := rf.Y[(1+controller.Perspective)%4]
-		SWPX := rf.X[(0+controller.Perspective)%4]
-		SWPY := rf.Y[(0+controller.Perspective)%4]
-		NWPX := rf.X[(3+controller.Perspective)%4]
-		NWPY := rf.Y[(3+controller.Perspective)%4]
+		NEPX := rf.X[(2+c.Perspective)%4]
+		NEPY := rf.Y[(2+c.Perspective)%4]
+		SEPX := rf.X[(1+c.Perspective)%4]
+		SEPY := rf.Y[(1+c.Perspective)%4]
+		SWPX := rf.X[(0+c.Perspective)%4]
+		SWPY := rf.Y[(0+c.Perspective)%4]
+		NWPX := rf.X[(3+c.Perspective)%4]
+		NWPY := rf.Y[(3+c.Perspective)%4]
 		x := (NWPX*(MaxPX-px)*(MaxPY-py) +
 			SWPX*(MaxPX-px)*py +
 			NEPX*px*(MaxPY-py) +

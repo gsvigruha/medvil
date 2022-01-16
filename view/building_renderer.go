@@ -7,20 +7,20 @@ import (
 	"math"
 	"medvil/controller"
 	"medvil/model/building"
-	"medvil/model/time"
+	"medvil/renderer"
 )
 
 const BuildingUnitHeight = 3
 
-func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf RenderedField, k int, c *time.CalendarType) {
-	startI := 2 + controller.Perspective
+func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf renderer.RenderedField, k int, c *controller.Controller) {
+	startI := 2 + c.Perspective
 	for i := uint8(startI); i < 4+startI; i++ {
 		wall := unit.Walls[i%4]
 		if wall == nil {
 			continue
 		}
-		rfIdx1 := (3 - (-controller.Perspective + i)) % 4
-		rfIdx2 := (2 - (-controller.Perspective + i)) % 4
+		rfIdx1 := (3 - (-c.Perspective + i)) % 4
+		rfIdx2 := (2 - (-c.Perspective + i)) % 4
 		if rfIdx1 == 0 || rfIdx1 == 1 {
 			continue
 		}
@@ -89,7 +89,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit building.BuildingUnit, rf Render
 	}
 }
 
-func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf RenderedField, k int, c *time.CalendarType) {
+func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.RenderedField, k int, c *controller.Controller) {
 	if roof == nil {
 		return
 	}
@@ -97,10 +97,10 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf RenderedF
 	if !roof.Roof.Flat {
 		midX := (rf.X[0] + rf.X[2]) / 2
 		midY := (rf.Y[0] + rf.Y[2]) / 2
-		startL := 2 + controller.Perspective
+		startL := 2 + c.Perspective
 		for l := uint8(startL); l < 4+startL; l++ {
-			rfIdx1 := (3 - (-controller.Perspective + l)) % 4
-			rfIdx2 := (2 - (-controller.Perspective + l)) % 4
+			rfIdx1 := (3 - (-c.Perspective + l)) % 4
+			rfIdx2 := (2 - (-c.Perspective + l)) % 4
 			if roof.Elevated[l%4] {
 				var suffix = ""
 				if rfIdx1%2 == 0 {

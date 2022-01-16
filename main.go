@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	controller.Link(wnd.Window)
+	c := controller.Link(wnd.Window)
 
 	m := maps.LoadMap("samples/map/coast_1")
 
@@ -35,7 +35,7 @@ func main() {
 		cv.SetFillStyle("#000")
 		cv.FillRect(0, 0, w, h)
 		start := time.Now()
-		view.Render(cv, m, controller.Calendar)
+		view.Render(cv, m, c)
 		elapsed := time.Since(start)
 		/*
 			if elapsed.Nanoseconds() < 50000000 {
@@ -44,11 +44,11 @@ func main() {
 		*/
 		if 0 == 1 {
 			log.Printf("Rendering took %s", elapsed)
-			log.Printf("%s", controller.Calendar)
+			log.Printf("%s", c.Calendar)
 		}
 		for i := 1; i < 10; i++ {
-			controller.Calendar.Tick()
-			m.ElapseTime(controller.Calendar)
+			c.Calendar.Tick()
+			m.ElapseTime(c.Calendar)
 		}
 	})
 }
