@@ -16,13 +16,14 @@ const ArtifactsGUIY = 200
 const TaskGUIY = 300
 
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
-	p.Clear()
 	p.AddTextLabel("money "+strconv.Itoa(int(h.Money)), 10, 50)
 	for i, person := range h.People {
 		PersonToControlPanel(p, i, person)
 	}
-	for i, a := range h.Artifacts {
-		ArtifactsToControlPanel(p, i, a)
+	var aI = 0
+	for a, q := range h.Resources.Artifacts {
+		ArtifactsToControlPanel(p, aI, a, q)
+		aI++
 	}
 	for i, task := range h.Tasks {
 		TaskToControlPanel(p, i%IconRowMax, float64(TaskGUIY+i/IconRowMax*IconH), task)
@@ -37,9 +38,9 @@ func PersonToControlPanel(p *gui.Panel, i int, person *social.Person) {
 	}
 }
 
-func ArtifactsToControlPanel(p *gui.Panel, i int, a artifacts.Artifacts) {
-	p.AddImageLabel("artifacts/"+a.A.Name, float64(10+i*IconW), ArtifactsGUIY, 32, 32, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(a.Quantity)), float64(10+i*IconW), ArtifactsGUIY+IconH)
+func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16) {
+	p.AddImageLabel("artifacts/"+a.Name, float64(10+i*IconW), ArtifactsGUIY, 32, 32, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+i*IconW), ArtifactsGUIY+IconH)
 }
 
 func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task) {

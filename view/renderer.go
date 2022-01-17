@@ -108,6 +108,9 @@ func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 			if m.Fields[pi][pj].Travellers != nil {
 				RenderTravellers(cv, m.Fields[pi][pj].Travellers, rf, c)
 			}
+			if !m.Fields[pi][pj].Terrain.Resources.IsEmpty() {
+				cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+44, rf.Y[2]-64, 32, 32)
+			}
 			c.AddRenderedField(&rf)
 		}
 	}

@@ -72,6 +72,11 @@ func (t *Traveller) Move(l Location, m IMap) {
 		t.MoveDown(m)
 		t.Direction = DirectionS
 	}
+	t.IncPhase()
+}
+
+func (t *Traveller) ResetPhase() {
+	t.Phase = 0
 }
 
 func (t *Traveller) IncPhase() {

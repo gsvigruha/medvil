@@ -62,6 +62,7 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			if rbu.Contains(c.X, c.Y) {
 				c.SelectedHousehold = c.ReverseReferences.BuildingToHousehold[rbu.Unit.B]
 				c.SelectedField = nil
+				SetupControlPanel(c.ControlPanel, c)
 				HouseholdToControlPanel(c.ControlPanel, c.SelectedHousehold)
 				return
 			}
@@ -71,6 +72,8 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			if rf.Contains(c.X, c.Y) {
 				c.SelectedField = rf.F
 				c.SelectedHousehold = nil
+				SetupControlPanel(c.ControlPanel, c)
+				FieldToControlPanel(c.ControlPanel, c.SelectedField)
 				return
 			}
 		}

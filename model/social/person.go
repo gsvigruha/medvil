@@ -25,12 +25,14 @@ type Person struct {
 func (p *Person) ElapseTime(Calendar *time.CalendarType, Map navigation.IMap) {
 	if p.Task != nil {
 		if p.Traveller.FX == p.Task.Location().X && p.Traveller.FY == p.Task.Location().Y {
+			p.Traveller.ResetPhase()
 			if p.Task.Complete(Calendar) {
 				p.Task = nil
 			}
 		} else {
 			if p.IsHome {
 				p.IsHome = false
+				p.Traveller.ResetPhase()
 				b := p.Household.Building
 				Map.GetField(b.X, b.Y).RegisterTraveller(p.Traveller)
 			} else {
@@ -52,9 +54,6 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, Map navigation.IMap) {
 		if p.Water > 0 {
 			p.Water--
 		}
-	}
-	if p.Traveller != nil {
-		p.Traveller.IncPhase()
 	}
 }
 

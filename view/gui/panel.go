@@ -49,3 +49,8 @@ func (p *Panel) AddImageLabel(icon string, x, y, sx, sy float64, style uint8) {
 func (p *Panel) AddScaleLabel(icon string, x, y, sx, sy, scaleW, scale float64) {
 	p.Labels = append(p.Labels, &ScaleLabel{Icon: icon, X: x, Y: y, SX: sx, SY: sy, ScaleW: scaleW, Scale: scale})
 }
+
+func (p *Panel) AddTextureLabel(texture string, x, y, sx, sy float64) {
+	p.Labels = append(p.Labels, &TextureLabel{Texture: texture, X: x, Y: y, SX: sx, SY: sy})
+}
+

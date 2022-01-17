@@ -21,5 +21,5 @@ var Rock = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: fal
 
 type Terrain struct {
 	T         TerrainType
-	Artifacts []artifacts.Artifacts
+	Resources artifacts.Resources
 }

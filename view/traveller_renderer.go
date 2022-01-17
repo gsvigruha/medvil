@@ -95,7 +95,7 @@ func DrawRightArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.
 
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
 	m := animation.PersonMotionWalk
-	p := (t.Phase / 4) % 8
+	p := (t.Phase / 2) % 8
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
 
