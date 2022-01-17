@@ -1,11 +1,12 @@
 package view
 
 import (
+	//"fmt"
 	"github.com/tfriedel6/canvas"
+	"math"
 	"medvil/controller"
 	"medvil/model/navigation"
 	"medvil/renderer"
-	"math"
 	"medvil/view/animation"
 )
 
@@ -33,42 +34,81 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf 
 			SWPY*(MaxPX-px)*py +
 			NEPY*px*(MaxPY-py) +
 			SEPY*px*py) / (MaxPX * MaxPY)
-		DrawPerson(cv, t, x, y, c)
+		DrawPerson(cv, t, x, y-5, c)
 	}
 }
 
-func DrawLimb(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, cx1, cy1, cz1, w1, cx2, cy2, cz2, w2 float64) {
+func DrawLimb(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, w1, w2 float64, c1, c2 [3]float64) {
 	cv.BeginPath()
-	pcx1 := x + cx1 * pm.XX + cy1 * pm.XY + cz1 * pm.XZ
-	pcy1 := y + cx1 * pm.YX + cy1 * pm.YY + cz1 * pm.YZ
-	pcx2 := x + cx2 * pm.XX + cy2 * pm.XY + cz2 * pm.XZ
-	pcy2 := y + cx2 * pm.YX + cy2 * pm.YY + cz2 * pm.YZ
-	cv.LineTo(pcx1 - w1, pcy1)
-	cv.LineTo(pcx1 + w1, pcy1)
-	cv.LineTo(pcx2 + w2, pcy2)
-	cv.LineTo(pcx2 - w2, pcy2)
+	pcx1 := x + c1[0]*pm.XX + c1[1]*pm.XY + c1[2]*pm.XZ
+	pcy1 := y + c1[0]*pm.YX + c1[1]*pm.YY + c1[2]*pm.YZ
+	pcx2 := x + c2[0]*pm.XX + c2[1]*pm.XY + c2[2]*pm.XZ
+	pcy2 := y + c2[0]*pm.YX + c2[1]*pm.YY + c2[2]*pm.YZ
+	a := math.Tanh((pcy2-pcy1)/(pcx2-pcx1)) + math.Pi/2
+	dx1 := w1 * math.Cos(a)
+	dy1 := w1 * math.Sin(a)
+	dx2 := w2 * math.Cos(a)
+	dy2 := w2 * math.Sin(a)
+	cv.LineTo(pcx1-dx1, pcy1-dy1)
+	cv.LineTo(pcx1+dx1, pcy1+dy1)
+	cv.LineTo(pcx2+dx2, pcy2+dy2)
+	cv.LineTo(pcx2-dx2, pcy2-dy2)
 	cv.ClosePath()
 	cv.Fill()
+}
+
+func DrawLeftArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
+	// Arm
+	cv.SetFillStyle("#762")
+	// LeftElbow
+	DrawLimb(cv, pm, x, y, 1, 2, m.LeftShoulder, m.LeftElbow[p])
+	// LeftHand
+	DrawLimb(cv, pm, x, y, 2, 1, m.LeftElbow[p], m.LeftHand[p])
+}
+
+func DrawLeftLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
+	// Legs
+	cv.SetFillStyle("#420")
+	// LeftKnee
+	DrawLimb(cv, pm, x, y, 3, 2, m.LeftHip, m.LeftKnee[p])
+	// LeftFoot
+	DrawLimb(cv, pm, x, y, 2, 2, m.LeftKnee[p], m.LeftFoot[p])
+}
+
+func DrawRightLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
+	// Legs
+	cv.SetFillStyle("#420")
+	// RightKnee
+	DrawLimb(cv, pm, x, y, 3, 2, m.RightHip, m.RightKnee[p])
+	// LeftFoot
+	DrawLimb(cv, pm, x, y, 2, 2, m.RightKnee[p], m.RightFoot[p])
+}
+
+func DrawRightArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
+	// Arm
+	cv.SetFillStyle("#762")
+	// RightElbow
+	DrawLimb(cv, pm, x, y, 1, 2, m.RightShoulder, m.RightElbow[p])
+	// LeftHand
+	DrawLimb(cv, pm, x, y, 2, 1, m.RightElbow[p], m.RightHand[p])
 }
 
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
 	m := animation.PersonMotionWalk
 	p := (t.Phase / 4) % 8
-	var pm = animation.ProjectionMatrixNE
-	switch c.Perspective {
-	case controller.PerspectiveNE:
-		pm = animation.ProjectionMatrixNE
+	dirIdx := (c.Perspective - t.Direction) % 4
+	pm := animation.ProjectionMatrices[dirIdx]
+
+	if dirIdx >= 2 {
+		DrawLeftArm(cv, pm, m, x, y, p)
+		DrawLeftLeg(cv, pm, m, x, y, p)
+	} else {
+		DrawRightArm(cv, pm, m, x, y, p)
+		DrawRightLeg(cv, pm, m, x, y, p)
 	}
 
-	// Arm
-	cv.SetFillStyle("#974")
-	// LeftElbow
-	DrawLimb(cv, pm, x, y, 0, -24, -4, 2, m.LeftElbow[p][0], -18+m.LeftElbow[p][1], -4, 2)
-	// LeftHand
-	DrawLimb(cv, pm, x, y, m.LeftElbow[p][0], -18+m.LeftElbow[p][1], -4, 2, m.LeftKnee[p][0], -12+m.LeftKnee[p][1], -4, 2)
-
 	// Body
-	cv.SetFillStyle("#A84")
+	cv.SetFillStyle("#BA6")
 	cv.FillRect(x-2, y-28, 4, 3)
 	cv.FillRect(x-4, y-25, 8, 10)
 	cv.SetFillStyle("#840")
@@ -77,22 +117,12 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	cv.Arc(x, y-30, 3, 0, math.Pi*2, false)
 	cv.ClosePath()
 	cv.Fill()
-	// Legs
-	cv.SetFillStyle("#420")
-	// LeftKnee
-	DrawLimb(cv, pm, x, y, 0, -15, -3, 3, m.LeftKnee[p][0], -8+m.LeftKnee[p][1], -3, 2)
-	// LeftFoot
-	DrawLimb(cv, pm, x, y, m.LeftKnee[p][0], -8+m.LeftKnee[p][1], -3, 2, m.LeftFoot[p][0], m.LeftFoot[p][1], -3, 2)
 
-	// RightKnee
-	DrawLimb(cv, pm, x, y, 0, -15, 3, 3, m.RightKnee[p][0], -8+m.RightKnee[p][1], 3, 2)
-	// RightFoot
-	DrawLimb(cv, pm, x, y, m.RightKnee[p][0], -8+m.RightKnee[p][1], 3, 2, m.RightFoot[p][0], m.RightFoot[p][1], 3, 2)
-
-	// Arm
-	cv.SetFillStyle("#974")
-	// RightElbow
-	DrawLimb(cv, pm, x, y, 0, -24, 4, 2, m.RightElbow[p][0], -18+m.RightElbow[p][1], 4, 2)
-	// RightHand
-	DrawLimb(cv, pm, x, y, m.RightElbow[p][0], -18+m.RightElbow[p][1], 4, 2, m.RightKnee[p][0], -12+m.RightKnee[p][1], 4, 2)
+	if dirIdx >= 2 {
+		DrawRightLeg(cv, pm, m, x, y, p)
+		DrawRightArm(cv, pm, m, x, y, p)
+	} else {
+		DrawLeftLeg(cv, pm, m, x, y, p)
+		DrawLeftArm(cv, pm, m, x, y, p)
+	}
 }

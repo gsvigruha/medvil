@@ -5,10 +5,10 @@ import (
 	"log"
 	"time"
 
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"medvil/controller"
 	"medvil/maps"
 	"medvil/view"
-	"github.com/go-gl/glfw/v3.3/glfw"
 
 	//"github.com/pkg/profile"
 	"github.com/tfriedel6/canvas/glfwcanvas"
@@ -24,7 +24,7 @@ func main() {
 		panic("failed to initialize glfw")
 	}
 	defer glfw.Terminate()
-	glfw.WindowHint(glfw.Samples, 2) 
+	glfw.WindowHint(glfw.Samples, 2)
 	wnd, cv, err := glfwcanvas.CreateWindow(1280, 720, "Medvil")
 	if err != nil {
 		panic(err)

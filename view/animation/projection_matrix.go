@@ -9,38 +9,37 @@ type ProjectionMatrix struct {
 	YZ float64
 }
 
-var ProjectionMatrixNE = ProjectionMatrix{
-	XX: -0.2,
-	XY: 0.0,
-	XZ: -0.8,
-	YX: 0.1,
-	YY: 1.0,
-	YZ: 0.1,
-}
-
-var ProjectionMatrixSE = ProjectionMatrix{
-	XX: -0.2,
-	XY: 0.0,
-	XZ: -0.8,
-	YX: 0.1,
-	YY: 1.0,
-	YZ: 0.1,
-}
-
-var ProjectionMatrixSW = ProjectionMatrix{
-	XX: 0.2,
-	XY: 0.0,
-	XZ: 0.8,
-	YX: -0.1,
-	YY: 1.0,
-	YZ: -0.1,
-}
-
-var ProjectionMatrixNW = ProjectionMatrix{
-	XX: 0.2,
-	XY: 0.0,
-	XZ: 0.8,
-	YX: -0.1,
-	YY: 1.0,
-	YZ: -0.1,
+var ProjectionMatrices = [4]ProjectionMatrix{
+	ProjectionMatrix{
+		XX: 0.83,
+		XY: 0.0,
+		XZ: 0.83,
+		YX: 0.55,
+		YY: 1.0,
+		YZ: -0.55,
+	},
+	ProjectionMatrix{
+		XX: 0.83,
+		XY: 0.0,
+		XZ: -0.83,
+		YX: -0.55,
+		YY: 1.0,
+		YZ: -0.55,
+	},
+	ProjectionMatrix{
+		XX: -0.83,
+		XY: 0.0,
+		XZ: -0.83,
+		YX: -0.55,
+		YY: 1.0,
+		YZ: 0.55,
+	},
+	ProjectionMatrix{
+		XX: -0.83,
+		XY: 0.0,
+		XZ: 0.83,
+		YX: 0.55,
+		YY: 1.0,
+		YZ: 0.55,
+	},
 }

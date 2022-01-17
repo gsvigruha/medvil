@@ -1,18 +1,17 @@
 package navigation
 
-
 const MaxPX = 100
 const MaxPY = 100
 
 type Traveller struct {
-	FX uint16
-	FY uint16
-	FZ uint8
-	PX uint8
-	PY uint8
+	FX        uint16
+	FY        uint16
+	FZ        uint8
+	PX        uint8
+	PY        uint8
 	Direction uint8
-	Motion uint8
-	Phase uint8
+	Motion    uint8
+	Phase     uint8
 }
 
 func (t *Traveller) MoveLeft(m IMap) {
