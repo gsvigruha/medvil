@@ -1,5 +1,6 @@
 package navigation
 
+
 const MaxPX = 100
 const MaxPY = 100
 
@@ -9,6 +10,9 @@ type Traveller struct {
 	FZ uint8
 	PX uint8
 	PY uint8
+	Direction uint8
+	Motion uint8
+	Phase uint8
 }
 
 func (t *Traveller) MoveLeft(m IMap) {
@@ -58,11 +62,22 @@ func (t *Traveller) MoveDown(m IMap) {
 func (t *Traveller) Move(l Location, m IMap) {
 	if t.FX > l.X {
 		t.MoveLeft(m)
+		t.Direction = DirectionW
 	} else if t.FX < l.X {
 		t.MoveRight(m)
+		t.Direction = DirectionE
 	} else if t.FY > l.Y {
 		t.MoveUp(m)
+		t.Direction = DirectionN
 	} else if t.FY < l.Y {
 		t.MoveDown(m)
+		t.Direction = DirectionS
+	}
+}
+
+func (t *Traveller) IncPhase() {
+	t.Phase++
+	if t.Phase >= 128 {
+		t.Phase = 0
 	}
 }

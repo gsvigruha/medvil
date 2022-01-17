@@ -8,6 +8,7 @@ import (
 	"medvil/controller"
 	"medvil/maps"
 	"medvil/view"
+	"github.com/go-gl/glfw/v3.3/glfw"
 
 	//"github.com/pkg/profile"
 	"github.com/tfriedel6/canvas/glfwcanvas"
@@ -19,6 +20,11 @@ const (
 )
 
 func main() {
+	if err := glfw.Init(); err != nil {
+		panic("failed to initialize glfw")
+	}
+	defer glfw.Terminate()
+	glfw.WindowHint(glfw.Samples, 2) 
 	wnd, cv, err := glfwcanvas.CreateWindow(1280, 720, "Medvil")
 	if err != nil {
 		panic(err)
@@ -47,7 +53,7 @@ func main() {
 			log.Printf("Rendering took %s", elapsed)
 			log.Printf("%s", c.Calendar)
 		}
-		for i := 1; i < 10; i++ {
+		for i := 1; i < 2; i++ {
 			c.Calendar.Tick()
 			m.ElapseTime(c.Calendar)
 		}

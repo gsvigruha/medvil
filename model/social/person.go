@@ -53,6 +53,9 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, Map navigation.IMap) {
 			p.Water--
 		}
 	}
+	if p.Traveller != nil {
+		p.Traveller.IncPhase()
+	}
 }
 
 func (p *Person) Eat() {

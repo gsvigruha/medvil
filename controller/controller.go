@@ -90,7 +90,7 @@ func Link(wnd *glfw.Window) *Controller {
 	Calendar := &time.CalendarType{
 		Year:  1000,
 		Month: 2,
-		Day:   1,
+		Day:   28,
 		Hour:  0,
 	}
 	controlPanel := &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: float64(H)}
