@@ -6,6 +6,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/terrain"
 	"medvil/model/time"
+	"medvil/model/artifacts"
 	//"fmt"
 )
 
@@ -14,6 +15,10 @@ type FarmLand struct {
 	Y       uint16
 	UseType uint8
 	F       *navigation.Field
+}
+
+func (f FarmLand) ToLocation() navigation.Location {
+	return navigation.Location{X: f.X, Y: f.Y, F: f.F}
 }
 
 type Farm struct {
@@ -42,7 +47,27 @@ func (f *Farm) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (f *Farm) ElapseTime(Calendar *time.CalendarType) {
+func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
+	home := navigation.Location{X: f.Household.Building.X, Y: f.Household.Building.Y, F: m.GetField(f.Household.Building.X, f.Household.Building.Y)}
+	var a *artifacts.Artifact = nil
+	if l.UseType == economy.FarmFieldUseTypeVegetables {
+		a = artifacts.GetArtifact("vegetable")
+	} else if l.UseType == economy.FarmFieldUseTypeWheat {
+		a = artifacts.GetArtifact("grain")
+	}
+	if a != nil {
+		f.Household.AddTask(&economy.TransportTask{
+			PickupL:  l.ToLocation(),
+			DropoffL: home,
+			PickupR:  &l.F.Terrain.Resources,
+			DropoffR: &f.Household.Resources,
+			A:        a,
+			Quantity: 10,
+		})
+	}
+}
+
+func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	f.Household.ElapseTime(Calendar)
 	if economy.ArgicultureCycleStartTime.Matches(Calendar) {
 		for i := range f.Land {
@@ -52,13 +77,16 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType) {
 				if l.F.Terrain.T == terrain.Dirt {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskSowing, L: location, UseType: l.UseType})
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, L: location, UseType: l.UseType})
+					f.AddTransportTask(l, m)
 				} else if l.F.Terrain.T == terrain.Grass {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPloughing, L: location, UseType: l.UseType})
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskSowing, L: location, UseType: l.UseType})
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, L: location, UseType: l.UseType})
+					f.AddTransportTask(l, m)
 				}
 			} else if l.UseType == economy.FarmFieldUseTypeOrchard && l.F.Plant != nil && l.F.Plant.T.TreeT == &terrain.Apple {
 				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, L: location, UseType: l.UseType})
+				f.AddTransportTask(l, m)
 			}
 		}
 	}

@@ -65,15 +65,14 @@ func (l *ScaleLabel) Render(cv *canvas.Canvas) {
 }
 
 type TextureLabel struct {
-	X     float64
-	Y     float64
-	SX    float64
-	SY    float64
-	Texture  string
+	X       float64
+	Y       float64
+	SX      float64
+	SY      float64
+	Texture string
 }
 
 func (l *TextureLabel) Render(cv *canvas.Canvas) {
-	cv.SetFillStyle("texture/"+l.Texture+".png")
+	cv.SetFillStyle("texture/" + l.Texture + ".png")
 	cv.FillRect(l.X, l.Y, l.SX, l.SY)
 }
-

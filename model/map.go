@@ -25,7 +25,7 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 					person := farm.Household.People[l]
 					person.ElapseTime(Calendar, m)
 				}
-				farm.ElapseTime(Calendar)
+				farm.ElapseTime(Calendar, m)
 			}
 		}
 	}

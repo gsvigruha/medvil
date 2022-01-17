@@ -21,5 +21,36 @@ func (r *Resources) Add(a *Artifact, q uint16) {
 }
 
 func (r *Resources) IsEmpty() bool {
-	return len(r.Artifacts) == 0
+	for _, q := range r.Artifacts {
+		if q > 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func (r *Resources) Get(a *Artifact) uint16 {
+	if r.Artifacts == nil {
+		r.Artifacts = make(map[*Artifact]uint16)
+	}
+	if q, ok := r.Artifacts[a]; ok {
+		return q
+	}
+	return 0
+}
+
+func (r *Resources) Remove(a *Artifact, q uint16) uint16 {
+	if r.Artifacts == nil {
+		r.Artifacts = make(map[*Artifact]uint16)
+	}
+	if e, ok := r.Artifacts[a]; ok {
+		if e >= q {
+			r.Artifacts[a] = e - q
+			return q
+		} else {
+			r.Artifacts[a] = 0
+			return q - e
+		}
+	}
+	return 0
 }
