@@ -79,37 +79,9 @@ func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)},
 				F: &f,
 			}
-			rf.Draw(cv)
-			cv.Fill()
-			cv.Stroke()
-
-			if (f.SE + f.SW) > (f.NE + f.NW) {
-				slope := (f.SE + f.SW) - (f.NE + f.NW)
-				cv.SetFillStyle(color.RGBA{R: 255, G: 255, B: 255, A: slope * 4})
-				rf.Draw(cv)
-				cv.Fill()
-			} else if (f.SE + f.SW) < (f.NE + f.NW) {
-				slope := (f.NE + f.NW) - (f.SE + f.SW)
-				cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: slope * 16})
-				rf.Draw(cv)
-				cv.Fill()
-			}
-
-			units := m.Fields[pi][pj].Building.BuildingUnits
-			for k := 0; k < len(units); k++ {
-				rbu := RenderBuildingUnit(cv, &units[k], rf, k, c)
-				c.AddRenderedBuildingUnit(&rbu)
-			}
-			roof := m.Fields[pi][pj].Building.RoofUnit
-			RenderBuildingRoof(cv, roof, rf, len(units), c)
-			if m.Fields[pi][pj].Plant != nil {
-				RenderPlant(cv, m.Fields[pi][pj].Plant, rf, c)
-			}
+			RenderField(cv, rf, pi, pj, t, l, b, r, m, &f, c)
 			if m.Fields[pi][pj].Travellers != nil {
 				RenderTravellers(cv, m.Fields[pi][pj].Travellers, rf, c)
-			}
-			if !m.Fields[pi][pj].Terrain.Resources.IsEmpty() {
-				cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+44, rf.Y[2]-64, 32, 32)
 			}
 			c.AddRenderedField(&rf)
 		}
