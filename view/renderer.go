@@ -17,7 +17,7 @@ const (
 	ViewSY uint8   = 10
 )
 
-func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
+func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 	c.ResetRenderedObjects()
 	w := float64(cv.Width())
 	h := float64(cv.Height())
@@ -79,7 +79,7 @@ func Render(cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)},
 				F: &f,
 			}
-			RenderField(cv, rf, pi, pj, t, l, b, r, m, &f, c)
+			RenderField(ic, cv, rf, pi, pj, t, l, b, r, m, &f, c)
 			if m.Fields[pi][pj].Travellers != nil {
 				RenderTravellers(cv, m.Fields[pi][pj].Travellers, rf, c)
 			}

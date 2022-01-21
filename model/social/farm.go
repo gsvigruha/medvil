@@ -2,11 +2,11 @@ package social
 
 import (
 	"encoding/json"
+	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/terrain"
 	"medvil/model/time"
-	"medvil/model/artifacts"
 	//"fmt"
 )
 
