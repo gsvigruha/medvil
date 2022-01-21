@@ -43,7 +43,7 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, p
 		//RenderPlant(cv, m.Fields[pi][pj].Plant, rf, c)
 		tx := rf.X[0] - DX
 		ty := rf.Y[2] - 200
-		img := RenderPlantOnBuffer(ic, m.Fields[pi][pj].Plant, rf.Move(-tx, -ty), c)
+		img := ic.RenderPlantOnBuffer(m.Fields[pi][pj].Plant, rf.Move(-tx, -ty), c)
 		cv.DrawImage(img, tx, ty, 120, 300)
 	}
 	if !m.Fields[pi][pj].Terrain.Resources.IsEmpty() {

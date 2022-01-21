@@ -37,6 +37,7 @@ func main() {
 			    time.Sleep(30000000 * time.Nanosecond)
 			}
 		*/
+		ic.Clean()
 		if 0 == 0 {
 			log.Printf("Rendering took %s", elapsed)
 			log.Printf("%s", c.Calendar)
