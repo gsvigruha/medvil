@@ -3,15 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
-
-	"github.com/go-gl/glfw/v3.3/glfw"
 	"medvil/controller"
 	"medvil/maps"
 	"medvil/view"
-
-	//"github.com/pkg/profile"
-	"github.com/tfriedel6/canvas/glfwcanvas"
+	"time"
 )
 
 const (
@@ -20,15 +15,8 @@ const (
 )
 
 func main() {
-	if err := glfw.Init(); err != nil {
-		panic("failed to initialize glfw")
-	}
-	defer glfw.Terminate()
-	glfw.WindowHint(glfw.Samples, 2)
-	wnd, cv, err := glfwcanvas.CreateWindow(1280, 720, "Medvil")
-	if err != nil {
-		panic(err)
-	}
+	wnd, cv, ctx, _ := view.CreateWindow(1280, 720, "Medvil")
+	ic := view.NewImageCache(ctx)
 
 	c := controller.Link(wnd.Window)
 
@@ -42,15 +30,16 @@ func main() {
 		cv.FillRect(0, 0, w, h)
 		start := time.Now()
 		c.UpdateReverseReferences(m.ReverseReferences())
-		view.Render(cv, m, c)
+		view.Render(ic, cv, m, c)
 		elapsed := time.Since(start)
 		/*
 			if elapsed.Nanoseconds() < 50000000 {
 			    time.Sleep(30000000 * time.Nanosecond)
 			}
 		*/
-		if 0 == 1 {
-			log.Printf("Rendering took %s", elapsed)
+		ic.Clean()
+		if 0 == 0 {
+			log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
 			log.Printf("%s", c.Calendar)
 		}
 		for i := 1; i < 2; i++ {
