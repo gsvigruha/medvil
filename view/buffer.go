@@ -30,7 +30,7 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 func (ic *ImageCache) Clean() {
 	t := time.Now().UnixNano()
 	for k, v := range ic.entries {
-		if t - v.createdTime > 1000000000 {
+		if t - v.createdTime > 1000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.entries, k)
 		}
@@ -40,7 +40,7 @@ func (ic *ImageCache) Clean() {
 func (ic *ImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[p]; ok {
-		if t - ce.createdTime > 300000000 {
+		if t - ce.createdTime > 300*1000*1000 {
 			ce.cv.ClearRect(0, 0, 120, 300)
 			RenderPlant(ce.cv, p, rf, c)
 			ce.createdTime = t

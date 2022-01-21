@@ -39,7 +39,7 @@ func main() {
 		*/
 		ic.Clean()
 		if 0 == 0 {
-			log.Printf("Rendering took %s", elapsed)
+			log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
 			log.Printf("%s", c.Calendar)
 		}
 		for i := 1; i < 2; i++ {
