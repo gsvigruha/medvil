@@ -1,30 +1,47 @@
 package view
 
 import (
+	//"fmt"
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/controller"
 	"medvil/model"
 	"medvil/renderer"
-	//"fmt"
 )
 
 const (
-	DX     float64 = 60.0
-	DY     float64 = 40.0
-	DZ     float64 = 15.0
-	ViewSX uint8   = 12
-	ViewSY uint8   = 10
+	DX      float64 = 60.0
+	DY      float64 = 40.0
+	DZ      float64 = 15.0
+	ViewSX  uint8   = 12
+	ViewSY  uint8   = 10
+	RadiusI int     = 20
 )
 
 func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 	c.ResetRenderedObjects()
 	w := float64(cv.Width())
 	h := float64(cv.Height())
-	for i := uint16(0); i < m.SX; i++ {
-		for j := uint16(0); j < m.SY; j++ {
-			var pi = i
-			var pj = j
+	li := int(c.CenterX) - RadiusI
+	hi := int(c.CenterX) + RadiusI
+	lj := int(c.CenterY) - RadiusI
+	hj := int(c.CenterY) + RadiusI
+	for i := 0; i < hi-li; i++ {
+		for j := 0; j < hj-lj; j++ {
+			var pi, pj int
+			switch c.Perspective {
+			case controller.PerspectiveNE:
+				pi, pj = i+li, hj-1-j
+			case controller.PerspectiveSE:
+				pi, pj = j+lj, i+li
+			case controller.PerspectiveSW:
+				pi, pj = hi-1-i, j+lj
+			case controller.PerspectiveNW:
+				pi, pj = hj-1-j, hi-1-i
+			}
+			if pi < 0 || pj < 0 || pi >= int(m.SX) || pj >= int(m.SY) {
+				continue
+			}
 			var f = m.Fields[pi][pj]
 			var t = uint8(0)
 			var r = uint8(0)
@@ -32,46 +49,35 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			var l = uint8(0)
 			switch c.Perspective {
 			case controller.PerspectiveNE:
-				pi = i
-				pj = m.SY - 1 - j
-				f = m.Fields[pi][pj]
 				t = f.SW
 				r = f.NW
 				b = f.NE
 				l = f.SE
 			case controller.PerspectiveSE:
-				pi = j
-				pj = i
-				f = m.Fields[pi][pj]
 				t = f.NW
 				r = f.NE
 				b = f.SE
 				l = f.SW
 			case controller.PerspectiveSW:
-				pi = m.SX - 1 - i
-				pj = j
-				f = m.Fields[pi][pj]
 				t = f.NE
 				r = f.SE
 				b = f.SW
 				l = f.NW
 			case controller.PerspectiveNW:
-				pi = m.SY - 1 - j
-				pj = m.SX - 1 - i
-				f = m.Fields[pi][pj]
 				t = f.SE
 				r = f.SW
 				b = f.NW
 				l = f.NE
 			}
-			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
-			cv.SetStrokeStyle(color.RGBA{R: 192, G: 192, B: 192, A: 24})
-			cv.SetLineWidth(2)
-			x := w/2 - float64(i)*DX + float64(j)*DX + float64(c.ScrollX)
-			y := float64(i)*DY + float64(j)*DY + float64(c.ScrollY)
+			x := w/2 - float64(i)*DX + float64(j)*DX
+			y := float64(i)*DY + float64(j)*DY - float64(RadiusI)*DY*2 + h/2
 			if x < c.ControlPanel.SX-DX || x > w+DX || y < -DY*2 || y > h+DY {
 				continue
 			}
+
+			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
+			cv.SetStrokeStyle(color.RGBA{R: 192, G: 192, B: 192, A: 24})
+			cv.SetLineWidth(2)
 
 			rf := renderer.RenderedField{
 				X: [4]float64{float64(x), float64(x - DX), float64(x), float64(x + DX)},
@@ -79,9 +85,9 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)},
 				F: &f,
 			}
-			RenderField(ic, cv, rf, pi, pj, t, l, b, r, m, &f, c)
-			if m.Fields[pi][pj].Travellers != nil {
-				RenderTravellers(cv, m.Fields[pi][pj].Travellers, rf, c)
+			RenderField(ic, cv, rf, t, l, b, r, m, &f, c)
+			if f.Travellers != nil {
+				RenderTravellers(cv, f.Travellers, rf, c)
 			}
 			c.AddRenderedField(&rf)
 		}

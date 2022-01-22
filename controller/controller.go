@@ -23,8 +23,8 @@ type Controller struct {
 	Y                     float64
 	W                     int
 	H                     int
-	ScrollX               int
-	ScrollY               int
+	CenterX               int
+	CenterY               int
 	Perspective           uint8
 	Calendar              *time.CalendarType
 	RenderedFields        []*renderer.RenderedField
@@ -35,22 +35,38 @@ type Controller struct {
 	ControlPanel          *gui.Panel
 }
 
+func (c *Controller) MoveCenter(dViewX, dViewY int) {
+	var dCenterX, dCenterY = 0, 0
+	switch c.Perspective {
+	case PerspectiveNE:
+		dCenterX, dCenterY = -dViewX+dViewY, -dViewX-dViewY
+	case PerspectiveSE:
+		dCenterX, dCenterY = -dViewX+dViewY, dViewX+dViewY
+	case PerspectiveSW:
+		dCenterX, dCenterY = dViewX-dViewY, dViewX+dViewY
+	case PerspectiveNW:
+		dCenterX, dCenterY = dViewX-dViewY, -dViewX-dViewY
+	}
+	c.CenterX += dCenterX
+	c.CenterY += dCenterY
+}
+
 func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, action glfw.Action, mod glfw.ModifierKey) {
 	if key == glfw.KeyEnter && action == glfw.Release {
 		c.Perspective = (c.Perspective + 1) % 4
 	}
 	if action == glfw.Press {
 		if key == glfw.KeyUp {
-			c.ScrollY -= 256
+			c.MoveCenter(0, -2)
 		}
 		if key == glfw.KeyDown {
-			c.ScrollY += 256
+			c.MoveCenter(0, 2)
 		}
 		if key == glfw.KeyLeft {
-			c.ScrollX -= 256
+			c.MoveCenter(-2, 0)
 		}
 		if key == glfw.KeyRight {
-			c.ScrollX += 256
+			c.MoveCenter(2, 0)
 		}
 	}
 }

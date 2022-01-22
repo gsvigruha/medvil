@@ -36,7 +36,7 @@ func MoveVector(v [4]float64, d float64) [4]float64 {
 	return r
 }
 
-func (rf RenderedField) Move(dx, dy float64) (RenderedField) {
+func (rf RenderedField) Move(dx, dy float64) RenderedField {
 	return RenderedField{
 		X: MoveVector(rf.X, dx),
 		Y: MoveVector(rf.Y, dy),
