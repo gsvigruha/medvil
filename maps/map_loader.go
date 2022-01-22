@@ -146,6 +146,9 @@ func LoadSociety(dir string, m *model.Map) {
 					farm.Land[l].F = &m.Fields[land.X][land.Y]
 				}
 				farm.Household.People = []*social.Person{farm.Household.NewPerson(), farm.Household.NewPerson()}
+				for _, p := range farm.Household.People {
+					m.GetField(farm.Household.Building.X, farm.Household.Building.Y).RegisterTraveller(p.Traveller)
+				}
 			}
 		}
 	}

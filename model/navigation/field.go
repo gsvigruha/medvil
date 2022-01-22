@@ -18,6 +18,9 @@ type Field struct {
 }
 
 func (f Field) Walkable() bool {
+	if !f.Building.Empty() {
+		return false
+	}
 	return f.Terrain.T.Walkable && ((f.NE == f.NW && f.SE == f.SW) || (f.NE == f.SE && f.NW == f.SW))
 }
 

@@ -38,7 +38,7 @@ func main() {
 			}
 		*/
 		ic.Clean()
-		if 0 == 0 {
+		if 0 == 1 {
 			log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
 			log.Printf("%s", c.Calendar)
 		}

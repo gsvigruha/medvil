@@ -1,7 +1,6 @@
 package model
 
 import (
-	//"math/rand"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/model/time"
@@ -49,4 +48,15 @@ func (m *Map) GetField(x uint16, y uint16) *navigation.Field {
 func (m *Map) ReverseReferences() *ReverseReferences {
 	rr := BuildReverseReferences(m)
 	return &rr
+}
+
+func (m *Map) ShortPath(sx, sy, ex, ey uint16, travellerType uint8) *navigation.Path {
+	if sx == ex && sy == ey {
+		return nil
+	}
+	p := FindShortPathBFS(m, sx, sy, ex, ey, travellerType)
+	if p != nil {
+		return &navigation.Path{L: p[1:]}
+	}
+	return nil
 }
