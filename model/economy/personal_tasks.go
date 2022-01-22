@@ -8,6 +8,7 @@ import (
 type Person interface {
 	Eat()
 	Drink()
+	SetHome()
 }
 
 type EatTask struct {
@@ -16,6 +17,11 @@ type EatTask struct {
 }
 
 type DrinkTask struct {
+	L navigation.Location
+	P Person
+}
+
+type GoHomeTask struct {
 	L navigation.Location
 	P Person
 }
@@ -52,4 +58,21 @@ func (t *DrinkTask) Blocked() bool {
 
 func (t *DrinkTask) Name() string {
 	return "drink"
+}
+
+func (t *GoHomeTask) Location() navigation.Location {
+	return t.L
+}
+
+func (t *GoHomeTask) Complete(Calendar *time.CalendarType) bool {
+	t.P.SetHome()
+	return true
+}
+
+func (t *GoHomeTask) Blocked() bool {
+	return false
+}
+
+func (t *GoHomeTask) Name() string {
+	return "gohome"
 }

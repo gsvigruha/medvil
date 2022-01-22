@@ -16,3 +16,7 @@ type FieldBuildingObjects struct {
 	BuildingUnits []building.BuildingUnit
 	RoofUnit      *building.RoofUnit
 }
+
+func (o FieldBuildingObjects) Empty() bool {
+	return o.RoofUnit == nil && len(o.BuildingUnits) == 0
+}

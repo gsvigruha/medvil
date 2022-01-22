@@ -3,6 +3,8 @@ package navigation
 const MaxPX = 100
 const MaxPY = 100
 
+const TravellerTypePedestrian uint8 = 0
+
 type Traveller struct {
 	FX        uint16
 	FY        uint16
@@ -12,6 +14,13 @@ type Traveller struct {
 	Direction uint8
 	Motion    uint8
 	Phase     uint8
+	Path      *Path
+}
+
+func (t *Traveller) consumePathElement() {
+	if t.Path != nil {
+		t.Path = t.Path.ConsumeElement()
+	}
 }
 
 func (t *Traveller) MoveLeft(m IMap) {
@@ -22,6 +31,7 @@ func (t *Traveller) MoveLeft(m IMap) {
 		t.PX = MaxPX
 		t.FX--
 		m.GetField(t.FX, t.FY).RegisterTraveller(t)
+		t.consumePathElement()
 	}
 }
 
@@ -33,6 +43,7 @@ func (t *Traveller) MoveRight(m IMap) {
 		t.PX = 0
 		t.FX++
 		m.GetField(t.FX, t.FY).RegisterTraveller(t)
+		t.consumePathElement()
 	}
 }
 
@@ -44,6 +55,7 @@ func (t *Traveller) MoveUp(m IMap) {
 		t.PY = MaxPY
 		t.FY--
 		m.GetField(t.FX, t.FY).RegisterTraveller(t)
+		t.consumePathElement()
 	}
 }
 
@@ -55,24 +67,28 @@ func (t *Traveller) MoveDown(m IMap) {
 		t.PY = 0
 		t.FY++
 		m.GetField(t.FX, t.FY).RegisterTraveller(t)
+		t.consumePathElement()
 	}
 }
 
-func (t *Traveller) Move(l Location, m IMap) {
-	if t.FX > l.X {
-		t.MoveLeft(m)
-		t.Direction = DirectionW
-	} else if t.FX < l.X {
-		t.MoveRight(m)
-		t.Direction = DirectionE
-	} else if t.FY > l.Y {
-		t.MoveUp(m)
-		t.Direction = DirectionN
-	} else if t.FY < l.Y {
-		t.MoveDown(m)
-		t.Direction = DirectionS
+func (t *Traveller) Move(m IMap) {
+	if t.Path != nil {
+		l := t.Path.L[0]
+		if t.FX > l.X {
+			t.MoveLeft(m)
+			t.Direction = DirectionW
+		} else if t.FX < l.X {
+			t.MoveRight(m)
+			t.Direction = DirectionE
+		} else if t.FY > l.Y {
+			t.MoveUp(m)
+			t.Direction = DirectionN
+		} else if t.FY < l.Y {
+			t.MoveDown(m)
+			t.Direction = DirectionS
+		}
+		t.IncPhase()
 	}
-	t.IncPhase()
 }
 
 func (t *Traveller) ResetPhase() {
