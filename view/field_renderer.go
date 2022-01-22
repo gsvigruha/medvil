@@ -10,7 +10,7 @@ import (
 	//"fmt"
 )
 
-func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, pi, pj uint16, t, l, b, r uint8, m model.Map, f *navigation.Field, c *controller.Controller) {
+func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t, l, b, r uint8, m model.Map, f *navigation.Field, c *controller.Controller) {
 
 	cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
 	cv.SetStrokeStyle(color.RGBA{R: 192, G: 192, B: 192, A: 24})
@@ -32,21 +32,21 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, p
 		cv.Fill()
 	}
 
-	units := m.Fields[pi][pj].Building.BuildingUnits
+	units := f.Building.BuildingUnits
 	for k := 0; k < len(units); k++ {
 		rbu := RenderBuildingUnit(cv, &units[k], rf, k, c)
 		c.AddRenderedBuildingUnit(&rbu)
 	}
-	roof := m.Fields[pi][pj].Building.RoofUnit
+	roof := f.Building.RoofUnit
 	RenderBuildingRoof(cv, roof, rf, len(units), c)
-	if m.Fields[pi][pj].Plant != nil {
-		//RenderPlant(cv, m.Fields[pi][pj].Plant, rf, c)
+	if f.Plant != nil {
+		//RenderPlant(cv, f.Plant, rf, c)
 		tx := rf.X[0] - DX
 		ty := rf.Y[2] - 200
-		img := ic.RenderPlantOnBuffer(m.Fields[pi][pj].Plant, rf.Move(-tx, -ty), c)
+		img := ic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
 		cv.DrawImage(img, tx, ty, 120, 300)
 	}
-	if !m.Fields[pi][pj].Terrain.Resources.IsEmpty() {
+	if !f.Terrain.Resources.IsEmpty() {
 		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+44, rf.Y[2]-64, 32, 32)
 	}
 }
