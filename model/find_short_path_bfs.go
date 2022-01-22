@@ -18,7 +18,7 @@ func FindShortPathBFS(m *Map, sx, sy, ex, ey uint16, travellerType uint8) []navi
 	for len(toVisit) > 0 {
 		e := toVisit[0]
 		toVisit = toVisit[1:]
-	
+
 		if e.L.X == ex && e.L.Y == ey {
 			path := make([]navigation.Location, e.d)
 			var eI = e

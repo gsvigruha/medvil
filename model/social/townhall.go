@@ -1,9 +1,14 @@
 package social
 
 import (
-	"medvil/model/building"
+	"medvil/model/navigation"
+	"medvil/model/time"
 )
 
 type Townhall struct {
-	Building *building.Building
+	Household Household
+}
+
+func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+	t.Household.ElapseTime(Calendar)
 }

@@ -15,6 +15,7 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 		country := m.Countries[i]
 		for j := range country.Towns {
 			town := country.Towns[j]
+			BuildingToHousehold[town.Townhall.Household.Building] = &town.Townhall.Household
 			for k := range town.Farms {
 				BuildingToHousehold[town.Farms[k].Household.Building] = &town.Farms[k].Household
 			}
