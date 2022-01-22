@@ -4,6 +4,8 @@ import (
 	"medvil/model/navigation"
 )
 
+const ShortPathMaxLength = 10
+
 type BFSElement struct {
 	L    navigation.Location
 	prev *BFSElement

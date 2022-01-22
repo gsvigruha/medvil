@@ -1,7 +1,7 @@
 package social
 
 import (
-	"fmt"
+	//"fmt"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -33,7 +33,6 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		} else {
 			if p.Traveller.Path == nil || p.Traveller.Path.LastLocation() != p.Task.Location() {
 				p.Traveller.Path = m.ShortPath(p.Traveller.FX, p.Traveller.FY, p.Task.Location().X, p.Task.Location().Y, navigation.TravellerTypePedestrian)
-				fmt.Println("Path set", p.Traveller.Path)
 			}
 			if p.IsHome {
 				// Start on path
