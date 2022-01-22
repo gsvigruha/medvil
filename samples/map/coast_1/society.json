@@ -3,7 +3,16 @@
     {
       "towns": [
         {
-          "townhall": null,
+          "townhall": {
+            "household": {
+              "building": {
+                "plan": "townhouse_1",
+                "x": 26,
+                "y": 26
+              },
+            "money": 100
+            }
+          }, 
           "marketplace": null,
           "farms": [
             {

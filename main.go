@@ -37,6 +37,7 @@ func main() {
 			    time.Sleep(30000000 * time.Nanosecond)
 			}
 		*/
+		c.Refresh()
 		ic.Clean()
 		if 0 == 1 {
 			log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())

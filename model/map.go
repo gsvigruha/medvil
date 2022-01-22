@@ -18,6 +18,11 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 		country := m.Countries[i]
 		for j := range country.Towns {
 			town := country.Towns[j]
+			for l := range town.Townhall.Household.People {
+				person := town.Townhall.Household.People[l]
+				person.ElapseTime(Calendar, m)
+			}
+			town.Townhall.ElapseTime(Calendar, m)
 			for k := range town.Farms {
 				farm := town.Farms[k]
 				for l := range farm.Household.People {

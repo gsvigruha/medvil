@@ -71,6 +71,18 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 	}
 }
 
+func (c *Controller) Refresh() {
+	if c.Calendar.Hour == 0 {
+		if c.SelectedField != nil {
+			SetupControlPanel(c.ControlPanel, c)
+			FieldToControlPanel(c.ControlPanel, c.SelectedField)
+		} else if c.SelectedHousehold != nil {
+			SetupControlPanel(c.ControlPanel, c)
+			HouseholdToControlPanel(c.ControlPanel, c.SelectedHousehold)
+		}
+	}
+}
+
 func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
 	if action == glfw.Press && button == glfw.MouseButton1 {
 		for i := range c.RenderedBuildingUnits {
