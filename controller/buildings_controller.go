@@ -8,6 +8,7 @@ import (
 	"medvil/view/gui"
 )
 
+const RoofPanelTop = 100
 const FloorsPanelTop = 200
 const BuildingBasePanelTop = 400
 
@@ -86,8 +87,38 @@ func (b FloorButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+type RoofButton struct {
+	b  gui.ButtonGUI
+	m  *materials.Material
+	bc *BuildingsController
+}
+
+func (b RoofButton) Click() {
+	b.bc.Plan.Roof.M = b.m
+}
+
+func (b RoofButton) Render(cv *canvas.Canvas) {
+	b.b.Render(cv)
+	if b.bc.Plan.Roof.M != b.m {
+		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 128})
+		cv.FillRect(b.b.X, b.b.Y, 32, 32)
+	}
+}
+
+func (b RoofButton) Contains(x float64, y float64) bool {
+	return b.b.Contains(x, y)
+}
+
 func BuildingsToControlPanel(p *gui.Panel, c *Controller) {
 	bc := BuildingsController{Plan: &building.BuildingPlan{}}
+
+	for i, m := range building.RoofMaterials {
+		p.AddButton(RoofButton{
+			b:  gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*40 + 10), Y: float64(RoofPanelTop), SX: 32, SY: 32},
+			m:  m,
+			bc: &bc,
+		})
+	}
 
 	for j := 0; j < building.MaxFloors; j++ {
 		for i, m := range building.FloorMaterials {
@@ -110,4 +141,6 @@ func BuildingsToControlPanel(p *gui.Panel, c *Controller) {
 			})
 		}
 	}
+
+	c.ActiveBuildingPlan = bc.Plan
 }

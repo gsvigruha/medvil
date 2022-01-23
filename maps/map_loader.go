@@ -99,6 +99,8 @@ func LoadFields(dir string, m *model.Map) {
 				m.Fields[i-1][j].NE = uint8(h)
 			}
 			m.Fields[i][j].NW = uint8(h)
+			m.Fields[i][j].X = i
+			m.Fields[i][j].Y = j
 		}
 	}
 

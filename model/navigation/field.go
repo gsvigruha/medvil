@@ -6,6 +6,9 @@ import (
 )
 
 type Field struct {
+	X uint16
+	Y uint16
+
 	NE uint8
 	SE uint8
 	SW uint8

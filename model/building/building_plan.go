@@ -20,6 +20,12 @@ var FloorMaterials = []*materials.Material{
 	materials.GetMaterial("wood"),
 	materials.GetMaterial("stone"),
 	materials.GetMaterial("brick"),
+	materials.GetMaterial("whitewash"),
+}
+
+var RoofMaterials = []*materials.Material{
+	materials.GetMaterial("hay"),
+	materials.GetMaterial("tile"),
 }
 
 type Floor struct {
