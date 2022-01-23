@@ -125,3 +125,17 @@ func BuildingPlanFromJSON(fileName string) BuildingPlan {
 	json.Unmarshal(byteValue, &plan)
 	return plan
 }
+
+func (b BuildingPlan) Empty() bool {
+	if len(b.Floors) == 0 {
+		return true
+	}
+	for i := 0; i < BuildingBaseMaxSize-1; i++ {
+		for j := 0; j < BuildingBaseMaxSize-1; j++ {
+			if b.BaseShape[i][j] {
+				return false
+			}
+		}
+	}
+	return true
+}

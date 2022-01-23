@@ -62,10 +62,12 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) bool {
 		for j := uint16(0); j < 5; j++ {
 			bx := int(b.X+i) - 2
 			by := int(b.Y+j) - 2
-			if bx >= 0 && by >= 0 && bp.BaseShape[i][j] {
-				if !m.Fields[bx][by].Building.Empty() || m.Fields[bx][by].Plant != nil {
+			if bx >= 0 && by >= 0 {
+				if bp.BaseShape[i][j] && (!m.Fields[bx][by].Building.Empty() || m.Fields[bx][by].Plant != nil) {
 					return false
 				}
+			} else {
+				return false
 			}
 		}
 	}
@@ -73,7 +75,7 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) bool {
 		for j := uint16(0); j < 5; j++ {
 			bx := int(b.X+i) - 2
 			by := int(b.Y+j) - 2
-			if bx >= 0 && by >= 0 && bp.BaseShape[i][j] {
+			if bp.BaseShape[i][j] {
 				m.Fields[bx][by].Building.BuildingUnits = b.ToBuildingUnits(uint8(i), uint8(j))
 				m.Fields[bx][by].Building.RoofUnit = b.GetRoof(uint8(i), uint8(j))
 			}
