@@ -99,7 +99,7 @@ func (c *Controller) Reset() {
 	c.SelectedField = nil
 	c.SelectedHousehold = nil
 	c.ActiveBuildingPlan = nil
-	c.AutoRefresh = true	
+	c.AutoRefresh = true
 }
 
 func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
@@ -116,7 +116,11 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 	if action == glfw.Press && button == glfw.MouseButton1 {
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if c.ActiveBuildingPlan != nil && rf != nil {
-			c.Map.AddBuilding(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+			if !c.ActiveBuildingPlan.Empty() {
+				c.Map.AddBuilding(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+			} else {
+				c.Reset()
+			}
 			return
 		}
 		for i := range c.RenderedBuildingUnits {
