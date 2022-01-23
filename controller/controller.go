@@ -97,9 +97,9 @@ func (c *Controller) Refresh() {
 
 func (c *Controller) Reset() {
 	c.SelectedField = nil
-	c.ActiveBuildingPlan = nil
-	c.AutoRefresh = true
 	c.SelectedHousehold = nil
+	c.ActiveBuildingPlan = nil
+	c.AutoRefresh = true	
 }
 
 func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
