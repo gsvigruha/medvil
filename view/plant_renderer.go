@@ -44,14 +44,14 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 				if plant.T.TreeT.Blooms {
 					cv.SetFillStyle("texture/terrain/leaves_blooming.png")
 				} else {
-					cv.SetFillStyle("texture/terrain/leaves_regular.png")
+					cv.SetFillStyle("texture/terrain/leaves_v2.png")
 				}
 				draw = true
 			}
 			if (c.Calendar.Month == 4 && seasonPhase <= c.Calendar.Day) ||
 				(c.Calendar.Month > 4 && c.Calendar.Month < 9) ||
 				(c.Calendar.Month == 9 && seasonPhase > c.Calendar.Day) {
-				cv.SetFillStyle("texture/terrain/leaves_regular.png")
+				cv.SetFillStyle("texture/terrain/leaves_v2.png")
 				draw = true
 			}
 			if (c.Calendar.Month == 9 && seasonPhase <= c.Calendar.Day) ||
