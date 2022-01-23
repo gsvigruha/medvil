@@ -11,12 +11,12 @@ import (
 const IconH = 40
 const IconW = 40
 const IconRowMax = 6
-const PersonGUIY = 50
-const ArtifactsGUIY = 200
+const PersonGUIY = 110
+const ArtifactsGUIY = 240
 const TaskGUIY = 300
 
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
-	p.AddTextLabel("money "+strconv.Itoa(int(h.Money)), 10, 50)
+	p.AddTextLabel("money "+strconv.Itoa(int(h.Money)), 10, 80)
 	for i, person := range h.People {
 		PersonToControlPanel(p, i, person)
 	}

@@ -4,6 +4,7 @@ import (
 	//"fmt"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"medvil/model"
+	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/model/time"
@@ -26,6 +27,7 @@ type Controller struct {
 	CenterX               int
 	CenterY               int
 	Perspective           uint8
+	Map                   *model.Map
 	Calendar              *time.CalendarType
 	RenderedFields        []*renderer.RenderedField
 	RenderedBuildingUnits []*renderer.RenderedBuildingUnit
@@ -33,6 +35,8 @@ type Controller struct {
 	SelectedHousehold     *social.Household
 	ReverseReferences     *model.ReverseReferences
 	ControlPanel          *gui.Panel
+	AutoRefresh           bool
+	ActiveBuildingPlan    *building.BuildingPlan
 }
 
 func (c *Controller) MoveCenter(dViewX, dViewY int) {
@@ -71,40 +75,68 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 	}
 }
 
+func (c *Controller) ShowBuildingController() {
+	c.SelectedField = nil
+	c.SelectedHousehold = nil
+	c.AutoRefresh = false
+	SetupControlPanel(c.ControlPanel, c)
+	BuildingsToControlPanel(c.ControlPanel, c)
+}
+
 func (c *Controller) Refresh() {
-	if c.Calendar.Hour == 0 {
+	c.ReverseReferences = c.Map.ReverseReferences()
+	if c.Calendar.Hour == 0 && c.AutoRefresh {
+		SetupControlPanel(c.ControlPanel, c)
 		if c.SelectedField != nil {
-			SetupControlPanel(c.ControlPanel, c)
 			FieldToControlPanel(c.ControlPanel, c.SelectedField)
 		} else if c.SelectedHousehold != nil {
-			SetupControlPanel(c.ControlPanel, c)
 			HouseholdToControlPanel(c.ControlPanel, c.SelectedHousehold)
 		}
 	}
 }
 
+func (c *Controller) Reset() {
+	c.SelectedField = nil
+	c.SelectedHousehold = nil
+	c.ActiveBuildingPlan = nil
+	c.AutoRefresh = true	
+}
+
+func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
+	for i := range c.RenderedFields {
+		rf := c.RenderedFields[i]
+		if rf.Contains(c.X, c.Y) {
+			return rf
+		}
+	}
+	return nil
+}
+
 func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
 	if action == glfw.Press && button == glfw.MouseButton1 {
+		rf := c.CaptureRenderedField(c.X, c.Y)
+		if c.ActiveBuildingPlan != nil && rf != nil {
+			c.Map.AddBuilding(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+			return
+		}
 		for i := range c.RenderedBuildingUnits {
 			rbu := c.RenderedBuildingUnits[i]
 			if rbu.Contains(c.X, c.Y) {
+				c.Reset()
 				c.SelectedHousehold = c.ReverseReferences.BuildingToHousehold[rbu.Unit.B]
-				c.SelectedField = nil
 				SetupControlPanel(c.ControlPanel, c)
 				HouseholdToControlPanel(c.ControlPanel, c.SelectedHousehold)
 				return
 			}
 		}
-		for i := range c.RenderedFields {
-			rf := c.RenderedFields[i]
-			if rf.Contains(c.X, c.Y) {
-				c.SelectedField = rf.F
-				c.SelectedHousehold = nil
-				SetupControlPanel(c.ControlPanel, c)
-				FieldToControlPanel(c.ControlPanel, c.SelectedField)
-				return
-			}
+		if rf != nil {
+			c.Reset()
+			c.SelectedField = rf.F
+			SetupControlPanel(c.ControlPanel, c)
+			FieldToControlPanel(c.ControlPanel, c.SelectedField)
+			return
 		}
+		c.ControlPanel.CaptureClick(c.X, c.Y)
 	}
 }
 
@@ -116,7 +148,7 @@ func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
 func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
 }
 
-func Link(wnd *glfw.Window) *Controller {
+func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 	W, H := wnd.GetSize()
 	Calendar := &time.CalendarType{
 		Year:  1000,
@@ -125,16 +157,12 @@ func Link(wnd *glfw.Window) *Controller {
 		Hour:  0,
 	}
 	controlPanel := &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: float64(H)}
-	C := Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel}
+	C := Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map}
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
 	wnd.SetCursorPosCallback(C.MouseMoveCallback)
 	wnd.SetScrollCallback(C.MouseScrollCallback)
 	return &C
-}
-
-func (c *Controller) UpdateReverseReferences(rr *model.ReverseReferences) {
-	c.ReverseReferences = rr
 }
 
 func (c *Controller) ResetRenderedObjects() {

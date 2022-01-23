@@ -18,9 +18,9 @@ func main() {
 	wnd, cv, ctx, _ := view.CreateWindow(1280, 720, "Medvil")
 	ic := view.NewImageCache(ctx)
 
-	c := controller.Link(wnd.Window)
-
 	m := maps.LoadMap("samples/map/coast_1")
+
+	c := controller.Link(wnd.Window, &m)
 
 	fmt.Println("Init done")
 
@@ -29,7 +29,6 @@ func main() {
 		cv.SetFillStyle("#000")
 		cv.FillRect(0, 0, w, h)
 		start := time.Now()
-		c.UpdateReverseReferences(m.ReverseReferences())
 		view.Render(ic, cv, m, c)
 		elapsed := time.Since(start)
 		/*

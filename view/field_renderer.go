@@ -41,10 +41,10 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t
 	RenderBuildingRoof(cv, roof, rf, len(units), c)
 	if f.Plant != nil {
 		//RenderPlant(cv, f.Plant, rf, c)
-		tx := rf.X[0] - DX
-		ty := rf.Y[2] - 200
+		tx := rf.X[0] - BufferW/2
+		ty := rf.Y[2] - BufferH
 		img := ic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
-		cv.DrawImage(img, tx, ty, 120, 300)
+		cv.DrawImage(img, tx, ty, BufferW, BufferH)
 	}
 	if !f.Terrain.Resources.IsEmpty() {
 		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+44, rf.Y[2]-64, 32, 32)

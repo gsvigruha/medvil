@@ -9,6 +9,9 @@ import (
 	"time"
 )
 
+const BufferW = 200
+const BufferH = 300
+
 type CacheEntry struct {
 	offscreen   *goglbackend.GoGLBackendOffscreen
 	cv          *canvas.Canvas
@@ -41,15 +44,15 @@ func (ic *ImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.Rendered
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[p]; ok {
 		if t-ce.createdTime > 300*1000*1000 {
-			ce.cv.ClearRect(0, 0, 120, 300)
+			ce.cv.ClearRect(0, 0, BufferW, BufferH)
 			RenderPlant(ce.cv, p, rf, c)
 			ce.createdTime = t
 		}
 		return ce.cv
 	} else {
-		offscreen, _ := goglbackend.NewOffscreen(120, 300, true, ic.ctx)
+		offscreen, _ := goglbackend.NewOffscreen(BufferW, BufferH, true, ic.ctx)
 		cv := canvas.New(offscreen)
-		cv.ClearRect(0, 0, 120, 300)
+		cv.ClearRect(0, 0, BufferW, BufferH)
 		RenderPlant(cv, p, rf, c)
 		ic.entries[p] = &CacheEntry{
 			offscreen:   offscreen,
