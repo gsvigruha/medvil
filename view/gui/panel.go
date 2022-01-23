@@ -53,3 +53,7 @@ func (p *Panel) AddScaleLabel(icon string, x, y, sx, sy, scaleW, scale float64) 
 func (p *Panel) AddTextureLabel(texture string, x, y, sx, sy float64) {
 	p.Labels = append(p.Labels, &TextureLabel{Texture: texture, X: x, Y: y, SX: sx, SY: sy})
 }
+
+func (p *Panel) AddButton(icon string, x, y, sx, sy float64, callback func(interface{})) {
+	p.Buttons = append(p.Buttons, &Button{Icon: icon, X: x, Y: y, SX: sx, SY: sy, Callback: callback})
+}

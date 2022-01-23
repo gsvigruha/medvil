@@ -5,11 +5,12 @@ import (
 )
 
 type Button struct {
-	X    float64
-	Y    float64
-	SX   float64
-	SY   float64
-	Icon string
+	X        float64
+	Y        float64
+	SX       float64
+	SY       float64
+	Icon     string
+	Callback func(interface{})
 }
 
 func (b *Button) Render(cv *canvas.Canvas) {
