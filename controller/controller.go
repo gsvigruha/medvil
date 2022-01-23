@@ -33,6 +33,7 @@ type Controller struct {
 	SelectedHousehold     *social.Household
 	ReverseReferences     *model.ReverseReferences
 	ControlPanel          *gui.Panel
+	AutoRefresh           bool
 }
 
 func (c *Controller) MoveCenter(dViewX, dViewY int) {
@@ -74,12 +75,13 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 func (c *Controller) ShowBuildingController() {
 	c.SelectedField = nil
 	c.SelectedHousehold = nil
+	c.AutoRefresh = false
 	SetupControlPanel(c.ControlPanel, c)
 	BuildingsToControlPanel(c.ControlPanel, c)
 }
 
 func (c *Controller) Refresh() {
-	if c.Calendar.Hour == 0 {
+	if c.Calendar.Hour == 0 && c.AutoRefresh {
 		SetupControlPanel(c.ControlPanel, c)
 		if c.SelectedField != nil {
 			FieldToControlPanel(c.ControlPanel, c.SelectedField)
@@ -96,6 +98,7 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			if rbu.Contains(c.X, c.Y) {
 				c.SelectedHousehold = c.ReverseReferences.BuildingToHousehold[rbu.Unit.B]
 				c.SelectedField = nil
+				c.AutoRefresh = true
 				SetupControlPanel(c.ControlPanel, c)
 				HouseholdToControlPanel(c.ControlPanel, c.SelectedHousehold)
 				return
@@ -106,15 +109,13 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			if rf.Contains(c.X, c.Y) {
 				c.SelectedField = rf.F
 				c.SelectedHousehold = nil
+				c.AutoRefresh = true
 				SetupControlPanel(c.ControlPanel, c)
 				FieldToControlPanel(c.ControlPanel, c.SelectedField)
 				return
 			}
 		}
-		b := c.ControlPanel.CaptureButton(c.X, c.Y)
-		if b != nil {
-			b.Callback(c)
-		}
+		c.ControlPanel.CaptureClick(c.X, c.Y)
 	}
 }
 

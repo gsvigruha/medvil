@@ -41,7 +41,7 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t
 	RenderBuildingRoof(cv, roof, rf, len(units), c)
 	if f.Plant != nil {
 		//RenderPlant(cv, f.Plant, rf, c)
-		tx := rf.X[0] - BufferW / 2
+		tx := rf.X[0] - BufferW/2
 		ty := rf.Y[2] - BufferH
 		img := ic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
 		cv.DrawImage(img, tx, ty, BufferW, BufferH)

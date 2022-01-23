@@ -9,11 +9,18 @@ import (
 )
 
 const BuildingBaseMaxSize = 5
+const MaxFloors = 4
 
 const DirectionN uint8 = 0
 const DirectionE uint8 = 1
 const DirectionS uint8 = 2
 const DirectionW uint8 = 3
+
+var FloorMaterials = []*materials.Material{
+	materials.GetMaterial("wood"),
+	materials.GetMaterial("stone"),
+	materials.GetMaterial("brick"),
+}
 
 type Floor struct {
 	M *materials.Material `json:"material"`

@@ -9,8 +9,9 @@ type Panel struct {
 	Y       float64
 	SX      float64
 	SY      float64
-	Buttons []*Button
+	Buttons []Button
 	Labels  []Label
+	Panels  []*Panel
 }
 
 func (p *Panel) Render(cv *canvas.Canvas) {
@@ -22,20 +23,26 @@ func (p *Panel) Render(cv *canvas.Canvas) {
 	for i := range p.Labels {
 		p.Labels[i].Render(cv)
 	}
+	for i := range p.Panels {
+		p.Panels[i].Render(cv)
+	}
 }
 
-func (p *Panel) CaptureButton(x float64, y float64) *Button {
+func (p *Panel) CaptureClick(x float64, y float64) {
 	for i := range p.Buttons {
 		if p.Buttons[i].Contains(x, y) {
-			return p.Buttons[i]
+			p.Buttons[i].Click()
 		}
 	}
-	return nil
+	for i := range p.Panels {
+		p.Panels[i].CaptureClick(x, y)
+	}
 }
 
 func (p *Panel) Clear() {
-	p.Buttons = []*Button{}
+	p.Buttons = []Button{}
 	p.Labels = []Label{}
+	p.Panels = []*Panel{}
 }
 
 func (p *Panel) AddTextLabel(text string, x float64, y float64) {
@@ -54,6 +61,6 @@ func (p *Panel) AddTextureLabel(texture string, x, y, sx, sy float64) {
 	p.Labels = append(p.Labels, &TextureLabel{Texture: texture, X: x, Y: y, SX: sx, SY: sy})
 }
 
-func (p *Panel) AddButton(icon string, x, y, sx, sy float64, callback func(interface{})) {
-	p.Buttons = append(p.Buttons, &Button{Icon: icon, X: x, Y: y, SX: sx, SY: sy, Callback: callback})
+func (p *Panel) AddButton(button Button) {
+	p.Buttons = append(p.Buttons, button)
 }
