@@ -24,15 +24,15 @@ type Person struct {
 
 func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if p.Task != nil {
-		if p.Traveller.FX == p.Task.Location().X && p.Traveller.FY == p.Task.Location().Y {
+		if p.Traveller.FX == p.Task.Field().X && p.Traveller.FY == p.Task.Field().Y {
 			// Work on task
 			p.Traveller.ResetPhase()
 			if p.Task.Complete(Calendar) {
 				p.Task = nil
 			}
 		} else {
-			if p.Traveller.Path == nil || p.Traveller.Path.LastLocation() != p.Task.Location() {
-				p.Traveller.Path = m.ShortPath(p.Traveller.FX, p.Traveller.FY, p.Task.Location().X, p.Task.Location().Y, navigation.TravellerTypePedestrian)
+			if p.Traveller.Path == nil || p.Traveller.Path.LastField() != p.Task.Field() {
+				p.Traveller.Path = m.ShortPath(p.Traveller.FX, p.Traveller.FY, p.Task.Field().X, p.Task.Field().Y, navigation.TravellerTypePedestrian)
 			}
 			if p.IsHome {
 				// Start on path
@@ -44,13 +44,13 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	} else {
-		home := navigation.Location{X: p.Household.Building.X, Y: p.Household.Building.Y, F: m.GetField(p.Household.Building.X, p.Household.Building.Y)}
+		home := m.GetField(p.Household.Building.X, p.Household.Building.Y)
 		if p.Water < WaterThreshold {
-			p.Task = &economy.DrinkTask{L: home, P: p}
+			p.Task = &economy.DrinkTask{F: home, P: p}
 		} else if p.Food < FoodThreshold {
-			p.Task = &economy.EatTask{L: home, P: p}
+			p.Task = &economy.EatTask{F: home, P: p}
 		} else if !p.IsHome {
-			p.Task = &economy.GoHomeTask{L: home, P: p}
+			p.Task = &economy.GoHomeTask{F: home, P: p}
 		}
 	}
 	if Calendar.Hour == 0 {

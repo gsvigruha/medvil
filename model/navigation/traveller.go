@@ -73,17 +73,17 @@ func (t *Traveller) MoveDown(m IMap) {
 
 func (t *Traveller) Move(m IMap) {
 	if t.Path != nil {
-		l := t.Path.L[0]
-		if t.FX > l.X {
+		f := t.Path.F[0]
+		if t.FX > f.X {
 			t.MoveLeft(m)
 			t.Direction = DirectionW
-		} else if t.FX < l.X {
+		} else if t.FX < f.X {
 			t.MoveRight(m)
 			t.Direction = DirectionE
-		} else if t.FY > l.Y {
+		} else if t.FY > f.Y {
 			t.MoveUp(m)
 			t.Direction = DirectionN
-		} else if t.FY < l.Y {
+		} else if t.FY < f.Y {
 			t.MoveDown(m)
 			t.Direction = DirectionS
 		}

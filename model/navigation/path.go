@@ -1,17 +1,17 @@
 package navigation
 
 type Path struct {
-	L []Location
+	F []*Field
 }
 
 func (p *Path) ConsumeElement() *Path {
-	if len(p.L) > 1 {
-		p.L = p.L[1:]
+	if len(p.F) > 1 {
+		p.F = p.F[1:]
 		return p
 	}
 	return nil
 }
 
-func (p *Path) LastLocation() Location {
-	return p.L[len(p.L)-1]
+func (p *Path) LastField() *Field {
+	return p.F[len(p.F)-1]
 }

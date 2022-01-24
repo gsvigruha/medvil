@@ -90,7 +90,7 @@ func (m *Map) ShortPath(sx, sy, ex, ey uint16, travellerType uint8) *navigation.
 	}
 	p := FindShortPathBFS(m, sx, sy, ex, ey, travellerType)
 	if p != nil {
-		return &navigation.Path{L: p[1:]}
+		return &navigation.Path{F: p[1:]}
 	}
 	return nil
 }
