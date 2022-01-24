@@ -110,7 +110,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					suffix = "_flipped"
 				}
 				cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + suffix + ".png")
-				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 32})
+				cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
 				cv.SetLineWidth(3)
 
 				sideMidX := (rf.X[rfIdx1] + rf.X[rfIdx2]) / 2

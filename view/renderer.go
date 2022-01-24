@@ -33,11 +33,11 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			case controller.PerspectiveNE:
 				pi, pj = i+li, hj-1-j
 			case controller.PerspectiveSE:
-				pi, pj = j+lj, i+li
+				pi, pj = j+li, i+lj
 			case controller.PerspectiveSW:
 				pi, pj = hi-1-i, j+lj
 			case controller.PerspectiveNW:
-				pi, pj = hj-1-j, hi-1-i
+				pi, pj = hi-1-j, hj-1-i
 			}
 			if pi < 0 || pj < 0 || pi >= int(m.SX) || pj >= int(m.SY) {
 				continue
