@@ -25,13 +25,13 @@ const FarmFieldUseTypeVegetables uint8 = 4
 
 type AgriculturalTask struct {
 	T        uint8
-	L        navigation.Location
+	F        *navigation.Field
 	Progress uint16
 	UseType  uint8
 }
 
-func (t *AgriculturalTask) Location() navigation.Location {
-	return t.L
+func (t *AgriculturalTask) Field() *navigation.Field {
+	return t.F
 }
 
 func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
@@ -39,7 +39,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 	switch t.T {
 	case AgriculturalTaskPloughing:
 		if t.Progress >= AgriculturalTaskDurationPloughing {
-			t.L.F.Terrain.T = terrain.Dirt
+			t.F.Terrain.T = terrain.Dirt
 			return true
 		}
 	case AgriculturalTaskSowing:
@@ -50,10 +50,10 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 			} else if t.UseType == FarmFieldUseTypeVegetables {
 				cropType = &terrain.AllCropTypes[1]
 			}
-			t.L.F.Plant = &terrain.Plant{
+			t.F.Plant = &terrain.Plant{
 				T:             cropType,
-				X:             t.L.X,
-				Y:             t.L.Y,
+				X:             t.F.X,
+				Y:             t.F.Y,
 				BirthDateDays: Calendar.DaysElapsed(),
 				Shape:         uint8(rand.Intn(10)),
 			}
@@ -61,8 +61,8 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 		}
 	case AgriculturalTaskHarvesting:
 		if t.Progress >= AgriculturalTaskDurationHarvesting {
-			t.L.F.Terrain.Resources.Add(t.L.F.Plant.T.Yield.A, t.L.F.Plant.T.Yield.Quantity)
-			t.L.F.Plant = nil
+			t.F.Terrain.Resources.Add(t.F.Plant.T.Yield.A, t.F.Plant.T.Yield.Quantity)
+			t.F.Plant = nil
 			return true
 		}
 	}
@@ -72,11 +72,11 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 func (t *AgriculturalTask) Blocked() bool {
 	switch t.T {
 	case AgriculturalTaskPloughing:
-		return t.L.F.Plant != nil
+		return t.F.Plant != nil
 	case AgriculturalTaskSowing:
-		return t.L.F.Plant != nil || t.L.F.Terrain.T != terrain.Dirt
+		return t.F.Plant != nil || t.F.Terrain.T != terrain.Dirt
 	case AgriculturalTaskHarvesting:
-		return t.L.F.Plant == nil || !t.L.F.Plant.Ripe
+		return t.F.Plant == nil || !t.F.Plant.Ripe
 	}
 	return false
 }

@@ -12,22 +12,22 @@ type Person interface {
 }
 
 type EatTask struct {
-	L navigation.Location
+	F *navigation.Field
 	P Person
 }
 
 type DrinkTask struct {
-	L navigation.Location
+	F *navigation.Field
 	P Person
 }
 
 type GoHomeTask struct {
-	L navigation.Location
+	F *navigation.Field
 	P Person
 }
 
-func (t *EatTask) Location() navigation.Location {
-	return t.L
+func (t *EatTask) Field() *navigation.Field {
+	return t.F
 }
 
 func (t *EatTask) Complete(Calendar *time.CalendarType) bool {
@@ -43,8 +43,8 @@ func (t *EatTask) Name() string {
 	return "eat"
 }
 
-func (t *DrinkTask) Location() navigation.Location {
-	return t.L
+func (t *DrinkTask) Field() *navigation.Field {
+	return t.F
 }
 
 func (t *DrinkTask) Complete(Calendar *time.CalendarType) bool {
@@ -60,8 +60,8 @@ func (t *DrinkTask) Name() string {
 	return "drink"
 }
 
-func (t *GoHomeTask) Location() navigation.Location {
-	return t.L
+func (t *GoHomeTask) Field() *navigation.Field {
+	return t.F
 }
 
 func (t *GoHomeTask) Complete(Calendar *time.CalendarType) bool {

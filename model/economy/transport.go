@@ -7,8 +7,8 @@ import (
 )
 
 type TransportTask struct {
-	PickupL  navigation.Location
-	DropoffL navigation.Location
+	PickupF  *navigation.Field
+	DropoffF *navigation.Field
 	PickupR  *artifacts.Resources
 	DropoffR *artifacts.Resources
 	A        *artifacts.Artifact
@@ -16,11 +16,11 @@ type TransportTask struct {
 	dropoff  bool
 }
 
-func (t *TransportTask) Location() navigation.Location {
+func (t *TransportTask) Field() *navigation.Field {
 	if t.dropoff {
-		return t.DropoffL
+		return t.DropoffF
 	} else {
-		return t.PickupL
+		return t.PickupF
 	}
 }
 
