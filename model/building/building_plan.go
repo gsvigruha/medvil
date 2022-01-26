@@ -132,7 +132,7 @@ func BuildingPlanFromJSON(fileName string) BuildingPlan {
 	return plan
 }
 
-func (b BuildingPlan) Iscomplete() bool {
+func (b BuildingPlan) IsComplete() bool {
 	if len(b.Floors) == 0 {
 		return false
 	}
