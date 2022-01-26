@@ -113,11 +113,19 @@ func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField 
 	return nil
 }
 
+func (c *Controller) GetActiveBuildingPlanBaseFields() []*navigation.Field {
+	rf := c.CaptureRenderedField(c.X, c.Y)
+	if c.ActiveBuildingPlan != nil && rf != nil && c.ActiveBuildingPlan.IsComplete() {
+		return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+	}
+	return nil
+}
+
 func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
 	if action == glfw.Press && button == glfw.MouseButton1 {
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if c.ActiveBuildingPlan != nil && rf != nil {
-			if c.ActiveBuildingPlan.Iscomplete() {
+			if c.ActiveBuildingPlan.IsComplete() {
 				c.Map.AddFarm(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 			} else {
 				c.Reset()

@@ -92,5 +92,6 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			c.AddRenderedField(&rf)
 		}
 	}
+	RenderActiveBuildingPlanBase(cv, c)
 	c.ControlPanel.Render(cv)
 }

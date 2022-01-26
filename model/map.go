@@ -68,20 +68,32 @@ func (m *Map) AddFarm(c *social.Country, x, y uint16, bp *building.BuildingPlan)
 	}
 }
 
-func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) *building.Building {
-	b := building.Building{X: x, Y: y, Plan: bp}
+func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []*navigation.Field {
+	var fields []*navigation.Field
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
-			bx := int(b.X+i) - 2
-			by := int(b.Y+j) - 2
+			bx := int(x+i) - 2
+			by := int(y+j) - 2
 			if bx >= 0 && by >= 0 {
-				if bp.BaseShape[i][j] && (!m.Fields[bx][by].Building.Empty() || m.Fields[bx][by].Plant != nil) {
-					return nil
+				if bp.BaseShape[i][j] {
+					if(!m.Fields[bx][by].Building.Empty() || m.Fields[bx][by].Plant != nil) {
+						return nil
+					} else {
+						fields = append(fields, &m.Fields[bx][by])
+					}
 				}
 			} else {
 				return nil
 			}
 		}
+	}
+	return fields
+}
+
+func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) *building.Building {
+	b := building.Building{X: x, Y: y, Plan: bp}
+	if m.GetBuildingBaseFields(x, y, bp) == nil {
+		return nil
 	}
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
