@@ -74,16 +74,17 @@ func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []*n
 		for j := uint16(0); j < 5; j++ {
 			bx := int(x+i) - 2
 			by := int(y+j) - 2
-			if bx >= 0 && by >= 0 {
-				if bp.BaseShape[i][j] {
-					if(!m.Fields[bx][by].Building.Empty() || m.Fields[bx][by].Plant != nil) {
+			if bp.BaseShape[i][j] {
+				if bx >= 0 && by >= 0 && bx < int(m.SX) && by < int(m.SY) {
+					f := &m.Fields[bx][by]
+					if !f.Buildable() {
 						return nil
 					} else {
-						fields = append(fields, &m.Fields[bx][by])
+						fields = append(fields, f)
 					}
+				} else {
+					return nil
 				}
-			} else {
-				return nil
 			}
 		}
 	}
