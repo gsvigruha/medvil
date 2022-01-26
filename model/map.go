@@ -56,7 +56,19 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 	return &rr
 }
 
-func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) bool {
+func (m *Map) AddFarm(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
+	b := m.AddBuilding(x, y, bp)
+	if b != nil {
+		t := c.Towns[0]
+		f := &social.Farm{Household: social.Household{Building: b, Town: t}}
+		t.Farms = append(t.Farms, f)
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) *building.Building {
 	b := building.Building{X: x, Y: y, Plan: bp}
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
@@ -64,10 +76,10 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) bool {
 			by := int(b.Y+j) - 2
 			if bx >= 0 && by >= 0 {
 				if bp.BaseShape[i][j] && (!m.Fields[bx][by].Building.Empty() || m.Fields[bx][by].Plant != nil) {
-					return false
+					return nil
 				}
 			} else {
-				return false
+				return nil
 			}
 		}
 	}
@@ -81,7 +93,7 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) bool {
 			}
 		}
 	}
-	return true
+	return &b
 }
 
 func (m *Map) ShortPath(sx, sy, ex, ey uint16, travellerType uint8) *navigation.Path {

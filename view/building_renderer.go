@@ -149,7 +149,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			}
 		}
 	} else {
-		cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + ".png")
+		cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + "_flat.png")
 		cv.BeginPath()
 		cv.LineTo(rf.X[0], rf.Y[0]-z)
 		cv.LineTo(rf.X[1], rf.Y[1]-z)

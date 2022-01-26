@@ -88,13 +88,15 @@ func (b FloorButton) Contains(x float64, y float64) bool {
 }
 
 type RoofButton struct {
-	b  gui.ButtonGUI
-	m  *materials.Material
-	bc *BuildingsController
+	b    gui.ButtonGUI
+	m    *materials.Material
+	flat bool
+	bc   *BuildingsController
 }
 
 func (b RoofButton) Click() {
 	b.bc.Plan.Roof.M = b.m
+	b.bc.Plan.Roof.Flat = b.flat
 }
 
 func (b RoofButton) Render(cv *canvas.Canvas) {
@@ -114,9 +116,19 @@ func BuildingsToControlPanel(p *gui.Panel, c *Controller) {
 
 	for i, m := range building.RoofMaterials {
 		p.AddButton(RoofButton{
-			b:  gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*40 + 10), Y: float64(RoofPanelTop), SX: 32, SY: 32},
-			m:  m,
-			bc: &bc,
+			b:    gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*40 + 10), Y: float64(RoofPanelTop), SX: 32, SY: 32},
+			m:    m,
+			flat: false,
+			bc:   &bc,
+		})
+	}
+
+	for i, m := range building.FlatRoofMaterials {
+		p.AddButton(RoofButton{
+			b:    gui.ButtonGUI{Texture: "building/" + m.Name, X: float64((i+len(building.RoofMaterials))*40 + 10), Y: float64(RoofPanelTop), SX: 32, SY: 32},
+			m:    m,
+			flat: true,
+			bc:   &bc,
 		})
 	}
 
