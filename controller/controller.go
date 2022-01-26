@@ -114,9 +114,11 @@ func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField 
 }
 
 func (c *Controller) GetActiveBuildingPlanBaseFields() []*navigation.Field {
-	rf := c.CaptureRenderedField(c.X, c.Y)
-	if c.ActiveBuildingPlan != nil && rf != nil && c.ActiveBuildingPlan.IsComplete() {
-		return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+	if c.ActiveBuildingPlan != nil && c.ActiveBuildingPlan.IsComplete() {
+		rf := c.CaptureRenderedField(c.X, c.Y)
+		if rf != nil {
+			return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+		}
 	}
 	return nil
 }
