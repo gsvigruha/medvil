@@ -37,6 +37,7 @@ type Controller struct {
 	ControlPanel          *gui.Panel
 	AutoRefresh           bool
 	ActiveBuildingPlan    *building.BuildingPlan
+	Country               *social.Country
 }
 
 func (c *Controller) MoveCenter(dViewX, dViewY int) {
@@ -116,8 +117,8 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 	if action == glfw.Press && button == glfw.MouseButton1 {
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if c.ActiveBuildingPlan != nil && rf != nil {
-			if !c.ActiveBuildingPlan.Empty() {
-				c.Map.AddBuilding(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+			if c.ActiveBuildingPlan.Iscomplete() {
+				c.Map.AddFarm(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 			} else {
 				c.Reset()
 			}
@@ -161,7 +162,7 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 		Hour:  0,
 	}
 	controlPanel := &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: float64(H)}
-	C := Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map}
+	C := Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: &Map.Countries[0]}
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
 	wnd.SetCursorPosCallback(C.MouseMoveCallback)

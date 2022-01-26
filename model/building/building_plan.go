@@ -19,6 +19,7 @@ const DirectionW uint8 = 3
 var FloorMaterials = []*materials.Material{
 	materials.GetMaterial("wood"),
 	materials.GetMaterial("stone"),
+	materials.GetMaterial("sandstone"),
 	materials.GetMaterial("brick"),
 	materials.GetMaterial("whitewash"),
 }
@@ -26,6 +27,11 @@ var FloorMaterials = []*materials.Material{
 var RoofMaterials = []*materials.Material{
 	materials.GetMaterial("hay"),
 	materials.GetMaterial("tile"),
+}
+
+var FlatRoofMaterials = []*materials.Material{
+	materials.GetMaterial("stone"),
+	materials.GetMaterial("sandstone"),
 }
 
 type Floor struct {
@@ -126,16 +132,19 @@ func BuildingPlanFromJSON(fileName string) BuildingPlan {
 	return plan
 }
 
-func (b BuildingPlan) Empty() bool {
+func (b BuildingPlan) Iscomplete() bool {
 	if len(b.Floors) == 0 {
-		return true
+		return false
+	}
+	if b.Roof.M == nil {
+		return false
 	}
 	for i := 0; i < BuildingBaseMaxSize-1; i++ {
 		for j := 0; j < BuildingBaseMaxSize-1; j++ {
 			if b.BaseShape[i][j] {
-				return false
+				return true
 			}
 		}
 	}
-	return true
+	return false
 }
