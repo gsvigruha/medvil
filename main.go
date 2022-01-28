@@ -7,6 +7,7 @@ import (
 	"medvil/maps"
 	"medvil/view"
 	"time"
+	"github.com/pkg/profile"
 )
 
 const (
@@ -15,6 +16,8 @@ const (
 )
 
 func main() {
+	defer profile.Start(profile.ProfilePath(".")).Stop()
+
 	wnd, cv, ctx, _ := view.CreateWindow(1280, 720, "Medvil")
 	ic := view.NewImageCache(ctx)
 
@@ -38,7 +41,7 @@ func main() {
 		*/
 		c.Refresh()
 		ic.Clean()
-		if 0 == 1 {
+		if 0 == 0 {
 			log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
 			log.Printf("%s", c.Calendar)
 		}
