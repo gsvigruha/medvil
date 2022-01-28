@@ -13,12 +13,9 @@ import (
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t, l, b, r uint8, m model.Map, f *navigation.Field, c *controller.Controller) {
 
 	cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
-	//cv.SetStrokeStyle(color.RGBA{R: 192, G: 192, B: 192, A: 24})
-	cv.SetLineWidth(2)
 
 	rf.Draw(cv)
 	cv.Fill()
-	//cv.Stroke()
 
 	if (f.SE + f.SW) > (f.NE + f.NW) {
 		slope := (f.SE + f.SW) - (f.NE + f.NW)
