@@ -7,7 +7,7 @@ import (
 )
 
 func RenderActiveBuildingPlanBase(cv *canvas.Canvas, c *controller.Controller) {
-	fields := c.GetActiveBuildingPlanBaseFields()
+	fields := c.GetActiveFields()
 	if fields != nil {
 		for _, f := range fields {
 			for _, rf := range c.RenderedFields {

@@ -15,6 +15,8 @@ const PersonGUIY = 110
 const ArtifactsGUIY = 240
 const TaskGUIY = 300
 
+const HouseholdControllerGUIBottomY = 500
+
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	p.AddTextLabel("money "+strconv.Itoa(int(h.Money)), 10, 80)
 	for i, person := range h.People {
