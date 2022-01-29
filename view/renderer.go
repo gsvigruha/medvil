@@ -42,7 +42,7 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			if pi < 0 || pj < 0 || pi >= int(m.SX) || pj >= int(m.SY) {
 				continue
 			}
-			var f = m.Fields[pi][pj]
+			var f = &m.Fields[pi][pj]
 			var t = uint8(0)
 			var r = uint8(0)
 			var b = uint8(0)
@@ -83,9 +83,9 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 				X: [4]float64{float64(x), float64(x - DX), float64(x), float64(x + DX)},
 				Y: [4]float64{float64(y), float64(y + DY), float64(y + DY*2.0), float64(y + DY)},
 				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)},
-				F: &f,
+				F: f,
 			}
-			RenderField(ic, cv, rf, t, l, b, r, m, &f, c)
+			RenderField(ic, cv, rf, t, l, b, r, m, f, c)
 			if f.Travellers != nil {
 				RenderTravellers(cv, f.Travellers, rf, c)
 			}

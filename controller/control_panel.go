@@ -19,8 +19,8 @@ type ControlPanel struct {
 }
 
 type ControlPanelButton struct {
-	b gui.ButtonGUI
-	c *Controller
+	b      gui.ButtonGUI
+	c      *Controller
 	action func(*Controller)
 }
 
