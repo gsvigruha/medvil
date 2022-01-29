@@ -80,7 +80,7 @@ func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 }
 
 func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	f.Household.ElapseTime(Calendar)
+	f.Household.ElapseTime(Calendar, m)
 	if economy.ArgicultureCycleStartTime.Matches(Calendar) {
 		for i := range f.Land {
 			l := f.Land[i]

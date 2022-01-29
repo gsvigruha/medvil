@@ -10,5 +10,5 @@ type Townhall struct {
 }
 
 func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	t.Household.ElapseTime(Calendar)
+	t.Household.ElapseTime(Calendar, m)
 }

@@ -34,6 +34,7 @@ type Controller struct {
 	RenderedBuildingUnits []*renderer.RenderedBuildingUnit
 	SelectedField         *navigation.Field
 	SelectedFarm          *social.Farm
+	SelectedTownhall      *social.Townhall
 	ReverseReferences     *model.ReverseReferences
 	ControlPanel          *ControlPanel
 	ActiveBuildingPlan    *building.BuildingPlan
@@ -121,6 +122,7 @@ func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 
 func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
 	if action == glfw.Press && button == glfw.MouseButton1 {
+		c.ControlPanel.CaptureClick(c.X, c.Y)
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if c.ActiveBuildingPlan != nil && rf != nil {
 			if c.ActiveBuildingPlan.IsComplete() {
@@ -134,9 +136,14 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			rbu := c.RenderedBuildingUnits[i]
 			if rbu.Contains(c.X, c.Y) {
 				c.Reset()
-				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
-				if c.SelectedFarm != nil {
-					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
+				c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbu.Unit.B]
+				if c.SelectedTownhall != nil {
+					TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
+				} else {
+					c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
+					if c.SelectedFarm != nil {
+						FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
+					}
 				}
 				return
 			}
@@ -152,7 +159,6 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			FieldToControlPanel(c.ControlPanel, c.SelectedField)
 			return
 		}
-		c.ControlPanel.CaptureClick(c.X, c.Y)
 	}
 }
 

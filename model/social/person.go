@@ -1,7 +1,6 @@
 package social
 
 import (
-	//"fmt"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
