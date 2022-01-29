@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"medvil/model/economy"
 	"medvil/model/social"
+	"medvil/renderer"
 	"medvil/view/gui"
 )
 
@@ -40,18 +41,29 @@ func (b LandUseButton) Contains(x float64, y float64) bool {
 }
 
 func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
-
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
 	HouseholdToControlPanel(hp, &farm.Household)
-	fc := &FamController{householdPanel: hp, farmPanel: fp, farm: farm}
+	fc := &FamController{householdPanel: hp, farmPanel: fp, farm: farm, UseType: economy.FarmFieldUseTypeBarren}
 
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Texture: "terrain/grain", X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		fc:      fc,
+		useType: economy.FarmFieldUseTypeBarren,
+	})
+	fp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Texture: "terrain/grain", X: float64(50), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
 		fc:      fc,
 		useType: economy.FarmFieldUseTypeWheat,
 	})
+	fp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Texture: "terrain/vegetables", X: float64(90), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		fc:      fc,
+		useType: economy.FarmFieldUseTypeVegetables,
+	})
+
 	cp.SetDynamicPanel(fc)
+	cp.C.ClickHandler = fc
 }
 
 func (fc *FamController) CaptureClick(x, y float64) {
@@ -68,4 +80,17 @@ func (fc *FamController) Clear() {}
 func (fc *FamController) Refresh() {
 	fc.householdPanel.Clear()
 	HouseholdToControlPanel(fc.householdPanel, &fc.farm.Household)
+}
+
+func (fc *FamController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+	for i := range fc.farm.Land {
+		l := &fc.farm.Land[i]
+		if l.F.X == rf.F.X && l.F.Y == rf.F.Y {
+			if l.F.Arable() {
+				l.UseType = fc.UseType
+			}
+			return true
+		}
+	}
+	return false
 }

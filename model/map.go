@@ -68,8 +68,8 @@ func (m *Map) AddFarm(c *social.Country, x, y uint16, bp *building.BuildingPlan)
 	}
 }
 
-func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []*navigation.Field {
-	var fields []*navigation.Field
+func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []navigation.FieldWithContext {
+	var fields []navigation.FieldWithContext
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
 			bx := int(x+i) - 2

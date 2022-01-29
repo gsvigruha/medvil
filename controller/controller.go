@@ -16,6 +16,10 @@ const PerspectiveSE uint8 = 1
 const PerspectiveSW uint8 = 2
 const PerspectiveNW uint8 = 3
 
+type ClickHandler interface {
+	HandleClick(c *Controller, rf *renderer.RenderedField) bool
+}
+
 type Controller struct {
 	X                     float64
 	Y                     float64
@@ -34,6 +38,7 @@ type Controller struct {
 	ControlPanel          *ControlPanel
 	ActiveBuildingPlan    *building.BuildingPlan
 	Country               *social.Country
+	ClickHandler          ClickHandler
 }
 
 func (c *Controller) MoveCenter(dViewX, dViewY int) {
@@ -101,7 +106,7 @@ func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField 
 	return nil
 }
 
-func (c *Controller) GetActiveFields() []*navigation.Field {
+func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 	if c.ActiveBuildingPlan != nil && c.ActiveBuildingPlan.IsComplete() {
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if rf != nil {
@@ -132,6 +137,11 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				if c.SelectedFarm != nil {
 					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
 				}
+				return
+			}
+		}
+		if c.ClickHandler != nil && rf != nil {
+			if c.ClickHandler.HandleClick(c, rf) {
 				return
 			}
 		}

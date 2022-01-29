@@ -5,6 +5,11 @@ import (
 	//"fmt"
 )
 
+type FieldWithContext interface {
+	Field() *Field
+	Context() string
+}
+
 type Field struct {
 	X uint16
 	Y uint16
@@ -18,6 +23,14 @@ type Field struct {
 	Building   FieldBuildingObjects
 	Plant      *terrain.Plant
 	Travellers []*Traveller
+}
+
+func (f *Field) Field() *Field {
+	return f
+}
+
+func (f *Field) Context() string {
+	return ""
 }
 
 func (f Field) Walkable() bool {
@@ -35,6 +48,16 @@ func (f Field) Buildable() bool {
 		return false
 	}
 	return f.Terrain.T.Buildable && f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
+}
+
+func (f Field) Arable() bool {
+	if !f.Building.Empty() {
+		return false
+	}
+	if f.Plant != nil {
+		return false
+	}
+	return f.Terrain.T.Arable
 }
 
 func (f *Field) RegisterTraveller(t *Traveller) {

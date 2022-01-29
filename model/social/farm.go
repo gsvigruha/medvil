@@ -17,6 +17,20 @@ type FarmLand struct {
 	F       *navigation.Field
 }
 
+func (l FarmLand) Field() *navigation.Field {
+	return l.F
+}
+
+func (l FarmLand) Context() string {
+	switch l.UseType {
+	case economy.FarmFieldUseTypeWheat:
+		return "grain"
+	case economy.FarmFieldUseTypeVegetables:
+		return "vegetable"
+	}
+	return ""
+}
+
 type Farm struct {
 	Household Household
 	Land      []FarmLand
@@ -87,10 +101,10 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
-func (f *Farm) GetFields() []*navigation.Field {
-	fields := make([]*navigation.Field, len(f.Land))
+func (f *Farm) GetFields() []navigation.FieldWithContext {
+	fields := make([]navigation.FieldWithContext, len(f.Land))
 	for i := range f.Land {
-		fields[i] = f.Land[i].F
+		fields[i] = f.Land[i]
 	}
 	return fields
 }
