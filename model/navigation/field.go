@@ -23,6 +23,7 @@ type Field struct {
 	Building   FieldBuildingObjects
 	Plant      *terrain.Plant
 	Travellers []*Traveller
+	Allocated bool
 }
 
 func (f *Field) Field() *Field {
@@ -45,6 +46,9 @@ func (f Field) Buildable() bool {
 		return false
 	}
 	if f.Plant != nil {
+		return false
+	}
+	if f.Allocated {
 		return false
 	}
 	return f.Terrain.T.Buildable && f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW

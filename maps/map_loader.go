@@ -148,6 +148,7 @@ func LoadSociety(dir string, m *model.Map) {
 				for l := range farm.Land {
 					land := farm.Land[l]
 					farm.Land[l].F = &m.Fields[land.X][land.Y]
+					farm.Land[l].F.Allocated = true
 				}
 				farm.Household.People = []*social.Person{farm.Household.NewPerson(), farm.Household.NewPerson()}
 				for _, p := range farm.Household.People {
