@@ -54,9 +54,6 @@ func (f Field) Arable() bool {
 	if !f.Building.Empty() {
 		return false
 	}
-	if f.Plant != nil {
-		return false
-	}
 	return f.Terrain.T.Arable
 }
 
