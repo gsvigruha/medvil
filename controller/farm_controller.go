@@ -5,11 +5,17 @@ import (
 	"image/color"
 	"medvil/model/economy"
 	"medvil/model/social"
+	"medvil/renderer"
 	"medvil/view/gui"
 )
 
+const HouseholdControllerSY = 500
+
 type FamController struct {
-	UseType uint8
+	householdPanel *gui.Panel
+	farmPanel      *gui.Panel
+	UseType        uint8
+	farm           *social.Farm
 }
 
 type LandUseButton struct {
@@ -34,15 +40,62 @@ func (b LandUseButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
-func FarmToControlPanel(cp *ControlPanel, h *social.Farm) {
-	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
-	HouseholdToControlPanel(p, &h.Household)
-	fc := &FamController{}
+func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
+	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
+	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
+	HouseholdToControlPanel(hp, &farm.Household)
+	fc := &FamController{householdPanel: hp, farmPanel: fp, farm: farm, UseType: economy.FarmFieldUseTypeBarren}
 
-	p.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Texture: "terrain/grain", X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+	fp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		fc:      fc,
+		useType: economy.FarmFieldUseTypeBarren,
+	})
+	fp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Texture: "terrain/grain", X: float64(50), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
 		fc:      fc,
 		useType: economy.FarmFieldUseTypeWheat,
 	})
-	cp.SetDynamicPanel(p)
+	fp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Texture: "terrain/vegetables", X: float64(90), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		fc:      fc,
+		useType: economy.FarmFieldUseTypeVegetables,
+	})
+	fp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Icon: "artifacts/fruit", X: float64(140), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		fc:      fc,
+		useType: economy.FarmFieldUseTypeOrchard,
+	})
+
+	cp.SetDynamicPanel(fc)
+	cp.C.ClickHandler = fc
+}
+
+func (fc *FamController) CaptureClick(x, y float64) {
+	fc.farmPanel.CaptureClick(x, y)
+}
+
+func (fc *FamController) Render(cv *canvas.Canvas) {
+	fc.householdPanel.Render(cv)
+	fc.farmPanel.Render(cv)
+}
+
+func (fc *FamController) Clear() {}
+
+func (fc *FamController) Refresh() {
+	fc.householdPanel.Clear()
+	HouseholdToControlPanel(fc.householdPanel, &fc.farm.Household)
+}
+
+func (fc *FamController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+	for i := range fc.farm.Land {
+		l := &fc.farm.Land[i]
+		if l.F.X == rf.F.X && l.F.Y == rf.F.Y {
+			if l.F.Arable() {
+				l.UseType = fc.UseType
+			}
+			return true
+		}
+	}
+	return false
 }

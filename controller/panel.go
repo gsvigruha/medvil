@@ -8,4 +8,5 @@ type Panel interface {
 	Clear()
 	CaptureClick(x float64, y float64)
 	Render(cv *canvas.Canvas)
+	Refresh()
 }

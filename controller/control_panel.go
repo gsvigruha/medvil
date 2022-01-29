@@ -21,10 +21,11 @@ type ControlPanel struct {
 type ControlPanelButton struct {
 	b gui.ButtonGUI
 	c *Controller
+	action func(*Controller)
 }
 
 func (b ControlPanelButton) Click() {
-	b.c.ShowBuildingController()
+	b.action(b.c)
 }
 
 func (b ControlPanelButton) Render(cv *canvas.Canvas) {
@@ -35,8 +36,20 @@ func (b ControlPanelButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func CPActionShowBuildingController(c *Controller) {
+	c.ShowBuildingController()
+}
+
+func CPActionCancel(c *Controller) {
+	c.Reset()
+	c.ControlPanel.dynamicPanel = nil
+}
+
 func (p *ControlPanel) Refresh() {
 	p.dateLabel.Text = strconv.Itoa(int(p.C.Calendar.Day)) + ", " + strconv.Itoa(int(p.C.Calendar.Month)) + ", " + strconv.Itoa(int(p.C.Calendar.Year))
+	if p.dynamicPanel != nil {
+		p.dynamicPanel.Refresh()
+	}
 }
 
 func (p *ControlPanel) Clear() {
@@ -49,7 +62,8 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.C = c
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 10, Y: 30, SX: 32, SY: 32}, c: c})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 10, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowBuildingController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
 }
 
 func (p *ControlPanel) SetDynamicPanel(dp Panel) {
@@ -59,7 +73,9 @@ func (p *ControlPanel) SetDynamicPanel(dp Panel) {
 
 func (p *ControlPanel) CaptureClick(x, y float64) {
 	p.topPanel.CaptureClick(x, y)
-	p.dynamicPanel.CaptureClick(x, y)
+	if p.dynamicPanel != nil {
+		p.dynamicPanel.CaptureClick(x, y)
+	}
 }
 
 func (p *ControlPanel) Render(cv *canvas.Canvas) {
