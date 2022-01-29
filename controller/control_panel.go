@@ -37,6 +37,9 @@ func (b ControlPanelButton) Contains(x float64, y float64) bool {
 
 func (p *ControlPanel) Refresh() {
 	p.dateLabel.Text = strconv.Itoa(int(p.C.Calendar.Day)) + ", " + strconv.Itoa(int(p.C.Calendar.Month)) + ", " + strconv.Itoa(int(p.C.Calendar.Year))
+	if p.dynamicPanel != nil {
+		p.dynamicPanel.Refresh()
+	}
 }
 
 func (p *ControlPanel) Clear() {
