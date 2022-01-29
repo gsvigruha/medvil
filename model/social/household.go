@@ -78,11 +78,3 @@ func (h *Household) NewPerson() *Person {
 		},
 	}
 }
-
-func (h *Household) Full() bool {
-	return uint8(len(h.People)) >= h.TargetNumPeople
-}
-
-func (h *Household) MoveIn(p *Person) {
-	h.People = append(h.People, p)
-}
