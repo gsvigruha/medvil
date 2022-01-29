@@ -9,10 +9,10 @@ import (
 	"medvil/model/social"
 	"medvil/model/time"
 	"medvil/renderer"
-	"medvil/view/gui"
 )
 
 const ControlPanelSX = 300
+const ControlPanelSY = 700
 
 const PerspectiveNE uint8 = 0
 const PerspectiveSE uint8 = 1
@@ -34,8 +34,7 @@ type Controller struct {
 	SelectedField         *navigation.Field
 	SelectedFarm          *social.Farm
 	ReverseReferences     *model.ReverseReferences
-	ControlPanel          *gui.Panel
-	AutoRefresh           bool
+	ControlPanel          *ControlPanel
 	ActiveBuildingPlan    *building.BuildingPlan
 	Country               *social.Country
 }
@@ -79,20 +78,13 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 func (c *Controller) ShowBuildingController() {
 	c.SelectedField = nil
 	c.SelectedFarm = nil
-	c.AutoRefresh = false
-	SetupControlPanel(c.ControlPanel, c)
-	BuildingsToControlPanel(c.ControlPanel, c)
+	BuildingsToControlPanel(c.ControlPanel.P, c)
 }
 
 func (c *Controller) Refresh() {
 	c.ReverseReferences = c.Map.ReverseReferences()
-	if c.Calendar.Hour == 0 && c.AutoRefresh {
-		SetupControlPanel(c.ControlPanel, c)
-		if c.SelectedField != nil {
-			FieldToControlPanel(c.ControlPanel, c.SelectedField)
-		} else if c.SelectedFarm != nil {
-			FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
-		}
+	if c.Calendar.Hour == 0 {
+		c.ControlPanel.Refresh()
 	}
 }
 
@@ -100,7 +92,6 @@ func (c *Controller) Reset() {
 	c.SelectedField = nil
 	c.SelectedFarm = nil
 	c.ActiveBuildingPlan = nil
-	c.AutoRefresh = true
 }
 
 func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
@@ -140,10 +131,9 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			rbu := c.RenderedBuildingUnits[i]
 			if rbu.Contains(c.X, c.Y) {
 				c.Reset()
-				SetupControlPanel(c.ControlPanel, c)
 				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
 				if c.SelectedFarm != nil {
-					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
+					FarmToControlPanel(c.ControlPanel.P, c.SelectedFarm)
 				}
 				return
 			}
@@ -151,11 +141,10 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 		if rf != nil {
 			c.Reset()
 			c.SelectedField = rf.F
-			SetupControlPanel(c.ControlPanel, c)
-			FieldToControlPanel(c.ControlPanel, c.SelectedField)
+			FieldToControlPanel(c.ControlPanel.P, c.SelectedField)
 			return
 		}
-		c.ControlPanel.CaptureClick(c.X, c.Y)
+		c.ControlPanel.P.CaptureClick(c.X, c.Y)
 	}
 }
 
@@ -175,8 +164,9 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 		Day:   28,
 		Hour:  0,
 	}
-	controlPanel := &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: float64(H)}
+	controlPanel := &ControlPanel{}
 	C := Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: &Map.Countries[0]}
+	controlPanel.Setup(C)
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
 	wnd.SetCursorPosCallback(C.MouseMoveCallback)

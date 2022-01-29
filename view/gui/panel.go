@@ -45,8 +45,10 @@ func (p *Panel) Clear() {
 	p.Panels = []*Panel{}
 }
 
-func (p *Panel) AddTextLabel(text string, x float64, y float64) {
-	p.Labels = append(p.Labels, &TextLabel{Text: text, X: x, Y: y})
+func (p *Panel) AddTextLabel(text string, x float64, y float64) *TextLabel {
+	l := &TextLabel{Text: text, X: x, Y: y}
+	p.Labels = append(p.Labels, l)
+	return l
 }
 
 func (p *Panel) AddImageLabel(icon string, x, y, sx, sy float64, style uint8) {
