@@ -23,7 +23,7 @@ type Field struct {
 	Building   FieldBuildingObjects
 	Plant      *terrain.Plant
 	Travellers []*Traveller
-	Allocated bool
+	Allocated  bool
 }
 
 func (f *Field) Field() *Field {

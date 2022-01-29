@@ -139,7 +139,10 @@ func LoadSociety(dir string, m *model.Map) {
 		for j := range countries[i].Towns {
 			town := countries[i].Towns[j]
 			town.Country = &country
-			town.Townhall.Household.People = []*social.Person{town.Townhall.Household.NewPerson(), town.Townhall.Household.NewPerson()}
+			town.Townhall.Household.People = make([]*social.Person, 10)
+			for i := range town.Townhall.Household.People {
+				town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson()
+			}
 			AddBuilding(town.Townhall.Household.Building, m)
 			for k := range town.Farms {
 				farm := town.Farms[k]
@@ -151,6 +154,7 @@ func LoadSociety(dir string, m *model.Map) {
 					farm.Land[l].F.Allocated = true
 				}
 				farm.Household.People = []*social.Person{farm.Household.NewPerson(), farm.Household.NewPerson()}
+				farm.Household.TargetNumPeople = 2
 				for _, p := range farm.Household.People {
 					m.GetField(farm.Household.Building.X, farm.Household.Building.Y).RegisterTraveller(p.Traveller)
 				}

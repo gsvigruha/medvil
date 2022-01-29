@@ -4,7 +4,7 @@ import (
 	"medvil/model/navigation"
 )
 
-const ShortPathMaxLength = 10
+const ShortPathMaxLength = 20
 
 type BFSElement struct {
 	F    *navigation.Field
@@ -12,9 +12,23 @@ type BFSElement struct {
 	d    uint8
 }
 
+func AddNextField(m *Map, x, y uint16, e *BFSElement, toVisit *[]*BFSElement, inQueue map[*navigation.Field]bool) {
+	if x >= 0 && y >= 0 && x < m.SX && y < m.SY {
+		field := m.GetField(x, y)
+		if _, ok := inQueue[field]; ok {
+			// no need to add it to the queue again
+		} else {
+			*toVisit = append(*toVisit, &BFSElement{F: field, prev: e, d: e.d + 1})
+			inQueue[field] = true
+		}
+	}
+}
+
 func FindShortPathBFS(m *Map, sx, sy, ex, ey uint16, travellerType uint8) []*navigation.Field {
+	var iter = 0
 	visited := make(map[*navigation.Field]*[]*navigation.Field)
 	var toVisit = []*BFSElement{&BFSElement{F: m.GetField(sx, sy), prev: nil, d: 1}}
+	var inQueue = make(map[*navigation.Field]bool)
 	for len(toVisit) > 0 {
 		e := toVisit[0]
 		toVisit = toVisit[1:]
@@ -38,13 +52,11 @@ func FindShortPathBFS(m *Map, sx, sy, ex, ey uint16, travellerType uint8) []*nav
 			continue
 		}
 
-		toVisit = append(
-			toVisit,
-			&BFSElement{F: m.GetField(e.F.X+1, e.F.Y), prev: e, d: e.d + 1},
-			&BFSElement{F: m.GetField(e.F.X-1, e.F.Y), prev: e, d: e.d + 1},
-			&BFSElement{F: m.GetField(e.F.X, e.F.Y+1), prev: e, d: e.d + 1},
-			&BFSElement{F: m.GetField(e.F.X, e.F.Y-1), prev: e, d: e.d + 1},
-		)
+		AddNextField(m, e.F.X+1, e.F.Y, e, &toVisit, inQueue)
+		AddNextField(m, e.F.X-1, e.F.Y, e, &toVisit, inQueue)
+		AddNextField(m, e.F.X, e.F.Y+1, e, &toVisit, inQueue)
+		AddNextField(m, e.F.X, e.F.Y-1, e, &toVisit, inQueue)
+		iter++
 	}
 	return nil
 }

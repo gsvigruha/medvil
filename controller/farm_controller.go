@@ -11,7 +11,7 @@ import (
 
 const HouseholdControllerSY = 500
 
-type FamController struct {
+type FarmController struct {
 	householdPanel *gui.Panel
 	farmPanel      *gui.Panel
 	UseType        uint8
@@ -20,7 +20,7 @@ type FamController struct {
 
 type LandUseButton struct {
 	b       gui.ButtonGUI
-	fc      *FamController
+	fc      *FarmController
 	useType uint8
 }
 
@@ -44,7 +44,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
 	HouseholdToControlPanel(hp, &farm.Household)
-	fc := &FamController{householdPanel: hp, farmPanel: fp, farm: farm, UseType: economy.FarmFieldUseTypeBarren}
+	fc := &FarmController{householdPanel: hp, farmPanel: fp, farm: farm, UseType: economy.FarmFieldUseTypeBarren}
 
 	fp.AddButton(LandUseButton{
 		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
@@ -71,23 +71,24 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 	cp.C.ClickHandler = fc
 }
 
-func (fc *FamController) CaptureClick(x, y float64) {
+func (fc *FarmController) CaptureClick(x, y float64) {
+	fc.householdPanel.CaptureClick(x, y)
 	fc.farmPanel.CaptureClick(x, y)
 }
 
-func (fc *FamController) Render(cv *canvas.Canvas) {
+func (fc *FarmController) Render(cv *canvas.Canvas) {
 	fc.householdPanel.Render(cv)
 	fc.farmPanel.Render(cv)
 }
 
-func (fc *FamController) Clear() {}
+func (fc *FarmController) Clear() {}
 
-func (fc *FamController) Refresh() {
+func (fc *FarmController) Refresh() {
 	fc.householdPanel.Clear()
 	HouseholdToControlPanel(fc.householdPanel, &fc.farm.Household)
 }
 
-func (fc *FamController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	var owns = false
 	for i := range fc.farm.Land {
 		l := &fc.farm.Land[i]
