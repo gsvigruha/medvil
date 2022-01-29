@@ -11,9 +11,6 @@ import (
 	"medvil/renderer"
 )
 
-const ControlPanelSX = 300
-const ControlPanelSY = 700
-
 const PerspectiveNE uint8 = 0
 const PerspectiveSE uint8 = 1
 const PerspectiveSW uint8 = 2
@@ -78,7 +75,7 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 func (c *Controller) ShowBuildingController() {
 	c.SelectedField = nil
 	c.SelectedFarm = nil
-	BuildingsToControlPanel(c.ControlPanel.P, c)
+	BuildingsToControlPanel(c.ControlPanel)
 }
 
 func (c *Controller) Refresh() {
@@ -133,7 +130,7 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				c.Reset()
 				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
 				if c.SelectedFarm != nil {
-					FarmToControlPanel(c.ControlPanel.P, c.SelectedFarm)
+					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
 				}
 				return
 			}
@@ -141,10 +138,10 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 		if rf != nil {
 			c.Reset()
 			c.SelectedField = rf.F
-			FieldToControlPanel(c.ControlPanel.P, c.SelectedField)
+			FieldToControlPanel(c.ControlPanel, c.SelectedField)
 			return
 		}
-		c.ControlPanel.P.CaptureClick(c.X, c.Y)
+		c.ControlPanel.CaptureClick(c.X, c.Y)
 	}
 }
 
@@ -165,13 +162,13 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 		Hour:  0,
 	}
 	controlPanel := &ControlPanel{}
-	C := Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: &Map.Countries[0]}
+	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: &Map.Countries[0]}
 	controlPanel.Setup(C)
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
 	wnd.SetCursorPosCallback(C.MouseMoveCallback)
 	wnd.SetScrollCallback(C.MouseScrollCallback)
-	return &C
+	return C
 }
 
 func (c *Controller) ResetRenderedObjects() {

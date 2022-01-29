@@ -34,7 +34,8 @@ func (b LandUseButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
-func FarmToControlPanel(p *gui.Panel, h *social.Farm) {
+func FarmToControlPanel(cp *ControlPanel, h *social.Farm) {
+	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
 	HouseholdToControlPanel(p, &h.Household)
 	fc := &FamController{}
 
@@ -43,4 +44,5 @@ func FarmToControlPanel(p *gui.Panel, h *social.Farm) {
 		fc:      fc,
 		useType: economy.FarmFieldUseTypeWheat,
 	})
+	cp.SetDynamicPanel(p)
 }
