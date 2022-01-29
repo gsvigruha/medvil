@@ -32,7 +32,7 @@ type Controller struct {
 	RenderedFields        []*renderer.RenderedField
 	RenderedBuildingUnits []*renderer.RenderedBuildingUnit
 	SelectedField         *navigation.Field
-	SelectedHousehold     *social.Household
+	SelectedFarm          *social.Farm
 	ReverseReferences     *model.ReverseReferences
 	ControlPanel          *gui.Panel
 	AutoRefresh           bool
@@ -78,7 +78,7 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 
 func (c *Controller) ShowBuildingController() {
 	c.SelectedField = nil
-	c.SelectedHousehold = nil
+	c.SelectedFarm = nil
 	c.AutoRefresh = false
 	SetupControlPanel(c.ControlPanel, c)
 	BuildingsToControlPanel(c.ControlPanel, c)
@@ -90,15 +90,15 @@ func (c *Controller) Refresh() {
 		SetupControlPanel(c.ControlPanel, c)
 		if c.SelectedField != nil {
 			FieldToControlPanel(c.ControlPanel, c.SelectedField)
-		} else if c.SelectedHousehold != nil {
-			HouseholdToControlPanel(c.ControlPanel, c.SelectedHousehold)
+		} else if c.SelectedFarm != nil {
+			FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
 		}
 	}
 }
 
 func (c *Controller) Reset() {
 	c.SelectedField = nil
-	c.SelectedHousehold = nil
+	c.SelectedFarm = nil
 	c.ActiveBuildingPlan = nil
 	c.AutoRefresh = true
 }
@@ -113,12 +113,14 @@ func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField 
 	return nil
 }
 
-func (c *Controller) GetActiveBuildingPlanBaseFields() []*navigation.Field {
+func (c *Controller) GetActiveFields() []*navigation.Field {
 	if c.ActiveBuildingPlan != nil && c.ActiveBuildingPlan.IsComplete() {
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if rf != nil {
 			return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 		}
+	} else if c.SelectedFarm != nil {
+		return c.SelectedFarm.GetFields()
 	}
 	return nil
 }
@@ -138,9 +140,11 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			rbu := c.RenderedBuildingUnits[i]
 			if rbu.Contains(c.X, c.Y) {
 				c.Reset()
-				c.SelectedHousehold = c.ReverseReferences.BuildingToHousehold[rbu.Unit.B]
 				SetupControlPanel(c.ControlPanel, c)
-				HouseholdToControlPanel(c.ControlPanel, c.SelectedHousehold)
+				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
+				if c.SelectedFarm != nil {
+					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
+				}
 				return
 			}
 		}

@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/pkg/profile"
 	"log"
 	"medvil/controller"
 	"medvil/maps"
 	"medvil/view"
 	"time"
-	"github.com/pkg/profile"
 )
 
 const (
@@ -34,11 +34,11 @@ func main() {
 		start := time.Now()
 		view.Render(ic, cv, m, c)
 		elapsed := time.Since(start)
-		
+
 		if elapsed.Nanoseconds() < 25000000 {
-			time.Sleep(time.Duration(25000000 - elapsed.Nanoseconds()) * time.Nanosecond)
+			time.Sleep(time.Duration(25000000-elapsed.Nanoseconds()) * time.Nanosecond)
 		}
-		
+
 		c.Refresh()
 		ic.Clean()
 		if 0 == 0 {

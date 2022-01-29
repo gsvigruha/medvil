@@ -86,3 +86,11 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 }
+
+func (f *Farm) GetFields() []*navigation.Field {
+	fields := make([]*navigation.Field, len(f.Land))
+	for i := range f.Land {
+		fields[i] = f.Land[i].F
+	}
+	return fields
+}

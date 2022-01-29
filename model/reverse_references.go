@@ -6,20 +6,22 @@ import (
 )
 
 type ReverseReferences struct {
-	BuildingToHousehold map[*building.Building]*social.Household
+	BuildingToFarm     map[*building.Building]*social.Farm
+	BuildingToTownhall map[*building.Building]*social.Townhall
 }
 
 func BuildReverseReferences(m *Map) ReverseReferences {
-	BuildingToHousehold := make(map[*building.Building]*social.Household)
+	BuildingToFarm := make(map[*building.Building]*social.Farm)
+	BuildingToTownhall := make(map[*building.Building]*social.Townhall)
 	for i := range m.Countries {
 		country := m.Countries[i]
 		for j := range country.Towns {
 			town := country.Towns[j]
-			BuildingToHousehold[town.Townhall.Household.Building] = &town.Townhall.Household
+			BuildingToTownhall[town.Townhall.Household.Building] = town.Townhall
 			for k := range town.Farms {
-				BuildingToHousehold[town.Farms[k].Household.Building] = &town.Farms[k].Household
+				BuildingToFarm[town.Farms[k].Household.Building] = town.Farms[k]
 			}
 		}
 	}
-	return ReverseReferences{BuildingToHousehold: BuildingToHousehold}
+	return ReverseReferences{BuildingToFarm: BuildingToFarm, BuildingToTownhall: BuildingToTownhall}
 }
