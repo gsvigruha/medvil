@@ -48,6 +48,9 @@ func (f Field) Buildable() bool {
 	if f.Plant != nil {
 		return false
 	}
+	if f.Allocated {
+		return false
+	}
 	return f.Terrain.T.Buildable && f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
 }
 

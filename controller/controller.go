@@ -94,6 +94,7 @@ func (c *Controller) Reset() {
 	c.SelectedField = nil
 	c.SelectedFarm = nil
 	c.ActiveBuildingPlan = nil
+	c.ClickHandler = nil
 }
 
 func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
