@@ -27,6 +27,8 @@ func (l FarmLand) Context() string {
 		return "grain"
 	case economy.FarmFieldUseTypeVegetables:
 		return "vegetable"
+	case economy.FarmFieldUseTypeOrchard:
+		return "fruit"
 	}
 	return ""
 }
