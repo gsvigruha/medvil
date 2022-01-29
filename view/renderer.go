@@ -71,7 +71,7 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			}
 			x := w/2 - float64(i)*DX + float64(j)*DX
 			y := float64(i)*DY + float64(j)*DY - float64(RadiusI)*DY*2 + h/2
-			if x < c.ControlPanel.SX-DX || x > w+DX || y < -DY*2 || y > h+DY {
+			if x < controller.ControlPanelSX-DX || x > w+DX || y < -DY*2 || y > h+DY {
 				continue
 			}
 

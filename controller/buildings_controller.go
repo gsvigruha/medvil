@@ -111,7 +111,8 @@ func (b RoofButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
-func BuildingsToControlPanel(p *gui.Panel, c *Controller) {
+func BuildingsToControlPanel(cp *ControlPanel) {
+	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
 	bc := BuildingsController{Plan: &building.BuildingPlan{}}
 
 	for i, m := range building.RoofMaterials {
@@ -153,6 +154,6 @@ func BuildingsToControlPanel(p *gui.Panel, c *Controller) {
 			})
 		}
 	}
-
-	c.ActiveBuildingPlan = bc.Plan
+	cp.SetDynamicPanel(p)
+	cp.C.ActiveBuildingPlan = bc.Plan
 }
