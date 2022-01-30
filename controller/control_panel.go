@@ -11,17 +11,23 @@ const ControlPanelSY = 700
 const ControlPanelDynamicPanelTop = 100
 const ControlPanelDynamicPanelSY = 600
 
+const CPButtonHighlightNone = 0
+const CPButtonHighlightSmall = 1
+const CPButtonHighlightLarge = 2
+
 type ControlPanel struct {
 	topPanel     *gui.Panel
 	dynamicPanel Panel
 	dateLabel    *gui.TextLabel
+	timeButton   *ControlPanelButton
 	C            *Controller
 }
 
 type ControlPanelButton struct {
-	b      gui.ButtonGUI
-	c      *Controller
-	action func(*Controller)
+	b         gui.ButtonGUI
+	c         *Controller
+	action    func(*Controller)
+	highlight uint8
 }
 
 func (b ControlPanelButton) Click() {
@@ -29,6 +35,13 @@ func (b ControlPanelButton) Click() {
 }
 
 func (b ControlPanelButton) Render(cv *canvas.Canvas) {
+	if b.highlight == CPButtonHighlightSmall {
+		cv.SetFillStyle("#48C")
+		cv.FillRect(b.b.X, b.b.Y, b.b.SX, b.b.SY)
+	} else if b.highlight == CPButtonHighlightLarge {
+		cv.SetFillStyle("#8AD")
+		cv.FillRect(b.b.X, b.b.Y, b.b.SX, b.b.SY)
+	}
 	b.b.Render(cv)
 }
 
@@ -43,6 +56,19 @@ func CPActionShowBuildingController(c *Controller) {
 func CPActionCancel(c *Controller) {
 	c.Reset()
 	c.ControlPanel.dynamicPanel = nil
+}
+
+func CPActionTimeScaleChange(c *Controller) {
+	if c.TimeSpeed == 1 {
+		c.TimeSpeed = 5
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightSmall
+	} else if c.TimeSpeed == 5 {
+		c.TimeSpeed = 20
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightLarge
+	} else {
+		c.TimeSpeed = 1
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightNone
+	}
 }
 
 func (p *ControlPanel) Refresh() {
@@ -63,6 +89,8 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 10, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowBuildingController})
+	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 130, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
+	p.topPanel.AddButton(p.timeButton)
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
 }
 

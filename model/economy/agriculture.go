@@ -68,9 +68,11 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 		}
 	case AgriculturalTaskHarvesting:
 		if t.Progress >= AgriculturalTaskDurationHarvesting {
-			t.F.Terrain.Resources.Add(t.F.Plant.T.Yield.A, t.F.Plant.T.Yield.Quantity)
-			if t.F.Plant.T.IsAnnual() {
-				t.F.Plant = nil
+			if t.F.Plant != nil {
+				t.F.Terrain.Resources.Add(t.F.Plant.T.Yield.A, t.F.Plant.T.Yield.Quantity)
+				if t.F.Plant.T.IsAnnual() {
+					t.F.Plant = nil
+				}
 			}
 			return true
 		}

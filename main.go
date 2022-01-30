@@ -46,7 +46,7 @@ func main() {
 			log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
 			log.Printf("%s", c.Calendar)
 		}
-		for i := 1; i < 2; i++ {
+		for i := 0; i < c.TimeSpeed; i++ {
 			c.Calendar.Tick()
 			m.ElapseTime(c.Calendar)
 		}
