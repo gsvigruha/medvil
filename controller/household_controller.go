@@ -15,7 +15,7 @@ const IconRowMax = 6
 const PersonGUIY = 110
 const ArtifactsGUIY = 280
 const TaskGUIY = 330
-
+const MaxNumTasks = 24
 const HouseholdControllerGUIBottomY = 500
 
 type HouseholdControllerButton struct {
@@ -58,6 +58,9 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	}
 	for i, task := range h.Tasks {
 		TaskToControlPanel(p, i%IconRowMax, float64(TaskGUIY+i/IconRowMax*IconH), task)
+		if i >= MaxNumTasks {
+			break
+		}
 	}
 }
 
