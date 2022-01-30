@@ -19,7 +19,6 @@ const (
 )
 
 func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
-	c.ResetRenderedObjects()
 	w := float64(cv.Width())
 	h := float64(cv.Height())
 	li := int(c.CenterX) - RadiusI
@@ -92,6 +91,7 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			c.AddRenderedField(&rf)
 		}
 	}
+	c.SwapRenderedObjects()
 	RenderActiveBuildingPlanBase(cv, c)
 	c.ControlPanel.Render(cv)
 }
