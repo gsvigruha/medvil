@@ -3,6 +3,8 @@ package navigation
 const MaxPX = 100
 const MaxPY = 100
 
+const TravellerMinD = 25
+
 const TravellerTypePedestrian uint8 = 0
 
 type Traveller struct {
@@ -24,9 +26,32 @@ func (t *Traveller) consumePathElement() {
 	}
 }
 
+func absDistance(c1, c2 uint8) uint8 {
+	if c1 > c2 {
+		return c1 - c2
+	}
+	return c2 - c1
+}
+
+func (t *Traveller) HasRoom(m IMap, dir uint8) bool {
+	for _, ot := range m.GetField(t.FX, t.FY).Travellers {
+		if t != ot && absDistance(t.PX, ot.PX) < TravellerMinD && absDistance(t.PY, ot.PY) < TravellerMinD {
+			if (dir == DirectionW && t.PX > ot.PX) ||
+				(dir == DirectionE && t.PX < ot.PX) ||
+				(dir == DirectionN && t.PY > ot.PY) ||
+				(dir == DirectionS && t.PY < ot.PY) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 func (t *Traveller) MoveLeft(m IMap) {
 	if t.PX > 0 {
-		t.PX--
+		if t.HasRoom(m, DirectionW) {
+			t.PX--
+		}
 	} else {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PX = MaxPX
@@ -39,7 +64,9 @@ func (t *Traveller) MoveLeft(m IMap) {
 
 func (t *Traveller) MoveRight(m IMap) {
 	if t.PX < MaxPX {
-		t.PX++
+		if t.HasRoom(m, DirectionE) {
+			t.PX++
+		}
 	} else {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PX = 0
@@ -52,7 +79,9 @@ func (t *Traveller) MoveRight(m IMap) {
 
 func (t *Traveller) MoveUp(m IMap) {
 	if t.PY > 0 {
-		t.PY--
+		if t.HasRoom(m, DirectionN) {
+			t.PY--
+		}
 	} else {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PY = MaxPY
@@ -65,7 +94,9 @@ func (t *Traveller) MoveUp(m IMap) {
 
 func (t *Traveller) MoveDown(m IMap) {
 	if t.PY < MaxPY {
-		t.PY++
+		if t.HasRoom(m, DirectionS) {
+			t.PY++
+		}
 	} else {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PY = 0
