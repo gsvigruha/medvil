@@ -27,7 +27,8 @@ func AddNextField(m *Map, x, y uint16, e *BFSElement, toVisit *[]*BFSElement, in
 func FindShortPathBFS(m *Map, sx, sy, ex, ey uint16, travellerType uint8) []*navigation.Field {
 	var iter = 0
 	visited := make(map[*navigation.Field]*[]*navigation.Field)
-	var toVisit = []*BFSElement{&BFSElement{F: m.GetField(sx, sy), prev: nil, d: 1}}
+	se := &BFSElement{F: m.GetField(sx, sy), prev: nil, d: 1}
+	var toVisit = []*BFSElement{se}
 	var inQueue = make(map[*navigation.Field]bool)
 	for len(toVisit) > 0 {
 		e := toVisit[0]
@@ -47,7 +48,7 @@ func FindShortPathBFS(m *Map, sx, sy, ex, ey uint16, travellerType uint8) []*nav
 			continue
 		}
 
-		if e.d > ShortPathMaxLength || !e.F.Walkable() {
+		if e.d > ShortPathMaxLength || (e != se && !e.F.Walkable()) {
 			visited[e.F] = nil
 			continue
 		}
