@@ -2,6 +2,7 @@ package renderer
 
 import (
 	"github.com/tfriedel6/canvas"
+	"math"
 	"medvil/model/navigation"
 )
 
@@ -22,6 +23,12 @@ func (rf RenderedField) Draw(cv *canvas.Canvas) {
 }
 
 func (rf *RenderedField) Contains(x float64, y float64) bool {
+	if x < math.Min(math.Min(math.Min(rf.X[0], rf.X[1]), rf.X[2]), rf.X[3]) ||
+		x > math.Max(math.Max(math.Max(rf.X[0], rf.X[1]), rf.X[2]), rf.X[3]) ||
+		y < math.Min(math.Min(math.Min(rf.Y[0]-rf.Z[0], rf.Y[1]-rf.Z[1]), rf.Y[2]-rf.Z[2]), rf.X[3]-rf.Z[3]) ||
+		y > math.Max(math.Max(math.Max(rf.Y[0]-rf.Z[0], rf.Y[1]-rf.Z[1]), rf.Y[2]-rf.Z[2]), rf.X[3]-rf.Z[3]) {
+		return false
+	}
 	return (BtoI(RayIntersects(x, y, rf.X[0], rf.Y[0]-rf.Z[0], rf.X[1], rf.Y[1]-rf.Z[1]))+
 		BtoI(RayIntersects(x, y, rf.X[1], rf.Y[1]-rf.Z[1], rf.X[2], rf.Y[2]-rf.Z[2]))+
 		BtoI(RayIntersects(x, y, rf.X[2], rf.Y[2]-rf.Z[2], rf.X[3], rf.Y[3]-rf.Z[3]))+

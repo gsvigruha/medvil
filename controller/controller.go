@@ -1,7 +1,6 @@
 package controller
 
 import (
-	//"fmt"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"medvil/model"
 	"medvil/model/building"
@@ -21,26 +20,28 @@ type ClickHandler interface {
 }
 
 type Controller struct {
-	X                     float64
-	Y                     float64
-	W                     int
-	H                     int
-	CenterX               int
-	CenterY               int
-	Perspective           uint8
-	Map                   *model.Map
-	Calendar              *time.CalendarType
-	RenderedFields        []*renderer.RenderedField
-	RenderedBuildingUnits []*renderer.RenderedBuildingUnit
-	SelectedField         *navigation.Field
-	SelectedFarm          *social.Farm
-	SelectedTownhall      *social.Townhall
-	ReverseReferences     *model.ReverseReferences
-	ControlPanel          *ControlPanel
-	ActiveBuildingPlan    *building.BuildingPlan
-	Country               *social.Country
-	ClickHandler          ClickHandler
-	TimeSpeed             int
+	X                         float64
+	Y                         float64
+	W                         int
+	H                         int
+	CenterX                   int
+	CenterY                   int
+	Perspective               uint8
+	Map                       *model.Map
+	Calendar                  *time.CalendarType
+	RenderedFields            []*renderer.RenderedField
+	RenderedBuildingUnits     []*renderer.RenderedBuildingUnit
+	TempRenderedFields        []*renderer.RenderedField
+	TempRenderedBuildingUnits []*renderer.RenderedBuildingUnit
+	SelectedField             *navigation.Field
+	SelectedFarm              *social.Farm
+	SelectedTownhall          *social.Townhall
+	ReverseReferences         *model.ReverseReferences
+	ControlPanel              *ControlPanel
+	ActiveBuildingPlan        *building.BuildingPlan
+	Country                   *social.Country
+	ClickHandler              ClickHandler
+	TimeSpeed                 int
 }
 
 func (c *Controller) MoveCenter(dViewX, dViewY int) {
@@ -190,15 +191,17 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 	return C
 }
 
-func (c *Controller) ResetRenderedObjects() {
-	c.RenderedFields = []*renderer.RenderedField{}
-	c.RenderedBuildingUnits = []*renderer.RenderedBuildingUnit{}
+func (c *Controller) SwapRenderedObjects() {
+	c.RenderedFields = c.TempRenderedFields
+	c.RenderedBuildingUnits = c.TempRenderedBuildingUnits
+	c.TempRenderedFields = []*renderer.RenderedField{}
+	c.TempRenderedBuildingUnits = []*renderer.RenderedBuildingUnit{}
 }
 
 func (c *Controller) AddRenderedField(rf *renderer.RenderedField) {
-	c.RenderedFields = append(c.RenderedFields, rf)
+	c.TempRenderedFields = append(c.TempRenderedFields, rf)
 }
 
 func (c *Controller) AddRenderedBuildingUnit(rbu *renderer.RenderedBuildingUnit) {
-	c.RenderedBuildingUnits = append(c.RenderedBuildingUnits, rbu)
+	c.TempRenderedBuildingUnits = append(c.TempRenderedBuildingUnits, rbu)
 }
