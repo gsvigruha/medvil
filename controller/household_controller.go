@@ -52,9 +52,11 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 		b: gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 40, Y: PersonGUIY, SX: 32, SY: 32},
 		h: h, action: IncreaseHouseholdTargetNumPeople})
 	var aI = 0
-	for a, q := range h.Resources.Artifacts {
-		ArtifactsToControlPanel(p, aI, a, q)
-		aI++
+	for _, a := range artifacts.All {
+		if q, ok := h.Resources.Artifacts[a]; ok {
+			ArtifactsToControlPanel(p, aI, a, q)
+			aI++
+		}
 	}
 	for i, task := range h.Tasks {
 		if i >= MaxNumTasks {
@@ -75,7 +77,7 @@ func PersonToControlPanel(p *gui.Panel, i int, person *social.Person) {
 
 func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16) {
 	p.AddImageLabel("artifacts/"+a.Name, float64(10+i*IconW), ArtifactsGUIY, 32, 32, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+i*IconW), ArtifactsGUIY+IconH)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+i*IconW), ArtifactsGUIY+IconH+4)
 }
 
 func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task) {

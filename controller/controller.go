@@ -40,6 +40,7 @@ type Controller struct {
 	ActiveBuildingPlan    *building.BuildingPlan
 	Country               *social.Country
 	ClickHandler          ClickHandler
+	TimeSpeed             int
 }
 
 func (c *Controller) MoveCenter(dViewX, dViewY int) {
@@ -86,9 +87,7 @@ func (c *Controller) ShowBuildingController() {
 
 func (c *Controller) Refresh() {
 	c.ReverseReferences = c.Map.ReverseReferences()
-	if c.Calendar.Hour == 0 {
-		c.ControlPanel.Refresh()
-	}
+	c.ControlPanel.Refresh()
 }
 
 func (c *Controller) Reset() {
@@ -182,7 +181,7 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 		Hour:  0,
 	}
 	controlPanel := &ControlPanel{}
-	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: &Map.Countries[0]}
+	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: &Map.Countries[0], TimeSpeed: 1}
 	controlPanel.Setup(C)
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
