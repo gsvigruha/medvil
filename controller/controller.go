@@ -123,6 +123,9 @@ func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
 	if action == glfw.Press && button == glfw.MouseButton1 {
 		c.ControlPanel.CaptureClick(c.X, c.Y)
+		if c.X < ControlPanelSX {
+			return
+		}
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if c.ActiveBuildingPlan != nil && rf != nil {
 			if c.ActiveBuildingPlan.IsComplete() {
@@ -174,8 +177,8 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 	W, H := wnd.GetSize()
 	Calendar := &time.CalendarType{
 		Year:  1000,
-		Month: 2,
-		Day:   28,
+		Month: 1,
+		Day:   1,
 		Hour:  0,
 	}
 	controlPanel := &ControlPanel{}

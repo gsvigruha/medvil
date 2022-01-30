@@ -13,8 +13,8 @@ const IconH = 40
 const IconW = 40
 const IconRowMax = 6
 const PersonGUIY = 110
-const ArtifactsGUIY = 240
-const TaskGUIY = 300
+const ArtifactsGUIY = 280
+const TaskGUIY = 330
 
 const HouseholdControllerGUIBottomY = 500
 
