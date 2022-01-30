@@ -1,5 +1,9 @@
 package navigation
 
+import (
+	"math/rand"
+)
+
 const MaxPX = 100
 const MaxPY = 100
 
@@ -18,6 +22,7 @@ type Traveller struct {
 	Phase     uint8
 	Path      *Path
 	Visible   bool
+	Lane      uint8
 }
 
 func (t *Traveller) consumePathElement() {
@@ -35,7 +40,7 @@ func absDistance(c1, c2 uint8) uint8 {
 
 func (t *Traveller) HasRoom(m IMap, dir uint8) bool {
 	for _, ot := range m.GetField(t.FX, t.FY).Travellers {
-		if t != ot && absDistance(t.PX, ot.PX) < TravellerMinD && absDistance(t.PY, ot.PY) < TravellerMinD {
+		if t != ot && ot.Visible && absDistance(t.PX, ot.PX) < TravellerMinD && absDistance(t.PY, ot.PY) < TravellerMinD {
 			if (dir == DirectionW && t.PX > ot.PX) ||
 				(dir == DirectionE && t.PX < ot.PX) ||
 				(dir == DirectionN && t.PY > ot.PY) ||
@@ -49,9 +54,7 @@ func (t *Traveller) HasRoom(m IMap, dir uint8) bool {
 
 func (t *Traveller) MoveLeft(m IMap) {
 	if t.PX > 0 {
-		if t.HasRoom(m, DirectionW) {
-			t.PX--
-		}
+		t.PX--
 	} else {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PX = MaxPX
@@ -64,9 +67,7 @@ func (t *Traveller) MoveLeft(m IMap) {
 
 func (t *Traveller) MoveRight(m IMap) {
 	if t.PX < MaxPX {
-		if t.HasRoom(m, DirectionE) {
-			t.PX++
-		}
+		t.PX++
 	} else {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PX = 0
@@ -79,9 +80,7 @@ func (t *Traveller) MoveRight(m IMap) {
 
 func (t *Traveller) MoveUp(m IMap) {
 	if t.PY > 0 {
-		if t.HasRoom(m, DirectionN) {
-			t.PY--
-		}
+		t.PY--
 	} else {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PY = MaxPY
@@ -94,9 +93,7 @@ func (t *Traveller) MoveUp(m IMap) {
 
 func (t *Traveller) MoveDown(m IMap) {
 	if t.PY < MaxPY {
-		if t.HasRoom(m, DirectionS) {
-			t.PY++
-		}
+		t.PY++
 	} else {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PY = 0
@@ -108,28 +105,60 @@ func (t *Traveller) MoveDown(m IMap) {
 }
 
 func (t *Traveller) Move(m IMap) {
+	if t.Lane == 0 {
+		t.Lane = uint8(rand.Intn(3) + 1)
+	}
 	if t.Path != nil {
 		f := t.Path.F[0]
+		var d1 uint8 = DirectionNone
+		var d2 uint8 = DirectionNone
 		if t.FY == f.Y {
-			if t.PY < MaxPY/2 {
-				t.MoveDown(m)
-			} else if t.PY > MaxPY/2 {
-				t.MoveUp(m)
-			} else if t.FX > f.X {
-				t.MoveLeft(m)
+			if t.PY < MaxPY/4*t.Lane {
+				d1 = DirectionS
+			} else if t.PY > MaxPY/4*t.Lane {
+				d1 = DirectionN
+			} 
+			if t.FX > f.X {
+				d2 = DirectionW
 			} else if t.FX < f.X {
-				t.MoveRight(m)
+				d2 = DirectionE
 			}
 		} else if t.FX == f.X {
-			if t.PX < MaxPX/2 {
-				t.MoveRight(m)
-			} else if t.PX > MaxPX/2 {
-				t.MoveLeft(m)
-			} else if t.FY > f.Y {
-				t.MoveUp(m)
-			} else if t.FY < f.Y {
-				t.MoveDown(m)
+			if t.PX < MaxPX/4*t.Lane {
+				d1 = DirectionE
+			} else if t.PX > MaxPX/4*t.Lane {
+				d1 = DirectionW
 			}
+			if t.FY > f.Y {
+				d2 = DirectionN
+			} else if t.FY < f.Y {
+				d2 = DirectionS
+			}
+		}
+		if d1 != DirectionNone && t.HasRoom(m, d1) {
+			switch d1 {
+			case DirectionN:
+				t.MoveUp(m)
+			case DirectionS:
+				t.MoveDown(m)
+			case DirectionW:
+				t.MoveLeft(m)
+			case DirectionE:
+				t.MoveRight(m)
+			}
+		} else if d2 != DirectionNone && t.HasRoom(m, d2) {
+			switch d2 {
+			case DirectionN:
+				t.MoveUp(m)
+			case DirectionS:
+				t.MoveDown(m)
+			case DirectionW:
+				t.MoveLeft(m)
+			case DirectionE:
+				t.MoveRight(m)
+			}
+		} else {
+			t.Lane = uint8(rand.Intn(3) + 1)
 		}
 		t.IncPhase()
 	}
