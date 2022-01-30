@@ -93,7 +93,7 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 	for i := range fc.farm.Land {
 		l := &fc.farm.Land[i]
 		if l.F.X == rf.F.X && l.F.Y == rf.F.Y {
-			if l.UseType != economy.FarmFieldUseTypeBarren || fc.UseType != economy.FarmFieldUseTypeBarren {
+			if fc.UseType != economy.FarmFieldUseTypeBarren {
 				if l.F.Arable() {
 					l.UseType = fc.UseType
 				}
@@ -106,11 +106,11 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 			break
 		}
 	}
-	if !owns && !rf.F.Allocated {
+	if !owns && !rf.F.Allocated && fc.UseType != economy.FarmFieldUseTypeBarren {
 		fc.farm.Land = append(fc.farm.Land, social.FarmLand{
 			X:       rf.F.X,
 			Y:       rf.F.Y,
-			UseType: economy.FarmFieldUseTypeBarren,
+			UseType: fc.UseType,
 			F:       rf.F,
 		})
 		rf.F.Allocated = true

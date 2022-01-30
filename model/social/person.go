@@ -52,6 +52,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			p.Task = &economy.GoHomeTask{F: home, P: p}
 		}
 	}
+	p.Traveller.Visible = !(p.Traveller.FX == p.Household.Building.X && p.Traveller.FY == p.Household.Building.Y)
 	if Calendar.Hour == 0 {
 		if p.Food > 0 {
 			p.Food--
