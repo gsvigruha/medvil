@@ -57,10 +57,10 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 		aI++
 	}
 	for i, task := range h.Tasks {
-		TaskToControlPanel(p, i%IconRowMax, float64(TaskGUIY+i/IconRowMax*IconH), task)
 		if i >= MaxNumTasks {
 			break
 		}
+		TaskToControlPanel(p, i%IconRowMax, float64(TaskGUIY+i/IconRowMax*IconH), task)
 	}
 }
 
