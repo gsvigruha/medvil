@@ -15,6 +15,7 @@ type TreeType struct {
 	LeavesSize          float64
 	BranchingIterations uint8
 	Blooms              bool
+	LogYield            uint16
 }
 
 var Oak = TreeType{
@@ -27,6 +28,7 @@ var Oak = TreeType{
 	LeavesSize:          10.0,
 	BranchingIterations: 6,
 	Blooms:              false,
+	LogYield:            10,
 }
 
 var Apple = TreeType{
@@ -39,6 +41,7 @@ var Apple = TreeType{
 	LeavesSize:          8.0,
 	BranchingIterations: 6,
 	Blooms:              true,
+	LogYield:            5,
 }
 
 var AllTreeTypes = [...]PlantType{

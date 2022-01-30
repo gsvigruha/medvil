@@ -29,6 +29,8 @@ func (l FarmLand) Context() string {
 		return "vegetable"
 	case economy.FarmFieldUseTypeOrchard:
 		return "fruit"
+	case economy.FarmFieldUseTypeForestry:
+		return "log"
 	}
 	return ""
 }
@@ -66,7 +68,12 @@ func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 		a = artifacts.GetArtifact("vegetable")
 	} else if l.UseType == economy.FarmFieldUseTypeWheat {
 		a = artifacts.GetArtifact("grain")
+	} else if l.UseType == economy.FarmFieldUseTypeOrchard {
+		a = artifacts.GetArtifact("fruit")
+	} else if l.UseType == economy.FarmFieldUseTypeForestry {
+		a = artifacts.GetArtifact("log")
 	}
+
 	if a != nil {
 		f.Household.AddTask(&economy.TransportTask{
 			PickupF:  l.F,
@@ -98,10 +105,18 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			} else if l.UseType == economy.FarmFieldUseTypeOrchard {
 				if l.F.Plant == nil {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingAppleTree, F: l.F, UseType: l.UseType})
-				} else if l.F.Plant.T.TreeT == &terrain.Apple {
+				} else if l.F.Plant.T.TreeT == &terrain.Apple && l.F.Plant.IsMature(Calendar) {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, F: l.F, UseType: l.UseType})
 					f.AddTransportTask(l, m)
 				}
+			} else if l.UseType == economy.FarmFieldUseTypeForestry {
+				if l.F.Plant == nil {
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingOakTree, F: l.F, UseType: l.UseType})
+				}
+			}
+			if l.F.Plant != nil && l.F.Plant.IsTree() && l.F.Plant.IsMature(Calendar) && l.UseType != economy.FarmFieldUseTypeOrchard {
+				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskTreeCutting, F: l.F, UseType: l.UseType})
+				f.AddTransportTask(l, m)
 			}
 		}
 	}
