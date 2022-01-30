@@ -12,10 +12,12 @@ var ArgicultureCycleStartTime = time.TimeOfYear{Month: 3, Day: 1}
 const AgriculturalTaskPloughing = 1
 const AgriculturalTaskSowing = 2
 const AgriculturalTaskHarvesting = 3
+const AgriculturalTaskPlantingAppleTree = 4
 
 const AgriculturalTaskDurationPloughing = 24 * 30
 const AgriculturalTaskDurationSowing = 24 * 15
 const AgriculturalTaskDurationHarvesting = 24 * 30
+const AgriculturalTaskDurationPlanting = 24 * 5
 
 const FarmFieldUseTypeBarren uint8 = 0
 const FarmFieldUseTypeWheat uint8 = 1
@@ -65,6 +67,17 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 			t.F.Plant = nil
 			return true
 		}
+	case AgriculturalTaskPlantingAppleTree:
+		if t.Progress >= AgriculturalTaskDurationPlanting {
+			t.F.Plant = &terrain.Plant{
+				T:             &terrain.AllTreeTypes[1],
+				X:             t.F.X,
+				Y:             t.F.Y,
+				BirthDateDays: Calendar.DaysElapsed(),
+				Shape:         uint8(rand.Intn(10)),
+			}
+			return true
+		}
 	}
 	return false
 }
@@ -77,6 +90,8 @@ func (t *AgriculturalTask) Blocked() bool {
 		return t.F.Plant != nil || t.F.Terrain.T != terrain.Dirt
 	case AgriculturalTaskHarvesting:
 		return t.F.Plant == nil || !t.F.Plant.Ripe
+	case AgriculturalTaskPlantingAppleTree:
+		return t.F.Plant != nil
 	}
 	return false
 }
@@ -89,6 +104,8 @@ func (t *AgriculturalTask) Name() string {
 		return "sowing"
 	case AgriculturalTaskHarvesting:
 		return "harvesting"
+	case AgriculturalTaskPlantingAppleTree:
+		return "planting"
 	}
 	return ""
 }

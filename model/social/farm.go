@@ -95,9 +95,13 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, F: l.F, UseType: l.UseType})
 					f.AddTransportTask(l, m)
 				}
-			} else if l.UseType == economy.FarmFieldUseTypeOrchard && l.F.Plant != nil && l.F.Plant.T.TreeT == &terrain.Apple {
-				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, F: l.F, UseType: l.UseType})
-				f.AddTransportTask(l, m)
+			} else if l.UseType == economy.FarmFieldUseTypeOrchard {
+				if l.F.Plant == nil {
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingAppleTree, F: l.F, UseType: l.UseType})
+				} else if l.F.Plant.T.TreeT == &terrain.Apple {
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskHarvesting, F: l.F, UseType: l.UseType})
+					f.AddTransportTask(l, m)
+				}
 			}
 		}
 	}

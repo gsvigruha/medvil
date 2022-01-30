@@ -30,9 +30,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Task = nil
 			}
 		} else {
-			if p.Traveller.Path == nil || p.Traveller.Path.LastField() != p.Task.Field() {
-				p.Traveller.Path = m.ShortPath(p.Traveller.FX, p.Traveller.FY, p.Task.Field().X, p.Task.Field().Y, navigation.TravellerTypePedestrian)
-			}
+			p.Traveller.EnsurePath(p.Task.Field(), navigation.TravellerTypePedestrian, m)
 			if p.IsHome {
 				// Start on path
 				p.IsHome = false

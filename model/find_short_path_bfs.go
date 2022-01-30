@@ -1,6 +1,7 @@
 package model
 
 import (
+	"math/rand"
 	"medvil/model/navigation"
 )
 
@@ -53,10 +54,10 @@ func FindShortPathBFS(m *Map, sx, sy, ex, ey uint16, travellerType uint8) []*nav
 			continue
 		}
 
-		AddNextField(m, e.F.X+1, e.F.Y, e, &toVisit, inQueue)
-		AddNextField(m, e.F.X-1, e.F.Y, e, &toVisit, inQueue)
-		AddNextField(m, e.F.X, e.F.Y+1, e, &toVisit, inQueue)
-		AddNextField(m, e.F.X, e.F.Y-1, e, &toVisit, inQueue)
+		nextCoords := [][]uint16{{e.F.X + 1, e.F.Y}, {e.F.X - 1, e.F.Y}, {e.F.X, e.F.Y + 1}, {e.F.X, e.F.Y - 1}}
+		for _, idx := range rand.Perm(4) {
+			AddNextField(m, nextCoords[idx][0], nextCoords[idx][1], e, &toVisit, inQueue)
+		}
 		iter++
 	}
 	return nil
