@@ -62,9 +62,14 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		useType: economy.FarmFieldUseTypeVegetables,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/fruit", X: float64(140), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		b:       gui.ButtonGUI{Icon: "artifacts/fruit", X: float64(130), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
 		fc:      fc,
 		useType: economy.FarmFieldUseTypeOrchard,
+	})
+	fp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Icon: "artifacts/log", X: float64(170), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		fc:      fc,
+		useType: economy.FarmFieldUseTypeForestry,
 	})
 
 	cp.SetDynamicPanel(fc)
