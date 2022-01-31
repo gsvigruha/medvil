@@ -62,7 +62,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.Task = h.getNextTask()
 		}
 	}
-	if h.Town != nil {
+	if h.Town != nil { // Not Townhall, needs better check
 		if h.HasRoomForPeople() && len(h.Town.Townhall.Household.People) > 0 {
 			person := h.Town.Townhall.Household.People[0]
 			h.Town.Townhall.Household.People = h.Town.Townhall.Household.People[1:]
