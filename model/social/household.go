@@ -7,7 +7,6 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
-	"fmt"
 )
 
 type Household struct {
@@ -63,25 +62,24 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.Task = h.getNextTask()
 		}
 	}
-	if h.HasRoomForPeople() && len(h.Town.Townhall.Household.People) > 0 {
-		person := h.Town.Townhall.Household.People[0]
-		h.Town.Townhall.Household.People = h.Town.Townhall.Household.People[1:]
-		h.People = append(h.People, person)
-		person.Household = h
-		person.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: person}
-	}
-	if rand.Float64() < 1.0/(24*30*12) {
-		fmt.Println(h)
-		fmt.Println("t", h.Town)
-		fmt.Println("h", h.Town.Townhall)
-		fmt.Println(h.Town.Townhall.Household)
-		if len(h.People) >= 1 && h.HasRoomForPeople() {
-			h.People = append(h.People, h.NewPerson())
-		} else if h.Town.Townhall.Household.HasRoomForPeople() {
-			person := h.Town.Townhall.Household.NewPerson()
-			person.Traveller.FX = h.Building.X
-			person.Traveller.FY = h.Building.Y
-			person.Task = &economy.GoHomeTask{F: m.GetField(h.Town.Townhall.Household.Building.X, h.Town.Townhall.Household.Building.Y), P: person}
+	if h.Town != nil {
+		if h.HasRoomForPeople() && len(h.Town.Townhall.Household.People) > 0 {
+			person := h.Town.Townhall.Household.People[0]
+			h.Town.Townhall.Household.People = h.Town.Townhall.Household.People[1:]
+			h.People = append(h.People, person)
+			person.Household = h
+			person.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: person}
+		}
+		if rand.Float64() < 1.0/(24*30*12) {
+			if len(h.People) >= 1 && h.HasRoomForPeople() {
+				h.People = append(h.People, h.NewPerson())
+			} else if h.Town.Townhall.Household.HasRoomForPeople() {
+				person := h.Town.Townhall.Household.NewPerson()
+				h.Town.Townhall.Household.People = append(h.Town.Townhall.Household.People, person)
+				person.Traveller.FX = h.Building.X
+				person.Traveller.FY = h.Building.Y
+				person.Task = &economy.GoHomeTask{F: m.GetField(h.Town.Townhall.Household.Building.X, h.Town.Townhall.Household.Building.Y), P: person}
+			}
 		}
 	}
 }
