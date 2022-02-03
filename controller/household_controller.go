@@ -37,7 +37,7 @@ func (b HouseholdControllerButton) Contains(x float64, y float64) bool {
 }
 
 func IncreaseHouseholdTargetNumPeople(h *social.Household) {
-	h.TargetNumPeople++
+	h.IncTargetNumPeople()
 }
 
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
@@ -45,7 +45,7 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	for i, person := range h.People {
 		PersonToControlPanel(p, i, person)
 	}
-	for i := uint8(len(h.People)); i < h.TargetNumPeople; i++ {
+	for i := uint16(len(h.People)); i < h.TargetNumPeople; i++ {
 		p.AddImageLabel("person", float64(10+i*IconW), PersonGUIY, 32, 32, gui.ImageLabelStyleDisabled)
 	}
 	p.AddButton(HouseholdControllerButton{

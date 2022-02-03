@@ -1,6 +1,7 @@
 package social
 
 import (
+	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
@@ -10,7 +11,7 @@ import (
 
 type Household struct {
 	People          []*Person
-	TargetNumPeople uint8
+	TargetNumPeople uint16
 	Money           uint32
 	Building        *building.Building
 	Town            *Town
@@ -44,6 +45,16 @@ func (h *Household) AddTask(t economy.Task) {
 	h.Tasks = append(h.Tasks, t)
 }
 
+func (h *Household) IncTargetNumPeople() {
+	if h.TargetNumPeople < h.Building.Plan.Area()*2 {
+		h.TargetNumPeople++
+	}
+}
+
+func (h *Household) HasRoomForPeople() bool {
+	return uint16(len(h.People)) < h.TargetNumPeople
+}
+
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	for i := range h.People {
 		person := h.People[i]
@@ -51,12 +62,25 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.Task = h.getNextTask()
 		}
 	}
-	if uint8(len(h.People)) < h.TargetNumPeople && len(h.Town.Townhall.Household.People) > 0 {
-		person := h.Town.Townhall.Household.People[0]
-		h.Town.Townhall.Household.People = h.Town.Townhall.Household.People[1:]
-		h.People = append(h.People, person)
-		person.Household = h
-		person.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: person}
+	if h.Town != nil { // Not Townhall, needs better check
+		if h.HasRoomForPeople() && len(h.Town.Townhall.Household.People) > 0 {
+			person := h.Town.Townhall.Household.People[0]
+			h.Town.Townhall.Household.People = h.Town.Townhall.Household.People[1:]
+			h.People = append(h.People, person)
+			person.Household = h
+			person.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: person}
+		}
+		if rand.Float64() < 1.0/(24*30*12) {
+			if len(h.People) >= 1 && h.HasRoomForPeople() {
+				h.People = append(h.People, h.NewPerson())
+			} else if h.Town.Townhall.Household.HasRoomForPeople() {
+				person := h.Town.Townhall.Household.NewPerson()
+				h.Town.Townhall.Household.People = append(h.Town.Townhall.Household.People, person)
+				person.Traveller.FX = h.Building.X
+				person.Traveller.FY = h.Building.Y
+				person.Task = &economy.GoHomeTask{F: m.GetField(h.Town.Townhall.Household.Building.X, h.Town.Townhall.Household.Building.Y), P: person}
+			}
+		}
 	}
 }
 
