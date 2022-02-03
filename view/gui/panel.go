@@ -5,13 +5,14 @@ import (
 )
 
 type Panel struct {
-	X       float64
-	Y       float64
-	SX      float64
-	SY      float64
-	Buttons []Button
-	Labels  []Label
-	Panels  []*Panel
+	X         float64
+	Y         float64
+	SX        float64
+	SY        float64
+	Buttons   []Button
+	Labels    []Label
+	Panels    []*Panel
+	DropDowns []*DropDown
 }
 
 func (p *Panel) Render(cv *canvas.Canvas) {
@@ -26,6 +27,9 @@ func (p *Panel) Render(cv *canvas.Canvas) {
 	for i := range p.Panels {
 		p.Panels[i].Render(cv)
 	}
+	for i := range p.DropDowns {
+		p.DropDowns[i].Render(cv)
+	}
 }
 
 func (p *Panel) CaptureClick(x float64, y float64) {
@@ -37,12 +41,16 @@ func (p *Panel) CaptureClick(x float64, y float64) {
 	for i := range p.Panels {
 		p.Panels[i].CaptureClick(x, y)
 	}
+	for i := range p.DropDowns {
+		p.DropDowns[i].CaptureClick(x, y)
+	}
 }
 
 func (p *Panel) Clear() {
 	p.Buttons = []Button{}
 	p.Labels = []Label{}
 	p.Panels = []*Panel{}
+	p.DropDowns = []*DropDown{}
 }
 
 func (p *Panel) Refresh() {}
@@ -67,4 +75,8 @@ func (p *Panel) AddTextureLabel(texture string, x, y, sx, sy float64) {
 
 func (p *Panel) AddButton(button Button) {
 	p.Buttons = append(p.Buttons, button)
+}
+
+func (p *Panel) AddDropDown(dropDown *DropDown) {
+	p.DropDowns = append(p.DropDowns, dropDown)
 }

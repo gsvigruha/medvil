@@ -5,8 +5,14 @@ import (
 	"image/color"
 	"medvil/model/building"
 	"medvil/model/materials"
+	"medvil/renderer"
 	"medvil/view/gui"
 )
+
+type BuildingType uint8
+
+const BuildingTypeFarm = 1
+const BuildingTypeWorkshop = 2
 
 const RoofPanelTop = 100
 const FloorsPanelTop = 200
@@ -15,6 +21,7 @@ const BuildingBasePanelTop = 400
 type BuildingsController struct {
 	PlanName string
 	Plan     *building.BuildingPlan
+	bt       BuildingType
 }
 
 type BuildingBaseButton struct {
@@ -111,16 +118,28 @@ func (b RoofButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
-func BuildingsToControlPanel(cp *ControlPanel) {
+func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+	if c.ActiveBuildingPlan.IsComplete() {
+		if bc.bt == BuildingTypeFarm {
+			c.Map.AddFarm(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+		} else if bc.bt == BuildingTypeWorkshop {
+			c.Map.AddWorkshop(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+		}
+		return true
+	}
+	return false
+}
+
+func BuildingsToControlPanel(cp *ControlPanel, bt BuildingType) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
-	bc := BuildingsController{Plan: &building.BuildingPlan{}}
+	bc := &BuildingsController{Plan: &building.BuildingPlan{}, bt: bt}
 
 	for i, m := range building.RoofMaterials {
 		p.AddButton(RoofButton{
 			b:    gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*40 + 10), Y: float64(RoofPanelTop), SX: 32, SY: 32},
 			m:    m,
 			flat: false,
-			bc:   &bc,
+			bc:   bc,
 		})
 	}
 
@@ -129,7 +148,7 @@ func BuildingsToControlPanel(cp *ControlPanel) {
 			b:    gui.ButtonGUI{Texture: "building/" + m.Name, X: float64((i+len(building.RoofMaterials))*40 + 10), Y: float64(RoofPanelTop), SX: 32, SY: 32},
 			m:    m,
 			flat: true,
-			bc:   &bc,
+			bc:   bc,
 		})
 	}
 
@@ -139,7 +158,7 @@ func BuildingsToControlPanel(cp *ControlPanel) {
 				b:  gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*40 + 10), Y: float64(j*40 + FloorsPanelTop), SX: 32, SY: 32},
 				f:  building.MaxFloors - j - 1,
 				m:  m,
-				bc: &bc,
+				bc: bc,
 			})
 		}
 	}
@@ -150,10 +169,11 @@ func BuildingsToControlPanel(cp *ControlPanel) {
 				b:  gui.ButtonGUI{Icon: "parcel", X: float64(i*40 + 10), Y: float64(j*40 + BuildingBasePanelTop), SX: 32, SY: 32},
 				i:  i,
 				j:  j,
-				bc: &bc,
+				bc: bc,
 			})
 		}
 	}
 	cp.SetDynamicPanel(p)
 	cp.C.ActiveBuildingPlan = bc.Plan
+	cp.C.ClickHandler = bc
 }

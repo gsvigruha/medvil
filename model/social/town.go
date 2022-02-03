@@ -18,4 +18,5 @@ type Town struct {
 	Townhall    *Townhall
 	Marketplace *Marketplace
 	Farms       []*Farm
+	Workshops   []*Workshop
 }

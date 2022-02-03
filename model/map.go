@@ -32,6 +32,14 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 				}
 				farm.ElapseTime(Calendar, m)
 			}
+			for k := range town.Workshops {
+				workshop := town.Workshops[k]
+				for l := range workshop.Household.People {
+					person := workshop.Household.People[l]
+					person.ElapseTime(Calendar, m)
+				}
+				workshop.ElapseTime(Calendar, m)
+			}
 		}
 	}
 	for i := uint16(0); i < m.SX; i++ {
@@ -62,6 +70,18 @@ func (m *Map) AddFarm(c *social.Country, x, y uint16, bp *building.BuildingPlan)
 		t := c.Towns[0]
 		f := &social.Farm{Household: social.Household{Building: b, Town: t}}
 		t.Farms = append(t.Farms, f)
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *Map) AddWorkshop(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
+	b := m.AddBuilding(x, y, bp)
+	if b != nil {
+		t := c.Towns[0]
+		w := &social.Workshop{Household: social.Household{Building: b, Town: t}}
+		t.Workshops = append(t.Workshops, w)
 		return true
 	} else {
 		return false
