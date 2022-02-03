@@ -49,8 +49,12 @@ func (b ControlPanelButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
-func CPActionShowBuildingController(c *Controller) {
-	c.ShowBuildingController()
+func CPActionShowWorkshopController(c *Controller) {
+	c.ShowWorkshopController()
+}
+
+func CPActionShowFarmController(c *Controller) {
+	c.ShowFarmController()
 }
 
 func CPActionCancel(c *Controller) {
@@ -88,10 +92,11 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.C = c
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 10, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowBuildingController})
-	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 130, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
-	p.topPanel.AddButton(p.timeButton)
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: 10, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowFarmController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 50, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowWorkshopController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
+	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 210, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
+	p.topPanel.AddButton(p.timeButton)
 }
 
 func (p *ControlPanel) SetDynamicPanel(dp Panel) {

@@ -35,6 +35,7 @@ type Controller struct {
 	TempRenderedBuildingUnits []*renderer.RenderedBuildingUnit
 	SelectedField             *navigation.Field
 	SelectedFarm              *social.Farm
+	SelectedWorkshop          *social.Workshop
 	SelectedTownhall          *social.Townhall
 	ReverseReferences         *model.ReverseReferences
 	ControlPanel              *ControlPanel
@@ -80,10 +81,14 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 	}
 }
 
-func (c *Controller) ShowBuildingController() {
-	c.SelectedField = nil
-	c.SelectedFarm = nil
-	BuildingsToControlPanel(c.ControlPanel)
+func (c *Controller) ShowWorkshopController() {
+	c.Reset()
+	BuildingsToControlPanel(c.ControlPanel, BuildingTypeWorkshop)
+}
+
+func (c *Controller) ShowFarmController() {
+	c.Reset()
+	BuildingsToControlPanel(c.ControlPanel, BuildingTypeFarm)
 }
 
 func (c *Controller) Refresh() {
@@ -94,6 +99,7 @@ func (c *Controller) Refresh() {
 func (c *Controller) Reset() {
 	c.SelectedField = nil
 	c.SelectedFarm = nil
+	c.SelectedWorkshop = nil
 	c.ActiveBuildingPlan = nil
 	c.ClickHandler = nil
 }
@@ -127,14 +133,6 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			return
 		}
 		rf := c.CaptureRenderedField(c.X, c.Y)
-		if c.ActiveBuildingPlan != nil && rf != nil {
-			if c.ActiveBuildingPlan.IsComplete() {
-				c.Map.AddFarm(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
-			} else {
-				c.Reset()
-			}
-			return
-		}
 		for i := range c.RenderedBuildingUnits {
 			rbu := c.RenderedBuildingUnits[i]
 			if rbu.Contains(c.X, c.Y) {
@@ -142,11 +140,14 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbu.Unit.B]
 				if c.SelectedTownhall != nil {
 					TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
-				} else {
-					c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
-					if c.SelectedFarm != nil {
-						FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
-					}
+				}
+				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
+				if c.SelectedFarm != nil {
+					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
+				}
+				c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbu.Unit.B]
+				if c.SelectedWorkshop != nil {
+					WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
 				}
 				return
 			}
