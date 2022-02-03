@@ -34,3 +34,12 @@ func GetAllManufactureNames() []string {
 	}
 	return result
 }
+
+func GetManufacture(name string) *Manufacture {
+	for i := 0; i < len(AllManufacture); i++ {
+		if AllManufacture[i].Name == name {
+			return AllManufacture[i]
+		}
+	}
+	return nil
+}

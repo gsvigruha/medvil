@@ -8,9 +8,10 @@ import (
 )
 
 type WorkshopController struct {
-	householdPanel *gui.Panel
-	workshopPanel  *gui.Panel
-	workshop       *social.Workshop
+	householdPanel      *gui.Panel
+	workshopPanel       *gui.Panel
+	workshop            *social.Workshop
+	manufactureDropDown *gui.DropDown
 }
 
 func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
@@ -19,7 +20,11 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	HouseholdToControlPanel(hp, &workshop.Household)
 	wc := &WorkshopController{workshopPanel: wp, householdPanel: hp, workshop: workshop}
 
-	wp.AddDropDown(&gui.DropDown{X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 64, SY: 20, Options: economy.GetAllManufactureNames()})
+	wc.manufactureDropDown = &gui.DropDown{X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 64, SY: 20, Options: economy.GetAllManufactureNames(), Selected: -1}
+	if workshop.Manufacture != nil {
+		wc.manufactureDropDown.SetSelectedValue(workshop.Manufacture.Name)
+	}
+	wp.AddDropDown(wc.manufactureDropDown)
 
 	cp.SetDynamicPanel(wc)
 }
@@ -27,6 +32,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 func (wc *WorkshopController) CaptureClick(x, y float64) {
 	wc.householdPanel.CaptureClick(x, y)
 	wc.workshopPanel.CaptureClick(x, y)
+	wc.workshop.Manufacture = economy.GetManufacture(wc.manufactureDropDown.GetSelectedValue())
 }
 
 func (wc *WorkshopController) Render(cv *canvas.Canvas) {
