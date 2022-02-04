@@ -13,4 +13,7 @@ type Workshop struct {
 
 func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.ElapseTime(Calendar, m)
+	needs := w.Household.Resources.Needs(w.Manufacture.Inputs)
+	if needs != nil && w.Household.Town.Marketplace.Storage.Has(needs) {
+	}
 }
