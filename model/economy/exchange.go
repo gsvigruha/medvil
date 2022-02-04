@@ -15,38 +15,38 @@ type Exchange interface {
 }
 
 type ExchangeTask struct {
-	PickupF        *navigation.Field
-	DropoffF       *navigation.Field
+	HomeF          *navigation.Field
+	MarketF        *navigation.Field
 	Exchange       Exchange
 	HouseholdR     *artifacts.Resources
 	HouseholdMoney *uint32
 	GoodsToBuy     []artifacts.Artifacts
 	GoodsToSell    []artifacts.Artifacts
-	dropoff        bool
+	backtrip       bool
 }
 
 func (t *ExchangeTask) Field() *navigation.Field {
-	if t.dropoff {
-		return t.DropoffF
+	if t.backtrip {
+		return t.HomeF
 	} else {
-		return t.PickupF
+		return t.MarketF
 	}
 }
 
 func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
-	if t.dropoff {
+	if t.backtrip {
 		t.HouseholdR.AddAll(t.GoodsToBuy)
 		return true
 	} else {
 		t.Exchange.Buy(t.GoodsToBuy, t.HouseholdMoney)
 		t.Exchange.Sell(t.GoodsToSell, t.HouseholdMoney)
-		t.dropoff = true
+		t.backtrip = true
 	}
 	return false
 }
 
 func (t *ExchangeTask) Blocked() bool {
-	if t.dropoff {
+	if t.backtrip {
 		return false
 	} else {
 		return !t.Exchange.CanBuy(t.GoodsToBuy) || !t.Exchange.CanSell(t.GoodsToSell) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney

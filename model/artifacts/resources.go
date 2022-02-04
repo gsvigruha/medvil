@@ -99,6 +99,8 @@ func (r *Resources) Needs(as []Artifacts) []Artifacts {
 			if v < a.Quantity {
 				remaining = append(remaining, Artifacts{A: a.A, Quantity: a.Quantity - v})
 			}
+		} else {
+			remaining = append(remaining, Artifacts{A: a.A, Quantity: a.Quantity})
 		}
 	}
 	return remaining

@@ -127,8 +127,8 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: q - 20}}
 			if f.Household.Town.Marketplace.CanSell(goods) && f.Household.Resources.RemoveAll(goods) {
 				f.Household.AddTask(&economy.ExchangeTask{
-					PickupF:        home,
-					DropoffF:       market,
+					HomeF:          home,
+					MarketF:        market,
 					Exchange:       f.Household.Town.Marketplace,
 					HouseholdR:     &f.Household.Resources,
 					HouseholdMoney: &f.Household.Money,
