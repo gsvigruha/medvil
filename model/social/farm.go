@@ -120,6 +120,24 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	home := m.GetField(f.Household.Building.X, f.Household.Building.Y)
+	market := m.GetField(f.Household.Town.Marketplace.Building.X, f.Household.Town.Marketplace.Building.Y)
+	for a, q := range f.Household.Resources.Artifacts {
+		if q >= 50 {
+			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: q - 20}}
+			if f.Household.Town.Marketplace.CanSell(goods) && f.Household.Resources.RemoveAll(goods) {
+				f.Household.AddTask(&economy.ExchangeTask{
+					PickupF:        home,
+					DropoffF:       market,
+					Exchange:       f.Household.Town.Marketplace,
+					HouseholdR:     &f.Household.Resources,
+					HouseholdMoney: &f.Household.Money,
+					GoodsToBuy:     nil,
+					GoodsToSell:    goods,
+				})
+			}
+		}
+	}
 }
 
 func (f *Farm) GetFields() []navigation.FieldWithContext {

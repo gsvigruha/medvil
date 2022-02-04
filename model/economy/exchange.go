@@ -7,11 +7,11 @@ import (
 )
 
 type Exchange interface {
-	Buy([]artifacts.Artifacts)
-	Sell([]artifacts.Artifacts)
+	Buy([]artifacts.Artifacts, *uint32)
+	Sell([]artifacts.Artifacts, *uint32)
 	CanBuy([]artifacts.Artifacts) bool
 	CanSell([]artifacts.Artifacts) bool
-	Price([]artifacts.Artifacts) uint16
+	Price([]artifacts.Artifacts) uint32
 }
 
 type ExchangeTask struct {
@@ -19,7 +19,7 @@ type ExchangeTask struct {
 	DropoffF       *navigation.Field
 	Exchange       Exchange
 	HouseholdR     *artifacts.Resources
-	HouseholdMoney *uint16
+	HouseholdMoney *uint32
 	GoodsToBuy     []artifacts.Artifacts
 	GoodsToSell    []artifacts.Artifacts
 	dropoff        bool
@@ -38,8 +38,8 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
 		t.HouseholdR.AddAll(t.GoodsToBuy)
 		return true
 	} else {
-		t.Exchange.Buy(t.GoodsToBuy)
-		t.Exchange.Sell(t.GoodsToSell)
+		t.Exchange.Buy(t.GoodsToBuy, t.HouseholdMoney)
+		t.Exchange.Sell(t.GoodsToSell, t.HouseholdMoney)
 		t.dropoff = true
 	}
 	return false
@@ -49,7 +49,7 @@ func (t *ExchangeTask) Blocked() bool {
 	if t.dropoff {
 		return false
 	} else {
-		return t.Exchange.CanBuy(t.GoodsToBuy) && t.Exchange.CanSell(t.GoodsToSell) && t.Exchange.Price(t.GoodsToBuy) >= *t.HouseholdMoney
+		return !t.Exchange.CanBuy(t.GoodsToBuy) || !t.Exchange.CanSell(t.GoodsToSell) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney
 	}
 }
 

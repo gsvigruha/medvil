@@ -146,6 +146,7 @@ func LoadSociety(dir string, m *model.Map) {
 			}
 			AddBuilding(town.Townhall.Household.Building, m)
 			AddBuilding(town.Marketplace.Building, m)
+			town.Marketplace.Init()
 			for k := range town.Farms {
 				farm := town.Farms[k]
 				farm.Household.Town = town
