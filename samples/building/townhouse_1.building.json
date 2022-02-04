@@ -15,6 +15,5 @@
 	"roof": {"material": "tile", "flat": "false"},
 	"doorX": 1,
 	"doorY": 2,
-	"doorD": 2
-	
+	"doorD": 2	
 }

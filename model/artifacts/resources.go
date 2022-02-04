@@ -30,6 +30,12 @@ func (r *Resources) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (r *Resources) AddAll(as []Artifacts) {
+	for _, a := range as {
+		r.Add(a.A, a.Quantity)
+	}
+}
+
 func (r *Resources) Add(a *Artifact, q uint16) {
 	if r.Artifacts == nil {
 		r.Artifacts = make(map[*Artifact]uint16)
@@ -60,6 +66,16 @@ func (r *Resources) Get(a *Artifact) uint16 {
 	return 0
 }
 
+func (r *Resources) RemoveAll(as []Artifacts) bool {
+	if !r.Has(as) {
+		return false
+	}
+	for _, a := range as {
+		r.Remove(a.A, a.Quantity)
+	}
+	return true
+}
+
 func (r *Resources) Remove(a *Artifact, q uint16) uint16 {
 	if r.Artifacts == nil {
 		r.Artifacts = make(map[*Artifact]uint16)
@@ -74,4 +90,31 @@ func (r *Resources) Remove(a *Artifact, q uint16) uint16 {
 		}
 	}
 	return 0
+}
+
+func (r *Resources) Needs(as []Artifacts) []Artifacts {
+	var remaining []Artifacts = nil
+	for _, a := range as {
+		if v, ok := r.Artifacts[a.A]; ok {
+			if v < a.Quantity {
+				remaining = append(remaining, Artifacts{A: a.A, Quantity: a.Quantity - v})
+			}
+		} else {
+			remaining = append(remaining, Artifacts{A: a.A, Quantity: a.Quantity})
+		}
+	}
+	return remaining
+}
+
+func (r *Resources) Has(as []Artifacts) bool {
+	for _, a := range as {
+		if v, ok := r.Artifacts[a.A]; ok {
+			if v < a.Quantity {
+				return false
+			}
+		} else {
+			return false
+		}
+	}
+	return true
 }
