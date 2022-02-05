@@ -41,7 +41,7 @@ func IncreaseHouseholdTargetNumPeople(h *social.Household) {
 }
 
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
-	p.AddTextLabel("money "+strconv.Itoa(int(h.Money)), 10, 80)
+	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, 80)
 	for i, person := range h.People {
 		PersonToControlPanel(p, i, person)
 	}
