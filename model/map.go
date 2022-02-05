@@ -80,7 +80,7 @@ func (m *Map) AddWorkshop(c *social.Country, x, y uint16, bp *building.BuildingP
 	b := m.AddBuilding(x, y, bp)
 	if b != nil {
 		t := c.Towns[0]
-		w := &social.Workshop{Household: social.Household{Building: b, Town: t, Money: 1000}}
+		w := &social.Workshop{Household: social.Household{Building: b, Town: t}}
 		t.Workshops = append(t.Workshops, w)
 		return true
 	} else {
