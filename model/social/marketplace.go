@@ -8,6 +8,7 @@ import (
 )
 
 type Marketplace struct {
+	Town     *Town
 	Building *building.Building
 	Money    uint32
 	Storage  artifacts.Resources
