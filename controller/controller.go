@@ -37,6 +37,7 @@ type Controller struct {
 	SelectedFarm              *social.Farm
 	SelectedWorkshop          *social.Workshop
 	SelectedTownhall          *social.Townhall
+	SelectedMarketplace       *social.Marketplace
 	ReverseReferences         *model.ReverseReferences
 	ControlPanel              *ControlPanel
 	ActiveBuildingPlan        *building.BuildingPlan
@@ -140,6 +141,10 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbu.Unit.B]
 				if c.SelectedTownhall != nil {
 					TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
+				}
+				c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbu.Unit.B]
+				if c.SelectedMarketplace != nil {
+					MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
 				}
 				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
 				if c.SelectedFarm != nil {
