@@ -1,6 +1,8 @@
 package social
 
 import (
+	"math/rand"
+	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -41,10 +43,11 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	} else {
+		// no task
 		home := m.GetField(p.Household.Building.X, p.Household.Building.Y)
-		if p.Water < WaterThreshold {
+		if p.Water < WaterThreshold && p.Household.HasDrink() {
 			p.Task = &economy.DrinkTask{F: home, P: p}
-		} else if p.Food < FoodThreshold {
+		} else if p.Food < FoodThreshold && p.Household.HasFood() {
 			p.Task = &economy.EatTask{F: home, P: p}
 		} else if !p.IsHome {
 			p.Task = &economy.GoHomeTask{F: home, P: p}
@@ -61,14 +64,56 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
+func (p *Person) changePersonState(a *artifacts.Artifact) {
+	c := economy.ArtifactToPersonState[a]
+	if int(p.Food)+int(c.Food) > MaxPersonState {
+		p.Food = MaxPersonState
+	} else {
+		p.Food += c.Food
+	}
+	if int(p.Water)+int(c.Water) > MaxPersonState {
+		p.Water = MaxPersonState
+	} else {
+		p.Water += c.Water
+	}
+	if int(p.Health)+int(c.Health) > MaxPersonState {
+		p.Health = MaxPersonState
+	} else {
+		p.Health += c.Health
+	}
+	if int(p.Happiness)+int(c.Happiness) > MaxPersonState {
+		p.Happiness = MaxPersonState
+	} else {
+		p.Happiness += c.Happiness
+	}
+}
+
 func (p *Person) Eat() {
-	p.Food = MaxPersonState
+	if p.Household.HasFood() {
+		available := economy.AvailableFood(p.Household.Resources)
+		a := available[rand.Intn(len(available))]
+		p.Household.Resources.Remove(a, 1)
+		p.changePersonState(a)
+	}
 }
 
 func (p *Person) Drink() {
-	p.Water = MaxPersonState
+	if p.Household.HasDrink() {
+		available := economy.AvailableDrink(p.Household.Resources)
+		a := available[rand.Intn(len(available))]
+		p.Household.Resources.Remove(a, 1)
+		p.changePersonState(a)
+	}
 }
 
 func (p *Person) SetHome() {
 	p.IsHome = true
+}
+
+func (p *Person) HasFood() bool {
+	return p.Household.HasFood()
+}
+
+func (p *Person) HasDrink() bool {
+	return p.Household.HasDrink()
 }

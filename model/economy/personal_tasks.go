@@ -9,6 +9,8 @@ type Person interface {
 	Eat()
 	Drink()
 	SetHome()
+	HasFood() bool
+	HasDrink() bool
 }
 
 type EatTask struct {
@@ -36,7 +38,7 @@ func (t *EatTask) Complete(Calendar *time.CalendarType) bool {
 }
 
 func (t *EatTask) Blocked() bool {
-	return false
+	return !t.P.HasFood()
 }
 
 func (t *EatTask) Name() string {
@@ -53,7 +55,7 @@ func (t *DrinkTask) Complete(Calendar *time.CalendarType) bool {
 }
 
 func (t *DrinkTask) Blocked() bool {
-	return false
+	return !t.P.HasDrink()
 }
 
 func (t *DrinkTask) Name() string {
