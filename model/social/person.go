@@ -2,6 +2,7 @@ package social
 
 import (
 	"math/rand"
+	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -63,19 +64,45 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
+func (p *Person) changePersonState(a *artifacts.Artifact) {
+	c := economy.ArtifactToPersonState[a]
+	if int(p.Food)+int(c.Food) > MaxPersonState {
+		p.Food = MaxPersonState
+	} else {
+		p.Food += c.Food
+	}
+	if int(p.Water)+int(c.Water) > MaxPersonState {
+		p.Water = MaxPersonState
+	} else {
+		p.Water += c.Water
+	}
+	if int(p.Health)+int(c.Health) > MaxPersonState {
+		p.Health = MaxPersonState
+	} else {
+		p.Health += c.Health
+	}
+	if int(p.Happiness)+int(c.Happiness) > MaxPersonState {
+		p.Happiness = MaxPersonState
+	} else {
+		p.Happiness += c.Happiness
+	}
+}
+
 func (p *Person) Eat() {
 	if p.Household.HasFood() {
 		available := economy.AvailableFood(p.Household.Resources)
-		p.Household.Resources.Remove(available[rand.Intn(len(available))], 1)
-		p.Food = MaxPersonState
+		a := available[rand.Intn(len(available))]
+		p.Household.Resources.Remove(a, 1)
+		p.changePersonState(a)
 	}
 }
 
 func (p *Person) Drink() {
 	if p.Household.HasDrink() {
 		available := economy.AvailableDrink(p.Household.Resources)
-		p.Household.Resources.Remove(available[rand.Intn(len(available))], 1)
-		p.Water = MaxPersonState
+		a := available[rand.Intn(len(available))]
+		p.Household.Resources.Remove(a, 1)
+		p.changePersonState(a)
 	}
 }
 

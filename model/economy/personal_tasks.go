@@ -85,7 +85,7 @@ var vegetable = artifacts.GetArtifact("vegetable")
 var bread = artifacts.GetArtifact("bread")
 var meat = artifacts.GetArtifact("meat")
 
-var water = artifacts.GetArtifact("meat")
+var water = artifacts.GetArtifact("water")
 var wine = artifacts.GetArtifact("wine")
 var beer = artifacts.GetArtifact("beer")
 
@@ -119,4 +119,21 @@ func AvailableDrink(r artifacts.Resources) []*artifacts.Artifact {
 		}
 	}
 	return available
+}
+
+type PersonStateChange struct {
+	Food      uint8
+	Water     uint8
+	Happiness uint8
+	Health    uint8
+}
+
+var ArtifactToPersonState = map[*artifacts.Artifact]PersonStateChange{
+	fruit:     PersonStateChange{Food: 100, Water: 50, Happiness: 50, Health: 50},
+	vegetable: PersonStateChange{Food: 150, Water: 0, Happiness: 0, Health: 50},
+	bread:     PersonStateChange{Food: 200, Water: 0, Happiness: 0, Health: 0},
+	meat:      PersonStateChange{Food: 200, Water: 0, Happiness: 50, Health: 0},
+	water:     PersonStateChange{Food: 0, Water: 200, Happiness: 0, Health: 0},
+	wine:      PersonStateChange{Food: 0, Water: 150, Happiness: 100, Health: 50},
+	beer:      PersonStateChange{Food: 0, Water: 150, Happiness: 100, Health: 0},
 }
