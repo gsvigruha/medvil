@@ -1,6 +1,7 @@
 package economy
 
 import (
+	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/model/time"
 )
@@ -9,6 +10,8 @@ type Person interface {
 	Eat()
 	Drink()
 	SetHome()
+	HasFood() bool
+	HasDrink() bool
 }
 
 type EatTask struct {
@@ -36,7 +39,7 @@ func (t *EatTask) Complete(Calendar *time.CalendarType) bool {
 }
 
 func (t *EatTask) Blocked() bool {
-	return false
+	return !t.P.HasFood()
 }
 
 func (t *EatTask) Name() string {
@@ -53,7 +56,7 @@ func (t *DrinkTask) Complete(Calendar *time.CalendarType) bool {
 }
 
 func (t *DrinkTask) Blocked() bool {
-	return false
+	return !t.P.HasDrink()
 }
 
 func (t *DrinkTask) Name() string {
@@ -75,4 +78,45 @@ func (t *GoHomeTask) Blocked() bool {
 
 func (t *GoHomeTask) Name() string {
 	return "gohome"
+}
+
+var fruit = artifacts.GetArtifact("fruit")
+var vegetable = artifacts.GetArtifact("vegetable")
+var bread = artifacts.GetArtifact("bread")
+var meat = artifacts.GetArtifact("meat")
+
+var water = artifacts.GetArtifact("meat")
+var wine = artifacts.GetArtifact("wine")
+var beer = artifacts.GetArtifact("beer")
+
+func HasFood(r artifacts.Resources) bool {
+	return AvailableFood(r) != nil
+}
+
+func HasDrink(r artifacts.Resources) bool {
+	return AvailableDrink(r) != nil
+}
+
+func AvailableFood(r artifacts.Resources) []*artifacts.Artifact {
+	var available []*artifacts.Artifact = nil
+	for _, a := range []*artifacts.Artifact{fruit, vegetable, bread, meat} {
+		if q, ok := r.Artifacts[a]; ok {
+			if q > 0 {
+				available = append(available, a)
+			}
+		}
+	}
+	return available
+}
+
+func AvailableDrink(r artifacts.Resources) []*artifacts.Artifact {
+	var available []*artifacts.Artifact = nil
+	for _, a := range []*artifacts.Artifact{water, wine, beer} {
+		if q, ok := r.Artifacts[a]; ok {
+			if q > 0 {
+				available = append(available, a)
+			}
+		}
+	}
+	return available
 }

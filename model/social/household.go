@@ -86,6 +86,14 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
+func (h *Household) HasFood() bool {
+	return economy.HasFood(h.Resources)
+}
+
+func (h *Household) HasDrink() bool {
+	return economy.HasDrink(h.Resources)
+}
+
 func (h *Household) NewPerson() *Person {
 	return &Person{
 		Food:      MaxPersonState,

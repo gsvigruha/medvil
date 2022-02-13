@@ -1,6 +1,7 @@
 package social
 
 import (
+	"math/rand"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -41,10 +42,11 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	} else {
+		// no task
 		home := m.GetField(p.Household.Building.X, p.Household.Building.Y)
-		if p.Water < WaterThreshold {
+		if p.Water < WaterThreshold && p.Household.HasDrink() {
 			p.Task = &economy.DrinkTask{F: home, P: p}
-		} else if p.Food < FoodThreshold {
+		} else if p.Food < FoodThreshold && p.Household.HasFood() {
 			p.Task = &economy.EatTask{F: home, P: p}
 		} else if !p.IsHome {
 			p.Task = &economy.GoHomeTask{F: home, P: p}
@@ -62,13 +64,29 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (p *Person) Eat() {
-	p.Food = MaxPersonState
+	if p.Household.HasFood() {
+		available := economy.AvailableFood(p.Household.Resources)
+		p.Household.Resources.Remove(available[rand.Intn(len(available))], 1)
+		p.Food = MaxPersonState
+	}
 }
 
 func (p *Person) Drink() {
-	p.Water = MaxPersonState
+	if p.Household.HasDrink() {
+		available := economy.AvailableDrink(p.Household.Resources)
+		p.Household.Resources.Remove(available[rand.Intn(len(available))], 1)
+		p.Water = MaxPersonState
+	}
 }
 
 func (p *Person) SetHome() {
 	p.IsHome = true
+}
+
+func (p *Person) HasFood() bool {
+	return p.Household.HasFood()
+}
+
+func (p *Person) HasDrink() bool {
+	return p.Household.HasDrink()
 }
