@@ -13,6 +13,11 @@ var water = artifacts.GetArtifact("water")
 var wine = artifacts.GetArtifact("wine")
 var beer = artifacts.GetArtifact("beer")
 
+var foods = []*artifacts.Artifact{fruit, vegetable, bread, meat}
+var drinks = []*artifacts.Artifact{water, wine, beer}
+
+var MinFoodOrDrinkPerPerson uint16 = 5
+
 func HasFood(r artifacts.Resources) bool {
 	return AvailableFood(r) != nil
 }
@@ -23,7 +28,7 @@ func HasDrink(r artifacts.Resources) bool {
 
 func AvailableFood(r artifacts.Resources) []*artifacts.Artifact {
 	var available []*artifacts.Artifact = nil
-	for _, a := range []*artifacts.Artifact{fruit, vegetable, bread, meat} {
+	for _, a := range foods {
 		if q, ok := r.Artifacts[a]; ok {
 			if q > 0 {
 				available = append(available, a)
@@ -35,7 +40,7 @@ func AvailableFood(r artifacts.Resources) []*artifacts.Artifact {
 
 func AvailableDrink(r artifacts.Resources) []*artifacts.Artifact {
 	var available []*artifacts.Artifact = nil
-	for _, a := range []*artifacts.Artifact{water, wine, beer} {
+	for _, a := range drinks {
 		if q, ok := r.Artifacts[a]; ok {
 			if q > 0 {
 				available = append(available, a)
@@ -43,6 +48,20 @@ func AvailableDrink(r artifacts.Resources) []*artifacts.Artifact {
 		}
 	}
 	return available
+}
+
+func IsFoodOrDrink(a *artifacts.Artifact) bool {
+	for _, a2 := range foods {
+		if a == a2 {
+			return true
+		}
+	}
+	for _, a2 := range drinks {
+		if a == a2 {
+			return true
+		}
+	}
+	return false
 }
 
 type PersonStateChange struct {
