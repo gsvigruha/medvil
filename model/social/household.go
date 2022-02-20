@@ -10,6 +10,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
+const StoragePerArea = 10
 
 type Household struct {
 	People          []*Person

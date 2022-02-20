@@ -152,7 +152,7 @@ func LoadSociety(dir string, m *model.Map) {
 			for k := range town.Farms {
 				farm := town.Farms[k]
 				farm.Household.Town = town
-				farm.Household.Resources.VolumeCapacity = farm.Household.Building.Plan.Area() * 10
+				farm.Household.Resources.VolumeCapacity = farm.Household.Building.Plan.Area() * social.StoragePerArea
 				AddBuilding(farm.Household.Building, m)
 				for l := range farm.Land {
 					land := farm.Land[l]

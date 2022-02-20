@@ -16,7 +16,7 @@ var beer = artifacts.GetArtifact("beer")
 var foods = []*artifacts.Artifact{fruit, vegetable, bread, meat}
 var drinks = []*artifacts.Artifact{water, wine, beer}
 
-var MinFoodOrDrinkPerPerson uint16 = 5
+const MinFoodOrDrinkPerPerson uint16 = 5
 
 func HasFood(r artifacts.Resources) bool {
 	return AvailableFood(r) != nil

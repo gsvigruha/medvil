@@ -69,7 +69,7 @@ func (m *Map) AddFarm(c *social.Country, x, y uint16, bp *building.BuildingPlan)
 	if b != nil {
 		t := c.Towns[0]
 		f := &social.Farm{Household: social.Household{Building: b, Town: t}}
-		f.Household.Resources.VolumeCapacity = f.Household.Building.Plan.Area() * 10
+		f.Household.Resources.VolumeCapacity = f.Household.Building.Plan.Area() * social.StoragePerArea
 		t.Farms = append(t.Farms, f)
 		return true
 	} else {
@@ -82,7 +82,7 @@ func (m *Map) AddWorkshop(c *social.Country, x, y uint16, bp *building.BuildingP
 	if b != nil {
 		t := c.Towns[0]
 		w := &social.Workshop{Household: social.Household{Building: b, Town: t}}
-		w.Household.Resources.VolumeCapacity = w.Household.Building.Plan.Area() * 10
+		w.Household.Resources.VolumeCapacity = w.Household.Building.Plan.Area() * social.StoragePerArea
 		t.Workshops = append(t.Workshops, w)
 		return true
 	} else {
