@@ -10,7 +10,8 @@ type Artifacts struct {
 }
 
 type Resources struct {
-	Artifacts map[*Artifact]uint16
+	Artifacts      map[*Artifact]uint16
+	VolumeCapacity uint16
 }
 
 func (r *Resources) UnmarshalJSON(data []byte) error {
@@ -117,4 +118,16 @@ func (r *Resources) Has(as []Artifacts) bool {
 		}
 	}
 	return true
+}
+
+func (r *Resources) Volume() uint16 {
+	var v uint16 = 0
+	for a, q := range r.Artifacts {
+		v += a.V * q
+	}
+	return v
+}
+
+func (r *Resources) UsedVolumeCapacity() float64 {
+	return float64(r.Volume()) / float64(r.VolumeCapacity)
 }

@@ -10,6 +10,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
+const StoragePerArea = 10
 
 type Household struct {
 	People          []*Person
@@ -84,6 +85,17 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+}
+
+func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16) uint16 {
+	if economy.IsFoodOrDrink(a) {
+		if q > economy.MinFoodOrDrinkPerPerson*uint16(len(h.People)) {
+			return q - economy.MinFoodOrDrinkPerPerson*uint16(len(h.People))
+		} else {
+			return 0
+		}
+	}
+	return q
 }
 
 func (h *Household) HasFood() bool {

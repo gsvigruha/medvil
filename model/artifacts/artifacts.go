@@ -7,44 +7,45 @@ import (
 type Artifact struct {
 	Name string
 	M    *materials.Material
+	V    uint16
 }
 
 var All = [...]*Artifact{
 	// Building
-	&Artifact{Name: "log", M: materials.GetMaterial("wood")},
-	&Artifact{Name: "board", M: materials.GetMaterial("wood")},
-	&Artifact{Name: "rock", M: materials.GetMaterial("stone")},
-	&Artifact{Name: "rock", M: materials.GetMaterial("sandstone")},
-	&Artifact{Name: "rock", M: materials.GetMaterial("marble")},
-	&Artifact{Name: "cube", M: materials.GetMaterial("stone")},
-	&Artifact{Name: "cube", M: materials.GetMaterial("marble")},
-	&Artifact{Name: "cube", M: materials.GetMaterial("sandstone")},
-	&Artifact{Name: "clay", M: materials.GetMaterial("clay")},
-	&Artifact{Name: "brick", M: materials.GetMaterial("brick")},
+	&Artifact{Name: "log", M: materials.GetMaterial("wood"), V: 5},
+	&Artifact{Name: "board", M: materials.GetMaterial("wood"), V: 5},
+	&Artifact{Name: "rock", M: materials.GetMaterial("stone"), V: 5},
+	&Artifact{Name: "rock", M: materials.GetMaterial("sandstone"), V: 5},
+	&Artifact{Name: "rock", M: materials.GetMaterial("marble"), V: 5},
+	&Artifact{Name: "cube", M: materials.GetMaterial("stone"), V: 5},
+	&Artifact{Name: "cube", M: materials.GetMaterial("marble"), V: 5},
+	&Artifact{Name: "cube", M: materials.GetMaterial("sandstone"), V: 5},
+	&Artifact{Name: "clay", M: materials.GetMaterial("clay"), V: 5},
+	&Artifact{Name: "brick", M: materials.GetMaterial("brick"), V: 5},
 	// Metal
-	&Artifact{Name: "ore", M: materials.GetMaterial("iron")},
-	&Artifact{Name: "ore", M: materials.GetMaterial("gold")},
-	&Artifact{Name: "ore", M: materials.GetMaterial("silver")},
-	&Artifact{Name: "ore", M: materials.GetMaterial("copper")},
+	&Artifact{Name: "ore", M: materials.GetMaterial("iron"), V: 5},
+	&Artifact{Name: "ore", M: materials.GetMaterial("gold"), V: 5},
+	&Artifact{Name: "ore", M: materials.GetMaterial("silver"), V: 5},
+	&Artifact{Name: "ore", M: materials.GetMaterial("copper"), V: 5},
 	// Food
-	&Artifact{Name: "fruit", M: materials.GetMaterial("organic")},
-	&Artifact{Name: "vegetable", M: materials.GetMaterial("organic")},
-	&Artifact{Name: "grain", M: materials.GetMaterial("organic")},
-	&Artifact{Name: "bread", M: materials.GetMaterial("organic")},
-	&Artifact{Name: "meat", M: materials.GetMaterial("organic")},
-	&Artifact{Name: "water", M: materials.GetMaterial("water")},
-	&Artifact{Name: "wine", M: materials.GetMaterial("water")},
-	&Artifact{Name: "beer", M: materials.GetMaterial("water")},
+	&Artifact{Name: "fruit", M: materials.GetMaterial("organic"), V: 1},
+	&Artifact{Name: "vegetable", M: materials.GetMaterial("organic"), V: 1},
+	&Artifact{Name: "grain", M: materials.GetMaterial("organic"), V: 1},
+	&Artifact{Name: "bread", M: materials.GetMaterial("organic"), V: 1},
+	&Artifact{Name: "meat", M: materials.GetMaterial("organic"), V: 1},
+	&Artifact{Name: "water", M: materials.GetMaterial("water"), V: 1},
+	&Artifact{Name: "wine", M: materials.GetMaterial("water"), V: 1},
+	&Artifact{Name: "beer", M: materials.GetMaterial("water"), V: 1},
 	// Sheets
-	&Artifact{Name: "leather", M: materials.GetMaterial("leather")},
-	&Artifact{Name: "linen", M: materials.GetMaterial("linen")},
-	&Artifact{Name: "wool", M: materials.GetMaterial("wool")},
-	&Artifact{Name: "paper", M: materials.GetMaterial("paper")},
-	&Artifact{Name: "paper", M: materials.GetMaterial("parchment")},
+	&Artifact{Name: "leather", M: materials.GetMaterial("leather"), V: 1},
+	&Artifact{Name: "linen", M: materials.GetMaterial("linen"), V: 1},
+	&Artifact{Name: "wool", M: materials.GetMaterial("wool"), V: 1},
+	&Artifact{Name: "paper", M: materials.GetMaterial("paper"), V: 1},
+	&Artifact{Name: "paper", M: materials.GetMaterial("parchment"), V: 1},
 	// Clothes
-	&Artifact{Name: "clothes", M: materials.GetMaterial("leather")},
-	&Artifact{Name: "clothes", M: materials.GetMaterial("linen")},
-	&Artifact{Name: "clothes", M: materials.GetMaterial("wool")},
+	&Artifact{Name: "clothes", M: materials.GetMaterial("leather"), V: 1},
+	&Artifact{Name: "clothes", M: materials.GetMaterial("linen"), V: 1},
+	&Artifact{Name: "clothes", M: materials.GetMaterial("wool"), V: 1},
 	// Tools
 }
 

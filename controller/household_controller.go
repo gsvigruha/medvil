@@ -51,7 +51,8 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	p.AddButton(HouseholdControllerButton{
 		b: gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 40, Y: PersonGUIY, SX: 32, SY: 32},
 		h: h, action: IncreaseHouseholdTargetNumPeople})
-	var aI = 0
+	p.AddScaleLabel("barrel", 10, ArtifactsGUIY, 32, 32, 4, h.Resources.UsedVolumeCapacity())
+	var aI = 1
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {
 			ArtifactsToControlPanel(p, aI, a, q)

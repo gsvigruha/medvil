@@ -36,11 +36,13 @@ func (t *TransportTask) Complete(Calendar *time.CalendarType) bool {
 }
 
 func (t *TransportTask) Blocked() bool {
-	if t.dropoff {
-		return false
-	} else {
+	if t.DropoffR.UsedVolumeCapacity() > 1.0 {
+		return true
+	}
+	if !t.dropoff {
 		return t.PickupR.Get(t.A) < t.Quantity
 	}
+	return false
 }
 
 func (t *TransportTask) Name() string {
