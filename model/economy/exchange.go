@@ -58,3 +58,7 @@ func (t *ExchangeTask) Blocked() bool {
 func (t *ExchangeTask) Name() string {
 	return "exchange"
 }
+
+func (t *ExchangeTask) Tag() string {
+	return ""
+}

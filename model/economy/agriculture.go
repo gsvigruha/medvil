@@ -143,3 +143,7 @@ func (t *AgriculturalTask) Name() string {
 	}
 	return ""
 }
+
+func (t *AgriculturalTask) Tag() string {
+	return ""
+}
