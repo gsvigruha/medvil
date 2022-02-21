@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 )
 
+const InfiniteQuantity = 65535
+
 type Artifacts struct {
 	A        *Artifact
 	Quantity uint16
@@ -48,9 +50,9 @@ func (r *Resources) Add(a *Artifact, q uint16) {
 	}
 }
 
-func (r *Resources) IsEmpty() bool {
+func (r *Resources) HasRealArtifacts() bool {
 	for _, q := range r.Artifacts {
-		if q > 0 {
+		if q > 0 && q < InfiniteQuantity {
 			return false
 		}
 	}
@@ -83,7 +85,9 @@ func (r *Resources) Remove(a *Artifact, q uint16) uint16 {
 	}
 	if e, ok := r.Artifacts[a]; ok {
 		if e >= q {
-			r.Artifacts[a] = e - q
+			if e < InfiniteQuantity {
+				r.Artifacts[a] = e - q
+			}
 			return q
 		} else {
 			r.Artifacts[a] = 0
@@ -105,6 +109,15 @@ func (r *Resources) Needs(as []Artifacts) []Artifacts {
 		}
 	}
 	return remaining
+}
+
+func (r *Resources) HasArtifact(a *Artifact) bool {
+	if q, ok := r.Artifacts[a]; ok {
+		if q > 0 {
+			return true
+		}
+	}
+	return false
 }
 
 func (r *Resources) Has(as []Artifacts) bool {
