@@ -85,7 +85,7 @@ func LoadFields(dir string, m *model.Map) {
 				m.Fields[i][j].Terrain.T = terrain.Dirt
 			case "W":
 				m.Fields[i][j].Terrain.T = terrain.Water
-				m.Fields[i][j].Terrain.Resources.Add(artifacts.GetArtifact("water"), 50)
+				m.Fields[i][j].Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
 			}
 			h, err := strconv.Atoi(heights[i*2 : i*2+1])
 			if err != nil {
