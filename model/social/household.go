@@ -7,10 +7,11 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"strings"
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const StoragePerArea = 10
+const StoragePerArea = 25
 
 type Household struct {
 	People          []*Person
@@ -59,6 +60,7 @@ func (h *Household) HasRoomForPeople() bool {
 }
 
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+	home := m.GetField(h.Building.X, h.Building.Y)
 	for i := range h.People {
 		person := h.People[i]
 		if person.Task == nil && h.HasTask() {
@@ -85,9 +87,45 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	water := artifacts.GetArtifact("water")
+	if int(h.Resources.Get(water)) < len(h.People) && h.NumTasks("transport", "water") == 0 {
+		dest := m.FindDest(home.X, home.Y, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
+		h.AddTask(&economy.TransportTask{
+			PickupF:  dest,
+			DropoffF: home,
+			PickupR:  &dest.Terrain.Resources,
+			DropoffR: &h.Resources,
+			A:        water,
+			Quantity: 10,
+		})
+	}
+	if h.Town != nil {
+		numP := uint16(len(h.People))
+		mp := h.Town.Marketplace
+		market := m.GetField(mp.Building.X, mp.Building.Y)
+		for _, a := range economy.Foods {
+			tag := "food_shopping#" + a.Name
+			needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: economy.BuyFoodOrDrinkPerPerson() * numP}}
+			if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP && h.Money >= mp.Price(needs) && h.NumTasks("exchange", tag) == 0 {
+				h.AddTask(&economy.ExchangeTask{
+					HomeF:          home,
+					MarketF:        market,
+					Exchange:       mp,
+					HouseholdR:     &h.Resources,
+					HouseholdMoney: &h.Money,
+					GoodsToBuy:     needs,
+					GoodsToSell:    nil,
+					TaskTag:        tag,
+				})
+			}
+		}
+	}
 }
 
 func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16) uint16 {
+	if a.Name == "water" {
+		return 0
+	}
 	if economy.IsFoodOrDrink(a) {
 		if q > economy.MinFoodOrDrinkPerPerson*uint16(len(h.People)) {
 			return q - economy.MinFoodOrDrinkPerPerson*uint16(len(h.People))
@@ -104,6 +142,21 @@ func (h *Household) HasFood() bool {
 
 func (h *Household) HasDrink() bool {
 	return economy.HasDrink(h.Resources)
+}
+
+func (h *Household) NumTasks(name string, tag string) int {
+	var i = 0
+	for _, t := range h.Tasks {
+		if t.Name() == name && strings.Contains(t.Tag(), tag) {
+			i++
+		}
+	}
+	for _, p := range h.People {
+		if p.Task != nil && p.Task.Name() == name && strings.Contains(p.Task.Tag(), tag) {
+			i++
+		}
+	}
+	return i
 }
 
 func (h *Household) NewPerson() *Person {

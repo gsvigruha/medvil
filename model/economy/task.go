@@ -10,4 +10,5 @@ type Task interface {
 	Field() *navigation.Field
 	Blocked() bool
 	Name() string
+	Tag() string
 }

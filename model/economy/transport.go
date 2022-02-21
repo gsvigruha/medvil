@@ -4,6 +4,7 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"strconv"
 )
 
 type TransportTask struct {
@@ -47,4 +48,8 @@ func (t *TransportTask) Blocked() bool {
 
 func (t *TransportTask) Name() string {
 	return "transport"
+}
+
+func (t *TransportTask) Tag() string {
+	return strconv.Itoa(int(t.PickupF.X)) + "#" + strconv.Itoa(int(t.PickupF.Y)) + "#" + t.A.Name
 }

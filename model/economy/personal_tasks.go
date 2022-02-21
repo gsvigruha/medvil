@@ -45,6 +45,10 @@ func (t *EatTask) Name() string {
 	return "eat"
 }
 
+func (t *EatTask) Tag() string {
+	return ""
+}
+
 func (t *DrinkTask) Field() *navigation.Field {
 	return t.F
 }
@@ -62,6 +66,10 @@ func (t *DrinkTask) Name() string {
 	return "drink"
 }
 
+func (t *DrinkTask) Tag() string {
+	return ""
+}
+
 func (t *GoHomeTask) Field() *navigation.Field {
 	return t.F
 }
@@ -77,4 +85,8 @@ func (t *GoHomeTask) Blocked() bool {
 
 func (t *GoHomeTask) Name() string {
 	return "gohome"
+}
+
+func (t *GoHomeTask) Tag() string {
+	return ""
 }

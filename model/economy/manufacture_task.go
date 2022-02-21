@@ -35,3 +35,7 @@ func (t *ManufactureTask) Blocked() bool {
 func (t *ManufactureTask) Name() string {
 	return t.M.Name
 }
+
+func (t *ManufactureTask) Tag() string {
+	return ""
+}

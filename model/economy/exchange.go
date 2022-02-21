@@ -22,6 +22,7 @@ type ExchangeTask struct {
 	HouseholdMoney *uint32
 	GoodsToBuy     []artifacts.Artifacts
 	GoodsToSell    []artifacts.Artifacts
+	TaskTag        string
 	backtrip       bool
 }
 
@@ -38,7 +39,7 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
 		t.HouseholdR.AddAll(t.GoodsToBuy)
 		return true
 	} else {
-		if t.Exchange.CanBuy(t.GoodsToBuy) && t.Exchange.CanSell(t.GoodsToSell) {
+		if t.Exchange.CanBuy(t.GoodsToBuy) && t.Exchange.CanSell(t.GoodsToSell) && t.Exchange.Price(t.GoodsToBuy) <= *t.HouseholdMoney {
 			t.Exchange.Buy(t.GoodsToBuy, t.HouseholdMoney)
 			t.Exchange.Sell(t.GoodsToSell, t.HouseholdMoney)
 			t.backtrip = true
@@ -57,4 +58,8 @@ func (t *ExchangeTask) Blocked() bool {
 
 func (t *ExchangeTask) Name() string {
 	return "exchange"
+}
+
+func (t *ExchangeTask) Tag() string {
+	return t.TaskTag
 }

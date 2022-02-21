@@ -81,7 +81,7 @@ func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 			PickupR:  &l.F.Terrain.Resources,
 			DropoffR: &f.Household.Resources,
 			A:        a,
-			Quantity: 10,
+			Quantity: 2,
 		})
 	}
 }
@@ -119,18 +119,6 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskTreeCutting, F: l.F, UseType: l.UseType})
 				f.AddTransportTask(l, m)
 			}
-		}
-		water := artifacts.GetArtifact("water")
-		if !f.Household.Resources.HasArtifact(water) {
-			dest := m.FindDest(home.X, home.Y, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
-			f.Household.AddTask(&economy.TransportTask{
-				PickupF:  dest,
-				DropoffF: home,
-				PickupR:  &dest.Terrain.Resources,
-				DropoffR: &f.Household.Resources,
-				A:        water,
-				Quantity: 10,
-			})
 		}
 	}
 	market := m.GetField(f.Household.Town.Marketplace.Building.X, f.Household.Town.Marketplace.Building.Y)
