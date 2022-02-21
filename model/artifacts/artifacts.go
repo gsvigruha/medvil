@@ -31,6 +31,7 @@ var All = [...]*Artifact{
 	&Artifact{Name: "fruit", M: materials.GetMaterial("organic"), V: 1},
 	&Artifact{Name: "vegetable", M: materials.GetMaterial("organic"), V: 1},
 	&Artifact{Name: "grain", M: materials.GetMaterial("organic"), V: 1},
+	&Artifact{Name: "flour", M: materials.GetMaterial("organic"), V: 1},
 	&Artifact{Name: "bread", M: materials.GetMaterial("organic"), V: 1},
 	&Artifact{Name: "meat", M: materials.GetMaterial("organic"), V: 1},
 	&Artifact{Name: "water", M: materials.GetMaterial("water"), V: 1},
