@@ -22,6 +22,7 @@ type ExchangeTask struct {
 	HouseholdMoney *uint32
 	GoodsToBuy     []artifacts.Artifacts
 	GoodsToSell    []artifacts.Artifacts
+	TaskTag        string
 	backtrip       bool
 }
 
@@ -60,5 +61,5 @@ func (t *ExchangeTask) Name() string {
 }
 
 func (t *ExchangeTask) Tag() string {
-	return ""
+	return t.TaskTag
 }

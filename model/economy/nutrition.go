@@ -14,10 +14,15 @@ var water = artifacts.GetArtifact("water")
 var wine = artifacts.GetArtifact("wine")
 var beer = artifacts.GetArtifact("beer")
 
-var foods = []*artifacts.Artifact{fruit, vegetable, bread, meat}
-var drinks = []*artifacts.Artifact{water, wine, beer}
+var Foods = []*artifacts.Artifact{fruit, vegetable, bread, meat}
+var Drinks = []*artifacts.Artifact{water, wine, beer}
 
 const MinFoodOrDrinkPerPerson uint16 = 2
+const MaxFoodOrDrinkPerPerson uint16 = 5
+
+func BuyFoodOrDrinkPerPerson() uint16 {
+	return MaxFoodOrDrinkPerPerson - MinFoodOrDrinkPerPerson
+}
 
 func HasFood(r artifacts.Resources) bool {
 	return AvailableFood(r) != nil
@@ -29,7 +34,7 @@ func HasDrink(r artifacts.Resources) bool {
 
 func AvailableFood(r artifacts.Resources) []*artifacts.Artifact {
 	var available []*artifacts.Artifact = nil
-	for _, a := range foods {
+	for _, a := range Foods {
 		if q, ok := r.Artifacts[a]; ok {
 			if q > 0 {
 				available = append(available, a)
@@ -41,7 +46,7 @@ func AvailableFood(r artifacts.Resources) []*artifacts.Artifact {
 
 func AvailableDrink(r artifacts.Resources) []*artifacts.Artifact {
 	var available []*artifacts.Artifact = nil
-	for _, a := range drinks {
+	for _, a := range Drinks {
 		if q, ok := r.Artifacts[a]; ok {
 			if q > 0 {
 				available = append(available, a)
@@ -52,12 +57,12 @@ func AvailableDrink(r artifacts.Resources) []*artifacts.Artifact {
 }
 
 func IsFoodOrDrink(a *artifacts.Artifact) bool {
-	for _, a2 := range foods {
+	for _, a2 := range Foods {
 		if a == a2 {
 			return true
 		}
 	}
-	for _, a2 := range drinks {
+	for _, a2 := range Drinks {
 		if a == a2 {
 			return true
 		}
@@ -73,8 +78,8 @@ type PersonStateChange struct {
 }
 
 var ArtifactToPersonState = map[*artifacts.Artifact]PersonStateChange{
-	fruit:     PersonStateChange{Food: 100, Water: 50, Happiness: 50, Health: 50},
-	vegetable: PersonStateChange{Food: 150, Water: 0, Happiness: 0, Health: 50},
+	fruit:     PersonStateChange{Food: 50, Water: 50, Happiness: 25, Health: 25},
+	vegetable: PersonStateChange{Food: 100, Water: 0, Happiness: 0, Health: 50},
 	bread:     PersonStateChange{Food: 200, Water: 0, Happiness: 0, Health: 0},
 	meat:      PersonStateChange{Food: 200, Water: 0, Happiness: 50, Health: 0},
 	water:     PersonStateChange{Food: 0, Water: 200, Happiness: 0, Health: 0},

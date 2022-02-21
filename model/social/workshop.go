@@ -19,7 +19,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		mp := w.Household.Town.Marketplace
 		market := m.GetField(mp.Building.X, mp.Building.Y)
 		needs := w.Household.Resources.Needs(w.Manufacture.Inputs)
-		if needs != nil && len(w.Household.Tasks) < 3 {
+		if needs != nil && w.Household.NumTasks("exchange", "manufacture_input") == 0 {
 			if mp.Storage.Has(needs) && w.Household.Money >= mp.Price(needs) {
 				w.Household.AddTask(&economy.ExchangeTask{
 					HomeF:          home,
@@ -29,6 +29,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					HouseholdMoney: &w.Household.Money,
 					GoodsToBuy:     needs,
 					GoodsToSell:    nil,
+					TaskTag:        "manufacture_input",
 				})
 			}
 		}
