@@ -38,7 +38,7 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
 		t.HouseholdR.AddAll(t.GoodsToBuy)
 		return true
 	} else {
-		if t.Exchange.CanBuy(t.GoodsToBuy) && t.Exchange.CanSell(t.GoodsToSell) {
+		if t.Exchange.CanBuy(t.GoodsToBuy) && t.Exchange.CanSell(t.GoodsToSell) && t.Exchange.Price(t.GoodsToBuy) <= *t.HouseholdMoney {
 			t.Exchange.Buy(t.GoodsToBuy, t.HouseholdMoney)
 			t.Exchange.Sell(t.GoodsToSell, t.HouseholdMoney)
 			t.backtrip = true
