@@ -107,6 +107,15 @@ func (r *Resources) Needs(as []Artifacts) []Artifacts {
 	return remaining
 }
 
+func (r *Resources) HasArtifact(a *Artifact) bool {
+	if q, ok := r.Artifacts[a]; ok {
+		if q > 0 {
+			return true
+		}
+	}
+	return false
+}
+
 func (r *Resources) Has(as []Artifacts) bool {
 	for _, a := range as {
 		if v, ok := r.Artifacts[a.A]; ok {

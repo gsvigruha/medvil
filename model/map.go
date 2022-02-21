@@ -135,9 +135,17 @@ func (m *Map) ShortPath(sx, sy, ex, ey uint16, travellerType uint8) *navigation.
 	if sx == ex && sy == ey {
 		return nil
 	}
-	p := FindShortPathBFS(m, sx, sy, ex, ey, travellerType)
+	p := FindShortPathBFS(m, sx, sy, m.GetField(ex, ey), travellerType)
 	if p != nil {
 		return &navigation.Path{F: p[1:]}
+	}
+	return nil
+}
+
+func (m *Map) FindDest(sx, sy uint16, dest navigation.Destination, travellerType uint8) *navigation.Field {
+	p := FindShortPathBFS(m, sx, sy, dest, travellerType)
+	if p != nil {
+		return p[len(p)-1]
 	}
 	return nil
 }

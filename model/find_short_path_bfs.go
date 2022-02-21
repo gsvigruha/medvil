@@ -25,7 +25,7 @@ func AddNextField(m *Map, x, y uint16, e *BFSElement, toVisit *[]*BFSElement, in
 	}
 }
 
-func FindShortPathBFS(m *Map, sx, sy, ex, ey uint16, travellerType uint8) []*navigation.Field {
+func FindShortPathBFS(m *Map, sx, sy uint16, dest navigation.Destination, travellerType uint8) []*navigation.Field {
 	var iter = 0
 	visited := make(map[*navigation.Field]*[]*navigation.Field)
 	se := &BFSElement{F: m.GetField(sx, sy), prev: nil, d: 1}
@@ -35,7 +35,7 @@ func FindShortPathBFS(m *Map, sx, sy, ex, ey uint16, travellerType uint8) []*nav
 		e := toVisit[0]
 		toVisit = toVisit[1:]
 
-		if e.F.X == ex && e.F.Y == ey {
+		if dest.Check(e.F) {
 			path := make([]*navigation.Field, e.d)
 			var eI = e
 			for i := range path {

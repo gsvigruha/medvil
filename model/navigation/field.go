@@ -5,6 +5,10 @@ import (
 	//"fmt"
 )
 
+type Destination interface {
+	Check(*Field) bool
+}
+
 type FieldWithContext interface {
 	Field() *Field
 	Context() string
@@ -72,4 +76,8 @@ func (f *Field) UnregisterTraveller(t *Traveller) {
 			return
 		}
 	}
+}
+
+func (f *Field) Check(f2 *Field) bool {
+	return f == f2
 }

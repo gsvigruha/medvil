@@ -2,6 +2,7 @@ package economy
 
 import (
 	"medvil/model/artifacts"
+	"medvil/model/navigation"
 )
 
 var fruit = artifacts.GetArtifact("fruit")
@@ -79,4 +80,10 @@ var ArtifactToPersonState = map[*artifacts.Artifact]PersonStateChange{
 	water:     PersonStateChange{Food: 0, Water: 200, Happiness: 0, Health: 0},
 	wine:      PersonStateChange{Food: 0, Water: 150, Happiness: 100, Health: 50},
 	beer:      PersonStateChange{Food: 0, Water: 150, Happiness: 100, Health: 0},
+}
+
+type WaterDestination struct{}
+
+func (d WaterDestination) Check(f *navigation.Field) bool {
+	return f.Terrain.T.Water
 }
