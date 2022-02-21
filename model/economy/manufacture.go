@@ -15,16 +15,30 @@ type Manufacture struct {
 var AllManufacture = [...]*Manufacture{
 	&Manufacture{
 		Name:    "sawing",
-		Time:    2,
+		Time:    72,
 		Power:   1000,
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
 	&Manufacture{
 		Name:    "stonecutting",
-		Time:    2,
+		Time:    72,
 		Power:   1000,
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("rock"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
+	&Manufacture{
+		Name:    "milling",
+		Time:    72,
+		Power:   1000,
+		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("grain"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1}}},
+	&Manufacture{
+		Name:  "baking",
+		Time:  72,
+		Power: 1000,
+		Inputs: []artifacts.Artifacts{
+			artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1},
+			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("bread"), Quantity: 1}}},
 }
 
 func GetAllManufactureNames() []string {
@@ -42,4 +56,13 @@ func GetManufacture(name string) *Manufacture {
 		}
 	}
 	return nil
+}
+
+func (m *Manufacture) IsInput(a *artifacts.Artifact) bool {
+	for _, a2 := range m.Inputs {
+		if a == a2.A {
+			return true
+		}
+	}
+	return false
 }
