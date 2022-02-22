@@ -12,6 +12,8 @@ import (
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
 const StoragePerArea = 25
+const waterTransportQuantity = 10
+const foodTransportQuantity = 5
 
 type Household struct {
 	People          []*Person
@@ -87,37 +89,45 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	numP := uint16(len(h.People))
 	water := artifacts.GetArtifact("water")
-	if int(h.Resources.Get(water)) < len(h.People) && h.NumTasks("transport", "water") == 0 {
+	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP {
 		dest := m.FindDest(home.X, home.Y, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
-			h.AddTask(&economy.TransportTask{
-				PickupF:  dest,
-				DropoffF: home,
-				PickupR:  &dest.Terrain.Resources,
-				DropoffR: &h.Resources,
-				A:        water,
-				Quantity: 10,
-			})
+			batches := int(economy.MaxFoodOrDrinkPerPerson*numP) / waterTransportQuantity
+			for i := 0; i < batches-h.NumTasks("transport", "water"); i++ {
+				h.AddTask(&economy.TransportTask{
+					PickupF:  dest,
+					DropoffF: home,
+					PickupR:  &dest.Terrain.Resources,
+					DropoffR: &h.Resources,
+					A:        water,
+					Quantity: waterTransportQuantity,
+				})
+			}
 		}
 	}
-	numP := uint16(len(h.People))
 	mp := h.Town.Marketplace
 	market := m.GetField(mp.Building.X, mp.Building.Y)
 	for _, a := range economy.Foods {
-		tag := "food_shopping#" + a.Name
-		needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: economy.BuyFoodOrDrinkPerPerson() * numP}}
-		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP && h.Money >= mp.Price(needs) && mp.CanBuy(needs) && h.NumTasks("exchange", tag) == 0 {
-			h.AddTask(&economy.ExchangeTask{
-				HomeF:          home,
-				MarketF:        market,
-				Exchange:       mp,
-				HouseholdR:     &h.Resources,
-				HouseholdMoney: &h.Money,
-				GoodsToBuy:     needs,
-				GoodsToSell:    nil,
-				TaskTag:        tag,
-			})
+		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
+			tag := "food_shopping#" + a.Name
+			batches := int(economy.BuyFoodOrDrinkPerPerson()*numP) / foodTransportQuantity
+			for i := 0; i < batches-h.NumTasks("exchange", tag); i++ {
+				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: foodTransportQuantity}}
+				if h.Money >= mp.Price(needs) && mp.CanBuy(needs) {
+					h.AddTask(&economy.ExchangeTask{
+						HomeF:          home,
+						MarketF:        market,
+						Exchange:       mp,
+						HouseholdR:     &h.Resources,
+						HouseholdMoney: &h.Money,
+						GoodsToBuy:     needs,
+						GoodsToSell:    nil,
+						TaskTag:        tag,
+					})
+				}
+			}
 		}
 	}
 }
