@@ -115,15 +115,15 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			f.AddTransportTask(land, m)
 		}
 	}
-	market := m.GetField(f.Household.Town.Marketplace.Building.X, f.Household.Town.Marketplace.Building.Y)
 	for a, q := range f.Household.Resources.Artifacts {
 		qToSell := f.Household.ArtifactToSell(a, q)
 		if qToSell > 0 {
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: qToSell}}
 			if f.Household.Town.Marketplace.CanSell(goods) && f.Household.Resources.RemoveAll(goods) {
+				mx, my := f.Household.Town.Marketplace.Building.GetRandomBuildingXY()
 				f.Household.AddTask(&economy.ExchangeTask{
 					HomeF:          home,
-					MarketF:        market,
+					MarketF:        m.GetField(mx, my),
 					Exchange:       f.Household.Town.Marketplace,
 					HouseholdR:     &f.Household.Resources,
 					HouseholdMoney: &f.Household.Money,

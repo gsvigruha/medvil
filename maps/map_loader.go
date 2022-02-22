@@ -112,10 +112,14 @@ func LoadFields(dir string, m *model.Map) {
 }
 
 func AddBuilding(b *building.Building, m *model.Map) {
-	for bx := uint16(0); bx < 5; bx++ {
-		for by := uint16(0); by < 5; by++ {
-			m.Fields[b.X+bx][b.Y+by].Building.BuildingUnits = b.ToBuildingUnits(uint8(bx), uint8(by))
-			m.Fields[b.X+bx][b.Y+by].Building.RoofUnit = b.GetRoof(uint8(bx), uint8(by))
+	for i := uint16(0); i < 5; i++ {
+		for j := uint16(0); j < 5; j++ {
+			bx := int(b.X+i) - 2
+			by := int(b.Y+j) - 2
+			if b.Plan.BaseShape[i][j] {
+				m.Fields[bx][by].Building.BuildingUnits = b.ToBuildingUnits(uint8(i), uint8(j))
+				m.Fields[bx][by].Building.RoofUnit = b.GetRoof(uint8(i), uint8(j))
+			}
 		}
 	}
 }
@@ -166,7 +170,7 @@ func LoadSociety(dir string, m *model.Map) {
 				farm.Household.People = []*social.Person{farm.Household.NewPerson(), farm.Household.NewPerson()}
 				farm.Household.TargetNumPeople = 2
 				for _, p := range farm.Household.People {
-					m.GetField(farm.Household.Building.X, farm.Household.Building.Y).RegisterTraveller(p.Traveller)
+					m.GetField(p.Traveller.FX, p.Traveller.FY).RegisterTraveller(p.Traveller)
 				}
 			}
 		}

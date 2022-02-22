@@ -17,13 +17,13 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	home := m.GetField(w.Household.Building.X, w.Household.Building.Y)
 	if w.Manufacture != nil {
 		mp := w.Household.Town.Marketplace
-		market := m.GetField(mp.Building.X, mp.Building.Y)
 		needs := w.Household.Resources.Needs(w.Manufacture.Inputs)
 		if needs != nil && w.Household.NumTasks("exchange", "manufacture_input") == 0 {
 			if mp.Storage.Has(needs) && w.Household.Money >= mp.Price(needs) {
+				mx, my := mp.Building.GetRandomBuildingXY()
 				w.Household.AddTask(&economy.ExchangeTask{
 					HomeF:          home,
-					MarketF:        market,
+					MarketF:        m.GetField(mx, my),
 					Exchange:       mp,
 					HouseholdR:     &w.Household.Resources,
 					HouseholdMoney: &w.Household.Money,
@@ -47,9 +47,10 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				if qToSell > 0 {
 					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: qToSell}}
 					if w.Household.Town.Marketplace.CanSell(goods) && w.Household.Resources.RemoveAll(goods) {
+						mx, my := mp.Building.GetRandomBuildingXY()
 						w.Household.AddTask(&economy.ExchangeTask{
 							HomeF:          home,
-							MarketF:        market,
+							MarketF:        m.GetField(mx, my),
 							Exchange:       w.Household.Town.Marketplace,
 							HouseholdR:     &w.Household.Resources,
 							HouseholdMoney: &w.Household.Money,

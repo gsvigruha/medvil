@@ -2,6 +2,7 @@ package building
 
 import (
 	"encoding/json"
+	"math/rand"
 )
 
 type Building struct {
@@ -108,4 +109,19 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8) []BuildingUnit {
 		units[i].B = b
 	}
 	return units
+}
+
+func (b *Building) GetRandomBuildingXY() (uint16, uint16) {
+	var fields [][2]uint16
+	for i := uint16(0); i < 5; i++ {
+		for j := uint16(0); j < 5; j++ {
+			bx := uint16(b.X+i) - 2
+			by := uint16(b.Y+j) - 2
+			if b.Plan.BaseShape[i][j] {
+				fields = append(fields, [2]uint16{bx, by})
+			}
+		}
+	}
+	idx := rand.Intn(len(fields))
+	return fields[idx][0], fields[idx][1]
 }
