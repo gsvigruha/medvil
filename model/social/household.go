@@ -90,34 +90,34 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	water := artifacts.GetArtifact("water")
 	if int(h.Resources.Get(water)) < len(h.People) && h.NumTasks("transport", "water") == 0 {
 		dest := m.FindDest(home.X, home.Y, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
-		h.AddTask(&economy.TransportTask{
-			PickupF:  dest,
-			DropoffF: home,
-			PickupR:  &dest.Terrain.Resources,
-			DropoffR: &h.Resources,
-			A:        water,
-			Quantity: 10,
-		})
+		if dest != nil {
+			h.AddTask(&economy.TransportTask{
+				PickupF:  dest,
+				DropoffF: home,
+				PickupR:  &dest.Terrain.Resources,
+				DropoffR: &h.Resources,
+				A:        water,
+				Quantity: 10,
+			})
+		}
 	}
-	if h.Town != nil {
-		numP := uint16(len(h.People))
-		mp := h.Town.Marketplace
-		market := m.GetField(mp.Building.X, mp.Building.Y)
-		for _, a := range economy.Foods {
-			tag := "food_shopping#" + a.Name
-			needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: economy.BuyFoodOrDrinkPerPerson() * numP}}
-			if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP && h.Money >= mp.Price(needs) && h.NumTasks("exchange", tag) == 0 {
-				h.AddTask(&economy.ExchangeTask{
-					HomeF:          home,
-					MarketF:        market,
-					Exchange:       mp,
-					HouseholdR:     &h.Resources,
-					HouseholdMoney: &h.Money,
-					GoodsToBuy:     needs,
-					GoodsToSell:    nil,
-					TaskTag:        tag,
-				})
-			}
+	numP := uint16(len(h.People))
+	mp := h.Town.Marketplace
+	market := m.GetField(mp.Building.X, mp.Building.Y)
+	for _, a := range economy.Foods {
+		tag := "food_shopping#" + a.Name
+		needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: economy.BuyFoodOrDrinkPerPerson() * numP}}
+		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP && h.Money >= mp.Price(needs) && mp.CanBuy(needs) && h.NumTasks("exchange", tag) == 0 {
+			h.AddTask(&economy.ExchangeTask{
+				HomeF:          home,
+				MarketF:        market,
+				Exchange:       mp,
+				HouseholdR:     &h.Resources,
+				HouseholdMoney: &h.Money,
+				GoodsToBuy:     needs,
+				GoodsToSell:    nil,
+				TaskTag:        tag,
+			})
 		}
 	}
 }
