@@ -169,6 +169,7 @@ func (h *Household) NumTasks(name string, tag string) int {
 }
 
 func (h *Household) NewPerson() *Person {
+	hx, hy := h.Building.GetRandomBuildingXY()
 	return &Person{
 		Food:      MaxPersonState,
 		Water:     MaxPersonState,
@@ -178,8 +179,8 @@ func (h *Household) NewPerson() *Person {
 		Task:      nil,
 		IsHome:    true,
 		Traveller: &navigation.Traveller{
-			FX: h.Building.X,
-			FY: h.Building.Y,
+			FX: hx,
+			FY: hy,
 			FZ: 0,
 			PX: 0,
 			PY: 0,
