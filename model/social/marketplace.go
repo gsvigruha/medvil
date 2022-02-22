@@ -5,6 +5,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	///	"fmt"
 )
 
 type Marketplace struct {
@@ -29,13 +30,19 @@ func (mp *Marketplace) Init() {
 }
 
 func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	if Calendar.Hour == 0 {
+	if Calendar.Hour == 0 && Calendar.Day == 1 {
 		for _, a := range artifacts.All {
-			r := float64(mp.Supply[a]) / float64(mp.Demand[a])
-			if r >= 1.1 {
-				mp.Prices[a]--
-			} else if r <= 0.9 {
-				mp.Prices[a]++
+			if mp.Supply[a] > 0 && mp.Demand[a] > 0 {
+				r := float64(mp.Supply[a]) / float64(mp.Demand[a])
+				if r >= 1.2 && mp.Prices[a] > 1 {
+					mp.Prices[a]--
+					mp.Supply[a] = 0
+					mp.Demand[a] = 0
+				} else if r <= 0.8 {
+					mp.Prices[a]++
+					mp.Supply[a] = 0
+					mp.Demand[a] = 0
+				}
 			}
 		}
 	}
@@ -46,6 +53,9 @@ func (mp *Marketplace) Buy(as []artifacts.Artifacts, wallet *uint32) {
 	mp.Storage.RemoveAll(as)
 	mp.Money += price
 	*wallet -= price
+	for _, a := range as {
+		mp.Demand[a.A] += uint32(a.Quantity)
+	}
 }
 
 func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet *uint32) {
@@ -53,6 +63,9 @@ func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet *uint32) {
 	mp.Storage.AddAll(as)
 	mp.Money -= price
 	*wallet += price
+	for _, a := range as {
+		mp.Supply[a.A] += uint32(a.Quantity)
+	}
 }
 
 func (mp *Marketplace) CanBuy(as []artifacts.Artifacts) bool {
