@@ -5,7 +5,7 @@ import (
 	"medvil/model/navigation"
 )
 
-const ShortPathMaxLength = 20
+const ShortPathMaxLength = 100
 
 type BFSElement struct {
 	F    *navigation.Field
