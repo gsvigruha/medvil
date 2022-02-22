@@ -5,7 +5,6 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/time"
-	///	"fmt"
 )
 
 type Marketplace struct {
