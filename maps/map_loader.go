@@ -170,7 +170,7 @@ func LoadSociety(dir string, m *model.Map) {
 				farm.Household.People = []*social.Person{farm.Household.NewPerson(), farm.Household.NewPerson()}
 				farm.Household.TargetNumPeople = 2
 				for _, p := range farm.Household.People {
-					m.GetField(farm.Household.Building.X, farm.Household.Building.Y).RegisterTraveller(p.Traveller)
+					m.GetField(p.Traveller.FX, p.Traveller.FY).RegisterTraveller(p.Traveller)
 				}
 			}
 		}
