@@ -62,7 +62,6 @@ func (h *Household) HasRoomForPeople() bool {
 }
 
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	home := m.GetField(h.Building.X, h.Building.Y)
 	for i := range h.People {
 		person := h.People[i]
 		if person.Task == nil && h.HasTask() {
@@ -92,13 +91,14 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	numP := uint16(len(h.People))
 	water := artifacts.GetArtifact("water")
 	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP {
-		dest := m.FindDest(home.X, home.Y, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
+		hx, hy := h.Building.GetRandomBuildingXY()
+		dest := m.FindDest(hx, hy, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
 			batches := int(economy.MaxFoodOrDrinkPerPerson*numP) / waterTransportQuantity
-			for i := 0; i < batches-h.NumTasks("transport", "water"); i++ {
+			if batches > h.NumTasks("transport", "water") {
 				h.AddTask(&economy.TransportTask{
 					PickupF:  dest,
-					DropoffF: home,
+					DropoffF: m.GetField(hx, hy),
 					PickupR:  &dest.Terrain.Resources,
 					DropoffR: &h.Resources,
 					A:        water,
@@ -108,17 +108,18 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	mp := h.Town.Marketplace
-	market := m.GetField(mp.Building.X, mp.Building.Y)
 	for _, a := range economy.Foods {
 		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			tag := "food_shopping#" + a.Name
 			batches := int(economy.BuyFoodOrDrinkPerPerson()*numP) / foodTransportQuantity
-			for i := 0; i < batches-h.NumTasks("exchange", tag); i++ {
+			if batches > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: foodTransportQuantity}}
 				if h.Money >= mp.Price(needs) && mp.CanBuy(needs) {
+					mx, my := mp.Building.GetRandomBuildingXY()
+					hx, hy := h.Building.GetRandomBuildingXY()
 					h.AddTask(&economy.ExchangeTask{
-						HomeF:          home,
-						MarketF:        market,
+						HomeF:          m.GetField(hx, hy),
+						MarketF:        m.GetField(mx, my),
 						Exchange:       mp,
 						HouseholdR:     &h.Resources,
 						HouseholdMoney: &h.Money,
