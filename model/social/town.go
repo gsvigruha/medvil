@@ -1,5 +1,13 @@
 package social
 
+import (
+	"medvil/model/navigation"
+	"medvil/model/time"
+)
+
+const FarmTaxRate float64 = 0.2
+const WorkshopTaxRate float64 = 0.1
+
 type JSONBuilding struct {
 	Plan string
 	X    uint16
@@ -19,4 +27,40 @@ type Town struct {
 	Marketplace *Marketplace
 	Farms       []*Farm
 	Workshops   []*Workshop
+}
+
+func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+	taxing := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
+	town.Marketplace.ElapseTime(Calendar, m)
+	for l := range town.Townhall.Household.People {
+		person := town.Townhall.Household.People[l]
+		person.ElapseTime(Calendar, m)
+	}
+	town.Townhall.ElapseTime(Calendar, m)
+	for k := range town.Farms {
+		farm := town.Farms[k]
+		for l := range farm.Household.People {
+			person := farm.Household.People[l]
+			person.ElapseTime(Calendar, m)
+		}
+		farm.ElapseTime(Calendar, m)
+		if taxing && farm.Household.Money > 0 {
+			tax := uint32(FarmTaxRate * float64(farm.Household.Money))
+			farm.Household.Money -= tax
+			town.Townhall.Household.Money += tax
+		}
+	}
+	for k := range town.Workshops {
+		workshop := town.Workshops[k]
+		for l := range workshop.Household.People {
+			person := workshop.Household.People[l]
+			person.ElapseTime(Calendar, m)
+		}
+		workshop.ElapseTime(Calendar, m)
+		if taxing && workshop.Household.Money > 0 {
+			tax := uint32(WorkshopTaxRate * float64(workshop.Household.Money))
+			workshop.Household.Money -= tax
+			town.Townhall.Household.Money += tax
+		}
+	}
 }

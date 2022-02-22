@@ -18,29 +18,7 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 	for i := range m.Countries {
 		country := m.Countries[i]
 		for j := range country.Towns {
-			town := country.Towns[j]
-			town.Marketplace.ElapseTime(Calendar, m)
-			for l := range town.Townhall.Household.People {
-				person := town.Townhall.Household.People[l]
-				person.ElapseTime(Calendar, m)
-			}
-			town.Townhall.ElapseTime(Calendar, m)
-			for k := range town.Farms {
-				farm := town.Farms[k]
-				for l := range farm.Household.People {
-					person := farm.Household.People[l]
-					person.ElapseTime(Calendar, m)
-				}
-				farm.ElapseTime(Calendar, m)
-			}
-			for k := range town.Workshops {
-				workshop := town.Workshops[k]
-				for l := range workshop.Household.People {
-					person := workshop.Household.People[l]
-					person.ElapseTime(Calendar, m)
-				}
-				workshop.ElapseTime(Calendar, m)
-			}
+			country.Towns[j].ElapseTime(Calendar, m)
 		}
 	}
 	for i := uint16(0); i < m.SX; i++ {
