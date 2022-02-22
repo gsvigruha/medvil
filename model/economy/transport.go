@@ -51,5 +51,9 @@ func (t *TransportTask) Name() string {
 }
 
 func (t *TransportTask) Tag() string {
-	return strconv.Itoa(int(t.PickupF.X)) + "#" + strconv.Itoa(int(t.PickupF.Y)) + "#" + t.A.Name
+	return TransportTaskTag(t.PickupF, t.A)
+}
+
+func TransportTaskTag(f *navigation.Field, a *artifacts.Artifact) string {
+	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y)) + "#" + a.Name
 }
