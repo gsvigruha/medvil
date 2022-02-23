@@ -61,6 +61,15 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if p.Water > 0 {
 			p.Water--
 		}
+		if p.Food == 0 && p.Health > 0 {
+			p.Health--
+		}
+		if p.Food == 0 && p.Happiness > 0 {
+			p.Happiness--
+		}
+		if p.Water == 0 && p.Health > 0 {
+			p.Health--
+		}
 	}
 }
 
