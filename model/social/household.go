@@ -62,12 +62,6 @@ func (h *Household) HasRoomForPeople() bool {
 }
 
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	for i := range h.People {
-		person := h.People[i]
-		if person.Task == nil && h.HasTask() {
-			person.Task = h.getNextTask()
-		}
-	}
 	if &h.Town.Townhall.Household != h { // Not Townhall, needs better check
 		if h.HasRoomForPeople() && len(h.Town.Townhall.Household.People) > 0 {
 			person := h.Town.Townhall.Household.People[0]
