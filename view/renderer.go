@@ -3,7 +3,6 @@ package view
 import (
 	//"fmt"
 	"github.com/tfriedel6/canvas"
-	"image/color"
 	"medvil/controller"
 	"medvil/model"
 	"medvil/renderer"
@@ -73,10 +72,6 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			if x < controller.ControlPanelSX-DX || x > w+DX || y < -DY*2 || y > h+DY {
 				continue
 			}
-
-			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
-			cv.SetStrokeStyle(color.RGBA{R: 192, G: 192, B: 192, A: 24})
-			cv.SetLineWidth(2)
 
 			rf := renderer.RenderedField{
 				X: [4]float64{float64(x), float64(x - DX), float64(x), float64(x + DX)},
