@@ -20,3 +20,10 @@ type FieldBuildingObjects struct {
 func (o FieldBuildingObjects) Empty() bool {
 	return o.RoofUnit == nil && len(o.BuildingUnits) == 0
 }
+
+func (o FieldBuildingObjects) GetBuilding() *building.Building {
+	if o.Empty() {
+		return nil
+	}
+	return o.BuildingUnits[0].B
+}

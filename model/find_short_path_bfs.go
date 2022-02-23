@@ -6,6 +6,7 @@ import (
 )
 
 const ShortPathMaxLength = 100
+const capacity = 1000
 
 type BFSElement struct {
 	F    *navigation.Field
@@ -27,10 +28,10 @@ func AddNextField(m *Map, x, y uint16, e *BFSElement, toVisit *[]*BFSElement, in
 
 func FindShortPathBFS(m *Map, sx, sy uint16, dest navigation.Destination, travellerType uint8) []*navigation.Field {
 	var iter = 0
-	visited := make(map[*navigation.Field]*[]*navigation.Field)
+	visited := make(map[*navigation.Field]*[]*navigation.Field, capacity)
 	se := &BFSElement{F: m.GetField(sx, sy), prev: nil, d: 1}
 	var toVisit = []*BFSElement{se}
-	var inQueue = make(map[*navigation.Field]bool)
+	var inQueue = make(map[*navigation.Field]bool, capacity)
 	for len(toVisit) > 0 {
 		e := toVisit[0]
 		toVisit = toVisit[1:]
