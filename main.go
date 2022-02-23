@@ -19,7 +19,10 @@ const (
 func main() {
 	defer profile.Start(profile.ProfilePath(".")).Stop()
 
-	wnd, cv, ctx, _ := view.CreateWindow(1280, 720, "Medvil")
+	wnd, cv, ctx, err := view.CreateWindow(1280, 720, "Medvil")
+	if err != nil {
+		panic(err)
+	}
 	ic := view.NewImageCache(ctx)
 
 	m := maps.LoadMap("samples/map/coast_1")
