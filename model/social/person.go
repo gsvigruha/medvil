@@ -49,6 +49,8 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			p.Task = &economy.DrinkTask{F: home, P: p}
 		} else if p.Food < FoodThreshold && p.Household.HasFood() {
 			p.Task = &economy.EatTask{F: home, P: p}
+		} else if p.Household.HasTask() {
+			p.Task = p.Household.getNextTask()
 		} else if !p.IsHome {
 			p.Task = &economy.GoHomeTask{F: home, P: p}
 		}
@@ -60,6 +62,15 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 		if p.Water > 0 {
 			p.Water--
+		}
+		if p.Food == 0 && p.Health > 0 {
+			p.Health--
+		}
+		if p.Food == 0 && p.Happiness > 0 {
+			p.Happiness--
+		}
+		if p.Water == 0 && p.Health > 0 {
+			p.Health--
 		}
 	}
 }

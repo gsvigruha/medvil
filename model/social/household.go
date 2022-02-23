@@ -62,13 +62,7 @@ func (h *Household) HasRoomForPeople() bool {
 }
 
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	for i := range h.People {
-		person := h.People[i]
-		if person.Task == nil && h.HasTask() {
-			person.Task = h.getNextTask()
-		}
-	}
-	if h.Town != nil { // Not Townhall, needs better check
+	if &h.Town.Townhall.Household != h { // Not Townhall, needs better check
 		if h.HasRoomForPeople() && len(h.Town.Townhall.Household.People) > 0 {
 			person := h.Town.Townhall.Household.People[0]
 			h.Town.Townhall.Household.People = h.Town.Townhall.Household.People[1:]
@@ -76,8 +70,8 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.Household = h
 			person.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: person}
 		}
-		if rand.Float64() < ReproductionRate {
-			if len(h.People) >= 1 && h.HasRoomForPeople() {
+		if len(h.People) >= 2 && rand.Float64() < ReproductionRate {
+			if h.HasRoomForPeople() {
 				h.People = append(h.People, h.NewPerson())
 			} else if h.Town.Townhall.Household.HasRoomForPeople() {
 				person := h.Town.Townhall.Household.NewPerson()
@@ -186,4 +180,16 @@ func (h *Household) NewPerson() *Person {
 			PY: 0,
 		},
 	}
+}
+
+func (h *Household) FilterPeople(m navigation.IMap) {
+	var newPeople = make([]*Person, 0, len(h.People))
+	for _, p := range h.People {
+		if p.Health == 0 {
+			m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)			
+		} else {
+			newPeople = append(newPeople, p)
+		}
+	}
+	h.People = newPeople
 }
