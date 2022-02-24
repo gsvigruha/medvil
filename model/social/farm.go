@@ -119,7 +119,7 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		qToSell := f.Household.ArtifactToSell(a, q)
 		if qToSell > 0 {
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: qToSell}}
-			if f.Household.Town.Marketplace.CanSell(goods) && f.Household.Resources.RemoveAll(goods) {
+			if f.Household.Town.Marketplace.CanSell(goods) && f.Household.NumTasks("exchange", "sell_artifacts") == 0 {
 				mx, my := f.Household.Town.Marketplace.Building.GetRandomBuildingXY()
 				f.Household.AddTask(&economy.ExchangeTask{
 					HomeF:          home,
@@ -129,6 +129,7 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					HouseholdMoney: &f.Household.Money,
 					GoodsToBuy:     nil,
 					GoodsToSell:    goods,
+					TaskTag:        "sell_artifacts",
 				})
 			}
 		}

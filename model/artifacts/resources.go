@@ -111,6 +111,22 @@ func (r *Resources) Needs(as []Artifacts) []Artifacts {
 	return remaining
 }
 
+func (r *Resources) GetAsManyAsPossible(as []Artifacts) []Artifacts {
+	var result []Artifacts = nil
+	for _, a := range as {
+		if v, ok := r.Artifacts[a.A]; ok {
+			if v < a.Quantity {
+				result = append(result, Artifacts{A: a.A, Quantity: v})
+				r.Artifacts[a.A] = 0
+			} else {
+				result = append(result, Artifacts{A: a.A, Quantity: a.Quantity})
+				r.Artifacts[a.A] = v - a.Quantity
+			}
+		}
+	}
+	return result
+}
+
 func (r *Resources) HasArtifact(a *Artifact) bool {
 	if q, ok := r.Artifacts[a]; ok {
 		if q > 0 {

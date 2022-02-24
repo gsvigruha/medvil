@@ -13,7 +13,7 @@ import (
 const ReproductionRate = 1.0 / (24 * 30 * 12)
 const StoragePerArea = 25
 const waterTransportQuantity = 10
-const foodTransportQuantity = 5
+const foodTransportQuantity = 10
 
 type Household struct {
 	People          []*Person
@@ -88,7 +88,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		hx, hy := h.Building.GetRandomBuildingXY()
 		dest := m.FindDest(hx, hy, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
-			if int(economy.MaxFoodOrDrinkPerPerson*numP)/waterTransportQuantity > h.NumTasks("transport", "water") {
+			if int(economy.MaxFoodOrDrinkPerPerson*numP)/waterTransportQuantity + 1 > h.NumTasks("transport", "water") {
 				h.AddTask(&economy.TransportTask{
 					PickupF:  dest,
 					DropoffF: m.GetField(hx, hy),
@@ -104,7 +104,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	for _, a := range economy.Foods {
 		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			tag := "food_shopping#" + a.Name
-			if int(economy.BuyFoodOrDrinkPerPerson()*numP)/foodTransportQuantity > h.NumTasks("exchange", tag) {
+			if int(economy.BuyFoodOrDrinkPerPerson()*numP)/foodTransportQuantity + 1 > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: foodTransportQuantity}}
 				if h.Money >= mp.Price(needs) && mp.CanBuy(needs) {
 					mx, my := mp.Building.GetRandomBuildingXY()
@@ -130,7 +130,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16) uint16 {
 		return 0
 	}
 	if economy.IsFoodOrDrink(a) {
-		if q > economy.MinFoodOrDrinkPerPerson*uint16(len(h.People)) {
+		if q > economy.MaxFoodOrDrinkPerPerson*uint16(len(h.People)) {
 			return q - economy.MinFoodOrDrinkPerPerson*uint16(len(h.People))
 		} else {
 			return 0
@@ -186,7 +186,7 @@ func (h *Household) FilterPeople(m navigation.IMap) {
 	var newPeople = make([]*Person, 0, len(h.People))
 	for _, p := range h.People {
 		if p.Health == 0 {
-			m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)			
+			m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)
 		} else {
 			newPeople = append(newPeople, p)
 		}

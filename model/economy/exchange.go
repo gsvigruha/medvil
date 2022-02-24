@@ -8,11 +8,16 @@ import (
 
 type Exchange interface {
 	Buy([]artifacts.Artifacts, *uint32)
+	BuyAsManyAsPossible([]artifacts.Artifacts, *uint32) []artifacts.Artifacts
 	Sell([]artifacts.Artifacts, *uint32)
 	CanBuy([]artifacts.Artifacts) bool
 	CanSell([]artifacts.Artifacts) bool
 	Price([]artifacts.Artifacts) uint32
 }
+
+const ExchangeTaskStatePickupAtHome uint8 = 0
+const ExchangeTaskStateMarket uint8 = 1
+const ExchangeTaskStateDropoffAtHome uint8 = 2
 
 type ExchangeTask struct {
 	HomeF          *navigation.Field
@@ -23,37 +28,50 @@ type ExchangeTask struct {
 	GoodsToBuy     []artifacts.Artifacts
 	GoodsToSell    []artifacts.Artifacts
 	TaskTag        string
-	backtrip       bool
+	goods          []artifacts.Artifacts
+	state          uint8
 }
 
 func (t *ExchangeTask) Field() *navigation.Field {
-	if t.backtrip {
+	switch t.state {
+	case ExchangeTaskStatePickupAtHome:
 		return t.HomeF
-	} else {
+	case ExchangeTaskStateMarket:
 		return t.MarketF
+	case ExchangeTaskStateDropoffAtHome:
+		return t.HomeF
 	}
+	return nil
 }
 
 func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
-	if t.backtrip {
-		t.HouseholdR.AddAll(t.GoodsToBuy)
-		return true
-	} else {
-		if t.Exchange.CanBuy(t.GoodsToBuy) && t.Exchange.CanSell(t.GoodsToSell) && t.Exchange.Price(t.GoodsToBuy) <= *t.HouseholdMoney {
-			t.Exchange.Buy(t.GoodsToBuy, t.HouseholdMoney)
-			t.Exchange.Sell(t.GoodsToSell, t.HouseholdMoney)
-			t.backtrip = true
+	switch t.state {
+	case ExchangeTaskStatePickupAtHome:
+		t.goods = t.HouseholdR.GetAsManyAsPossible(t.GoodsToSell)
+		t.state = ExchangeTaskStateMarket
+	case ExchangeTaskStateMarket:
+		if t.Exchange.CanSell(t.goods) && t.Exchange.Price(t.GoodsToBuy) <= *t.HouseholdMoney {
+			t.Exchange.Sell(t.goods, t.HouseholdMoney)
+			t.goods = t.Exchange.BuyAsManyAsPossible(t.GoodsToBuy, t.HouseholdMoney)
+			t.state = ExchangeTaskStateDropoffAtHome
 		}
+	case ExchangeTaskStateDropoffAtHome:
+		t.HouseholdR.AddAll(t.goods)
+		return true
 	}
 	return false
 }
 
 func (t *ExchangeTask) Blocked() bool {
-	if t.backtrip {
+	switch t.state {
+	case ExchangeTaskStatePickupAtHome:
 		return false
-	} else {
-		return !t.Exchange.CanBuy(t.GoodsToBuy) || !t.Exchange.CanSell(t.GoodsToSell) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney
+	case ExchangeTaskStateMarket:
+		return !t.Exchange.CanSell(t.goods) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney
+	case ExchangeTaskStateDropoffAtHome:
+		return false
 	}
+	return false
 }
 
 func (t *ExchangeTask) Name() string {
