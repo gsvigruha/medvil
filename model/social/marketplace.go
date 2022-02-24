@@ -57,6 +57,17 @@ func (mp *Marketplace) Buy(as []artifacts.Artifacts, wallet *uint32) {
 	}
 }
 
+func (mp *Marketplace) BuyAsManyAsPossible(as []artifacts.Artifacts, wallet *uint32) []artifacts.Artifacts {
+	existingArtifacts := mp.Storage.GetAsManyAsPossible(as)
+	price := mp.Price(existingArtifacts)
+	mp.Money += price
+	*wallet -= price
+	for _, a := range as {
+		mp.Demand[a.A] += uint32(a.Quantity)
+	}
+	return existingArtifacts
+}
+
 func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet *uint32) {
 	price := mp.Price(as)
 	mp.Storage.AddAll(as)
