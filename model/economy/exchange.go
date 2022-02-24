@@ -81,3 +81,7 @@ func (t *ExchangeTask) Name() string {
 func (t *ExchangeTask) Tag() string {
 	return t.TaskTag
 }
+
+func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
+	return false
+}

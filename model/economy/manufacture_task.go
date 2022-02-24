@@ -39,3 +39,7 @@ func (t *ManufactureTask) Name() string {
 func (t *ManufactureTask) Tag() string {
 	return ""
 }
+
+func (t *ManufactureTask) Expired(Calendar *time.CalendarType) bool {
+	return false
+}
