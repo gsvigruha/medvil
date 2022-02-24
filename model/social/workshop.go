@@ -43,10 +43,11 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 		for a, q := range w.Household.Resources.Artifacts {
 			if !w.Manufacture.IsInput(a) {
-				qToSell := w.Household.ArtifactToSell(a, q)
+				qToSell := w.Household.ArtifactToSell(a, q, w.Manufacture.IsOutput(a))
 				if qToSell > 0 {
+					tag := "sell_artifacts#" + a.Name
 					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: qToSell}}
-					if w.Household.Town.Marketplace.CanSell(goods) && w.Household.NumTasks("exchange", "sell_artifacts") == 0 {
+					if w.Household.Town.Marketplace.CanSell(goods) && w.Household.NumTasks("exchange", tag) == 0 {
 						mx, my := mp.Building.GetRandomBuildingXY()
 						w.Household.AddTask(&economy.ExchangeTask{
 							HomeF:          home,
@@ -56,7 +57,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 							HouseholdMoney: &w.Household.Money,
 							GoodsToBuy:     nil,
 							GoodsToSell:    goods,
-							TaskTag:        "sell_artifacts",
+							TaskTag:        tag,
 						})
 					}
 				}

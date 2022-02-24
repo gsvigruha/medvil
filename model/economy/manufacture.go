@@ -66,3 +66,12 @@ func (m *Manufacture) IsInput(a *artifacts.Artifact) bool {
 	}
 	return false
 }
+
+func (m *Manufacture) IsOutput(a *artifacts.Artifact) bool {
+	for _, a2 := range m.Outputs {
+		if a == a2.A {
+			return true
+		}
+	}
+	return false
+}

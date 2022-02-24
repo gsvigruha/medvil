@@ -13,7 +13,7 @@ import (
 const ReproductionRate = 1.0 / (24 * 30 * 12)
 const StoragePerArea = 25
 const waterTransportQuantity = 10
-const foodTransportQuantity = 10
+const foodTransportQuantity = 5
 
 type Household struct {
 	People          []*Person
@@ -125,13 +125,17 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
-func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16) uint16 {
+func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bool) uint16 {
 	if a.Name == "water" {
 		return 0
 	}
+	var threshold = economy.MaxFoodOrDrinkPerPerson
+	if isProduct {
+		threshold = economy.MinFoodOrDrinkPerPerson
+	}
 	if economy.IsFoodOrDrink(a) {
-		if q > economy.MaxFoodOrDrinkPerPerson*uint16(len(h.People)) {
-			return q - economy.MinFoodOrDrinkPerPerson*uint16(len(h.People))
+		if q > threshold*uint16(len(h.People)) {
+			return q - threshold*uint16(len(h.People))
 		} else {
 			return 0
 		}
