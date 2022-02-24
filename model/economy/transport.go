@@ -57,3 +57,7 @@ func (t *TransportTask) Tag() string {
 func TransportTaskTag(f *navigation.Field, a *artifacts.Artifact) string {
 	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y)) + "#" + a.Name
 }
+
+func (t *TransportTask) Expired(Calendar *time.CalendarType) bool {
+	return false
+}

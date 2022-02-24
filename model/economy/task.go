@@ -11,4 +11,5 @@ type Task interface {
 	Blocked() bool
 	Name() string
 	Tag() string
+	Expired(Calendar *time.CalendarType) bool
 }

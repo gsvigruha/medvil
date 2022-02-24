@@ -37,7 +37,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		person.ElapseTime(Calendar, m)
 	}
 	town.Townhall.ElapseTime(Calendar, m)
-	town.Townhall.Household.FilterPeople(m)
+	town.Townhall.Household.Filter(Calendar, m)
 	for k := range town.Farms {
 		farm := town.Farms[k]
 		for l := range farm.Household.People {
@@ -50,7 +50,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			farm.Household.Money -= tax
 			town.Townhall.Household.Money += tax
 		}
-		farm.Household.FilterPeople(m)
+		farm.Household.Filter(Calendar, m)
 	}
 	for k := range town.Workshops {
 		workshop := town.Workshops[k]
@@ -64,6 +64,6 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			workshop.Household.Money -= tax
 			town.Townhall.Household.Money += tax
 		}
-		workshop.Household.FilterPeople(m)
+		workshop.Household.Filter(Calendar, m)
 	}
 }

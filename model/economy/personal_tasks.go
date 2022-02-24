@@ -49,6 +49,10 @@ func (t *EatTask) Tag() string {
 	return ""
 }
 
+func (t *EatTask) Expired(Calendar *time.CalendarType) bool {
+	return false
+}
+
 func (t *DrinkTask) Field() *navigation.Field {
 	return t.F
 }
@@ -70,6 +74,10 @@ func (t *DrinkTask) Tag() string {
 	return ""
 }
 
+func (t *DrinkTask) Expired(Calendar *time.CalendarType) bool {
+	return false
+}
+
 func (t *GoHomeTask) Field() *navigation.Field {
 	return t.F
 }
@@ -89,4 +97,8 @@ func (t *GoHomeTask) Name() string {
 
 func (t *GoHomeTask) Tag() string {
 	return ""
+}
+
+func (t *GoHomeTask) Expired(Calendar *time.CalendarType) bool {
+	return false
 }

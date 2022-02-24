@@ -35,6 +35,7 @@ type AgriculturalTask struct {
 	F        *navigation.Field
 	Progress uint16
 	UseType  uint8
+	Start    time.CalendarType
 }
 
 func (t *AgriculturalTask) Field() *navigation.Field {
@@ -146,4 +147,8 @@ func (t *AgriculturalTask) Name() string {
 
 func (t *AgriculturalTask) Tag() string {
 	return ""
+}
+
+func (t *AgriculturalTask) Expired(Calendar *time.CalendarType) bool {
+	return Calendar.DaysElapsed()-t.Start.DaysElapsed() >= 365
 }
