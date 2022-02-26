@@ -36,6 +36,7 @@ type Controller struct {
 	SelectedField             *navigation.Field
 	SelectedFarm              *social.Farm
 	SelectedWorkshop          *social.Workshop
+	SelectedMine              *social.Mine
 	SelectedTownhall          *social.Townhall
 	SelectedMarketplace       *social.Marketplace
 	ReverseReferences         *model.ReverseReferences
@@ -105,6 +106,7 @@ func (c *Controller) Refresh() {
 func (c *Controller) Reset() {
 	c.SelectedField = nil
 	c.SelectedFarm = nil
+	c.SelectedMine = nil
 	c.SelectedWorkshop = nil
 	c.ActiveBuildingPlan = nil
 	c.ClickHandler = nil
@@ -128,6 +130,8 @@ func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 		}
 	} else if c.SelectedFarm != nil {
 		return c.SelectedFarm.GetFields()
+	} else if c.SelectedMine != nil {
+		return c.SelectedMine.GetFields()
 	}
 	return nil
 }
@@ -158,6 +162,10 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbu.Unit.B]
 				if c.SelectedWorkshop != nil {
 					WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
+				}
+				c.SelectedMine = c.ReverseReferences.BuildingToMine[rbu.Unit.B]
+				if c.SelectedMine != nil {
+					MineToControlPanel(c.ControlPanel, c.SelectedMine)
 				}
 				return
 			}
