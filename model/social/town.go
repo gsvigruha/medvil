@@ -7,6 +7,7 @@ import (
 
 const FarmTaxRate float64 = 0.2
 const WorkshopTaxRate float64 = 0.1
+const MineTaxRate float64 = 0.1
 
 type JSONBuilding struct {
 	Plan string
@@ -27,6 +28,7 @@ type Town struct {
 	Marketplace *Marketplace
 	Farms       []*Farm
 	Workshops   []*Workshop
+	Mines       []*Mine
 }
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -65,5 +67,19 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			town.Townhall.Household.Money += tax
 		}
 		workshop.Household.Filter(Calendar, m)
+	}
+	for k := range town.Mines {
+		mine := town.Mines[k]
+		for l := range mine.Household.People {
+			person := mine.Household.People[l]
+			person.ElapseTime(Calendar, m)
+		}
+		mine.ElapseTime(Calendar, m)
+		if taxing && mine.Household.Money > 0 {
+			tax := uint32(MineTaxRate * float64(mine.Household.Money))
+			mine.Household.Money -= tax
+			town.Townhall.Household.Money += tax
+		}
+		mine.Household.Filter(Calendar, m)
 	}
 }

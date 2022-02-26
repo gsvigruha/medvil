@@ -92,6 +92,11 @@ func (c *Controller) ShowFarmController() {
 	BuildingsToControlPanel(c.ControlPanel, BuildingTypeFarm)
 }
 
+func (c *Controller) ShowMineController() {
+	c.Reset()
+	BuildingsToControlPanel(c.ControlPanel, BuildingTypeMine)
+}
+
 func (c *Controller) Refresh() {
 	c.ReverseReferences = c.Map.ReverseReferences()
 	c.ControlPanel.Refresh()

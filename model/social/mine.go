@@ -1,0 +1,118 @@
+package social
+
+import (
+	"encoding/json"
+	"medvil/model/artifacts"
+	"medvil/model/economy"
+	"medvil/model/navigation"
+	//	"medvil/model/terrain"
+	"medvil/model/time"
+)
+
+type MineLand struct {
+	X       uint16
+	Y       uint16
+	UseType uint8
+	F       *navigation.Field
+}
+
+func (l MineLand) Field() *navigation.Field {
+	return l.F
+}
+
+func (l MineLand) Context() string {
+	switch l.UseType {
+	case economy.MineFieldUseTypeStone:
+		return "stone"
+	case economy.MineFieldUseTypeClay:
+		return "clay"
+	case economy.MineFieldUseTypeIron:
+		return "iron"
+	case economy.MineFieldUseTypeGold:
+		return "gold"
+	}
+	return ""
+}
+
+type Mine struct {
+	Household Household
+	Land      []MineLand
+}
+
+func (m *Mine) UnmarshalJSON(data []byte) error {
+	var j map[string]json.RawMessage
+	if err := json.Unmarshal(data, &j); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(j["household"], &m.Household); err != nil {
+		return err
+	}
+	var l [][]uint16
+	if err := json.Unmarshal(j["land"], &l); err != nil {
+		return err
+	}
+	m.Land = make([]MineLand, len(l))
+	for i := range l {
+		m.Land[i].X = l[i][0]
+		m.Land[i].Y = l[i][1]
+		m.Land[i].UseType = uint8(l[i][2])
+	}
+	return nil
+}
+
+func (m *Mine) AddTransportTask(l MineLand, imap navigation.IMap) {
+	home := imap.GetField(m.Household.Building.X, m.Household.Building.Y)
+	if l.F.Terrain.Resources.HasRealArtifacts() {
+		for a, q := range l.F.Terrain.Resources.Artifacts {
+			tag := economy.TransportTaskTag(l.F, a)
+			if m.Household.NumTasks("transport", tag) == 0 {
+				m.Household.AddTask(&economy.TransportTask{
+					PickupF:  l.F,
+					DropoffF: home,
+					PickupR:  &l.F.Terrain.Resources,
+					DropoffR: &m.Household.Resources,
+					A:        a,
+					Quantity: q,
+				})
+			}
+		}
+	}
+}
+
+func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
+	m.Household.ElapseTime(Calendar, imap)
+	home := imap.GetField(m.Household.Building.X, m.Household.Building.Y)
+	if Calendar.Hour == 0 {
+		for _, land := range m.Land {
+			m.AddTransportTask(land, imap)
+		}
+	}
+	for a, q := range m.Household.Resources.Artifacts {
+		qToSell := m.Household.ArtifactToSell(a, q, false)
+		if qToSell >= ProductTransportQuantity {
+			tag := "sell_artifacts#" + a.Name
+			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
+			if m.Household.Town.Marketplace.CanSell(goods) && int(qToSell)/ProductTransportQuantity > m.Household.NumTasks("exchange", tag) {
+				mx, my := m.Household.Town.Marketplace.Building.GetRandomBuildingXY()
+				m.Household.AddTask(&economy.ExchangeTask{
+					HomeF:          home,
+					MarketF:        imap.GetField(mx, my),
+					Exchange:       m.Household.Town.Marketplace,
+					HouseholdR:     &m.Household.Resources,
+					HouseholdMoney: &m.Household.Money,
+					GoodsToBuy:     nil,
+					GoodsToSell:    goods,
+					TaskTag:        tag,
+				})
+			}
+		}
+	}
+}
+
+func (m *Mine) GetFields() []navigation.FieldWithContext {
+	fields := make([]navigation.FieldWithContext, len(m.Land))
+	for i := range m.Land {
+		fields[i] = m.Land[i]
+	}
+	return fields
+}

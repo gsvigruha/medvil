@@ -69,6 +69,19 @@ func (m *Map) AddWorkshop(c *social.Country, x, y uint16, bp *building.BuildingP
 	}
 }
 
+func (m *Map) AddMine(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
+	b := m.AddBuilding(x, y, bp)
+	if b != nil {
+		t := c.Towns[0]
+		mine := &social.Mine{Household: social.Household{Building: b, Town: t}}
+		mine.Household.Resources.VolumeCapacity = mine.Household.Building.Plan.Area() * social.StoragePerArea
+		t.Mines = append(t.Mines, mine)
+		return true
+	} else {
+		return false
+	}
+}
+
 func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []navigation.FieldWithContext {
 	var fields []navigation.FieldWithContext
 	for i := uint16(0); i < 5; i++ {
