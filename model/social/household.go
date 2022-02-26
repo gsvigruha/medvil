@@ -12,8 +12,9 @@ import (
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
 const StoragePerArea = 25
-const waterTransportQuantity = 10
-const foodTransportQuantity = 10
+const WaterTransportQuantity = 10
+const FoodTransportQuantity = 5
+const ProductTransportQuantity = 5
 
 type Household struct {
 	People          []*Person
@@ -88,14 +89,14 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		hx, hy := h.Building.GetRandomBuildingXY()
 		dest := m.FindDest(hx, hy, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
-			if int(economy.MaxFoodOrDrinkPerPerson*numP)/waterTransportQuantity+1 > h.NumTasks("transport", "water") {
+			if int(economy.MaxFoodOrDrinkPerPerson*numP)/WaterTransportQuantity+1 > h.NumTasks("transport", "water") {
 				h.AddTask(&economy.TransportTask{
 					PickupF:  dest,
 					DropoffF: m.GetField(hx, hy),
 					PickupR:  &dest.Terrain.Resources,
 					DropoffR: &h.Resources,
 					A:        water,
-					Quantity: waterTransportQuantity,
+					Quantity: WaterTransportQuantity,
 				})
 			}
 		}
@@ -104,8 +105,8 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	for _, a := range economy.Foods {
 		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			tag := "food_shopping#" + a.Name
-			if int(economy.BuyFoodOrDrinkPerPerson()*numP)/foodTransportQuantity+1 > h.NumTasks("exchange", tag) {
-				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: foodTransportQuantity}}
+			if int(economy.BuyFoodOrDrinkPerPerson()*numP)/FoodTransportQuantity+1 > h.NumTasks("exchange", tag) {
+				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
 				if h.Money >= mp.Price(needs) && mp.CanBuy(needs) {
 					mx, my := mp.Building.GetRandomBuildingXY()
 					hx, hy := h.Building.GetRandomBuildingXY()
@@ -125,13 +126,17 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
-func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16) uint16 {
+func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bool) uint16 {
 	if a.Name == "water" {
 		return 0
 	}
+	var threshold = economy.MaxFoodOrDrinkPerPerson
+	if isProduct {
+		threshold = economy.MinFoodOrDrinkPerPerson
+	}
 	if economy.IsFoodOrDrink(a) {
-		if q > economy.MaxFoodOrDrinkPerPerson*uint16(len(h.People)) {
-			return q - economy.MinFoodOrDrinkPerPerson*uint16(len(h.People))
+		if q > threshold*uint16(len(h.People)) {
+			return q - threshold*uint16(len(h.People))
 		} else {
 			return 0
 		}

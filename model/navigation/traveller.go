@@ -74,7 +74,7 @@ func (t *Traveller) HasRoom(m IMap, dir uint8) bool {
 func (t *Traveller) MoveLeft(m IMap) {
 	if t.PX > 0 {
 		t.PX--
-	} else {
+	} else if t.FX >= 0 {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PX = MaxPX
 		t.FX--
@@ -100,7 +100,7 @@ func (t *Traveller) MoveRight(m IMap) {
 func (t *Traveller) MoveUp(m IMap) {
 	if t.PY > 0 {
 		t.PY--
-	} else {
+	} else if t.FY >= 0 {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PY = MaxPY
 		t.FY--
