@@ -15,30 +15,30 @@ type Manufacture struct {
 var AllManufacture = [...]*Manufacture{
 	&Manufacture{
 		Name:    "sawing",
-		Time:    72,
+		Time:    10 * 24,
 		Power:   1000,
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
 	&Manufacture{
 		Name:    "stonecutting",
-		Time:    72,
+		Time:    10 * 24,
 		Power:   1000,
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("rock"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
 	&Manufacture{
 		Name:    "milling",
-		Time:    72,
+		Time:    10 * 24,
 		Power:   1000,
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("grain"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1}}},
 	&Manufacture{
 		Name:  "baking",
-		Time:  72,
+		Time:  10 * 24,
 		Power: 1000,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("bread"), Quantity: 2}}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("bread"), Quantity: 3}}},
 }
 
 func GetAllManufactureNames() []string {

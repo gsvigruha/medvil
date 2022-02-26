@@ -40,6 +40,10 @@ func IncreaseHouseholdTargetNumPeople(h *social.Household) {
 	h.IncTargetNumPeople()
 }
 
+func DecreaseHouseholdTargetNumPeople(h *social.Household) {
+	h.DecTargetNumPeople()
+}
+
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, 80)
 	for i, person := range h.People {
@@ -49,8 +53,11 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 		p.AddImageLabel("person", float64(10+i*IconW), PersonGUIY, 32, 32, gui.ImageLabelStyleDisabled)
 	}
 	p.AddButton(HouseholdControllerButton{
-		b: gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 40, Y: PersonGUIY, SX: 32, SY: 32},
+		b: gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 40, Y: PersonGUIY, SX: 16, SY: 16},
 		h: h, action: IncreaseHouseholdTargetNumPeople})
+	p.AddButton(HouseholdControllerButton{
+		b: gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 40, Y: PersonGUIY + 16, SX: 16, SY: 16},
+		h: h, action: DecreaseHouseholdTargetNumPeople})
 	p.AddScaleLabel("barrel", 10, ArtifactsGUIY, 32, 32, 4, h.Resources.UsedVolumeCapacity())
 	var aI = 1
 	for _, a := range artifacts.All {

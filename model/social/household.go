@@ -58,8 +58,18 @@ func (h *Household) IncTargetNumPeople() {
 	}
 }
 
+func (h *Household) DecTargetNumPeople() {
+	if h.TargetNumPeople > 0 {
+		h.TargetNumPeople--
+	}
+}
+
 func (h *Household) HasRoomForPeople() bool {
 	return uint16(len(h.People)) < h.TargetNumPeople
+}
+
+func (h *Household) HasSurplusPeople() bool {
+	return uint16(len(h.People)) > h.TargetNumPeople
 }
 
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -80,6 +90,17 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				person.Traveller.FX = h.Building.X
 				person.Traveller.FY = h.Building.Y
 				person.Task = &economy.GoHomeTask{F: m.GetField(h.Town.Townhall.Household.Building.X, h.Town.Townhall.Household.Building.Y), P: person}
+			}
+		}
+		if h.HasSurplusPeople() && h.Town.Townhall.Household.HasRoomForPeople() {
+			for _, person := range h.People {
+				if person.Task == nil {
+					h.Town.Townhall.Household.People = append(h.Town.Townhall.Household.People, person)
+					person.Traveller.FX = h.Building.X
+					person.Traveller.FY = h.Building.Y
+					person.Task = &economy.GoHomeTask{F: m.GetField(h.Town.Townhall.Household.Building.X, h.Town.Townhall.Household.Building.Y), P: person}
+					break
+				}
 			}
 		}
 	}
