@@ -12,8 +12,10 @@
               },
               "money": 2000,
               "resources": {
-                "log": 10,
-                "grain": 10
+                "fruit": 50,
+                "vegetable": 50,
+                "bread": 20,
+                "water": 20
               }
             }
           }, 
