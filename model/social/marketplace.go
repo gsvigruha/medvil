@@ -31,7 +31,17 @@ func (mp *Marketplace) Init() {
 func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if Calendar.Hour == 0 && Calendar.Day == 1 {
 		for _, a := range artifacts.All {
-			if mp.Supply[a] > 0 && mp.Demand[a] > 0 {
+			if mp.Supply[a] == 0 && mp.Demand[a] > 0 && mp.Demand[a] > uint32(mp.Storage.Get(a)) {
+				mp.Prices[a]++
+				mp.Supply[a] = 0
+				mp.Demand[a] = 0
+			} else if mp.Demand[a] == 0 && mp.Supply[a] > 0 && mp.Storage.Get(a) > 0 {
+				if mp.Prices[a] > 1 {
+					mp.Prices[a]--
+					mp.Supply[a] = 0
+					mp.Demand[a] = 0
+				}
+			} else if mp.Demand[a] > 0 && mp.Supply[a] > 0 {
 				r := float64(mp.Supply[a]) / float64(mp.Demand[a])
 				if r >= 1.2 && mp.Prices[a] > 1 {
 					mp.Prices[a]--
@@ -62,7 +72,7 @@ func (mp *Marketplace) BuyAsManyAsPossible(as []artifacts.Artifacts, wallet *uin
 	price := mp.Price(existingArtifacts)
 	mp.Money += price
 	*wallet -= price
-	for _, a := range as {
+	for _, a := range existingArtifacts {
 		mp.Demand[a.A] += uint32(a.Quantity)
 	}
 	return existingArtifacts

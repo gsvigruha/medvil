@@ -44,10 +44,10 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		for a, q := range w.Household.Resources.Artifacts {
 			if !w.Manufacture.IsInput(a) {
 				qToSell := w.Household.ArtifactToSell(a, q, w.Manufacture.IsOutput(a))
-				if qToSell > 0 {
+				if qToSell > ProductTransportQuantity {
 					tag := "sell_artifacts#" + a.Name
-					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: qToSell}}
-					if w.Household.Town.Marketplace.CanSell(goods) && w.Household.NumTasks("exchange", tag) == 0 {
+					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
+					if w.Household.Town.Marketplace.CanSell(goods) && int(qToSell)/ProductTransportQuantity > w.Household.NumTasks("exchange", tag) {
 						mx, my := mp.Building.GetRandomBuildingXY()
 						w.Household.AddTask(&economy.ExchangeTask{
 							HomeF:          home,
