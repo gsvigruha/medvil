@@ -5,7 +5,7 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
-	//	"medvil/model/terrain"
+	"medvil/model/terrain"
 	"medvil/model/time"
 )
 
@@ -85,6 +85,12 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 	if Calendar.Hour == 0 {
 		for _, land := range m.Land {
 			m.AddTransportTask(land, imap)
+			tag := economy.MiningTaskTag(land.F, land.UseType)
+			if m.Household.NumTasks("mining", tag) == 0 {
+				if land.UseType == economy.MineFieldUseTypeStone && land.F.Terrain.T == terrain.Rock {
+					m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
+				}
+			}
 		}
 	}
 	for a, q := range m.Household.Resources.Artifacts {

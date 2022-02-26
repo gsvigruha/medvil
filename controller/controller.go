@@ -106,6 +106,7 @@ func (c *Controller) Refresh() {
 func (c *Controller) Reset() {
 	c.SelectedField = nil
 	c.SelectedFarm = nil
+	c.SelectedMine = nil
 	c.SelectedWorkshop = nil
 	c.ActiveBuildingPlan = nil
 	c.ClickHandler = nil
