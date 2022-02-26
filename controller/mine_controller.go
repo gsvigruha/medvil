@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/tfriedel6/canvas"
-	"image/color"
 	"medvil/model/economy"
 	"medvil/model/social"
 	"medvil/model/terrain"
@@ -17,26 +16,12 @@ type MineController struct {
 	mine           *social.Mine
 }
 
-type MineLandUseButton struct {
-	b       gui.ButtonGUI
-	mc      *MineController
-	useType uint8
+func (mc *MineController) GetUseType() uint8 {
+	return mc.UseType
 }
 
-func (b MineLandUseButton) Click() {
-	b.mc.UseType = b.useType
-}
-
-func (b MineLandUseButton) Render(cv *canvas.Canvas) {
-	b.b.Render(cv)
-	if b.mc.UseType != b.useType {
-		cv.SetFillStyle(color.RGBA{R: 64, G: 0, B: 0, A: 128})
-		cv.FillRect(b.b.X, b.b.Y, 32, 32)
-	}
-}
-
-func (b MineLandUseButton) Contains(x float64, y float64) bool {
-	return b.b.Contains(x, y)
+func (mc *MineController) SetUseType(ut uint8) {
+	mc.UseType = ut
 }
 
 func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
@@ -45,14 +30,14 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 	HouseholdToControlPanel(hp, &mine.Household)
 	mc := &MineController{householdPanel: hp, minePanel: mp, mine: mine, UseType: economy.MineFieldUseTypeNone}
 
-	mp.AddButton(MineLandUseButton{
+	mp.AddButton(LandUseButton{
 		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
-		mc:      mc,
+		luc:     mc,
 		useType: economy.MineFieldUseTypeNone,
 	})
-	mp.AddButton(MineLandUseButton{
+	mp.AddButton(LandUseButton{
 		b:       gui.ButtonGUI{Texture: "terrain/rock", X: float64(50), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
-		mc:      mc,
+		luc:     mc,
 		useType: economy.MineFieldUseTypeStone,
 	})
 

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/tfriedel6/canvas"
-	"image/color"
 	"medvil/model/economy"
 	"medvil/model/social"
 	"medvil/renderer"
@@ -18,26 +17,12 @@ type FarmController struct {
 	farm           *social.Farm
 }
 
-type LandUseButton struct {
-	b       gui.ButtonGUI
-	fc      *FarmController
-	useType uint8
+func (fc *FarmController) GetUseType() uint8 {
+	return fc.UseType
 }
 
-func (b LandUseButton) Click() {
-	b.fc.UseType = b.useType
-}
-
-func (b LandUseButton) Render(cv *canvas.Canvas) {
-	b.b.Render(cv)
-	if b.fc.UseType != b.useType {
-		cv.SetFillStyle(color.RGBA{R: 64, G: 0, B: 0, A: 128})
-		cv.FillRect(b.b.X, b.b.Y, 32, 32)
-	}
-}
-
-func (b LandUseButton) Contains(x float64, y float64) bool {
-	return b.b.Contains(x, y)
+func (fc *FarmController) SetUseType(ut uint8) {
+	fc.UseType = ut
 }
 
 func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
@@ -48,27 +33,27 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 
 	fp.AddButton(LandUseButton{
 		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
-		fc:      fc,
+		luc:     fc,
 		useType: economy.FarmFieldUseTypeBarren,
 	})
 	fp.AddButton(LandUseButton{
 		b:       gui.ButtonGUI{Texture: "terrain/grain", X: float64(50), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
-		fc:      fc,
+		luc:     fc,
 		useType: economy.FarmFieldUseTypeWheat,
 	})
 	fp.AddButton(LandUseButton{
 		b:       gui.ButtonGUI{Texture: "terrain/vegetables", X: float64(90), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
-		fc:      fc,
+		luc:     fc,
 		useType: economy.FarmFieldUseTypeVegetables,
 	})
 	fp.AddButton(LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/fruit", X: float64(130), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
-		fc:      fc,
+		luc:     fc,
 		useType: economy.FarmFieldUseTypeOrchard,
 	})
 	fp.AddButton(LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/log", X: float64(170), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
-		fc:      fc,
+		luc:     fc,
 		useType: economy.FarmFieldUseTypeForestry,
 	})
 
