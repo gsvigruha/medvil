@@ -57,6 +57,10 @@ func CPActionShowFarmController(c *Controller) {
 	c.ShowFarmController()
 }
 
+func CPActionShowMineController(c *Controller) {
+	c.ShowMineController()
+}
+
 func CPActionCancel(c *Controller) {
 	c.Reset()
 	c.ControlPanel.dynamicPanel = nil
@@ -93,7 +97,8 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: 10, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowFarmController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 50, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowWorkshopController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "mine", X: 50, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowMineController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 90, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowWorkshopController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 210, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)

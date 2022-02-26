@@ -13,6 +13,7 @@ type BuildingType uint8
 
 const BuildingTypeFarm = 1
 const BuildingTypeWorkshop = 2
+const BuildingTypeMine = 3
 
 const RoofPanelTop = 100
 const FloorsPanelTop = 200
@@ -124,6 +125,8 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 			c.Map.AddFarm(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 		} else if bc.bt == BuildingTypeWorkshop {
 			c.Map.AddWorkshop(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+		} else if bc.bt == BuildingTypeMine {
+			c.Map.AddMine(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 		}
 		return true
 	}
