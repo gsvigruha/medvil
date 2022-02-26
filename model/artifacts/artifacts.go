@@ -14,12 +14,8 @@ var All = [...]*Artifact{
 	// Building
 	&Artifact{Name: "log", M: materials.GetMaterial("wood"), V: 5},
 	&Artifact{Name: "board", M: materials.GetMaterial("wood"), V: 5},
-	&Artifact{Name: "rock", M: materials.GetMaterial("stone"), V: 5},
-	&Artifact{Name: "rock", M: materials.GetMaterial("sandstone"), V: 5},
-	&Artifact{Name: "rock", M: materials.GetMaterial("marble"), V: 5},
+	&Artifact{Name: "stone", M: materials.GetMaterial("stone"), V: 5},
 	&Artifact{Name: "cube", M: materials.GetMaterial("stone"), V: 5},
-	&Artifact{Name: "cube", M: materials.GetMaterial("marble"), V: 5},
-	&Artifact{Name: "cube", M: materials.GetMaterial("sandstone"), V: 5},
 	&Artifact{Name: "clay", M: materials.GetMaterial("clay"), V: 5},
 	&Artifact{Name: "brick", M: materials.GetMaterial("brick"), V: 5},
 	// Metal
