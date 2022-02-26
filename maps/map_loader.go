@@ -145,8 +145,8 @@ func LoadSociety(dir string, m *model.Map) {
 		for j := range countries[i].Towns {
 			town := countries[i].Towns[j]
 			town.Country = &country
-			town.Townhall.Household.People = make([]*social.Person, 10)
-			town.Townhall.Household.TargetNumPeople = 10
+			town.Townhall.Household.People = make([]*social.Person, 5)
+			town.Townhall.Household.TargetNumPeople = 5
 			town.Townhall.Household.Town = town
 			town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
 			for i := range town.Townhall.Household.People {
