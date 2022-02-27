@@ -28,8 +28,16 @@ func (mp *Marketplace) Init() {
 	}
 }
 
+var gold = artifacts.GetArtifact("gold_coin")
+
 func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if Calendar.Hour == 0 && Calendar.Day == 1 {
+		allGold := []artifacts.Artifacts{artifacts.Artifacts{A: gold, Quantity: mp.Storage.Get(gold)}}
+		price := mp.Price(allGold)
+		wallet := &mp.Town.Townhall.Household.Money
+		*wallet += price * 2
+		mp.Buy(allGold, wallet)
+
 		for _, a := range artifacts.All {
 			if mp.Supply[a] == 0 && mp.Demand[a] > 0 && mp.Demand[a] > uint32(mp.Storage.Get(a)) {
 				mp.Prices[a]++
