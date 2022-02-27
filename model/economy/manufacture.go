@@ -26,6 +26,22 @@ var AllManufacture = [...]*Manufacture{
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
 	&Manufacture{
+		Name:  "iron_smelting",
+		Time:  10 * 24,
+		Power: 1000,
+		Inputs: []artifacts.Artifacts{
+			artifacts.Artifacts{A: artifacts.GetArtifact("iron_ore"), Quantity: 1},
+			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("iron_bar"), Quantity: 1}}},
+	&Manufacture{
+		Name:  "goldsmith",
+		Time:  10 * 24,
+		Power: 1000,
+		Inputs: []artifacts.Artifacts{
+			artifacts.Artifacts{A: artifacts.GetArtifact("gold_ore"), Quantity: 1},
+			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("gold_coin"), Quantity: 1}}},
+	&Manufacture{
 		Name:    "milling",
 		Time:    10 * 24,
 		Power:   1000,

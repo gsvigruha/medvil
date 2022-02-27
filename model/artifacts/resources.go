@@ -5,6 +5,8 @@ import (
 )
 
 const InfiniteQuantity = 65535
+const StorageFullThreshold = 0.9
+
 
 type Artifacts struct {
 	A        *Artifact
@@ -162,5 +164,5 @@ func (r *Resources) UsedVolumeCapacity() float64 {
 }
 
 func (r *Resources) Full() bool {
-	return r.UsedVolumeCapacity() >= 1.0
+	return r.UsedVolumeCapacity() >= StorageFullThreshold
 }
