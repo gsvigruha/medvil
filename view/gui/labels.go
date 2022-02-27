@@ -72,23 +72,35 @@ func (l *DoubleImageLabel) Render(cv *canvas.Canvas) {
 }
 
 type ScaleLabel struct {
-	X      float64
-	Y      float64
-	SX     float64
-	SY     float64
-	ScaleW float64
-	Icon   string
-	Scale  float64
+	X       float64
+	Y       float64
+	SX      float64
+	SY      float64
+	ScaleW  float64
+	Icon    string
+	Scale   float64
+	Stacked bool
 }
 
 func (l *ScaleLabel) Render(cv *canvas.Canvas) {
-	cv.DrawImage("icon/gui/"+l.Icon+".png", l.X, l.Y, l.SX, l.SY)
-	cv.SetFillStyle("#B00")
-	var s = l.Scale
-	if s >= 1.0 {
-		s = 1.0
+	if l.Stacked {
+		iconTop := l.Y + l.SY - l.SX
+		cv.DrawImage("icon/gui/"+l.Icon+".png", l.X, iconTop, l.SX, l.SX)
+		cv.SetFillStyle("#B00")
+		var s = l.Scale
+		if s >= 1.0 {
+			s = 1.0
+		}
+		cv.FillRect(l.X+l.SX/2-l.ScaleW/2, iconTop, l.ScaleW, -(l.SY-l.SX)*s)
+	} else {
+		cv.DrawImage("icon/gui/"+l.Icon+".png", l.X, l.Y, l.SX, l.SY)
+		cv.SetFillStyle("#B00")
+		var s = l.Scale
+		if s >= 1.0 {
+			s = 1.0
+		}
+		cv.FillRect(l.X+l.SX, l.Y+l.SY, l.ScaleW, -l.SY*s)
 	}
-	cv.FillRect(l.X+l.SX, l.Y+l.SY, l.ScaleW, -l.SY*s)
 }
 
 type TextureLabel struct {

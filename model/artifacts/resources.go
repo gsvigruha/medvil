@@ -7,10 +7,17 @@ import (
 const InfiniteQuantity = 65535
 const StorageFullThreshold = 0.9
 
-
 type Artifacts struct {
 	A        *Artifact
 	Quantity uint16
+}
+
+func (a Artifacts) Multiply(n uint16) Artifacts {
+	return Artifacts{A: a.A, Quantity: a.Quantity * n}
+}
+
+func (a Artifacts) Wrap() []Artifacts {
+	return []Artifacts{a}
 }
 
 type Resources struct {

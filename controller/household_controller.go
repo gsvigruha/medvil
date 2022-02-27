@@ -58,7 +58,7 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	p.AddButton(HouseholdControllerButton{
 		b: gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 40, Y: PersonGUIY + 16, SX: 16, SY: 16},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
-	p.AddScaleLabel("barrel", 10, ArtifactsGUIY, 32, 32, 4, h.Resources.UsedVolumeCapacity())
+	p.AddScaleLabel("barrel", 10, ArtifactsGUIY, 32, 32, 4, h.Resources.UsedVolumeCapacity(), false)
 	var aI = 1
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {
@@ -76,10 +76,10 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 
 func PersonToControlPanel(p *gui.Panel, i int, person *social.Person) {
 	p.AddImageLabel("person", float64(10+i*IconW), PersonGUIY, 32, 32, gui.ImageLabelStyleRegular)
-	p.AddScaleLabel("food", float64(10+i*IconW), PersonGUIY+IconH, 32, 32, 4, float64(person.Food)/float64(social.MaxPersonState))
-	p.AddScaleLabel("drink", float64(10+i*IconW), PersonGUIY+IconH*2, 32, 32, 4, float64(person.Water)/float64(social.MaxPersonState))
-	p.AddScaleLabel("health", float64(10+i*IconW), PersonGUIY+IconH*3, 32, 32, 4, float64(person.Health)/float64(social.MaxPersonState))
-	p.AddScaleLabel("happiness", float64(10+i*IconW), PersonGUIY+IconH*4, 32, 32, 4, float64(person.Happiness)/float64(social.MaxPersonState))
+	p.AddScaleLabel("food", float64(10+i*IconW), PersonGUIY+IconH, 32, 32, 4, float64(person.Food)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("drink", float64(10+i*IconW), PersonGUIY+IconH*2, 32, 32, 4, float64(person.Water)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("health", float64(10+i*IconW), PersonGUIY+IconH*3, 32, 32, 4, float64(person.Health)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("happiness", float64(10+i*IconW), PersonGUIY+IconH*4, 32, 32, 4, float64(person.Happiness)/float64(social.MaxPersonState), false)
 	if person.Task != nil {
 		TaskToControlPanel(p, i, PersonGUIY+IconH*5, person.Task)
 	}
