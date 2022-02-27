@@ -19,10 +19,8 @@ var All = [...]*Artifact{
 	&Artifact{Name: "clay", M: materials.GetMaterial("clay"), V: 5},
 	&Artifact{Name: "brick", M: materials.GetMaterial("brick"), V: 5},
 	// Metal
-	&Artifact{Name: "ore", M: materials.GetMaterial("iron"), V: 5},
-	&Artifact{Name: "ore", M: materials.GetMaterial("gold"), V: 5},
-	&Artifact{Name: "ore", M: materials.GetMaterial("silver"), V: 5},
-	&Artifact{Name: "ore", M: materials.GetMaterial("copper"), V: 5},
+	&Artifact{Name: "iron_ore", M: materials.GetMaterial("iron"), V: 5},
+	&Artifact{Name: "gold_ore", M: materials.GetMaterial("gold"), V: 5},
 	// Food
 	&Artifact{Name: "fruit", M: materials.GetMaterial("organic"), V: 1},
 	&Artifact{Name: "vegetable", M: materials.GetMaterial("organic"), V: 1},

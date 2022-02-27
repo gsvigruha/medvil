@@ -160,3 +160,7 @@ func (r *Resources) Volume() uint16 {
 func (r *Resources) UsedVolumeCapacity() float64 {
 	return float64(r.Volume()) / float64(r.VolumeCapacity)
 }
+
+func (r *Resources) Full() bool {
+	return r.UsedVolumeCapacity() >= 1.0
+}

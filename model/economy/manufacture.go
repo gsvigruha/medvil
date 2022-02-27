@@ -23,7 +23,7 @@ var AllManufacture = [...]*Manufacture{
 		Name:    "stonecutting",
 		Time:    10 * 24,
 		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("rock"), Quantity: 1}},
+		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
 	&Manufacture{
 		Name:    "milling",
