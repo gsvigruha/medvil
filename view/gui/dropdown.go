@@ -10,9 +10,13 @@ type DropDown struct {
 	SX       float64
 	SY       float64
 	Options  []string
+	Icons    []string
 	Selected int
 	Open     bool
 }
+
+const IconPadding = 4.0
+const FontSize = 12
 
 func (d *DropDown) GetSelectedValue() string {
 	if d.Selected > -1 {
@@ -39,13 +43,16 @@ func (d *DropDown) Render(cv *canvas.Canvas) {
 		cv.FillRect(d.X, d.Y, d.SX, d.SY)
 	}
 	cv.SetFillStyle("#FED")
-	cv.SetFont("texture/font/Go-Regular.ttf", 12)
+	cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
+	textPadding := (d.SY - FontSize) / 2
 	if d.Selected > -1 {
-		cv.FillText(d.Options[d.Selected], d.X, d.Y+d.SY-4)
+		cv.DrawImage("icon/gui/"+d.Icons[d.Selected]+".png", d.X, d.Y, d.SY, d.SY)
+		cv.FillText(d.Options[d.Selected], d.X+d.SY+IconPadding, d.Y+d.SY-textPadding)
 	}
 	if d.Open {
 		for i, t := range d.Options {
-			cv.FillText(t, d.X, d.Y+float64(i)*d.SY+d.SY*2-4)
+			cv.DrawImage("icon/gui/"+d.Icons[i]+".png", d.X, d.Y+float64(i)*d.SY+d.SY, d.SY, d.SY)
+			cv.FillText(t, d.X+d.SY+IconPadding, d.Y+float64(i)*d.SY+d.SY*2-textPadding)
 		}
 	}
 }
