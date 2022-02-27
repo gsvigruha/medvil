@@ -14,6 +14,8 @@ type WorkshopController struct {
 	manufactureDropDown *gui.DropDown
 }
 
+const WorkshopControllerGUITopY = 500
+
 func toTaskNames(names []string) []string {
 	var taskNames []string
 	for _, name := range names {
@@ -30,7 +32,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 
 	wc.manufactureDropDown = &gui.DropDown{
 		X:        float64(10),
-		Y:        float64(HouseholdControllerGUIBottomY),
+		Y:        float64(WorkshopControllerGUITopY),
 		SX:       128,
 		SY:       20,
 		Options:  economy.GetAllManufactureNames(),
