@@ -85,17 +85,17 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 
 func (c *Controller) ShowWorkshopController() {
 	c.Reset()
-	BuildingsToControlPanel(c.ControlPanel, BuildingTypeWorkshop)
+	BuildingsToControlPanel(c.ControlPanel, building.BuildingTypeWorkshop)
 }
 
 func (c *Controller) ShowFarmController() {
 	c.Reset()
-	BuildingsToControlPanel(c.ControlPanel, BuildingTypeFarm)
+	BuildingsToControlPanel(c.ControlPanel, building.BuildingTypeFarm)
 }
 
 func (c *Controller) ShowMineController() {
 	c.Reset()
-	BuildingsToControlPanel(c.ControlPanel, BuildingTypeMine)
+	BuildingsToControlPanel(c.ControlPanel, building.BuildingTypeMine)
 }
 
 func (c *Controller) ShowInfraController() {

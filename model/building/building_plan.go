@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"medvil/model/artifacts"
 	"medvil/model/materials"
 	"os"
 )
@@ -72,8 +73,8 @@ type BuildingPlan struct {
 	DoorD            uint8                                          `json:"doorD"`
 }
 
-func (b BuildingPlan) Area() uint16 {
-	baseArea := 0
+func (b BuildingPlan) BaseArea() uint16 {
+	var baseArea uint16 = 0
 	for i := 0; i < BuildingBaseMaxSize; i++ {
 		for j := 0; j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] {
@@ -81,7 +82,12 @@ func (b BuildingPlan) Area() uint16 {
 			}
 		}
 	}
-	area := baseArea * len(b.Floors)
+	return baseArea
+}
+
+func (b BuildingPlan) Area() uint16 {
+	baseArea := b.BaseArea()
+	area := baseArea * uint16(len(b.Floors))
 	if !b.Roof.Flat {
 		area += baseArea / 2
 	}
@@ -130,6 +136,37 @@ func BuildingPlanFromJSON(fileName string) BuildingPlan {
 	var plan BuildingPlan
 	json.Unmarshal(byteValue, &plan)
 	return plan
+}
+
+var cube = artifacts.GetArtifact("cube")
+var board = artifacts.GetArtifact("board")
+
+func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
+	var cubes uint16 = 0
+	var boards uint16 = 0
+	baseArea := b.BaseArea()
+	for _, floor := range b.Floors {
+		switch floor.M {
+		case materials.GetMaterial("wood"):
+			boards += baseArea * 3
+		case materials.GetMaterial("sandstone"):
+			boards += baseArea
+			cubes += baseArea * 2
+		case materials.GetMaterial("stone"):
+			boards += baseArea
+			cubes += baseArea * 2
+		case materials.GetMaterial("brick"):
+			boards += baseArea
+			cubes += baseArea * 2
+		case materials.GetMaterial("whitewash"):
+			boards += baseArea
+			cubes += baseArea * 2
+		}
+	}
+	return []artifacts.Artifacts{
+		artifacts.Artifacts{A: cube, Quantity: cubes},
+		artifacts.Artifacts{A: board, Quantity: boards},
+	}
 }
 
 func (b BuildingPlan) IsComplete() bool {

@@ -9,12 +9,6 @@ import (
 	"medvil/view/gui"
 )
 
-type BuildingType uint8
-
-const BuildingTypeFarm = 1
-const BuildingTypeWorkshop = 2
-const BuildingTypeMine = 3
-
 const RoofPanelTop = 100
 const FloorsPanelTop = 200
 const BuildingBasePanelTop = 400
@@ -22,7 +16,7 @@ const BuildingBasePanelTop = 400
 type BuildingsController struct {
 	PlanName string
 	Plan     *building.BuildingPlan
-	bt       BuildingType
+	bt       building.BuildingType
 }
 
 type BuildingBaseButton struct {
@@ -121,11 +115,11 @@ func (b RoofButton) Contains(x float64, y float64) bool {
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if c.ActiveBuildingPlan.IsComplete() {
-		if bc.bt == BuildingTypeFarm {
+		if bc.bt == building.BuildingTypeFarm {
 			c.Map.AddFarm(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
-		} else if bc.bt == BuildingTypeWorkshop {
+		} else if bc.bt == building.BuildingTypeWorkshop {
 			c.Map.AddWorkshop(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
-		} else if bc.bt == BuildingTypeMine {
+		} else if bc.bt == building.BuildingTypeMine {
 			c.Map.AddMine(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 		}
 		return true
@@ -133,7 +127,7 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 	return false
 }
 
-func BuildingsToControlPanel(cp *ControlPanel, bt BuildingType) {
+func BuildingsToControlPanel(cp *ControlPanel, bt building.BuildingType) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
 	bc := &BuildingsController{Plan: &building.BuildingPlan{}, bt: bt}
 
