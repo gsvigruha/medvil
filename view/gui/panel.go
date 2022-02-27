@@ -69,8 +69,8 @@ func (p *Panel) AddDoubleImageLabel(icon string, subicon string, x, y, sx, sy fl
 	p.Labels = append(p.Labels, &DoubleImageLabel{Icon: icon, SubIcon: subicon, X: x, Y: y, SX: sx, SY: sy, Style: style})
 }
 
-func (p *Panel) AddScaleLabel(icon string, x, y, sx, sy, scaleW, scale float64) {
-	p.Labels = append(p.Labels, &ScaleLabel{Icon: icon, X: x, Y: y, SX: sx, SY: sy, ScaleW: scaleW, Scale: scale})
+func (p *Panel) AddScaleLabel(icon string, x, y, sx, sy, scaleW, scale float64, stacked bool) {
+	p.Labels = append(p.Labels, &ScaleLabel{Icon: icon, X: x, Y: y, SX: sx, SY: sy, ScaleW: scaleW, Scale: scale, Stacked: stacked})
 }
 
 func (p *Panel) AddTextureLabel(texture string, x, y, sx, sy float64) {
