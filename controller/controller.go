@@ -98,6 +98,11 @@ func (c *Controller) ShowMineController() {
 	BuildingsToControlPanel(c.ControlPanel, BuildingTypeMine)
 }
 
+func (c *Controller) ShowInfraController() {
+	c.Reset()
+	InfraToControlPanel(c.ControlPanel)
+}
+
 func (c *Controller) Refresh() {
 	c.ReverseReferences = c.Map.ReverseReferences()
 	c.ControlPanel.Refresh()

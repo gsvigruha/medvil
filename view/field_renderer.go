@@ -36,6 +36,11 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t
 	}
 	roof := f.Building.RoofUnit
 	RenderBuildingRoof(cv, roof, rf, len(units), c)
+	if f.Road.T != nil {
+		cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
+		rf.Draw(cv)
+		cv.Fill()
+	}
 	if f.Plant != nil {
 		//RenderPlant(cv, f.Plant, rf, c)
 		tx := rf.X[0] - BufferW/2

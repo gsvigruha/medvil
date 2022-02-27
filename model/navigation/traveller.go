@@ -139,50 +139,57 @@ func (t *Traveller) MoveToDir(d uint8, m IMap) {
 func (t *Traveller) Move(m IMap) {
 	if t.path != nil {
 		f := t.path.F[0]
-		var dirToLane uint8 = DirectionNone
-		var dirToNextField uint8 = DirectionNone
-		if t.FY == f.Y {
-			if t.PY < MaxPY/4*t.lane {
-				dirToLane = DirectionS
-			} else if t.PY > MaxPY/4*t.lane {
-				dirToLane = DirectionN
-			}
-			if t.FX > f.X {
-				dirToNextField = DirectionW
-			} else if t.FX < f.X {
-				dirToNextField = DirectionE
-			}
-		} else if t.FX == f.X {
-			if t.PX < MaxPX/4*t.lane {
-				dirToLane = DirectionE
-			} else if t.PX > MaxPX/4*t.lane {
-				dirToLane = DirectionW
-			}
-			if t.FY > f.Y {
-				dirToNextField = DirectionN
-			} else if t.FY < f.Y {
-				dirToNextField = DirectionS
-			}
+		f0 := m.GetField(t.FX, t.FY)
+		var steps = 1
+		if f0.Road.T != nil && rand.Float64() < f0.Road.T.Speed-1.0 {
+			steps = 2
 		}
-		if dirToLane != DirectionNone && t.HasRoom(m, dirToLane) {
-			// Move towards the lane if possible
-			t.MoveToDir(dirToLane, m)
-			t.stuckCntr = 0
-		} else if dirToNextField != DirectionNone && t.HasRoom(m, dirToNextField) {
-			// Move towards the next field if in correct lane and possible
-			t.MoveToDir(dirToNextField, m)
-			t.stuckCntr = 0
-		} else if t.stuckCntr < MaxStuckCntr {
-			// Try to pick a different lane a few times
-			t.lane = uint8(rand.Intn(3) + 1)
-			t.stuckCntr++
-		} else {
-			// Move towards any available space
-			for i := uint8(0); i < 4; i++ {
-				d := (dirToNextField + i) % 4
-				if t.HasRoom(m, d) {
-					t.MoveToDir(d, m)
-					break
+		for i := 0; i < steps; i++ {
+			var dirToLane uint8 = DirectionNone
+			var dirToNextField uint8 = DirectionNone
+			if t.FY == f.Y {
+				if t.PY < MaxPY/4*t.lane {
+					dirToLane = DirectionS
+				} else if t.PY > MaxPY/4*t.lane {
+					dirToLane = DirectionN
+				}
+				if t.FX > f.X {
+					dirToNextField = DirectionW
+				} else if t.FX < f.X {
+					dirToNextField = DirectionE
+				}
+			} else if t.FX == f.X {
+				if t.PX < MaxPX/4*t.lane {
+					dirToLane = DirectionE
+				} else if t.PX > MaxPX/4*t.lane {
+					dirToLane = DirectionW
+				}
+				if t.FY > f.Y {
+					dirToNextField = DirectionN
+				} else if t.FY < f.Y {
+					dirToNextField = DirectionS
+				}
+			}
+			if dirToLane != DirectionNone && t.HasRoom(m, dirToLane) {
+				// Move towards the lane if possible
+				t.MoveToDir(dirToLane, m)
+				t.stuckCntr = 0
+			} else if dirToNextField != DirectionNone && t.HasRoom(m, dirToNextField) {
+				// Move towards the next field if in correct lane and possible
+				t.MoveToDir(dirToNextField, m)
+				t.stuckCntr = 0
+			} else if t.stuckCntr < MaxStuckCntr {
+				// Try to pick a different lane a few times
+				t.lane = uint8(rand.Intn(3) + 1)
+				t.stuckCntr++
+			} else {
+				// Move towards any available space
+				for i := uint8(0); i < 4; i++ {
+					d := (dirToNextField + i) % 4
+					if t.HasRoom(m, d) {
+						t.MoveToDir(d, m)
+						break
+					}
 				}
 			}
 		}
