@@ -83,6 +83,8 @@ func LoadFields(dir string, m *model.Map) {
 				m.Fields[i][j].Terrain.T = terrain.Rock
 			case "D":
 				m.Fields[i][j].Terrain.T = terrain.Dirt
+			case "M":
+				m.Fields[i][j].Terrain.T = terrain.Mud
 			case "W":
 				m.Fields[i][j].Terrain.T = terrain.Water
 				m.Fields[i][j].Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)

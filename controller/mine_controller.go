@@ -4,7 +4,6 @@ import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/economy"
 	"medvil/model/social"
-	"medvil/model/terrain"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -36,9 +35,24 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 		useType: economy.MineFieldUseTypeNone,
 	})
 	mp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Texture: "terrain/rock", X: float64(50), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		b:       gui.ButtonGUI{Icon: "artifacts/stone", X: float64(50), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeStone,
+	})
+	mp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Icon: "artifacts/clay", X: float64(90), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		luc:     mc,
+		useType: economy.MineFieldUseTypeClay,
+	})
+	mp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Icon: "artifacts/iron_ore", X: float64(130), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		luc:     mc,
+		useType: economy.MineFieldUseTypeIron,
+	})
+	mp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Icon: "artifacts/gold_ore", X: float64(170), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		luc:     mc,
+		useType: economy.MineFieldUseTypeGold,
 	})
 
 	cp.SetDynamicPanel(mc)
@@ -68,7 +82,7 @@ func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField)
 		l := &mc.mine.Land[i]
 		if l.F.X == rf.F.X && l.F.Y == rf.F.Y {
 			if mc.UseType != economy.MineFieldUseTypeNone {
-				if mc.UseType == economy.MineFieldUseTypeStone && l.F.Terrain.T == terrain.Rock {
+				if social.CheckMineUseType(mc.UseType, l.F) {
 					l.UseType = mc.UseType
 				}
 			} else {
@@ -81,7 +95,7 @@ func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField)
 		}
 	}
 	if !owns && !rf.F.Allocated && mc.UseType != economy.MineFieldUseTypeNone {
-		if mc.UseType == economy.MineFieldUseTypeStone && rf.F.Terrain.T == terrain.Rock {
+		if social.CheckMineUseType(mc.UseType, rf.F) {
 			mc.mine.Land = append(mc.mine.Land, social.MineLand{
 				X:       rf.F.X,
 				Y:       rf.F.Y,

@@ -18,6 +18,7 @@ var Grass = TerrainType{Walkable: true, Arable: true, Pasture: true, Water: fals
 var Sand = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "sand"}
 var Dirt = TerrainType{Walkable: true, Arable: true, Pasture: false, Water: false, Buildable: true, Name: "dirt"}
 var Rock = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: true, Name: "rock"}
+var Mud = TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "mud"}
 
 type Terrain struct {
 	T         TerrainType

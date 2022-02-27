@@ -27,9 +27,9 @@ func (l MineLand) Context() string {
 	case economy.MineFieldUseTypeClay:
 		return "clay"
 	case economy.MineFieldUseTypeIron:
-		return "iron"
+		return "iron_ore"
 	case economy.MineFieldUseTypeGold:
-		return "gold"
+		return "gold_ore"
 	}
 	return ""
 }
@@ -79,6 +79,22 @@ func (m *Mine) AddTransportTask(l MineLand, imap navigation.IMap) {
 	}
 }
 
+func CheckMineUseType(useType uint8, f *navigation.Field) bool {
+	if useType == economy.MineFieldUseTypeStone && f.Terrain.T == terrain.Rock {
+		return true
+	}
+	if useType == economy.MineFieldUseTypeClay && f.Terrain.T == terrain.Mud {
+		return true
+	}
+	if useType == economy.MineFieldUseTypeIron && f.Terrain.T == terrain.Mud {
+		return true
+	}
+	if useType == economy.MineFieldUseTypeGold && f.Terrain.T == terrain.Water {
+		return true
+	}
+	return false
+}
+
 func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 	m.Household.ElapseTime(Calendar, imap)
 	home := imap.GetField(m.Household.Building.X, m.Household.Building.Y)
@@ -87,7 +103,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 			m.AddTransportTask(land, imap)
 			tag := economy.MiningTaskTag(land.F, land.UseType)
 			if m.Household.NumTasks("mining", tag) == 0 {
-				if land.UseType == economy.MineFieldUseTypeStone && land.F.Terrain.T == terrain.Rock {
+				if CheckMineUseType(land.UseType, land.F) {
 					m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
 				}
 			}
@@ -95,7 +111,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 	}
 	for a, q := range m.Household.Resources.Artifacts {
 		qToSell := m.Household.ArtifactToSell(a, q, false)
-		if qToSell >= ProductTransportQuantity {
+		if qToSell >= ProductTransportQuantity || m.Household.Resources.Full() {
 			tag := "sell_artifacts#" + a.Name
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
 			if m.Household.Town.Marketplace.CanSell(goods) && int(qToSell)/ProductTransportQuantity > m.Household.NumTasks("exchange", tag) {

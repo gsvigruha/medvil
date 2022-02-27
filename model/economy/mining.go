@@ -15,8 +15,17 @@ const MineFieldUseTypeGold uint8 = 4
 
 const MineTaskDurationStone = 24 * 60
 const MineTaskQuantityStone = 2
+const MineTaskDurationClay = 24 * 60
+const MineTaskQuantityClay = 2
+const MineTaskDurationIron = 24 * 60
+const MineTaskQuantityIron = 2
+const MineTaskDurationGold = 24 * 60
+const MineTaskQuantityGold = 2
 
 var stone = artifacts.GetArtifact("stone")
+var clay = artifacts.GetArtifact("clay")
+var iron = artifacts.GetArtifact("iron_ore")
+var gold = artifacts.GetArtifact("gold_ore")
 
 type MiningTask struct {
 	F        *navigation.Field
@@ -34,6 +43,21 @@ func (t *MiningTask) Complete(Calendar *time.CalendarType) bool {
 	case MineFieldUseTypeStone:
 		if t.Progress >= MineTaskDurationStone {
 			t.F.Terrain.Resources.Add(stone, MineTaskQuantityStone)
+			return true
+		}
+	case MineFieldUseTypeClay:
+		if t.Progress >= MineTaskDurationClay {
+			t.F.Terrain.Resources.Add(clay, MineTaskQuantityClay)
+			return true
+		}
+	case MineFieldUseTypeIron:
+		if t.Progress >= MineTaskDurationIron {
+			t.F.Terrain.Resources.Add(iron, MineTaskQuantityIron)
+			return true
+		}
+	case MineFieldUseTypeGold:
+		if t.Progress >= MineTaskDurationGold {
+			t.F.Terrain.Resources.Add(gold, MineTaskQuantityGold)
 			return true
 		}
 	}
