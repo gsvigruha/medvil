@@ -56,11 +56,17 @@ func (f Field) Buildable() bool {
 	if f.Allocated {
 		return false
 	}
+	if f.Road.T != nil {
+		return false
+	}
 	return f.Terrain.T.Buildable && f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
 }
 
 func (f Field) Arable() bool {
 	if !f.Building.Empty() {
+		return false
+	}
+	if f.Road.T != nil {
 		return false
 	}
 	return f.Terrain.T.Arable
