@@ -1,8 +1,8 @@
 package navigation
 
 import (
+	"medvil/model/building"
 	"medvil/model/terrain"
-	//"fmt"
 )
 
 type Destination interface {
@@ -26,6 +26,7 @@ type Field struct {
 	Terrain    terrain.Terrain
 	Building   FieldBuildingObjects
 	Plant      *terrain.Plant
+	Road       building.Road
 	Travellers []*Traveller
 	Allocated  bool
 }
