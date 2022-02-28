@@ -120,7 +120,7 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 		} else if bc.bt == building.BuildingTypeWorkshop {
 			c.Map.AddWorkshop(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 		} else if bc.bt == building.BuildingTypeMine {
-			c.Map.AddMine(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+			c.Map.AddConstruction(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan, bc.bt)
 		}
 		return true
 	}
