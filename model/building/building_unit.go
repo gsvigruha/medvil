@@ -11,10 +11,11 @@ type RoofUnit struct {
 }
 
 type BuildingWall struct {
-	M       *materials.Material
-	Windows bool
-	Door    bool
-	B       *Building
+	M            *materials.Material
+	Windows      bool
+	Door         bool
+	B            *Building
+	Construction bool
 }
 
 type BuildingUnit struct {

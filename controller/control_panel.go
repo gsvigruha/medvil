@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/tfriedel6/canvas"
+	"medvil/model/building"
 	"medvil/view/gui"
 	"strconv"
 )
@@ -50,15 +51,15 @@ func (b ControlPanelButton) Contains(x float64, y float64) bool {
 }
 
 func CPActionShowWorkshopController(c *Controller) {
-	c.ShowWorkshopController()
+	c.ShowBuildingController(building.BuildingTypeWorkshop)
 }
 
 func CPActionShowFarmController(c *Controller) {
-	c.ShowFarmController()
+	c.ShowBuildingController(building.BuildingTypeFarm)
 }
 
 func CPActionShowMineController(c *Controller) {
-	c.ShowMineController()
+	c.ShowBuildingController(building.BuildingTypeMine)
 }
 
 func CPActionShowInfraController(c *Controller) {

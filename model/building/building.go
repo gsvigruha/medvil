@@ -76,7 +76,7 @@ func (b *Building) GetRoof(x uint8, y uint8) *RoofUnit {
 			x > 0 && p.BaseShape[x-1][y]}}
 }
 
-func (b *Building) ToBuildingUnits(x uint8, y uint8) []BuildingUnit {
+func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []BuildingUnit {
 	p := b.Plan
 	if !p.BaseShape[x][y] {
 		return []BuildingUnit{}
@@ -88,22 +88,22 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8) []BuildingUnit {
 		var n *BuildingWall
 		if y == 0 || !p.BaseShape[x][y-1] {
 			door := (unitDoor && p.DoorD == DirectionN)
-			n = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionN] <= i, Door: door, B: b}
+			n = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionN] <= i, Door: door, B: b, Construction: construction}
 		}
 		var e *BuildingWall
 		if x == BuildingBaseMaxSize-1 || !p.BaseShape[x+1][y] {
 			door := (unitDoor && p.DoorD == DirectionE)
-			e = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionE] <= i, Door: door, B: b}
+			e = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionE] <= i, Door: door, B: b, Construction: construction}
 		}
 		var s *BuildingWall
 		if y == BuildingBaseMaxSize-1 || !p.BaseShape[x][y+1] {
 			door := (unitDoor && p.DoorD == DirectionS)
-			s = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionS] <= i, Door: door, B: b}
+			s = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionS] <= i, Door: door, B: b, Construction: construction}
 		}
 		var w *BuildingWall
 		if x == 0 || !p.BaseShape[x-1][y] {
 			door := (unitDoor && p.DoorD == DirectionW)
-			w = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionW] <= i, Door: door, B: b}
+			w = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionW] <= i, Door: door, B: b, Construction: construction}
 		}
 		units[i].Walls = []*BuildingWall{n, e, s, w}
 		units[i].B = b

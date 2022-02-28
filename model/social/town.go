@@ -1,6 +1,7 @@
 package social
 
 import (
+	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/time"
 )
@@ -23,12 +24,13 @@ type JSONFarm struct {
 }
 
 type Town struct {
-	Country     *Country
-	Townhall    *Townhall
-	Marketplace *Marketplace
-	Farms       []*Farm
-	Workshops   []*Workshop
-	Mines       []*Mine
+	Country       *Country
+	Townhall      *Townhall
+	Marketplace   *Marketplace
+	Farms         []*Farm
+	Workshops     []*Workshop
+	Mines         []*Mine
+	Constructions []*building.BuildingConstruction
 }
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {

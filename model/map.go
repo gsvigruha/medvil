@@ -43,8 +43,21 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 	return &rr
 }
 
+func (m *Map) AddConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan, bt building.BuildingType) bool {
+	b := m.AddBuilding(x, y, bp, true)
+	if b != nil {
+		construction := &building.BuildingConstruction{Building: b, RemainingCost: b.Plan.ConstructionCost(), T: bt}
+		t := c.Towns[0]
+		t.Constructions = append(t.Constructions, construction)
+		return true
+	} else {
+		return false
+	}
+
+}
+
 func (m *Map) AddFarm(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
-	b := m.AddBuilding(x, y, bp)
+	b := m.AddBuilding(x, y, bp, false)
 	if b != nil {
 		t := c.Towns[0]
 		f := &social.Farm{Household: social.Household{Building: b, Town: t}}
@@ -57,7 +70,7 @@ func (m *Map) AddFarm(c *social.Country, x, y uint16, bp *building.BuildingPlan)
 }
 
 func (m *Map) AddWorkshop(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
-	b := m.AddBuilding(x, y, bp)
+	b := m.AddBuilding(x, y, bp, false)
 	if b != nil {
 		t := c.Towns[0]
 		w := &social.Workshop{Household: social.Household{Building: b, Town: t}}
@@ -70,7 +83,7 @@ func (m *Map) AddWorkshop(c *social.Country, x, y uint16, bp *building.BuildingP
 }
 
 func (m *Map) AddMine(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
-	b := m.AddBuilding(x, y, bp)
+	b := m.AddBuilding(x, y, bp, false)
 	if b != nil {
 		t := c.Towns[0]
 		mine := &social.Mine{Household: social.Household{Building: b, Town: t}}
@@ -105,22 +118,29 @@ func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []na
 	return fields
 }
 
-func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan) *building.Building {
-	b := building.Building{X: x, Y: y, Plan: bp}
-	if m.GetBuildingBaseFields(x, y, bp) == nil {
-		return nil
-	}
+func (m *Map) SetBuildingUnits(b *building.Building, construction bool) {
+	bp := b.Plan
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
 			bx := int(b.X+i) - 2
 			by := int(b.Y+j) - 2
 			if bp.BaseShape[i][j] {
-				m.Fields[bx][by].Building.BuildingUnits = b.ToBuildingUnits(uint8(i), uint8(j))
-				m.Fields[bx][by].Building.RoofUnit = b.GetRoof(uint8(i), uint8(j))
+				m.Fields[bx][by].Building.BuildingUnits = b.ToBuildingUnits(uint8(i), uint8(j), construction)
+				if !construction {
+					m.Fields[bx][by].Building.RoofUnit = b.GetRoof(uint8(i), uint8(j))
+				}
 			}
 		}
 	}
-	return &b
+}
+
+func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction bool) *building.Building {
+	if m.GetBuildingBaseFields(x, y, bp) == nil {
+		return nil
+	}
+	b := &building.Building{X: x, Y: y, Plan: bp}
+	m.SetBuildingUnits(b, construction)
+	return b
 }
 
 func (m *Map) ShortPath(sx, sy, ex, ey uint16, travellerType uint8) *navigation.Path {
