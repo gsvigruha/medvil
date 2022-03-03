@@ -11,7 +11,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const StoragePerArea = 25
+const StoragePerArea = 30
 const WaterTransportQuantity = 10
 const FoodTransportQuantity = 5
 const ProductTransportQuantity = 5
@@ -74,12 +74,16 @@ func (h *Household) HasSurplusPeople() bool {
 
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if &h.Town.Townhall.Household != h { // Not Townhall, needs better check
-		if h.HasRoomForPeople() && len(h.Town.Townhall.Household.People) > 0 {
-			person := h.Town.Townhall.Household.People[0]
-			h.Town.Townhall.Household.People = h.Town.Townhall.Household.People[1:]
-			h.People = append(h.People, person)
-			person.Household = h
-			person.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: person}
+		if h.HasRoomForPeople() {
+			for pi, person := range h.Town.Townhall.Household.People {
+				if person.Task == nil {
+					h.Town.Townhall.Household.People = append(h.Town.Townhall.Household.People[:pi], h.Town.Townhall.Household.People[pi+1:]...)
+					h.People = append(h.People, person)
+					person.Household = h
+					person.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: person}
+					break
+				}
+			}
 		}
 		if len(h.People) >= 2 && rand.Float64() < ReproductionRate {
 			if h.HasRoomForPeople() {
@@ -210,9 +214,13 @@ func (h *Household) NewPerson() *Person {
 
 func (h *Household) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 	var newPeople = make([]*Person, 0, len(h.People))
+
 	for _, p := range h.People {
 		if p.Health == 0 {
 			m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)
+			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
+				h.AddTask(p.Task)
+			}
 		} else {
 			newPeople = append(newPeople, p)
 		}
