@@ -14,9 +14,9 @@ const IconW = 40
 const IconRowMax = 6
 const PersonGUIY = 110
 const ArtifactsGUIY = 350
-const TaskGUIY = 400
+const TaskGUIY = 440
 const MaxNumTasks = 24
-const HouseholdControllerGUIBottomY = 580
+const HouseholdControllerGUIBottomY = 620
 
 type HouseholdControllerButton struct {
 	b      gui.ButtonGUI
@@ -86,8 +86,10 @@ func PersonToControlPanel(p *gui.Panel, i int, person *social.Person) {
 }
 
 func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
-	p.AddImageLabel("artifacts/"+a.Name, float64(10+i*IconW), top, 32, 32, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+i*IconW), top+IconH+4)
+	xI := i % IconRowMax
+	yI := i / IconRowMax
+	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI)*IconH, 32, 32, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI)*IconH+IconH+4)
 }
 
 func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task) {

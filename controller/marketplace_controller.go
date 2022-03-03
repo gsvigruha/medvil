@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-const MPIconH = 50
+const MPIconH = 60
 
 type MarketplaceController struct {
 	mp          *gui.Panel
@@ -34,11 +34,11 @@ func MarketplaceToMarketPanel(mp *gui.Panel, m *social.Marketplace) {
 }
 
 func ArtifactsToMarketPanel(mp *gui.Panel, i int, a *artifacts.Artifact, q uint16, p uint32) {
-	xI := i % 6
-	yI := i / 6
+	xI := i % IconRowMax
+	yI := i / IconRowMax
 	mp.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH), 32, 32, gui.ImageLabelStyleRegular)
 	mp.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH)+IconH+4)
-	mp.AddTextLabel(strconv.Itoa(int(p)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH)+IconH+16)
+	mp.AddTextLabel("$"+strconv.Itoa(int(p)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH)+IconH+16)
 }
 
 func (mc *MarketplaceController) CaptureClick(x, y float64) {

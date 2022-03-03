@@ -37,12 +37,12 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		useType: economy.FarmFieldUseTypeBarren,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Texture: "terrain/grain", X: float64(50), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		b:       gui.ButtonGUI{Icon: "artifacts/grain", X: float64(50), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeWheat,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Texture: "terrain/vegetables", X: float64(90), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
+		b:       gui.ButtonGUI{Icon: "artifacts/vegetable", X: float64(90), Y: float64(HouseholdControllerGUIBottomY), SX: 32, SY: 32},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeVegetables,
 	})
