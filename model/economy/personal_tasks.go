@@ -13,6 +13,17 @@ type Person interface {
 	HasDrink() bool
 }
 
+var PersonalTasks = []string{"eat", "drink", "gohome"}
+
+func IsPersonalTask(n string) bool {
+	for _, t := range PersonalTasks {
+		if t == n {
+			return true
+		}
+	}
+	return false
+}
+
 type EatTask struct {
 	F *navigation.Field
 	P Person

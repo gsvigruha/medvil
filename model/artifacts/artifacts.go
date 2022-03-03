@@ -12,16 +12,16 @@ type Artifact struct {
 
 var All = [...]*Artifact{
 	// Building
-	&Artifact{Name: "log", M: materials.GetMaterial("wood"), V: 5},
-	&Artifact{Name: "board", M: materials.GetMaterial("wood"), V: 5},
-	&Artifact{Name: "stone", M: materials.GetMaterial("stone"), V: 5},
-	&Artifact{Name: "cube", M: materials.GetMaterial("stone"), V: 5},
-	&Artifact{Name: "clay", M: materials.GetMaterial("clay"), V: 5},
-	&Artifact{Name: "brick", M: materials.GetMaterial("brick"), V: 5},
+	&Artifact{Name: "log", M: materials.GetMaterial("wood"), V: 3},
+	&Artifact{Name: "board", M: materials.GetMaterial("wood"), V: 3},
+	&Artifact{Name: "stone", M: materials.GetMaterial("stone"), V: 2},
+	&Artifact{Name: "cube", M: materials.GetMaterial("stone"), V: 2},
+	&Artifact{Name: "clay", M: materials.GetMaterial("clay"), V: 2},
+	&Artifact{Name: "brick", M: materials.GetMaterial("brick"), V: 2},
 	// Metal
-	&Artifact{Name: "iron_ore", M: materials.GetMaterial("iron"), V: 5},
+	&Artifact{Name: "iron_ore", M: materials.GetMaterial("iron"), V: 2},
 	&Artifact{Name: "iron_bar", M: materials.GetMaterial("iron"), V: 2},
-	&Artifact{Name: "gold_ore", M: materials.GetMaterial("gold"), V: 5},
+	&Artifact{Name: "gold_ore", M: materials.GetMaterial("gold"), V: 2},
 	&Artifact{Name: "gold_coin", M: materials.GetMaterial("gold"), V: 2},
 	// Food
 	&Artifact{Name: "fruit", M: materials.GetMaterial("organic"), V: 1},
