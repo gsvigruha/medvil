@@ -62,7 +62,7 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	var aI = 1
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {
-			ArtifactsToControlPanel(p, aI, a, q)
+			ArtifactsToControlPanel(p, aI, a, q, ArtifactsGUIY)
 			aI++
 		}
 	}
@@ -85,9 +85,9 @@ func PersonToControlPanel(p *gui.Panel, i int, person *social.Person) {
 	}
 }
 
-func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16) {
-	p.AddImageLabel("artifacts/"+a.Name, float64(10+i*IconW), ArtifactsGUIY, 32, 32, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+i*IconW), ArtifactsGUIY+IconH+4)
+func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
+	p.AddImageLabel("artifacts/"+a.Name, float64(10+i*IconW), top, 32, 32, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+i*IconW), top+IconH+4)
 }
 
 func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task) {

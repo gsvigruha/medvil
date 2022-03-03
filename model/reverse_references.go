@@ -6,11 +6,12 @@ import (
 )
 
 type ReverseReferences struct {
-	BuildingToFarm        map[*building.Building]*social.Farm
-	BuildingToMine        map[*building.Building]*social.Mine
-	BuildingToWorkshop    map[*building.Building]*social.Workshop
-	BuildingToTownhall    map[*building.Building]*social.Townhall
-	BuildingToMarketplace map[*building.Building]*social.Marketplace
+	BuildingToFarm         map[*building.Building]*social.Farm
+	BuildingToMine         map[*building.Building]*social.Mine
+	BuildingToWorkshop     map[*building.Building]*social.Workshop
+	BuildingToTownhall     map[*building.Building]*social.Townhall
+	BuildingToMarketplace  map[*building.Building]*social.Marketplace
+	BuildingToConstruction map[*building.Building]*building.BuildingConstruction
 }
 
 func BuildReverseReferences(m *Map) ReverseReferences {
@@ -19,6 +20,8 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 	BuildingToWorkshop := make(map[*building.Building]*social.Workshop)
 	BuildingToTownhall := make(map[*building.Building]*social.Townhall)
 	BuildingToMarketplace := make(map[*building.Building]*social.Marketplace)
+	BuildingToConstruction := make(map[*building.Building]*building.BuildingConstruction)
+
 	for i := range m.Countries {
 		country := m.Countries[i]
 		for j := range country.Towns {
@@ -34,13 +37,17 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 			for k := range town.Workshops {
 				BuildingToWorkshop[town.Workshops[k].Household.Building] = town.Workshops[k]
 			}
+			for k := range town.Constructions {
+				BuildingToConstruction[town.Constructions[k].Building] = town.Constructions[k]
+			}
 		}
 	}
 	return ReverseReferences{
-		BuildingToFarm:        BuildingToFarm,
-		BuildingToMine:        BuildingToMine,
-		BuildingToWorkshop:    BuildingToWorkshop,
-		BuildingToTownhall:    BuildingToTownhall,
-		BuildingToMarketplace: BuildingToMarketplace,
+		BuildingToFarm:         BuildingToFarm,
+		BuildingToMine:         BuildingToMine,
+		BuildingToWorkshop:     BuildingToWorkshop,
+		BuildingToTownhall:     BuildingToTownhall,
+		BuildingToMarketplace:  BuildingToMarketplace,
+		BuildingToConstruction: BuildingToConstruction,
 	}
 }

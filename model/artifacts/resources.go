@@ -25,8 +25,9 @@ type Resources struct {
 	VolumeCapacity uint16
 }
 
-func (r *Resources) Init() {
+func (r *Resources) Init(volumeCapacity uint16) {
 	r.Artifacts = make(map[*Artifact]uint16)
+	r.VolumeCapacity = volumeCapacity
 }
 
 func (r *Resources) UnmarshalJSON(data []byte) error {
@@ -183,6 +184,16 @@ func (r *Resources) Volume() uint16 {
 		v += a.V * q
 	}
 	return v
+}
+
+func (r *Resources) GetArtifacts() []*Artifact {
+	var as []*Artifact
+	for a, q := range r.Artifacts {
+		if q > 0 {
+			as = append(as, a)
+		}
+	}
+	return as
 }
 
 func (r *Resources) UsedVolumeCapacity() float64 {
