@@ -1,7 +1,9 @@
 package social
 
 import (
+	"medvil/model/artifacts"
 	"medvil/model/building"
+	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
 )
@@ -83,5 +85,58 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			town.Townhall.Household.Money += tax
 		}
 		mine.Household.Filter(Calendar, m)
+	}
+	var constructions []*building.BuildingConstruction
+	for k := range town.Constructions {
+		construction := town.Constructions[k]
+		if construction.IsComplete() {
+			switch construction.T {
+			case building.BuildingTypeMine:
+				mine := &Mine{Household: Household{Building: construction.Building, Town: town}}
+				mine.Household.Resources.VolumeCapacity = mine.Household.Building.Plan.Area() * StoragePerArea
+				town.Mines = append(town.Mines, mine)
+				m.SetBuildingUnits(construction.Building, false)
+			}
+		} else {
+			constructions = append(constructions, construction)
+		}
+	}
+	town.Constructions = constructions
+}
+
+const ConstructionTransportQuantity = 5
+
+func (town *Town) CreateConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
+	c := &building.BuildingConstruction{Building: b, RemainingCost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
+	c.Storage.Init()
+	town.Constructions = append(town.Constructions, c)
+
+	buildingF := m.GetField(c.Building.X, c.Building.Y)
+	var totalTasks uint16 = 0
+	for _, a := range c.RemainingCost {
+		var totalQ = a.Quantity
+		totalTasks += totalQ
+		for totalQ > 0 {
+			var q uint16 = ConstructionTransportQuantity
+			if totalQ < ConstructionTransportQuantity {
+				q = totalQ
+			}
+			totalQ -= q
+			town.Townhall.Household.AddTask(&economy.TransportTask{
+				PickupF:  m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
+				DropoffF: buildingF,
+				PickupR:  &town.Townhall.Household.Resources,
+				DropoffR: c.Storage,
+				A:        a.A,
+				Quantity: q,
+			})
+		}
+	}
+	c.MaxProgress = totalTasks
+	for i := uint16(0); i < totalTasks; i++ {
+		town.Townhall.Household.AddTask(&economy.BuildingTask{
+			F: buildingF,
+			C: c,
+		})
 	}
 }

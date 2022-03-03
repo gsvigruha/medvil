@@ -25,6 +25,10 @@ type Resources struct {
 	VolumeCapacity uint16
 }
 
+func (r *Resources) Init() {
+	r.Artifacts = make(map[*Artifact]uint16)
+}
+
 func (r *Resources) UnmarshalJSON(data []byte) error {
 	r.Artifacts = make(map[*Artifact]uint16)
 	var j map[string]json.RawMessage
@@ -158,7 +162,22 @@ func (r *Resources) Has(as []Artifacts) bool {
 	return true
 }
 
+func (r *Resources) IsEmpty() bool {
+	if r.Artifacts == nil {
+		r.Artifacts = make(map[*Artifact]uint16)
+	}
+	for _, q := range r.Artifacts {
+		if q > 0 {
+			return false
+		}
+	}
+	return true
+}
+
 func (r *Resources) Volume() uint16 {
+	if r.Artifacts == nil {
+		r.Artifacts = make(map[*Artifact]uint16)
+	}
 	var v uint16 = 0
 	for a, q := range r.Artifacts {
 		v += a.V * q
