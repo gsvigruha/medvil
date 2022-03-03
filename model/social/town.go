@@ -106,7 +106,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 const ConstructionTransportQuantity = 5
 
-func (town *Town) AddConstructionTasks(b *building.Building, bt building.BuildingType, m navigation.IMap) {
+func (town *Town) CreateConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
 	c := &building.BuildingConstruction{Building: b, RemainingCost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
 	c.Storage.Init()
 	town.Constructions = append(town.Constructions, c)

@@ -46,8 +46,7 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 func (m *Map) AddConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan, bt building.BuildingType) bool {
 	b := m.AddBuilding(x, y, bp, true)
 	if b != nil {
-		t := c.Towns[0]
-		t.AddConstructionTasks(b, bt, m)
+		c.Towns[0].CreateConstruction(b, bt, m)
 		return true
 	} else {
 		return false
