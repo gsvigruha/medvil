@@ -12,6 +12,8 @@ const FarmTaxRate float64 = 0.2
 const WorkshopTaxRate float64 = 0.1
 const MineTaxRate float64 = 0.1
 
+const ConstructionTransportQuantity = 5
+
 type JSONBuilding struct {
 	Plan string
 	X    uint16
@@ -89,22 +91,29 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	var constructions []*building.BuildingConstruction
 	for k := range town.Constructions {
 		construction := town.Constructions[k]
+		b := construction.Building
 		if construction.IsComplete() {
 			switch construction.T {
 			case building.BuildingTypeMine:
-				mine := &Mine{Household: Household{Building: construction.Building, Town: town}}
-				mine.Household.Resources.VolumeCapacity = mine.Household.Building.Plan.Area() * StoragePerArea
+				mine := &Mine{Household: Household{Building: b, Town: town}}
+				mine.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Mines = append(town.Mines, mine)
-				m.SetBuildingUnits(construction.Building, false)
+			case building.BuildingTypeWorkshop:
+				w := &Workshop{Household: Household{Building: b, Town: town}}
+				w.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Workshops = append(town.Workshops, w)
+			case building.BuildingTypeFarm:
+				f := &Farm{Household: Household{Building: b, Town: town}}
+				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Farms = append(town.Farms, f)
 			}
+			m.SetBuildingUnits(b, false)
 		} else {
 			constructions = append(constructions, construction)
 		}
 	}
 	town.Constructions = constructions
 }
-
-const ConstructionTransportQuantity = 5
 
 func (town *Town) CreateConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
 	c := &building.BuildingConstruction{Building: b, RemainingCost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}

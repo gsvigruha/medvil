@@ -6,7 +6,7 @@ import (
 	"medvil/model/time"
 )
 
-const BuildingTaskMaxProgress = 5 * 24
+const BuildingTaskMaxProgress = 30 * 24
 
 type BuildingTask struct {
 	F        *navigation.Field
