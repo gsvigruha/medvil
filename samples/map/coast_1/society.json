@@ -15,7 +15,9 @@
                 "fruit": 50,
                 "vegetable": 50,
                 "bread": 20,
-                "water": 20
+                "water": 20,
+                "cube": 50,
+                "board": 50
               }
             }
           }, 
