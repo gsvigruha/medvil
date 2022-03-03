@@ -117,7 +117,7 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	for a, q := range f.Household.Resources.Artifacts {
 		qToSell := f.Household.ArtifactToSell(a, q, false)
-		if qToSell >= ProductTransportQuantity || f.Household.Resources.Full() {
+		if qToSell > 0 {
 			tag := "sell_artifacts#" + a.Name
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
 			if f.Household.Town.Marketplace.CanSell(goods) && int(qToSell)/ProductTransportQuantity+1 > f.Household.NumTasks("exchange", tag) {

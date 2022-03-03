@@ -129,7 +129,7 @@ func (r *Resources) GetAsManyAsPossible(as []Artifacts) []Artifacts {
 	var result []Artifacts = nil
 	for _, a := range as {
 		if v, ok := r.Artifacts[a.A]; ok {
-			if v < a.Quantity {
+			if v <= a.Quantity {
 				result = append(result, Artifacts{A: a.A, Quantity: v})
 				r.Artifacts[a.A] = 0
 			} else {
