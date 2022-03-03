@@ -116,13 +116,13 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (town *Town) CreateConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
-	c := &building.BuildingConstruction{Building: b, RemainingCost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
-	c.Storage.Init()
+	c := &building.BuildingConstruction{Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
+	c.Storage.Init(b.Plan.Area() * StoragePerArea)
 	town.Constructions = append(town.Constructions, c)
 
 	buildingF := m.GetField(c.Building.X, c.Building.Y)
 	var totalTasks uint16 = 0
-	for _, a := range c.RemainingCost {
+	for _, a := range c.Cost {
 		var totalQ = a.Quantity
 		totalTasks += totalQ
 		for totalQ > 0 {

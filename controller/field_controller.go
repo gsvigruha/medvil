@@ -10,7 +10,7 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	p.AddTextureLabel("terrain/"+f.Terrain.T.Name, 10, 70, 32, 32)
 	var aI = 0
 	for a, q := range f.Terrain.Resources.Artifacts {
-		ArtifactsToControlPanel(p, aI, a, q)
+		ArtifactsToControlPanel(p, aI, a, q, ArtifactsGUIY)
 		aI++
 	}
 	cp.SetDynamicPanel(p)
