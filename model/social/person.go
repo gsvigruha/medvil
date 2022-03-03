@@ -128,3 +128,14 @@ func (p *Person) HasFood() bool {
 func (p *Person) HasDrink() bool {
 	return p.Household.HasDrink()
 }
+
+func (p *Person) Reassign(h *Household, pi int, m navigation.IMap) {
+	if p.Task == nil {
+		p.Household.People = append(p.Household.People[:pi], p.Household.People[pi+1:]...)
+		p.Traveller.FX = p.Household.Building.X
+		p.Traveller.FY = p.Household.Building.Y
+		p.Household = h
+		h.People = append(h.People, p)
+		p.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: p}
+	}
+}

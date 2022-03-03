@@ -77,10 +77,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if h.HasRoomForPeople() {
 			for pi, person := range h.Town.Townhall.Household.People {
 				if person.Task == nil {
-					h.Town.Townhall.Household.People = append(h.Town.Townhall.Household.People[:pi], h.Town.Townhall.Household.People[pi+1:]...)
-					h.People = append(h.People, person)
-					person.Household = h
-					person.Task = &economy.GoHomeTask{F: m.GetField(h.Building.X, h.Building.Y), P: person}
+					person.Reassign(h, pi, m)
 					break
 				}
 			}
@@ -97,12 +94,9 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 		if h.HasSurplusPeople() && h.Town.Townhall.Household.HasRoomForPeople() {
-			for _, person := range h.People {
+			for pi, person := range h.People {
 				if person.Task == nil {
-					h.Town.Townhall.Household.People = append(h.Town.Townhall.Household.People, person)
-					person.Traveller.FX = h.Building.X
-					person.Traveller.FY = h.Building.Y
-					person.Task = &economy.GoHomeTask{F: m.GetField(h.Town.Townhall.Household.Building.X, h.Town.Townhall.Household.Building.Y), P: person}
+					person.Reassign(&h.Town.Townhall.Household, pi, m)
 					break
 				}
 			}
