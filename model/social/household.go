@@ -153,14 +153,20 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bo
 	if isProduct {
 		threshold = economy.MinFoodOrDrinkPerPerson
 	}
+	var result uint16
 	if economy.IsFoodOrDrink(a) {
 		if q > threshold*uint16(len(h.People)) {
-			return q - threshold*uint16(len(h.People))
+			result = q - threshold*uint16(len(h.People))
 		} else {
 			return 0
 		}
+	} else {
+		result = q
 	}
-	return q
+	if result >= ProductTransportQuantity || h.Resources.Full() {
+		return result
+	}
+	return 0
 }
 
 func (h *Household) HasFood() bool {
