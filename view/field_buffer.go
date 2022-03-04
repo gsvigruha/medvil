@@ -55,11 +55,6 @@ func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedFie
 func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField) *canvas.Canvas {
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[f.CacheKey()]; ok {
-		if t-ce.createdTime > 300*1000*1000 {
-			ce.cv.ClearRect(0, 0, BufferW, BufferH)
-			renderField(ce.cv, f, rf)
-			ce.createdTime = t
-		}
 		return ce.cv
 	} else {
 		offscreen, _ := goglbackend.NewOffscreen(BufferW, BufferH, true, ic.ctx)
