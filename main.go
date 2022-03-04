@@ -24,6 +24,7 @@ func main() {
 		panic(err)
 	}
 	ic := view.NewImageCache(ctx)
+	ic.Fic = view.NewFieldImageCache(ctx)
 
 	m := maps.LoadMap("samples/map/coast_1")
 

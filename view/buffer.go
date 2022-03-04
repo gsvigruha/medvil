@@ -21,6 +21,7 @@ type CacheEntry struct {
 type ImageCache struct {
 	entries map[*terrain.Plant]*CacheEntry
 	ctx     *goglbackend.GLContext
+	Fic     *FieldImageCache
 }
 
 func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {

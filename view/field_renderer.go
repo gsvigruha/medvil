@@ -2,7 +2,6 @@ package view
 
 import (
 	"github.com/tfriedel6/canvas"
-	"image/color"
 	"medvil/controller"
 	"medvil/model"
 	"medvil/model/navigation"
@@ -12,22 +11,9 @@ import (
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t, l, b, r uint8, m model.Map, f *navigation.Field, c *controller.Controller) {
 
-	cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
-
-	rf.Draw(cv)
-	cv.Fill()
-
-	if (f.SE + f.SW) > (f.NE + f.NW) {
-		slope := (f.SE + f.SW) - (f.NE + f.NW)
-		cv.SetFillStyle(color.RGBA{R: 255, G: 255, B: 255, A: slope * 4})
-		rf.Draw(cv)
-		cv.Fill()
-	} else if (f.SE + f.SW) < (f.NE + f.NW) {
-		slope := (f.NE + f.NW) - (f.SE + f.SW)
-		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: slope * 16})
-		rf.Draw(cv)
-		cv.Fill()
-	}
+	offsetX, offsetY := rf.Offset()
+	fimg := ic.Fic.RenderFieldOnBuffer(f, rf)
+	cv.DrawImage(fimg, offsetX, offsetY, BufferW, BufferH)
 
 	units := f.Building.BuildingUnits
 	for k := 0; k < len(units); k++ {

@@ -3,6 +3,7 @@ package navigation
 import (
 	"medvil/model/building"
 	"medvil/model/terrain"
+	"strconv"
 )
 
 type Destination interface {
@@ -87,4 +88,12 @@ func (f *Field) UnregisterTraveller(t *Traveller) {
 
 func (f *Field) Check(f2 *Field) bool {
 	return f == f2
+}
+
+func (f *Field) CacheKey() string {
+	return (strconv.Itoa(int(f.NE)) + "#" +
+		strconv.Itoa(int(f.SE)) + "#" +
+		strconv.Itoa(int(f.SW)) + "#" +
+		strconv.Itoa(int(f.NW)) + "#" +
+		f.Terrain.T.Name)
 }

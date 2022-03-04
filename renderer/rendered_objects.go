@@ -51,3 +51,17 @@ func (rf RenderedField) Move(dx, dy float64) RenderedField {
 		F: rf.F,
 	}
 }
+
+func (rf RenderedField) Offset() (float64, float64) {
+	var xMin float64 = 10000
+	var yMin float64 = 10000
+	for i := 0; i < 4; i++ {
+		if rf.X[i] < xMin {
+			xMin = rf.X[i]
+		}
+		if rf.Y[i]-rf.Z[i] < yMin {
+			yMin = rf.Y[i] - rf.Z[i]
+		}
+	}
+	return xMin, yMin
+}
