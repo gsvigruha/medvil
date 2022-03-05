@@ -19,28 +19,45 @@ type CacheEntry struct {
 }
 
 type ImageCache struct {
+	Pic *PlantImageCache
+	Fic *FieldImageCache
+}
+
+type PlantImageCache struct {
 	entries map[*terrain.Plant]*CacheEntry
 	ctx     *goglbackend.GLContext
 }
 
 func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 	return &ImageCache{
-		entries: make(map[*terrain.Plant]*CacheEntry),
-		ctx:     ctx,
+		Fic: &FieldImageCache{
+			entries: make(map[string]*CacheEntry),
+			ctx:     ctx,
+		},
+		Pic: &PlantImageCache{
+			entries: make(map[*terrain.Plant]*CacheEntry),
+			ctx:     ctx,
+		},
 	}
 }
 
 func (ic *ImageCache) Clean() {
 	t := time.Now().UnixNano()
-	for k, v := range ic.entries {
+	for k, v := range ic.Pic.entries {
 		if t-v.createdTime > 1000*1000*1000 {
 			v.offscreen.Delete()
-			delete(ic.entries, k)
+			delete(ic.Pic.entries, k)
+		}
+	}
+	for k, v := range ic.Fic.entries {
+		if t-v.createdTime > 10000*1000*1000 {
+			v.offscreen.Delete()
+			delete(ic.Fic.entries, k)
 		}
 	}
 }
 
-func (ic *ImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
+func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[p]; ok {
 		if t-ce.createdTime > 300*1000*1000 {
