@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"math"
 	"medvil/model/navigation"
+	"strconv"
 )
 
 type RenderedField struct {
@@ -73,4 +74,11 @@ func (rf RenderedField) BoundingBox() (float64, float64, float64, float64) {
 		}
 	}
 	return xMin, yMin, xMax, yMax
+}
+
+func (rf RenderedField) CacheKey() string {
+	return (strconv.Itoa(int(rf.Z[0])) + "#" +
+		strconv.Itoa(int(rf.Z[1])) + "#" +
+		strconv.Itoa(int(rf.Z[2])) + "#" +
+		strconv.Itoa(int(rf.Z[3])))
 }

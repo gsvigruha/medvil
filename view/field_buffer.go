@@ -4,8 +4,10 @@ import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"image/color"
+	"medvil/controller"
 	"medvil/model/navigation"
 	"medvil/renderer"
+	"strconv"
 	"time"
 )
 
@@ -33,9 +35,10 @@ func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedFie
 	}
 }
 
-func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField) *canvas.Canvas {
+func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
+	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.CacheKey()
 	t := time.Now().UnixNano()
-	if ce, ok := ic.entries[f.CacheKey()]; ok {
+	if ce, ok := ic.entries[key]; ok {
 		return ce.cv
 	} else {
 		xMin, yMin, xMax, yMax := rf.BoundingBox()
@@ -47,12 +50,11 @@ func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, w, h)
 		renderField(cv, f, bufferedRF)
-		ic.entries[f.CacheKey()] = &CacheEntry{
+		ic.entries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
 			createdTime: t,
 		}
 		return cv
 	}
-
 }
