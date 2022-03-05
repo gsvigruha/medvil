@@ -52,9 +52,12 @@ func (rf RenderedField) Move(dx, dy float64) RenderedField {
 	}
 }
 
-func (rf RenderedField) Offset() (float64, float64) {
-	var xMin float64 = 10000
-	var yMin float64 = 10000
+func (rf RenderedField) BoundingBox() (float64, float64, float64, float64) {
+	var xMin float64 = math.Inf(1)
+	var yMin float64 = math.Inf(1)
+	var xMax float64 = 0
+	var yMax float64 = 0
+
 	for i := 0; i < 4; i++ {
 		if rf.X[i] < xMin {
 			xMin = rf.X[i]
@@ -62,6 +65,12 @@ func (rf RenderedField) Offset() (float64, float64) {
 		if rf.Y[i]-rf.Z[i] < yMin {
 			yMin = rf.Y[i] - rf.Z[i]
 		}
+		if rf.X[i] > xMax {
+			xMax = rf.X[i]
+		}
+		if rf.Y[i]-rf.Z[i] > yMax {
+			yMax = rf.Y[i] - rf.Z[i]
+		}
 	}
-	return xMin, yMin
+	return xMin, yMin, xMax, yMax
 }

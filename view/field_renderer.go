@@ -10,10 +10,9 @@ import (
 )
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t, l, b, r uint8, m model.Map, f *navigation.Field, c *controller.Controller) {
-
-	offsetX, offsetY := rf.Offset()
+	xMin, yMin, xMax, yMax := rf.BoundingBox()
 	fimg := ic.Fic.RenderFieldOnBuffer(f, rf)
-	cv.DrawImage(fimg, offsetX, offsetY, BufferW, BufferH)
+	cv.DrawImage(fimg, xMin, yMin, xMax-xMin, yMax-yMin)
 
 	units := f.Building.BuildingUnits
 	for k := 0; k < len(units); k++ {
@@ -31,7 +30,7 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t
 		//RenderPlant(cv, f.Plant, rf, c)
 		tx := rf.X[0] - BufferW/2
 		ty := rf.Y[2] - BufferH
-		img := ic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
+		img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
 		cv.DrawImage(img, tx, ty, BufferW, BufferH)
 	}
 	if f.Terrain.Resources.HasRealArtifacts() {
