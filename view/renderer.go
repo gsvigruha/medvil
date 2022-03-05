@@ -20,6 +20,9 @@ const (
 func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 	w := float64(cv.Width())
 	h := float64(cv.Height())
+	cv.SetFillStyle("#000")
+	cv.FillRect(0, 0, w, h)
+
 	li := int(c.CenterX) - RadiusI
 	hi := int(c.CenterX) + RadiusI
 	lj := int(c.CenterY) - RadiusI
@@ -79,7 +82,7 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)},
 				F: f,
 			}
-			RenderField(ic, cv, rf, t, l, b, r, m, f, c)
+			RenderField(ic, cv, rf, f, c)
 			if f.Travellers != nil {
 				RenderTravellers(cv, f.Travellers, rf, c)
 			}

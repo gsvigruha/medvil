@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/controller"
+	"medvil/model/building"
 	"medvil/model/terrain"
 	"medvil/renderer"
 	"time"
@@ -21,6 +22,7 @@ type CacheEntry struct {
 type ImageCache struct {
 	Pic *PlantImageCache
 	Fic *FieldImageCache
+	Bic *BuildingImageCache
 }
 
 type PlantImageCache struct {
@@ -37,6 +39,11 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 		Pic: &PlantImageCache{
 			entries: make(map[*terrain.Plant]*CacheEntry),
 			ctx:     ctx,
+		},
+		Bic: &BuildingImageCache{
+			unitEntries: make(map[*building.BuildingUnit]*CacheEntry),
+			roofEntries: make(map[*building.RoofUnit]*CacheEntry),
+			ctx:         ctx,
 		},
 	}
 }
