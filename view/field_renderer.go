@@ -10,7 +10,7 @@ import (
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	xMin, yMin, xMax, yMax := rf.BoundingBox()
-	fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf)
+	fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
 	cv.DrawImage(fieldImg, xMin, yMin, xMax-xMin, yMax-yMin)
 
 	units := f.Building.BuildingUnits
