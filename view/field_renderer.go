@@ -9,9 +9,9 @@ import (
 	//"fmt"
 )
 
-func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, t, l, b, r uint8, m model.Map, f *navigation.Field, c *controller.Controller) {
+func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, m model.Map, f *navigation.Field, c *controller.Controller) {
 	xMin, yMin, xMax, yMax := rf.BoundingBox()
-	fimg := ic.Fic.RenderFieldOnBuffer(f, rf)
+	fimg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
 	cv.DrawImage(fimg, xMin, yMin, xMax-xMin, yMax-yMin)
 
 	units := f.Building.BuildingUnits

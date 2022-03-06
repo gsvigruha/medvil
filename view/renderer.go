@@ -79,7 +79,7 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)},
 				F: f,
 			}
-			RenderField(ic, cv, rf, t, l, b, r, m, f, c)
+			RenderField(ic, cv, rf, m, f, c)
 			if f.Travellers != nil {
 				RenderTravellers(cv, f.Travellers, rf, c)
 			}
