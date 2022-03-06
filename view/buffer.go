@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-const MaxCacheDeletePerIteration = 10
-
 type CacheEntry struct {
 	offscreen   *goglbackend.GoGLBackendOffscreen
 	cv          *canvas.Canvas
@@ -41,33 +39,28 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 
 func (ic *ImageCache) Clean() {
 	t := time.Now().UnixNano()
-	var i = 0
 	for k, v := range ic.Pic.entries {
-		if i < MaxCacheDeletePerIteration && t-v.createdTime > 1000*1000*1000 {
+		if t-v.createdTime > 1000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Pic.entries, k)
-			i++
 		}
 	}
 	for k, v := range ic.Fic.entries {
-		if i < MaxCacheDeletePerIteration && t-v.createdTime > 10000*1000*1000 {
+		if t-v.createdTime > 10000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Fic.entries, k)
-			i++
 		}
 	}
 	for k, v := range ic.Bic.roofEntries {
-		if i < MaxCacheDeletePerIteration && t-v.createdTime > 10000*1000*1000 {
+		if t-v.createdTime > 10000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Bic.roofEntries, k)
-			i++
 		}
 	}
 	for k, v := range ic.Bic.unitEntries {
-		if i < MaxCacheDeletePerIteration && t-v.createdTime > 10000*1000*1000 {
+		if t-v.createdTime > 10000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Bic.unitEntries, k)
-			i++
 		}
 	}
 }
