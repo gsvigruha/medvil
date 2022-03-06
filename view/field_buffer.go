@@ -36,7 +36,7 @@ func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedFie
 }
 
 func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
-	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.CacheKey()
+	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[key]; ok {
 		return ce.cv

@@ -10,9 +10,9 @@ import (
 )
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, m model.Map, f *navigation.Field, c *controller.Controller) {
-	xMin, yMin, xMax, yMax := rf.BoundingBox()
+	xMin, yMin, _, _ := rf.BoundingBox()
 	fimg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
-	cv.DrawImage(fimg, xMin, yMin, xMax-xMin, yMax-yMin)
+	cv.DrawImage(fimg, xMin, yMin, float64(fimg.Width()), float64(fimg.Height()))
 
 	units := f.Building.BuildingUnits
 	for k := 0; k < len(units); k++ {
