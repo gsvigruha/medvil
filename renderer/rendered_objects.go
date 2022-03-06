@@ -56,8 +56,8 @@ func (rf RenderedField) Move(dx, dy float64) RenderedField {
 func (rf RenderedField) BoundingBox() (float64, float64, float64, float64) {
 	var xMin float64 = math.Inf(1)
 	var yMin float64 = math.Inf(1)
-	var xMax float64 = 0
-	var yMax float64 = 0
+	var xMax float64 = math.Inf(-1)
+	var yMax float64 = math.Inf(-1)
 
 	for i := 0; i < 4; i++ {
 		if rf.X[i] < xMin {
