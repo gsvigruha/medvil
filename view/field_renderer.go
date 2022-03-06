@@ -17,7 +17,7 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 	if len(units) > 0 {
 		for k := 0; k < len(units); k++ {
 			//rbu := RenderBuildingUnit(cv, &units[k], rf, k, c)
-			z := float64(k*BuildingUnitHeight) * DZ
+			z := float64((k+1)*BuildingUnitHeight) * DZ
 			unitImg, rbu := ic.Bic.RenderBuildingUnitOnBuffer(&units[k], rf, k, c)
 			cv.DrawImage(unitImg, xMin, yMin-z, float64(unitImg.Width()), float64(unitImg.Height()))
 			c.AddRenderedBuildingUnit(&rbu)

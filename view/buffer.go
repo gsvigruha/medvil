@@ -61,6 +61,18 @@ func (ic *ImageCache) Clean() {
 			delete(ic.Fic.entries, k)
 		}
 	}
+	for k, v := range ic.Bic.roofEntries {
+		if t-v.createdTime > 10000*1000*1000 {
+			v.offscreen.Delete()
+			delete(ic.Bic.roofEntries, k)
+		}
+	}
+	for k, v := range ic.Bic.unitEntries {
+		if t-v.createdTime > 10000*1000*1000 {
+			v.offscreen.Delete()
+			delete(ic.Bic.unitEntries, k)
+		}
+	}
 }
 
 func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {

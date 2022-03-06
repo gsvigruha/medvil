@@ -46,15 +46,15 @@ func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
 
 	t := time.Now().UnixNano()
 	key := unit.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
-	z := float64(numUnits*BuildingUnitHeight) * DZ
+	z := float64((numUnits+1)*BuildingUnitHeight) * DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
 	if ce, ok := ic.unitEntries[key]; ok {
 		return ce.cv, RenderBuildingUnit(nil, unit, bufferedRF, numUnits, c)
 	} else {
-		offscreen, _ := goglbackend.NewOffscreen(120, 125, true, ic.ctx)
+		offscreen, _ := goglbackend.NewOffscreen(120, 180, true, ic.ctx)
 		cv := canvas.New(offscreen)
-		cv.ClearRect(0, 0, 120, 125)
+		cv.ClearRect(0, 0, 120, 180)
 		rbu := RenderBuildingUnit(cv, unit, bufferedRF, numUnits, c)
 		ic.unitEntries[key] = &CacheEntry{
 			offscreen:   offscreen,
