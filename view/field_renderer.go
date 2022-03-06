@@ -26,8 +26,12 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		}
 	}
 
-	if f.Road.T != nil {
-		cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
+	if f.Road != nil {
+		if f.Road.Construction {
+			cv.SetFillStyle("texture/building/construction.png")
+		} else {
+			cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
+		}
 		rf.Draw(cv)
 		cv.Fill()
 	}

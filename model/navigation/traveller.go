@@ -141,7 +141,7 @@ func (t *Traveller) Move(m IMap) {
 		f := t.path.F[0]
 		f0 := m.GetField(t.FX, t.FY)
 		var steps = 1
-		if f0.Road.T != nil && rand.Float64() < f0.Road.T.Speed-1.0 {
+		if f0.Road != nil && rand.Float64() < f0.Road.T.Speed-1.0 {
 			steps = 2
 		}
 		for i := 0; i < steps; i++ {

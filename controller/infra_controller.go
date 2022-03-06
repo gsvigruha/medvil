@@ -43,12 +43,10 @@ func (b InfraBuildButton) Contains(x float64, y float64) bool {
 }
 
 func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	if ic.it == InfraTypeNone {
-		rf.F.Road = building.Road{T: nil}
-	} else if ic.it == InfraTypeDirtRoad && rf.F.Walkable() && rf.F.Buildable() {
-		rf.F.Road = building.Road{T: building.DirtRoadType}
+	if ic.it == InfraTypeDirtRoad && rf.F.Walkable() && rf.F.Buildable() {
+		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.DirtRoadType)
 	} else if ic.it == InfraTypeCobbleRoad && rf.F.Walkable() && rf.F.Buildable() {
-		rf.F.Road = building.Road{T: building.CobbleRoadType}
+		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.CobbleRoadType)
 	}
 	return true
 }
