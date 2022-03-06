@@ -21,6 +21,7 @@ type CacheEntry struct {
 type ImageCache struct {
 	Pic *PlantImageCache
 	Fic *FieldImageCache
+	Bic *BuildingImageCache
 }
 
 type PlantImageCache struct {
@@ -38,6 +39,11 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 			entries: make(map[*terrain.Plant]*CacheEntry),
 			ctx:     ctx,
 		},
+		Bic: &BuildingImageCache{
+			unitEntries: make(map[string]*CacheEntry),
+			roofEntries: make(map[string]*CacheEntry),
+			ctx:         ctx,
+		},
 	}
 }
 
@@ -53,6 +59,18 @@ func (ic *ImageCache) Clean() {
 		if t-v.createdTime > 10000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Fic.entries, k)
+		}
+	}
+	for k, v := range ic.Bic.roofEntries {
+		if t-v.createdTime > 10000*1000*1000 {
+			v.offscreen.Delete()
+			delete(ic.Bic.roofEntries, k)
+		}
+	}
+	for k, v := range ic.Bic.unitEntries {
+		if t-v.createdTime > 10000*1000*1000 {
+			v.offscreen.Delete()
+			delete(ic.Bic.unitEntries, k)
 		}
 	}
 }

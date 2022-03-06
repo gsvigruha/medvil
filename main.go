@@ -32,9 +32,6 @@ func main() {
 	fmt.Println("Init done")
 
 	wnd.MainLoop(func() {
-		w, h := float64(cv.Width()), float64(cv.Height())
-		cv.SetFillStyle("#000")
-		cv.FillRect(0, 0, w, h)
 		start := time.Now()
 		view.Render(ic, cv, m, c)
 		elapsed := time.Since(start)

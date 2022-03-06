@@ -3,31 +3,35 @@ package view
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/controller"
-	"medvil/model"
 	"medvil/model/navigation"
 	"medvil/renderer"
 	//"fmt"
 )
 
-func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, m model.Map, f *navigation.Field, c *controller.Controller) {
+func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	xMin, yMin, xMax, yMax := rf.BoundingBox()
-	fimg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
-	cv.DrawImage(fimg, xMin, yMin, xMax-xMin, yMax-yMin)
+	fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
+	cv.DrawImage(fieldImg, xMin, yMin, xMax-xMin, yMax-yMin)
 
 	units := f.Building.BuildingUnits
-	for k := 0; k < len(units); k++ {
-		rbu := RenderBuildingUnit(cv, &units[k], rf, k, c)
-		c.AddRenderedBuildingUnit(&rbu)
+	if len(units) > 0 {
+		for k := 0; k < len(units); k++ {
+			unitImg, rbu, x, y := ic.Bic.RenderBuildingUnitOnBuffer(&units[k], rf, k, c)
+			cv.DrawImage(unitImg, x, y, float64(unitImg.Width()), float64(unitImg.Height()))
+			c.AddRenderedBuildingUnit(&rbu)
+		}
+		if f.Building.RoofUnit != nil {
+			roofImg, x, y := ic.Bic.RenderBuildingRoofOnBuffer(f.Building.RoofUnit, rf, len(units), c)
+			cv.DrawImage(roofImg, x, y, float64(roofImg.Width()), float64(roofImg.Height()))
+		}
 	}
-	roof := f.Building.RoofUnit
-	RenderBuildingRoof(cv, roof, rf, len(units), c)
+
 	if f.Road.T != nil {
 		cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
 		rf.Draw(cv)
 		cv.Fill()
 	}
 	if f.Plant != nil {
-		//RenderPlant(cv, f.Plant, rf, c)
 		tx := rf.X[0] - BufferW/2
 		ty := rf.Y[2] - BufferH
 		img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
