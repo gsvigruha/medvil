@@ -40,3 +40,18 @@ func (rbu *RenderedBuildingUnit) Contains(x float64, y float64) bool {
 	}
 	return false
 }
+
+func (rbu RenderedBuildingUnit) Move(dx, dy float64) RenderedBuildingUnit {
+	var walls []RenderedWall
+	for i := range rbu.Walls {
+		walls = append(walls, RenderedWall{
+			X:    MoveVector(rbu.Walls[i].X, dx),
+			Y:    MoveVector(rbu.Walls[i].Y, dy),
+			Wall: rbu.Walls[i].Wall,
+		})
+	}
+	return RenderedBuildingUnit{
+		Walls: walls,
+		Unit:  rbu.Unit,
+	}
+}

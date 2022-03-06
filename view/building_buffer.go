@@ -49,8 +49,9 @@ func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
 	z := float64((numUnits+1)*BuildingUnitHeight) * DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
+	
 	if ce, ok := ic.unitEntries[key]; ok {
-		return ce.cv, RenderBuildingUnit(nil, unit, bufferedRF, numUnits, c)
+		return ce.cv, RenderBuildingUnit(nil, unit, bufferedRF, numUnits, c).Move(xMin, yMin-z)
 	} else {
 		offscreen, _ := goglbackend.NewOffscreen(120, 180, true, ic.ctx)
 		cv := canvas.New(offscreen)
@@ -61,6 +62,6 @@ func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
 			cv:          cv,
 			createdTime: t,
 		}
-		return cv, rbu
+		return cv, rbu.Move(xMin, yMin-z)
 	}
 }
