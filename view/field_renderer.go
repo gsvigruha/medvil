@@ -32,10 +32,10 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		cv.Fill()
 	}
 	if f.Plant != nil {
-		tx := rf.X[0] - BufferW/2
-		ty := rf.Y[2] - BufferH
+		tx := rf.X[0] - PlantBufferW/2
+		ty := rf.Y[2] - PlantBufferH
 		img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
-		cv.DrawImage(img, tx, ty, BufferW, BufferH)
+		cv.DrawImage(img, tx, ty, PlantBufferW, PlantBufferH)
 	}
 	if f.Terrain.Resources.HasRealArtifacts() {
 		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+44, rf.Y[2]-64, 32, 32)

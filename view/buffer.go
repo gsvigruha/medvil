@@ -3,14 +3,11 @@ package view
 import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
-	"medvil/controller"
 	"medvil/model/terrain"
-	"medvil/renderer"
 	"time"
 )
 
-const BufferW = 200
-const BufferH = 300
+const MaxCacheDeletePerIteration = 10
 
 type CacheEntry struct {
 	offscreen   *goglbackend.GoGLBackendOffscreen
@@ -22,11 +19,6 @@ type ImageCache struct {
 	Pic *PlantImageCache
 	Fic *FieldImageCache
 	Bic *BuildingImageCache
-}
-
-type PlantImageCache struct {
-	entries map[*terrain.Plant]*CacheEntry
-	ctx     *goglbackend.GLContext
 }
 
 func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
@@ -49,52 +41,33 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 
 func (ic *ImageCache) Clean() {
 	t := time.Now().UnixNano()
+	var i = 0
 	for k, v := range ic.Pic.entries {
-		if t-v.createdTime > 1000*1000*1000 {
+		if i < MaxCacheDeletePerIteration && t-v.createdTime > 1000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Pic.entries, k)
+			i++
 		}
 	}
 	for k, v := range ic.Fic.entries {
-		if t-v.createdTime > 10000*1000*1000 {
+		if i < MaxCacheDeletePerIteration && t-v.createdTime > 10000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Fic.entries, k)
+			i++
 		}
 	}
 	for k, v := range ic.Bic.roofEntries {
-		if t-v.createdTime > 10000*1000*1000 {
+		if i < MaxCacheDeletePerIteration && t-v.createdTime > 10000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Bic.roofEntries, k)
+			i++
 		}
 	}
 	for k, v := range ic.Bic.unitEntries {
-		if t-v.createdTime > 10000*1000*1000 {
+		if i < MaxCacheDeletePerIteration && t-v.createdTime > 10000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Bic.unitEntries, k)
+			i++
 		}
 	}
-}
-
-func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
-	t := time.Now().UnixNano()
-	if ce, ok := ic.entries[p]; ok {
-		if t-ce.createdTime > 300*1000*1000 {
-			ce.cv.ClearRect(0, 0, BufferW, BufferH)
-			RenderPlant(ce.cv, p, rf, c)
-			ce.createdTime = t
-		}
-		return ce.cv
-	} else {
-		offscreen, _ := goglbackend.NewOffscreen(BufferW, BufferH, true, ic.ctx)
-		cv := canvas.New(offscreen)
-		cv.ClearRect(0, 0, BufferW, BufferH)
-		RenderPlant(cv, p, rf, c)
-		ic.entries[p] = &CacheEntry{
-			offscreen:   offscreen,
-			cv:          cv,
-			createdTime: t,
-		}
-		return cv
-	}
-
 }
