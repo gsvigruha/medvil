@@ -43,15 +43,21 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 	return &rr
 }
 
-func (m *Map) AddConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan, bt building.BuildingType) bool {
+func (m *Map) AddBuildingConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan, bt building.BuildingType) bool {
 	b := m.AddBuilding(x, y, bp, true)
 	if b != nil {
-		c.Towns[0].CreateConstruction(b, bt, m)
+		c.Towns[0].CreateBuildingConstruction(b, bt, m)
 		return true
 	} else {
 		return false
 	}
+}
 
+func (m *Map) AddRoadConstruction(c *social.Country, x, y uint16, rt *building.RoadType) bool {
+	r := &building.Road{T: rt, Construction: true}
+	m.GetField(x, y).Road = r
+	c.Towns[0].CreateRoadConstruction(x, y, r, m)
+	return true
 }
 
 func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []navigation.FieldWithContext {

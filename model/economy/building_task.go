@@ -10,7 +10,7 @@ const BuildingTaskMaxProgress = 30 * 24
 
 type BuildingTask struct {
 	F        *navigation.Field
-	C        *building.BuildingConstruction
+	C        building.Construction
 	started  bool
 	progress uint16
 }
@@ -21,15 +21,17 @@ func (t *BuildingTask) Field() *navigation.Field {
 
 func (t *BuildingTask) Complete(Calendar *time.CalendarType) bool {
 	if !t.started && !t.Blocked() {
-		a := t.C.Storage.GetArtifacts()[0]
-		t.C.Storage.Remove(a, 1)
+		if len(t.C.GetCost()) > 0 {
+			a := t.C.GetStorage().GetArtifacts()[0]
+			t.C.GetStorage().Remove(a, 1)
+		}
 		t.started = true
 	}
 	if t.started {
 		if t.progress < BuildingTaskMaxProgress {
 			t.progress++
 		} else {
-			t.C.Progress++
+			t.C.IncProgress()
 			return true
 		}
 	}
@@ -37,7 +39,7 @@ func (t *BuildingTask) Complete(Calendar *time.CalendarType) bool {
 }
 
 func (t *BuildingTask) Blocked() bool {
-	return !t.started && t.C.Storage.IsEmpty()
+	return !t.started && t.C.GetStorage().IsEmpty() && len(t.C.GetCost()) > 0
 }
 
 func (t *BuildingTask) Name() string {

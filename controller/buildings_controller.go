@@ -115,7 +115,7 @@ func (b RoofButton) Contains(x float64, y float64) bool {
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if c.ActiveBuildingPlan.IsComplete() {
-		c.Map.AddConstruction(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan, bc.bt)
+		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan, bc.bt)
 		return true
 	}
 	return false

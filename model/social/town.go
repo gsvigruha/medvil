@@ -34,7 +34,7 @@ type Town struct {
 	Farms         []*Farm
 	Workshops     []*Workshop
 	Mines         []*Mine
-	Constructions []*building.BuildingConstruction
+	Constructions []building.Construction
 }
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -88,12 +88,12 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 		mine.Household.Filter(Calendar, m)
 	}
-	var constructions []*building.BuildingConstruction
+	var constructions []building.Construction
 	for k := range town.Constructions {
 		construction := town.Constructions[k]
-		b := construction.Building
 		if construction.IsComplete() {
-			switch construction.T {
+			b := construction.GetBuilding()
+			switch construction.GetT() {
 			case building.BuildingTypeMine:
 				mine := &Mine{Household: Household{Building: b, Town: town}}
 				mine.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
@@ -106,8 +106,12 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				f := &Farm{Household: Household{Building: b, Town: town}}
 				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Farms = append(town.Farms, f)
+			case building.BuildingTypeRoad:
+				construction.GetRoad().Construction = false
 			}
-			m.SetBuildingUnits(b, false)
+			if b != nil {
+				m.SetBuildingUnits(b, false)
+			}
 		} else {
 			constructions = append(constructions, construction)
 		}
@@ -115,14 +119,28 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	town.Constructions = constructions
 }
 
-func (town *Town) CreateConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
+func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m navigation.IMap) {
+	c := &building.RoadConstruction{Road: r, Cost: r.T.Cost, Storage: &artifacts.Resources{}}
+	c.Storage.Init(StoragePerArea)
+	town.Constructions = append(town.Constructions, c)
+
+	roadF := m.GetField(x, y)
+	roadF.Allocated = true
+	town.AddConstructionTasks(c, roadF, m)
+}
+
+func (town *Town) CreateBuildingConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
 	c := &building.BuildingConstruction{Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
 	c.Storage.Init(b.Plan.Area() * StoragePerArea)
 	town.Constructions = append(town.Constructions, c)
 
 	buildingF := m.GetField(c.Building.X, c.Building.Y)
+	town.AddConstructionTasks(c, buildingF, m)
+}
+
+func (town *Town) AddConstructionTasks(c building.Construction, buildingF *navigation.Field, m navigation.IMap) {
 	var totalTasks uint16 = 0
-	for _, a := range c.Cost {
+	for _, a := range c.GetCost() {
 		var totalQ = a.Quantity
 		totalTasks += totalQ
 		for totalQ > 0 {
@@ -135,13 +153,16 @@ func (town *Town) CreateConstruction(b *building.Building, bt building.BuildingT
 				PickupF:  m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
 				DropoffF: buildingF,
 				PickupR:  &town.Townhall.Household.Resources,
-				DropoffR: c.Storage,
+				DropoffR: c.GetStorage(),
 				A:        a.A,
 				Quantity: q,
 			})
 		}
 	}
-	c.MaxProgress = totalTasks
+	if totalTasks == 0 {
+		totalTasks = 1
+	}
+	c.SetMaxProgress(totalTasks)
 	for i := uint16(0); i < totalTasks; i++ {
 		town.Townhall.Household.AddTask(&economy.BuildingTask{
 			F: buildingF,

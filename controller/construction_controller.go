@@ -7,16 +7,16 @@ import (
 
 const ConstructionControllerTop = 110
 
-func ConstructionToControlPanel(cp *ControlPanel, c *building.BuildingConstruction) {
+func ConstructionToControlPanel(cp *ControlPanel, c building.Construction) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
-	p.AddScaleLabel("tasks/building", 10, ConstructionControllerTop, 32, 32, 4, float64(c.Progress)/float64(c.MaxProgress), false)
+	p.AddScaleLabel("tasks/building", 10, ConstructionControllerTop, 32, 32, 4, float64(c.GetProgress())/float64(c.GetMaxProgress()), false)
 	var i = 0
-	for _, a := range c.Cost {
+	for _, a := range c.GetCost() {
 		ArtifactsToControlPanel(p, i, a.A, a.Quantity, ConstructionControllerTop+50)
 		i++
 	}
 	i = 0
-	for a, q := range c.Storage.Artifacts {
+	for a, q := range c.GetStorage().Artifacts {
 		ArtifactsToControlPanel(p, i, a, q, ConstructionControllerTop+250)
 		i++
 	}
