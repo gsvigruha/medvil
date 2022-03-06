@@ -4,7 +4,6 @@ import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/controller"
-	"medvil/model/building"
 	"medvil/model/terrain"
 	"medvil/renderer"
 	"time"
@@ -41,7 +40,7 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 			ctx:     ctx,
 		},
 		Bic: &BuildingImageCache{
-			unitEntries: make(map[*building.BuildingUnit]*CacheEntry),
+			unitEntries: make(map[string]*CacheEntry),
 			roofEntries: make(map[string]*CacheEntry),
 			ctx:         ctx,
 		},

@@ -11,7 +11,7 @@ import (
 )
 
 type BuildingImageCache struct {
-	unitEntries map[*building.BuildingUnit]*CacheEntry
+	unitEntries map[string]*CacheEntry
 	roofEntries map[string]*CacheEntry
 	ctx         *goglbackend.GLContext
 }
@@ -35,5 +35,32 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(roof *building.RoofUnit
 			createdTime: t,
 		}
 		return cv
+	}
+}
+
+func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
+	unit *building.BuildingUnit,
+	rf renderer.RenderedField,
+	numUnits int,
+	c *controller.Controller) (*canvas.Canvas, renderer.RenderedBuildingUnit) {
+
+	t := time.Now().UnixNano()
+	key := unit.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
+	z := float64(numUnits*BuildingUnitHeight) * DZ
+	xMin, yMin, _, _ := rf.BoundingBox()
+	bufferedRF := rf.Move(-xMin, -yMin+z)
+	if ce, ok := ic.unitEntries[key]; ok {
+		return ce.cv, RenderBuildingUnit(nil, unit, bufferedRF, numUnits, c)
+	} else {
+		offscreen, _ := goglbackend.NewOffscreen(120, 125, true, ic.ctx)
+		cv := canvas.New(offscreen)
+		cv.ClearRect(0, 0, 120, 125)
+		rbu := RenderBuildingUnit(cv, unit, bufferedRF, numUnits, c)
+		ic.unitEntries[key] = &CacheEntry{
+			offscreen:   offscreen,
+			cv:          cv,
+			createdTime: t,
+		}
+		return cv, rbu
 	}
 }
