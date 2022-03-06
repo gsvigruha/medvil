@@ -42,7 +42,7 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 		},
 		Bic: &BuildingImageCache{
 			unitEntries: make(map[*building.BuildingUnit]*CacheEntry),
-			roofEntries: make(map[*building.RoofUnit]*CacheEntry),
+			roofEntries: make(map[string]*CacheEntry),
 			ctx:         ctx,
 		},
 	}

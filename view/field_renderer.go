@@ -18,10 +18,12 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		rbu := RenderBuildingUnit(cv, &units[k], rf, k, c)
 		c.AddRenderedBuildingUnit(&rbu)
 	}
-	numUnits := len(units)
-	z := float64((numUnits+1)*BuildingUnitHeight)*DZ
-	roofImg := ic.Bic.RenderBuildingRoofOnBuffer(f.Building.RoofUnit, rf, numUnits, c)
-	cv.DrawImage(roofImg, xMin, yMin-z, 120, 125)
+	if f.Building.RoofUnit != nil {
+		numUnits := len(units)
+		z := float64((numUnits+1)*BuildingUnitHeight) * DZ
+		roofImg := ic.Bic.RenderBuildingRoofOnBuffer(f.Building.RoofUnit, rf, numUnits, c)
+		cv.DrawImage(roofImg, xMin, yMin-z, float64(roofImg.Width()), float64(roofImg.Height()))
+	}
 
 	if f.Road.T != nil {
 		cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
