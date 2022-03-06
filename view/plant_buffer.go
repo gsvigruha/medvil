@@ -3,6 +3,7 @@ package view
 import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
+	"math/rand"
 	"medvil/controller"
 	"medvil/model/terrain"
 	"medvil/renderer"
@@ -23,7 +24,7 @@ func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.Ren
 		if t-ce.createdTime > 1000*1000*1000 {
 			ce.cv.ClearRect(0, 0, PlantBufferW, PlantBufferH)
 			RenderPlant(ce.cv, p, rf, c)
-			ce.createdTime = t
+			ce.createdTime = t - int64(rand.Intn(500)*1000*1000) + int64(250*1000*1000)
 		}
 		return ce.cv
 	} else {
@@ -34,7 +35,7 @@ func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.Ren
 		ic.entries[p] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
-			createdTime: t,
+			createdTime: t - int64(rand.Intn(500)*1000*1000) + int64(250*1000*1000),
 		}
 		return cv
 	}
