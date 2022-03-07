@@ -144,14 +144,18 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
-func (h *Household) ArtifactToSell(a *artifacts.Artifact, q, foodThreshold uint16) uint16 {
+func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bool) uint16 {
 	if a.Name == "water" {
 		return 0
 	}
+	var threshold = economy.MaxFoodOrDrinkPerPerson
+	if isProduct {
+		threshold = economy.ProductMaxFoodOrDrinkPerPerson
+	}
 	var result uint16
 	if economy.IsFoodOrDrink(a) {
-		if q > foodThreshold*uint16(len(h.People)) {
-			result = q - foodThreshold*uint16(len(h.People))
+		if q > threshold*uint16(len(h.People)) {
+			result = q - threshold*uint16(len(h.People))
 		} else {
 			return 0
 		}

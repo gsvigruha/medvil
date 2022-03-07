@@ -19,7 +19,7 @@ var Drinks = []*artifacts.Artifact{water, wine, beer}
 
 const MinFoodOrDrinkPerPerson uint16 = 2
 const MaxFoodOrDrinkPerPerson uint16 = 5
-const FarmMaxFoodOrDrinkPerPerson uint16 = 4
+const ProductMaxFoodOrDrinkPerPerson uint16 = 4
 
 func BuyFoodOrDrinkPerPerson() uint16 {
 	return MaxFoodOrDrinkPerPerson - MinFoodOrDrinkPerPerson

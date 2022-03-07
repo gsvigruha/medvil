@@ -110,7 +110,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 		}
 	}
 	for a, q := range m.Household.Resources.Artifacts {
-		qToSell := m.Household.ArtifactToSell(a, q, economy.MaxFoodOrDrinkPerPerson)
+		qToSell := m.Household.ArtifactToSell(a, q, false)
 		if qToSell > 0 {
 			tag := "sell_artifacts#" + a.Name
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
