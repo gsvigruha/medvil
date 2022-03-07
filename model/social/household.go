@@ -104,20 +104,19 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	numP := uint16(len(h.People))
 	water := artifacts.GetArtifact("water")
-	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP {
+	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
+		int(economy.MaxFoodOrDrinkPerPerson*numP)/WaterTransportQuantity+1 > h.NumTasks("transport", "water") {
 		hx, hy := h.Building.GetRandomBuildingXY()
 		dest := m.FindDest(hx, hy, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
-			if int(economy.MaxFoodOrDrinkPerPerson*numP)/WaterTransportQuantity+1 > h.NumTasks("transport", "water") {
-				h.AddTask(&economy.TransportTask{
-					PickupF:  dest,
-					DropoffF: m.GetField(hx, hy),
-					PickupR:  &dest.Terrain.Resources,
-					DropoffR: &h.Resources,
-					A:        water,
-					Quantity: WaterTransportQuantity,
-				})
-			}
+			h.AddTask(&economy.TransportTask{
+				PickupF:  dest,
+				DropoffF: m.GetField(hx, hy),
+				PickupR:  &dest.Terrain.Resources,
+				DropoffR: &h.Resources,
+				A:        water,
+				Quantity: WaterTransportQuantity,
+			})
 		}
 	}
 	mp := h.Town.Marketplace
