@@ -67,7 +67,7 @@ func (t *ExchangeTask) Blocked() bool {
 	case ExchangeTaskStatePickupAtHome:
 		return false
 	case ExchangeTaskStateMarket:
-		return !t.Exchange.CanSell(t.goods) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney
+		return !t.Exchange.CanSell(t.goods) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney || !t.Exchange.CanBuy(t.GoodsToBuy)
 	case ExchangeTaskStateDropoffAtHome:
 		return false
 	}
