@@ -120,7 +120,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m navigation.IMap) {
-	c := &building.Construction{Road: r, Cost: r.T.Cost, Storage: &artifacts.Resources{}}
+	c := &building.Construction{Road: r, Cost: r.T.Cost, T: building.BuildingTypeRoad, Storage: &artifacts.Resources{}}
 	c.Storage.Init(StoragePerArea)
 	town.Constructions = append(town.Constructions, c)
 
