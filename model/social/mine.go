@@ -110,11 +110,11 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 		}
 	}
 	for a, q := range m.Household.Resources.Artifacts {
-		qToSell := m.Household.ArtifactToSell(a, q, false)
+		qToSell := m.Household.ArtifactToSell(a, q, economy.MaxFoodOrDrinkPerPerson)
 		if qToSell > 0 {
 			tag := "sell_artifacts#" + a.Name
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
-			if m.Household.Town.Marketplace.CanSell(goods) && int(qToSell)/ProductTransportQuantity+1 > m.Household.NumTasks("exchange", tag) {
+			if m.Household.Town.Marketplace.CanSell(goods) && NumBatchesSimple(int(qToSell), ProductTransportQuantity) > m.Household.NumTasks("exchange", tag) {
 				mx, my := m.Household.Town.Marketplace.Building.GetRandomBuildingXY()
 				m.Household.AddTask(&economy.ExchangeTask{
 					HomeF:          home,

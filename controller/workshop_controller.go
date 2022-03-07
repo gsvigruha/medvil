@@ -14,7 +14,7 @@ type WorkshopController struct {
 	manufactureDropDown *gui.DropDown
 }
 
-const WorkshopControllerGUITopY = 500
+const WorkshopControllerGUITopY = 540
 
 func toTaskNames(names []string) []string {
 	var taskNames []string

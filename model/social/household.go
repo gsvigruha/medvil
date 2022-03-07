@@ -105,7 +105,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	numP := uint16(len(h.People))
 	water := artifacts.GetArtifact("water")
 	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
-		int(economy.MaxFoodOrDrinkPerPerson*numP)/WaterTransportQuantity+1 > h.NumTasks("transport", "water") {
+		NumBatchesSimple(int(economy.MaxFoodOrDrinkPerPerson*numP), WaterTransportQuantity) > h.NumTasks("transport", "water") {
 		hx, hy := h.Building.GetRandomBuildingXY()
 		dest := m.FindDest(hx, hy, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
@@ -123,7 +123,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	for _, a := range economy.Foods {
 		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			tag := "food_shopping#" + a.Name
-			if int(economy.BuyFoodOrDrinkPerPerson()*numP)/FoodTransportQuantity+1 > h.NumTasks("exchange", tag) {
+			if NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity) > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
 				if h.Money >= mp.Price(needs) && mp.CanBuy(needs) {
 					mx, my := mp.Building.GetRandomBuildingXY()
@@ -144,18 +144,14 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
-func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bool) uint16 {
+func (h *Household) ArtifactToSell(a *artifacts.Artifact, q, foodThreshold uint16) uint16 {
 	if a.Name == "water" {
 		return 0
 	}
-	var threshold = economy.MaxFoodOrDrinkPerPerson
-	if isProduct {
-		threshold = economy.MinFoodOrDrinkPerPerson
-	}
 	var result uint16
 	if economy.IsFoodOrDrink(a) {
-		if q > threshold*uint16(len(h.People)) {
-			result = q - threshold*uint16(len(h.People))
+		if q > foodThreshold*uint16(len(h.People)) {
+			result = q - foodThreshold*uint16(len(h.People))
 		} else {
 			return 0
 		}
