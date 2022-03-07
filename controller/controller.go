@@ -38,7 +38,7 @@ type Controller struct {
 	SelectedWorkshop          *social.Workshop
 	SelectedMine              *social.Mine
 	SelectedTownhall          *social.Townhall
-	SelectedConstruction      building.Construction
+	SelectedConstruction      *building.Construction
 	SelectedMarketplace       *social.Marketplace
 	ReverseReferences         *model.ReverseReferences
 	ControlPanel              *ControlPanel
