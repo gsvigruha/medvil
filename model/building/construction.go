@@ -4,6 +4,11 @@ import (
 	"medvil/model/artifacts"
 )
 
+var ConstructionInputs = []*artifacts.Artifact{
+	artifacts.GetArtifact("board"),
+	artifacts.GetArtifact("cube"),
+}
+
 type Construction struct {
 	Building    *Building
 	Road        *Road
