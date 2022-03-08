@@ -48,6 +48,24 @@ func (h *Household) getNextTask() economy.Task {
 	return t
 }
 
+func (h *Household) getNextTaskCombineExchange() economy.Task {
+	t := h.getNextTask()
+	et, ok := t.(*economy.ExchangeTask)
+	if ok {
+		var tasks []economy.Task
+		for _, ot := range h.Tasks {
+			oet, ook := ot.(*economy.ExchangeTask)
+			if ook && !oet.Blocked() {
+				et.Combine(oet)
+			} else {
+				tasks = append(tasks, ot)
+			}
+		}
+		h.Tasks = tasks
+	}
+	return t
+}
+
 func (h *Household) AddTask(t economy.Task) {
 	h.Tasks = append(h.Tasks, t)
 }
@@ -176,16 +194,25 @@ func (h *Household) HasDrink() bool {
 	return economy.HasDrink(h.Resources)
 }
 
-func (h *Household) NumTasks(name string, tag string) int {
+func countTags(task economy.Task, name, tag string) int {
 	var i = 0
-	for _, t := range h.Tasks {
-		if t.Name() == name && strings.Contains(t.Tag(), tag) {
+	taskTags := strings.Split(task.Tag(), ";")
+	for _, taskTag := range taskTags {
+		if task.Name() == name && strings.Contains(taskTag, tag) {
 			i++
 		}
 	}
+	return i
+}
+
+func (h *Household) NumTasks(name string, tag string) int {
+	var i = 0
+	for _, t := range h.Tasks {
+		i += countTags(t, name, tag)
+	}
 	for _, p := range h.People {
-		if p.Task != nil && p.Task.Name() == name && strings.Contains(p.Task.Tag(), tag) {
-			i++
+		if p.Task != nil {
+			i += countTags(p.Task, name, tag)
 		}
 	}
 	return i

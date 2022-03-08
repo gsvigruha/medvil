@@ -85,3 +85,9 @@ func (t *ExchangeTask) Tag() string {
 func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
 	return false
 }
+
+func (t *ExchangeTask) Combine(ot *ExchangeTask) {
+	t.GoodsToBuy = append(t.GoodsToBuy, ot.GoodsToBuy...)
+	t.GoodsToSell = append(t.GoodsToSell, ot.GoodsToSell...)
+	t.TaskTag = t.TaskTag + ";" + ot.TaskTag
+}
