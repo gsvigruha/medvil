@@ -67,7 +67,7 @@ func (t *ExchangeTask) Blocked() bool {
 	case ExchangeTaskStatePickupAtHome:
 		return false
 	case ExchangeTaskStateMarket:
-		return !t.Exchange.CanSell(t.goods) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney
+		return !t.Exchange.CanSell(t.goods) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney || !t.Exchange.CanBuy(t.GoodsToBuy)
 	case ExchangeTaskStateDropoffAtHome:
 		return false
 	}
@@ -84,4 +84,10 @@ func (t *ExchangeTask) Tag() string {
 
 func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
 	return false
+}
+
+func (t *ExchangeTask) Combine(ot *ExchangeTask) {
+	t.GoodsToBuy = append(t.GoodsToBuy, ot.GoodsToBuy...)
+	t.GoodsToSell = append(t.GoodsToSell, ot.GoodsToSell...)
+	t.TaskTag = t.TaskTag + ";" + ot.TaskTag
 }

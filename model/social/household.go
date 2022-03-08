@@ -48,6 +48,24 @@ func (h *Household) getNextTask() economy.Task {
 	return t
 }
 
+func (h *Household) getNextTaskCombineExchange() economy.Task {
+	t := h.getNextTask()
+	et, ok := t.(*economy.ExchangeTask)
+	if ok {
+		var tasks []economy.Task
+		for _, ot := range h.Tasks {
+			oet, ook := ot.(*economy.ExchangeTask)
+			if ook && !oet.Blocked() {
+				et.Combine(oet)
+			} else {
+				tasks = append(tasks, ot)
+			}
+		}
+		h.Tasks = tasks
+	}
+	return t
+}
+
 func (h *Household) AddTask(t economy.Task) {
 	h.Tasks = append(h.Tasks, t)
 }
@@ -104,27 +122,26 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	numP := uint16(len(h.People))
 	water := artifacts.GetArtifact("water")
-	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP {
+	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
+		NumBatchesSimple(int(economy.MaxFoodOrDrinkPerPerson*numP), WaterTransportQuantity) > h.NumTasks("transport", "water") {
 		hx, hy := h.Building.GetRandomBuildingXY()
 		dest := m.FindDest(hx, hy, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
-			if int(economy.MaxFoodOrDrinkPerPerson*numP)/WaterTransportQuantity+1 > h.NumTasks("transport", "water") {
-				h.AddTask(&economy.TransportTask{
-					PickupF:  dest,
-					DropoffF: m.GetField(hx, hy),
-					PickupR:  &dest.Terrain.Resources,
-					DropoffR: &h.Resources,
-					A:        water,
-					Quantity: WaterTransportQuantity,
-				})
-			}
+			h.AddTask(&economy.TransportTask{
+				PickupF:  dest,
+				DropoffF: m.GetField(hx, hy),
+				PickupR:  &dest.Terrain.Resources,
+				DropoffR: &h.Resources,
+				A:        water,
+				Quantity: WaterTransportQuantity,
+			})
 		}
 	}
 	mp := h.Town.Marketplace
 	for _, a := range economy.Foods {
 		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			tag := "food_shopping#" + a.Name
-			if int(economy.BuyFoodOrDrinkPerPerson()*numP)/FoodTransportQuantity+1 > h.NumTasks("exchange", tag) {
+			if NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity) > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
 				if h.Money >= mp.Price(needs) && mp.CanBuy(needs) {
 					mx, my := mp.Building.GetRandomBuildingXY()
@@ -151,7 +168,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bo
 	}
 	var threshold = economy.MaxFoodOrDrinkPerPerson
 	if isProduct {
-		threshold = economy.MinFoodOrDrinkPerPerson
+		threshold = economy.ProductMaxFoodOrDrinkPerPerson
 	}
 	var result uint16
 	if economy.IsFoodOrDrink(a) {
@@ -177,16 +194,25 @@ func (h *Household) HasDrink() bool {
 	return economy.HasDrink(h.Resources)
 }
 
-func (h *Household) NumTasks(name string, tag string) int {
+func countTags(task economy.Task, name, tag string) int {
 	var i = 0
-	for _, t := range h.Tasks {
-		if t.Name() == name && strings.Contains(t.Tag(), tag) {
+	taskTags := strings.Split(task.Tag(), ";")
+	for _, taskTag := range taskTags {
+		if task.Name() == name && strings.Contains(taskTag, tag) {
 			i++
 		}
 	}
+	return i
+}
+
+func (h *Household) NumTasks(name string, tag string) int {
+	var i = 0
+	for _, t := range h.Tasks {
+		i += countTags(t, name, tag)
+	}
 	for _, p := range h.People {
-		if p.Task != nil && p.Task.Name() == name && strings.Contains(p.Task.Tag(), tag) {
-			i++
+		if p.Task != nil {
+			i += countTags(p.Task, name, tag)
 		}
 	}
 	return i

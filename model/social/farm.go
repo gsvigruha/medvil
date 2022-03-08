@@ -116,11 +116,11 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	for a, q := range f.Household.Resources.Artifacts {
-		qToSell := f.Household.ArtifactToSell(a, q, false)
+		qToSell := f.Household.ArtifactToSell(a, q, f.IsOutput(a))
 		if qToSell > 0 {
 			tag := "sell_artifacts#" + a.Name
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
-			if f.Household.Town.Marketplace.CanSell(goods) && int(qToSell)/ProductTransportQuantity+1 > f.Household.NumTasks("exchange", tag) {
+			if f.Household.Town.Marketplace.CanSell(goods) && NumBatchesSimple(int(qToSell), ProductTransportQuantity) > f.Household.NumTasks("exchange", tag) {
 				mx, my := f.Household.Town.Marketplace.Building.GetRandomBuildingXY()
 				f.Household.AddTask(&economy.ExchangeTask{
 					HomeF:          home,
@@ -135,6 +135,13 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+}
+
+var fruit = artifacts.GetArtifact("fruit")
+var vegetable = artifacts.GetArtifact("vegetable")
+
+func (f *Farm) IsOutput(a *artifacts.Artifact) bool {
+	return a == fruit || a == vegetable
 }
 
 func (f *Farm) GetFields() []navigation.FieldWithContext {
