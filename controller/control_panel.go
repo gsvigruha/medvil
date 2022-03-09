@@ -8,7 +8,7 @@ import (
 )
 
 const ControlPanelSX = 300
-const ControlPanelSY = 700
+const ControlPanelSY = 800
 const ControlPanelDynamicPanelTop = 100
 const ControlPanelDynamicPanelSY = 600
 
