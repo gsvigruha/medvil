@@ -1,19 +1,32 @@
 package gui
 
 import (
+	"fmt"
 	"github.com/tfriedel6/canvas"
 	"image/color"
 )
 
 type Label interface {
 	Render(cv *canvas.Canvas)
+	CaptureClick(x, y float64)
+}
+
+type BaseLabel struct {
+	X   float64
+	Y   float64
+	SX  float64
+	SY  float64
+	Tag string
+}
+
+func (l *BaseLabel) CaptureClick(x, y float64) {
+	if x >= l.X && x <= l.X+l.SX && y >= l.Y && y <= l.Y+l.SY {
+
+	}
 }
 
 type TextLabel struct {
-	X    float64
-	Y    float64
-	SX   float64
-	SY   float64
+	BaseLabel
 	Text string
 }
 
@@ -28,10 +41,7 @@ const ImageLabelStyleHighlight = 1
 const ImageLabelStyleDisabled = 2
 
 type ImageLabel struct {
-	X     float64
-	Y     float64
-	SX    float64
-	SY    float64
+	BaseLabel
 	Icon  string
 	Style uint8
 }
@@ -49,10 +59,7 @@ func (l *ImageLabel) Render(cv *canvas.Canvas) {
 }
 
 type DoubleImageLabel struct {
-	X       float64
-	Y       float64
-	SX      float64
-	SY      float64
+	BaseLabel
 	Icon    string
 	SubIcon string
 	Style   uint8
@@ -72,10 +79,7 @@ func (l *DoubleImageLabel) Render(cv *canvas.Canvas) {
 }
 
 type ScaleLabel struct {
-	X       float64
-	Y       float64
-	SX      float64
-	SY      float64
+	BaseLabel
 	ScaleW  float64
 	Icon    string
 	Scale   float64
@@ -104,10 +108,7 @@ func (l *ScaleLabel) Render(cv *canvas.Canvas) {
 }
 
 type TextureLabel struct {
-	X       float64
-	Y       float64
-	SX      float64
-	SY      float64
+	BaseLabel
 	Texture string
 }
 

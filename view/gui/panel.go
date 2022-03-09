@@ -44,6 +44,9 @@ func (p *Panel) CaptureClick(x float64, y float64) {
 	for i := range p.DropDowns {
 		p.DropDowns[i].CaptureClick(x, y)
 	}
+	for i := range p.Labels {
+		p.Labels[i].CaptureClick(x, y)
+	}
 }
 
 func (p *Panel) Clear() {
@@ -56,25 +59,29 @@ func (p *Panel) Clear() {
 func (p *Panel) Refresh() {}
 
 func (p *Panel) AddTextLabel(text string, x float64, y float64) *TextLabel {
-	l := &TextLabel{Text: text, X: x, Y: y}
+	l := &TextLabel{Text: text, BaseLabel: BaseLabel{X: x, Y: y}}
 	p.Labels = append(p.Labels, l)
 	return l
 }
 
+func (p *Panel) AddImageLabelWithTag(icon string, x, y, sx, sy float64, style uint8, tag string) {
+	p.Labels = append(p.Labels, &ImageLabel{Icon: icon, BaseLabel: BaseLabel{X: x, Y: y, SX: sx, SY: sy, Tag: tag}, Style: style})
+}
+
 func (p *Panel) AddImageLabel(icon string, x, y, sx, sy float64, style uint8) {
-	p.Labels = append(p.Labels, &ImageLabel{Icon: icon, X: x, Y: y, SX: sx, SY: sy, Style: style})
+	p.Labels = append(p.Labels, &ImageLabel{Icon: icon, BaseLabel: BaseLabel{X: x, Y: y, SX: sx, SY: sy}, Style: style})
 }
 
 func (p *Panel) AddDoubleImageLabel(icon string, subicon string, x, y, sx, sy float64, style uint8) {
-	p.Labels = append(p.Labels, &DoubleImageLabel{Icon: icon, SubIcon: subicon, X: x, Y: y, SX: sx, SY: sy, Style: style})
+	p.Labels = append(p.Labels, &DoubleImageLabel{Icon: icon, SubIcon: subicon, BaseLabel: BaseLabel{X: x, Y: y, SX: sx, SY: sy}, Style: style})
 }
 
 func (p *Panel) AddScaleLabel(icon string, x, y, sx, sy, scaleW, scale float64, stacked bool) {
-	p.Labels = append(p.Labels, &ScaleLabel{Icon: icon, X: x, Y: y, SX: sx, SY: sy, ScaleW: scaleW, Scale: scale, Stacked: stacked})
+	p.Labels = append(p.Labels, &ScaleLabel{Icon: icon, BaseLabel: BaseLabel{X: x, Y: y, SX: sx, SY: sy}, ScaleW: scaleW, Scale: scale, Stacked: stacked})
 }
 
 func (p *Panel) AddTextureLabel(texture string, x, y, sx, sy float64) {
-	p.Labels = append(p.Labels, &TextureLabel{Texture: texture, X: x, Y: y, SX: sx, SY: sy})
+	p.Labels = append(p.Labels, &TextureLabel{Texture: texture, BaseLabel: BaseLabel{X: x, Y: y, SX: sx, SY: sy}})
 }
 
 func (p *Panel) AddButton(button Button) {

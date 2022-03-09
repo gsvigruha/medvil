@@ -97,5 +97,5 @@ func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task) {
 	if task.Blocked() {
 		style = gui.ImageLabelStyleDisabled
 	}
-	p.AddImageLabel("tasks/"+task.Name(), float64(10+i*IconW), y, 32, 32, style)
+	p.AddImageLabelWithTag("tasks/"+task.Name(), float64(10+i*IconW), y, 32, 32, style, task.Tag())
 }
