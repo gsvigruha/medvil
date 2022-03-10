@@ -66,7 +66,7 @@ func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []na
 		for j := uint16(0); j < 5; j++ {
 			bx := int(x+i) - 2
 			by := int(y+j) - 2
-			if bp.BaseShape[i][j] {
+			if bp.BaseShape[i][j] != nil {
 				if bx >= 0 && by >= 0 && bx < int(m.SX) && by < int(m.SY) {
 					f := &m.Fields[bx][by]
 					if !f.Buildable() {
@@ -89,7 +89,7 @@ func (m *Map) SetBuildingUnits(b *building.Building, construction bool) {
 		for j := uint16(0); j < 5; j++ {
 			bx := int(b.X+i) - 2
 			by := int(b.Y+j) - 2
-			if bp.BaseShape[i][j] {
+			if bp.BaseShape[i][j] != nil {
 				m.Fields[bx][by].Building.BuildingUnits = b.ToBuildingUnits(uint8(i), uint8(j), construction)
 				if !construction {
 					m.Fields[bx][by].Building.RoofUnit = b.GetRoof(uint8(i), uint8(j))
