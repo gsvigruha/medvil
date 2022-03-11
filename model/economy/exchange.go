@@ -18,6 +18,7 @@ type Exchange interface {
 const ExchangeTaskStatePickupAtHome uint8 = 0
 const ExchangeTaskStateMarket uint8 = 1
 const ExchangeTaskStateDropoffAtHome uint8 = 2
+const MaxWaitTime = 24 * 10
 
 type ExchangeTask struct {
 	HomeF          *navigation.Field
@@ -30,6 +31,7 @@ type ExchangeTask struct {
 	TaskTag        string
 	goods          []artifacts.Artifacts
 	state          uint8
+	waittime       uint16
 }
 
 func (t *ExchangeTask) Field() *navigation.Field {
@@ -53,6 +55,15 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
 		if t.Exchange.CanSell(t.goods) && t.Exchange.Price(t.GoodsToBuy) <= *t.HouseholdMoney {
 			t.Exchange.Sell(t.goods, t.HouseholdMoney)
 			t.goods = t.Exchange.BuyAsManyAsPossible(t.GoodsToBuy, t.HouseholdMoney)
+			t.state = ExchangeTaskStateDropoffAtHome
+		} else {
+			t.waittime++
+		}
+		if t.waittime > MaxWaitTime {
+			if t.Exchange.CanSell(t.goods) {
+				t.Exchange.Sell(t.goods, t.HouseholdMoney)
+				t.goods = []artifacts.Artifacts{}
+			}
 			t.state = ExchangeTaskStateDropoffAtHome
 		}
 	case ExchangeTaskStateDropoffAtHome:

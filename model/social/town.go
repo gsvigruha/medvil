@@ -131,7 +131,7 @@ func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m naviga
 
 func (town *Town) CreateBuildingConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
 	c := &building.Construction{Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
-	c.Storage.Init(b.Plan.Area() * StoragePerArea)
+	c.Storage.Init((b.Plan.Area() + b.Plan.RoofArea()) * StoragePerArea)
 	town.Constructions = append(town.Constructions, c)
 
 	buildingF := m.GetField(c.Building.X, c.Building.Y)
