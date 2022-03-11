@@ -51,12 +51,16 @@ func (b BuildingBaseButton) Click() {
 			b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{Flat: false, M: b.bc.RoofM}
 		}
 	} else if b.bc.del {
-		maxFloor := len(b.bc.Plan.BaseShape[b.i][b.j].Floors) - 1
-		if b.bc.Plan.BaseShape[b.i][b.j].Roof.Flat {
-			b.bc.Plan.BaseShape[b.i][b.j].Floors = b.bc.Plan.BaseShape[b.i][b.j].Floors[0:maxFloor]
-		} else {
-			b.bc.Plan.BaseShape[b.i][b.j].Roof.Flat = true
-			b.bc.Plan.BaseShape[b.i][b.j].Roof.M = b.bc.Plan.BaseShape[b.i][b.j].Floors[maxFloor].M
+		if b.bc.Plan.BaseShape[b.i][b.j] != nil {
+			maxFloor := len(b.bc.Plan.BaseShape[b.i][b.j].Floors) - 1
+			if maxFloor >= 0 {
+				if b.bc.Plan.BaseShape[b.i][b.j].Roof.Flat {
+					b.bc.Plan.BaseShape[b.i][b.j].Floors = b.bc.Plan.BaseShape[b.i][b.j].Floors[0:maxFloor]
+				} else {
+					b.bc.Plan.BaseShape[b.i][b.j].Roof.Flat = true
+					b.bc.Plan.BaseShape[b.i][b.j].Roof.M = b.bc.Plan.BaseShape[b.i][b.j].Floors[maxFloor].M
+				}
+			}
 		}
 	}
 	b.bc.GenerateButtons()
