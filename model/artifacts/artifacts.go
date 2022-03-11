@@ -14,6 +14,7 @@ var All = [...]*Artifact{
 	// Building
 	&Artifact{Name: "log", M: materials.GetMaterial("wood"), V: 3},
 	&Artifact{Name: "board", M: materials.GetMaterial("wood"), V: 3},
+	&Artifact{Name: "reed", M: materials.GetMaterial("reed"), V: 1},
 	&Artifact{Name: "stone", M: materials.GetMaterial("stone"), V: 2},
 	&Artifact{Name: "cube", M: materials.GetMaterial("stone"), V: 2},
 	&Artifact{Name: "clay", M: materials.GetMaterial("clay"), V: 2},

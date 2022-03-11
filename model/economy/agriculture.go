@@ -16,12 +16,14 @@ const AgriculturalTaskHarvesting = 3
 const AgriculturalTaskPlantingAppleTree = 4
 const AgriculturalTaskPlantingOakTree = 5
 const AgriculturalTaskTreeCutting = 6
+const AgriculturalTaskReedCutting = 7
 
 const AgriculturalTaskDurationPloughing = 24 * 30
 const AgriculturalTaskDurationSowing = 24 * 15
 const AgriculturalTaskDurationHarvesting = 24 * 30
 const AgriculturalTaskDurationPlanting = 24 * 5
 const AgriculturalTaskDurationTreeCutting = 24 * 10
+const AgriculturalTaskDurationReedCutting = 24 * 10
 
 const FarmFieldUseTypeBarren uint8 = 0
 const FarmFieldUseTypeWheat uint8 = 1
@@ -29,6 +31,7 @@ const FarmFieldUseTypeOrchard uint8 = 2
 const FarmFieldUseTypePasture uint8 = 3
 const FarmFieldUseTypeVegetables uint8 = 4
 const FarmFieldUseTypeForestry uint8 = 5
+const FarmFieldUseTypeReed uint8 = 6
 
 type AgriculturalTask struct {
 	T        uint8

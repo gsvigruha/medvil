@@ -30,6 +30,8 @@ func (l FarmLand) Context() string {
 		return "fruit"
 	case economy.FarmFieldUseTypeForestry:
 		return "log"
+	case economy.FarmFieldUseTypeReed:
+		return "reed"
 	}
 	return ""
 }
@@ -103,6 +105,9 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			} else if l.UseType == economy.FarmFieldUseTypeForestry {
 				if l.F.Plant == nil {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingOakTree, F: l.F, UseType: l.UseType, Start: *Calendar})
+				}
+			} else if l.UseType == economy.FarmFieldUseTypeReed {
+				if l.F.Plant != nil && l.F.Plant.T.Name == "reed" {
 				}
 			}
 			if l.F.Plant != nil && l.F.Plant.IsTree() && l.F.Plant.IsMature(Calendar) && l.UseType != economy.FarmFieldUseTypeOrchard {

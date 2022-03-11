@@ -1,9 +1,11 @@
 package model
 
 import (
+	"math/rand"
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/social"
+	"medvil/model/terrain"
 	"medvil/model/time"
 )
 
@@ -12,6 +14,20 @@ type Map struct {
 	SY        uint16
 	Fields    [][]navigation.Field
 	Countries []social.Country
+}
+
+func (m *Map) SpreadPlant(i, j uint16) {
+	if i >= 0 && j >= 0 && i < m.SX && j < m.SY {
+		if m.Fields[i][j].Plant == nil && m.Fields[i][j].Terrain.T == terrain.Water {
+			m.Fields[i][j].Plant = &terrain.Plant{
+				T:             &terrain.AllCropTypes[2],
+				X:             uint16(i),
+				Y:             uint16(j),
+				BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),
+				Shape:         uint8(rand.Intn(10)),
+			}
+		}
+	}
 }
 
 func (m *Map) ElapseTime(Calendar *time.CalendarType) {
@@ -26,6 +42,12 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			f := &m.Fields[i][j]
 			if f.Plant != nil {
 				f.Plant.ElapseTime(Calendar)
+				if f.Plant.T.Name == "reed" && rand.Float64() < 0.001 {
+					m.SpreadPlant(i-1, j)
+					m.SpreadPlant(i, j-1)
+					m.SpreadPlant(i+1, j)
+					m.SpreadPlant(i, j+1)
+				}
 				if f.Plant.T.IsAnnual() && Calendar.Season() == time.Winter {
 					f.Plant = nil
 				}
