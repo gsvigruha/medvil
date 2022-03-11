@@ -24,6 +24,12 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 			roofImg, x, y := ic.Bic.RenderBuildingRoofOnBuffer(f.Building.RoofUnit, rf, len(units), c)
 			cv.DrawImage(roofImg, x, y, float64(roofImg.Width()), float64(roofImg.Height()))
 		}
+		workshop := c.ReverseReferences.BuildingToWorkshop[units[0].B]
+		if workshop != nil {
+			if workshop.Manufacture != nil {
+				cv.DrawImage("icon/gui/tasks/"+workshop.Manufacture.Name+".png", rf.X[2]-8, rf.Y[2]-DZ*3-8, 16, 16)
+			}
+		}
 	}
 
 	if f.Road != nil {

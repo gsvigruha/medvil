@@ -54,7 +54,7 @@ var AllManufacture = [...]*Manufacture{
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("bread"), Quantity: 3}}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("bread"), Quantity: 2}}},
 }
 
 func GetAllManufactureNames() []string {

@@ -82,6 +82,18 @@ func (b BuildingPlan) Area() uint16 {
 	return area
 }
 
+func (b BuildingPlan) RoofArea() uint16 {
+	var area = uint16(0)
+	for i := 0; i < BuildingBaseMaxSize; i++ {
+		for j := 0; j < BuildingBaseMaxSize; j++ {
+			if b.BaseShape[i][j] != nil && !b.BaseShape[i][j].Roof.Flat {
+				area += 1
+			}
+		}
+	}
+	return area
+}
+
 func (b BuildingPlan) Perimeter() uint16 {
 	perimeter := 0
 	for i := 0; i < BuildingBaseMaxSize; i++ {
