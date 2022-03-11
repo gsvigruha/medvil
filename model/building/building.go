@@ -31,79 +31,45 @@ func (b *Building) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (b *Building) Windows() uint16 {
-	p := b.Plan
-	windows := 0
-	for i := 0; i < BuildingBaseMaxSize; i++ {
-		if p.BaseShape[i][0] {
-			windows += len(p.Floors) - int(p.WindowStartFloor[DirectionN])
-		}
-		if p.BaseShape[i][BuildingBaseMaxSize-1] {
-			windows += len(p.Floors) - int(p.WindowStartFloor[DirectionS])
-		}
-		if p.BaseShape[0][i] {
-			windows += len(p.Floors) - int(p.WindowStartFloor[DirectionW])
-		}
-		if p.BaseShape[BuildingBaseMaxSize-1][i] {
-			windows += len(p.Floors) - int(p.WindowStartFloor[DirectionE])
-		}
-	}
-	for i := 0; i < BuildingBaseMaxSize-1; i++ {
-		for j := 0; j < BuildingBaseMaxSize-1; j++ {
-			if p.BaseShape[i][j] != p.BaseShape[i+1][j] {
-				windows += len(p.Floors)
-			}
-			if p.BaseShape[i][j] != p.BaseShape[i][j+1] {
-				windows += len(p.Floors)
-			}
-		}
-	}
-	return uint16(windows)
-}
-
 func (b *Building) GetRoof(x uint8, y uint8) *RoofUnit {
 	p := b.Plan
-	if !p.BaseShape[x][y] {
+	if p.BaseShape[x][y] == nil {
 		return nil
 	}
+	z := uint8(len(p.BaseShape[x][y].Floors))
 	return &RoofUnit{
 		B:    b,
-		Roof: p.Roof,
+		Roof: *(p.BaseShape[x][y].Roof),
 		Elevated: [4]bool{
-			y > 0 && p.BaseShape[x][y-1],
-			x < BuildingBaseMaxSize-1 && p.BaseShape[x+1][y],
-			y < BuildingBaseMaxSize-1 && p.BaseShape[x][y+1],
-			x > 0 && p.BaseShape[x-1][y]}}
+			y > 0 && p.HasUnitOrRoof(x, y-1, z),
+			x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z),
+			y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z),
+			x > 0 && p.HasUnitOrRoof(x-1, y, z)}}
 }
 
 func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []BuildingUnit {
-	p := b.Plan
-	if !p.BaseShape[x][y] {
+	if b.Plan.BaseShape[x][y] == nil {
 		return []BuildingUnit{}
 	}
+	p := b.Plan.BaseShape[x][y]
 	numFloors := uint8(len(p.Floors))
 	units := make([]BuildingUnit, numFloors)
 	for i := uint8(0); i < numFloors; i++ {
-		unitDoor := (i == 0 && p.DoorX == x && p.DoorY == y)
 		var n *BuildingWall
-		if y == 0 || !p.BaseShape[x][y-1] {
-			door := (unitDoor && p.DoorD == DirectionN)
-			n = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionN] <= i, Door: door, B: b, Construction: construction}
+		if y == 0 || !b.Plan.HasUnit(x, y-1, i) {
+			n = &BuildingWall{M: p.Floors[i].M, Windows: !b.Plan.HasUnitOrRoof(x, y-1, i), Door: false, B: b, Construction: construction}
 		}
 		var e *BuildingWall
-		if x == BuildingBaseMaxSize-1 || !p.BaseShape[x+1][y] {
-			door := (unitDoor && p.DoorD == DirectionE)
-			e = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionE] <= i, Door: door, B: b, Construction: construction}
+		if x == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x+1, y, i) {
+			e = &BuildingWall{M: p.Floors[i].M, Windows: !b.Plan.HasUnitOrRoof(x+1, y, i), Door: false, B: b, Construction: construction}
 		}
 		var s *BuildingWall
-		if y == BuildingBaseMaxSize-1 || !p.BaseShape[x][y+1] {
-			door := (unitDoor && p.DoorD == DirectionS)
-			s = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionS] <= i, Door: door, B: b, Construction: construction}
+		if y == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x, y+1, i) {
+			s = &BuildingWall{M: p.Floors[i].M, Windows: !b.Plan.HasUnitOrRoof(x, y+1, i), Door: false, B: b, Construction: construction}
 		}
 		var w *BuildingWall
-		if x == 0 || !p.BaseShape[x-1][y] {
-			door := (unitDoor && p.DoorD == DirectionW)
-			w = &BuildingWall{M: p.Floors[i].M, Windows: !door && p.WindowStartFloor[DirectionW] <= i, Door: door, B: b, Construction: construction}
+		if x == 0 || !b.Plan.HasUnit(x-1, y, i) {
+			w = &BuildingWall{M: p.Floors[i].M, Windows: !b.Plan.HasUnitOrRoof(x-1, y, i), Door: false, B: b, Construction: construction}
 		}
 		units[i].Walls = []*BuildingWall{n, e, s, w}
 		units[i].B = b
@@ -117,7 +83,7 @@ func (b *Building) GetRandomBuildingXY() (uint16, uint16) {
 		for j := uint16(0); j < 5; j++ {
 			bx := uint16(b.X+i) - 2
 			by := uint16(b.Y+j) - 2
-			if b.Plan.BaseShape[i][j] {
+			if b.Plan.BaseShape[i][j] != nil {
 				fields = append(fields, [2]uint16{bx, by})
 			}
 		}

@@ -5,14 +5,15 @@ import (
 )
 
 type Panel struct {
-	X         float64
-	Y         float64
-	SX        float64
-	SY        float64
-	Buttons   []Button
-	Labels    []Label
-	Panels    []*Panel
-	DropDowns []*DropDown
+	X           float64
+	Y           float64
+	SX          float64
+	SY          float64
+	Buttons     []Button
+	Labels      []Label
+	Panels      []*Panel
+	DropDowns   []*DropDown
+	SingleClick bool
 }
 
 func (p *Panel) Render(cv *canvas.Canvas) {
@@ -33,10 +34,18 @@ func (p *Panel) Render(cv *canvas.Canvas) {
 }
 
 func (p *Panel) CaptureClick(x float64, y float64) {
+	var button Button
 	for i := range p.Buttons {
 		if p.Buttons[i].Contains(x, y) {
-			p.Buttons[i].Click()
+			if p.SingleClick {
+				button = p.Buttons[i]
+			} else {
+				p.Buttons[i].Click()
+			}
 		}
+	}
+	if p.SingleClick && button != nil {
+		button.Click()
 	}
 	for i := range p.Panels {
 		p.Panels[i].CaptureClick(x, y)

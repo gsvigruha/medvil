@@ -1,17 +1,9 @@
 {
 	"baseShape": [
-		[false, false, false, false, false],
-		[false, false, false, false, false],
-		[false, true, true, false, false],
-		[false, false, false, false, false],
-		[false, false, false, false, false]
-	],
-	"windowStartFloor": [0, 0, 0, 0],
-	"floors": [
-		{"material": "whitewash"}
-	],
-	"roof": {"material": "reed", "flat": "false"},
-	"doorX": 2,
-	"doorY": 2,
-	"doorD": 3	
+		[null, null, null, null, null],
+		[null, null, null, null, null],
+		[null, ["whitewash", "reed"], ["whitewash", "reed"], null, null],
+		[null, null, null, null, null],
+		[null, null, null, null, null]
+	]
 }

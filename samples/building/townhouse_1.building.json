@@ -1,19 +1,9 @@
 {
 	"baseShape": [
-		[false, false, false, false, false],
-		[false, true, true, false, false],
-		[false, true, true, false, false],
-		[false, false, false, false, false],
-		[false, false, false, false, false]
-	],
-	"windowStartFloor": [0, 0, 0, 0],
-	"floors": [
-		{"material": "brick"},
-		{"material": "stone"},
-		{"material": "wood"}
-	],
-	"roof": {"material": "tile", "flat": "false"},
-	"doorX": 1,
-	"doorY": 2,
-	"doorD": 2	
+		[null, null, null, null, null],
+		[null, ["sandstone", "sandstone", "tile"], ["sandstone", "sandstone", "tile"], null, null],
+		[null, ["sandstone", "sandstone", "tile"], ["sandstone", "sandstone", "tile"], null, null],
+		[null, null, null, null, null],
+		[null, null, null, null, null]
+	]
 }
