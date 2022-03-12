@@ -108,6 +108,12 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 			t.F.Plant = nil
 			return true
 		}
+	case AgriculturalTaskReedCutting:
+		if t.Progress >= AgriculturalTaskDurationReedCutting {
+			t.F.Terrain.Resources.Add(t.F.Plant.T.Yield.A, t.F.Plant.T.Yield.Quantity)
+			t.F.Plant = nil
+			return true
+		}
 	}
 	return false
 }
@@ -126,6 +132,8 @@ func (t *AgriculturalTask) Blocked() bool {
 		return t.F.Plant != nil
 	case AgriculturalTaskTreeCutting:
 		return t.F.Plant == nil || !t.F.Plant.IsTree()
+	case AgriculturalTaskReedCutting:
+		return t.F.Plant == nil || t.F.Plant.T.Name != "reed"
 	}
 	return false
 }
@@ -144,6 +152,8 @@ func (t *AgriculturalTask) Name() string {
 		return "planting"
 	case AgriculturalTaskTreeCutting:
 		return "treecutting"
+	case AgriculturalTaskReedCutting:
+		return "reedcutting"
 	}
 	return ""
 }

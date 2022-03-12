@@ -18,7 +18,7 @@ type Map struct {
 
 func (m *Map) SpreadPlant(i, j uint16) {
 	if i >= 0 && j >= 0 && i < m.SX && j < m.SY {
-		if m.Fields[i][j].Plant == nil && m.Fields[i][j].Terrain.T == terrain.Water {
+		if m.Fields[i][j].Plant == nil && m.Shore(i, j) {
 			m.Fields[i][j].Plant = &terrain.Plant{
 				T:             &terrain.AllCropTypes[2],
 				X:             uint16(i),
@@ -42,7 +42,7 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			f := &m.Fields[i][j]
 			if f.Plant != nil {
 				f.Plant.ElapseTime(Calendar)
-				if f.Plant.T.Name == "reed" && rand.Float64() < 0.001 {
+				if f.Plant.T.Name == "reed" && rand.Float64() < 0.0001 {
 					m.SpreadPlant(i-1, j)
 					m.SpreadPlant(i, j-1)
 					m.SpreadPlant(i+1, j)
@@ -57,6 +57,9 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 }
 
 func (m *Map) GetField(x uint16, y uint16) *navigation.Field {
+	if x >= m.SX || y >= m.SY {
+		return nil
+	}
 	return &m.Fields[x][y]
 }
 
@@ -147,4 +150,24 @@ func (m *Map) FindDest(sx, sy uint16, dest navigation.Destination, travellerType
 		return p[len(p)-1]
 	}
 	return nil
+}
+
+func (m *Map) Shore(x, y uint16) bool {
+	f := m.GetField(x, y)
+	if f.Terrain.T != terrain.Water {
+		return false
+	}
+	if m.GetField(x+1, y) != nil && m.GetField(x+1, y).Terrain.T == terrain.Grass {
+		return true
+	}
+	if m.GetField(x-1, y) != nil && m.GetField(x-1, y).Terrain.T == terrain.Grass {
+		return true
+	}
+	if m.GetField(x, y+1) != nil && m.GetField(x, y+1).Terrain.T == terrain.Grass {
+		return true
+	}
+	if m.GetField(x, y-1) != nil && m.GetField(x, y-1).Terrain.T == terrain.Grass {
+		return true
+	}
+	return false
 }

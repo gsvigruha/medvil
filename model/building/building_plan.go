@@ -187,6 +187,9 @@ func (b BuildingPlan) IsComplete() bool {
 }
 
 func (b BuildingPlan) HasUnit(x, y, z uint8) bool {
+	if x >= BuildingBaseMaxSize || y >= BuildingBaseMaxSize {
+		return false
+	}
 	if b.BaseShape[x][y] == nil {
 		return false
 	}
@@ -194,6 +197,9 @@ func (b BuildingPlan) HasUnit(x, y, z uint8) bool {
 }
 
 func (b BuildingPlan) HasUnitOrRoof(x, y, z uint8) bool {
+	if x >= BuildingBaseMaxSize || y >= BuildingBaseMaxSize {
+		return false
+	}
 	if b.BaseShape[x][y] == nil {
 		return false
 	}
