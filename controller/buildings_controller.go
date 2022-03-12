@@ -61,6 +61,9 @@ func (b BuildingBaseButton) Click() {
 					b.bc.Plan.BaseShape[b.i][b.j].Roof.M = b.bc.Plan.BaseShape[b.i][b.j].Floors[maxFloor].M
 				}
 			}
+			if len(b.bc.Plan.BaseShape[b.i][b.j].Floors) == 0 {
+				b.bc.Plan.BaseShape[b.i][b.j] = nil
+			}
 		}
 	}
 	b.bc.GenerateButtons()

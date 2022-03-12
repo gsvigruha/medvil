@@ -22,6 +22,8 @@ func toTaskNames(names []string) []string {
 	return taskNames
 }
 
+const ManufactureDropDownTop = 540
+
 func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	wp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
@@ -30,7 +32,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 
 	wc.manufactureDropDown = &gui.DropDown{
 		X:        float64(10),
-		Y:        float64(HouseholdControllerGUIBottomY),
+		Y:        float64(ManufactureDropDownTop),
 		SX:       128,
 		SY:       20,
 		Options:  economy.GetAllManufactureNames(),

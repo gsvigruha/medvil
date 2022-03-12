@@ -19,6 +19,8 @@ var All = [...]*Artifact{
 	&Artifact{Name: "cube", M: materials.GetMaterial("stone"), V: 2},
 	&Artifact{Name: "clay", M: materials.GetMaterial("clay"), V: 2},
 	&Artifact{Name: "brick", M: materials.GetMaterial("brick"), V: 2},
+	&Artifact{Name: "thatch", M: materials.GetMaterial("thatch"), V: 2},
+	&Artifact{Name: "tile", M: materials.GetMaterial("tile"), V: 2},
 	// Metal
 	&Artifact{Name: "iron_ore", M: materials.GetMaterial("iron"), V: 2},
 	&Artifact{Name: "iron_bar", M: materials.GetMaterial("iron"), V: 2},
