@@ -1,8 +1,8 @@
-GGGGGGG                                
-GGGGGGG                                
-GGGGGGG                                
-GGGGGGG                                
-GGGGGGG                                
+                                       
+ GGGGGG                                
+ GGGGGG                                
+ GGGGGG                                
+ GGGGGG                                
                                        
                                        
                                        
@@ -33,8 +33,8 @@ GGGGGGG
                                        
                                        
                                        
-                                       
-                                       
+       R                                
+       R                                
                                        
                                        
                                        

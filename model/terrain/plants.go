@@ -47,5 +47,5 @@ func (p *Plant) ElapseTime(Calendar *time.CalendarType) {
 }
 
 func (p *PlantType) IsAnnual() bool {
-	return p.TreeT == nil
+	return p.TreeT == nil && p.MaturityAgeYears <= 1.0
 }
