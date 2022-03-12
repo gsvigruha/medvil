@@ -176,7 +176,7 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 					case materials.GetMaterial("tile"):
 						tiles += 1
 						boards += 1
-					case materials.GetMaterial("thatch"):
+					case materials.GetMaterial("hay"):
 						thatches += 1
 						boards += 1
 					}
