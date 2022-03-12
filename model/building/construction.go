@@ -7,6 +7,9 @@ import (
 var ConstructionInputs = []*artifacts.Artifact{
 	artifacts.GetArtifact("board"),
 	artifacts.GetArtifact("cube"),
+	artifacts.GetArtifact("thatch"),
+	artifacts.GetArtifact("brick"),
+	artifacts.GetArtifact("tile"),
 }
 
 type Construction struct {
