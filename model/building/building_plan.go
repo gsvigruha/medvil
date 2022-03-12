@@ -140,10 +140,16 @@ func BuildingPlanFromJSON(fileName string) BuildingPlan {
 
 var cube = artifacts.GetArtifact("cube")
 var board = artifacts.GetArtifact("board")
+var brick = artifacts.GetArtifact("brick")
+var thatch = artifacts.GetArtifact("thatch")
+var tile = artifacts.GetArtifact("tile")
 
 func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 	var cubes uint16 = 0
 	var boards uint16 = 0
+	var bricks uint16 = 0
+	var thatches uint16 = 0
+	var tiles uint16 = 0
 	for i := 0; i < BuildingBaseMaxSize; i++ {
 		for j := 0; j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil {
@@ -165,6 +171,16 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 						cubes += 2
 					}
 				}
+				if !b.BaseShape[i][j].Roof.Flat {
+					switch b.BaseShape[i][j].Roof.M {
+					case materials.GetMaterial("tile"):
+						tiles += 1
+						boards += 1
+					case materials.GetMaterial("thatch"):
+						thatches += 1
+						boards += 1
+					}
+				}
 			}
 		}
 	}
@@ -172,6 +188,9 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 	return []artifacts.Artifacts{
 		artifacts.Artifacts{A: cube, Quantity: cubes},
 		artifacts.Artifacts{A: board, Quantity: boards},
+		artifacts.Artifacts{A: brick, Quantity: bricks},
+		artifacts.Artifacts{A: thatch, Quantity: thatches},
+		artifacts.Artifacts{A: tile, Quantity: tiles},
 	}
 }
 

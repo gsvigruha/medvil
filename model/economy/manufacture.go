@@ -26,6 +26,18 @@ var AllManufacture = [...]*Manufacture{
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
 	&Manufacture{
+		Name:    "tiling",
+		Time:    10 * 24,
+		Power:   1000,
+		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("tile"), Quantity: 1}}},
+	&Manufacture{
+		Name:    "thatching",
+		Time:    10 * 24,
+		Power:   1000,
+		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("reed"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("thatch"), Quantity: 1}}},
+	&Manufacture{
 		Name:  "iron_smelting",
 		Time:  10 * 24,
 		Power: 1000,
