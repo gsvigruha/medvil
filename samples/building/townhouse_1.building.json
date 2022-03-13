@@ -1,8 +1,8 @@
 {
 	"baseShape": [
 		[null, null, null, null, null],
-		[null, ["sandstone", "sandstone", "tile"], ["sandstone", "sandstone", "tile"], null, null],
-		[null, ["sandstone", "sandstone", "tile"], ["sandstone", "sandstone", "tile"], null, null],
+		[null, ["sandstone", "sandstone", "sandstone", "tile"], ["sandstone", "sandstone", "sandstone", "tile"], null, null],
+		[null, ["sandstone", "sandstone", "sandstone", "tile"], ["sandstone", "sandstone", "sandstone", "tile"], null, null],
 		[null, null, null, null, null],
 		[null, null, null, null, null]
 	]

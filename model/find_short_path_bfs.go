@@ -56,8 +56,18 @@ func FindShortPathBFS(m *Map, sx, sy uint16, dest navigation.Destination, travel
 		}
 
 		nextCoords := [][]uint16{{e.F.X + 1, e.F.Y}, {e.F.X - 1, e.F.Y}, {e.F.X, e.F.Y + 1}, {e.F.X, e.F.Y - 1}}
-		for _, idx := range rand.Perm(4) {
-			AddNextField(m, nextCoords[idx][0], nextCoords[idx][1], e, &toVisit, inQueue)
+		order := rand.Perm(4)
+		for _, idx := range order {
+			x, y := nextCoords[idx][0], nextCoords[idx][1]
+			if m.GetField(x, y) != nil && m.GetField(x, y).Road != nil {
+				AddNextField(m, x, y, e, &toVisit, inQueue)
+			}
+		}
+		for _, idx := range order {
+			x, y := nextCoords[idx][0], nextCoords[idx][1]
+			if m.GetField(x, y) != nil && m.GetField(x, y).Road == nil {
+				AddNextField(m, x, y, e, &toVisit, inQueue)
+			}
 		}
 		iter++
 	}
