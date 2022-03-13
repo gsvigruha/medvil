@@ -5,6 +5,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/stats"
 	"medvil/model/terrain"
 	"medvil/model/time"
 )
@@ -36,17 +37,21 @@ type Town struct {
 	Workshops     []*Workshop
 	Mines         []*Mine
 	Constructions []*building.Construction
+	Stats         *stats.Stats
 }
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+	s := &stats.Stats{}
 	taxing := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
 	town.Marketplace.ElapseTime(Calendar, m)
+	s.Add(town.Marketplace.Stats())
 	for l := range town.Townhall.Household.People {
 		person := town.Townhall.Household.People[l]
 		person.ElapseTime(Calendar, m)
 	}
 	town.Townhall.ElapseTime(Calendar, m)
 	town.Townhall.Household.Filter(Calendar, m)
+	s.Add(town.Townhall.Household.Stats())
 	for k := range town.Farms {
 		farm := town.Farms[k]
 		for l := range farm.Household.People {
@@ -60,6 +65,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			town.Townhall.Household.Money += tax
 		}
 		farm.Household.Filter(Calendar, m)
+		s.Add(farm.Household.Stats())
 	}
 	for k := range town.Workshops {
 		workshop := town.Workshops[k]
@@ -74,6 +80,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			town.Townhall.Household.Money += tax
 		}
 		workshop.Household.Filter(Calendar, m)
+		s.Add(workshop.Household.Stats())
 	}
 	for k := range town.Mines {
 		mine := town.Mines[k]
@@ -88,6 +95,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			town.Townhall.Household.Money += tax
 		}
 		mine.Household.Filter(Calendar, m)
+		s.Add(mine.Household.Stats())
 	}
 	var constructions []*building.Construction
 	for k := range town.Constructions {
@@ -123,6 +131,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	town.Constructions = constructions
+	town.Stats = s
 }
 
 func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m navigation.IMap) {

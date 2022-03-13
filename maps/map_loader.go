@@ -12,6 +12,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/social"
+	"medvil/model/stats"
 	"medvil/model/terrain"
 	"os"
 	"strconv"
@@ -154,6 +155,7 @@ func LoadSociety(dir string, m *model.Map) {
 		for j := range countries[i].Towns {
 			town := countries[i].Towns[j]
 			town.Country = &country
+			town.Stats = &stats.Stats{}
 			town.Townhall.Household.People = make([]*social.Person, 5)
 			town.Townhall.Household.TargetNumPeople = 5
 			town.Townhall.Household.Town = town

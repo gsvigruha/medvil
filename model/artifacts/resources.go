@@ -203,3 +203,11 @@ func (r *Resources) UsedVolumeCapacity() float64 {
 func (r *Resources) Full() bool {
 	return r.UsedVolumeCapacity() >= StorageFullThreshold
 }
+
+func (r *Resources) NumArtifacts() uint32 {
+	var n uint32
+	for _, q := range r.Artifacts {
+		n += uint32(q)
+	}
+	return n
+}
