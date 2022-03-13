@@ -18,7 +18,7 @@ type Map struct {
 
 func (m *Map) SpreadPlant(i, j uint16) {
 	if i >= 0 && j >= 0 && i < m.SX && j < m.SY {
-		if m.Fields[i][j].Plant == nil && m.Shore(i, j) {
+		if m.Fields[i][j].Plant == nil && m.Fields[i][j].Road == nil && m.Shore(i, j) {
 			m.Fields[i][j].Plant = &terrain.Plant{
 				T:             &terrain.AllCropTypes[2],
 				X:             uint16(i),

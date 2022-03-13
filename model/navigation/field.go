@@ -58,8 +58,8 @@ func (f Field) Walkable() bool {
 	if !f.Building.Empty() {
 		return false
 	}
-	if f.Road != nil && f.Road.Construction {
-		return false
+	if f.Road != nil {
+		return !f.Road.Construction
 	}
 	return f.Terrain.T.Walkable && ((f.NE == f.NW && f.SE == f.SW) || (f.NE == f.SE && f.NW == f.SW))
 }
