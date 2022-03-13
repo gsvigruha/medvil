@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/model/building"
+	"medvil/model/terrain"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -13,6 +14,9 @@ type InfraType uint8
 const InfraTypeNone = 0
 const InfraTypeDirtRoad = 1
 const InfraTypeCobbleRoad = 2
+const InfraTypeCanal = 3
+const InfraTypeAqueduct = 4
+const InfraTypeBridge = 5
 
 const InfraPanelTop = 100
 
@@ -47,6 +51,10 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.DirtRoadType)
 	} else if ic.it == InfraTypeCobbleRoad && rf.F.Walkable() && rf.F.Buildable() {
 		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.CobbleRoadType)
+	} else if ic.it == InfraTypeCanal && c.Map.HasNeighborField(rf.F.X, rf.F.Y, terrain.Water) && rf.F.Buildable() {
+		c.Map.AddInfraConstruction(c.Country, rf.F.X, rf.F.Y, building.CanalType)
+	} else if ic.it == InfraTypeAqueduct {
+	} else if ic.it == InfraTypeBridge {
 	}
 	return true
 }
@@ -70,6 +78,24 @@ func InfraToControlPanel(cp *ControlPanel) {
 	p.AddButton(InfraBuildButton{
 		b:  gui.ButtonGUI{Texture: "infra/cobble_road", X: float64(90), Y: float64(InfraPanelTop), SX: 32, SY: 32},
 		it: InfraTypeCobbleRoad,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Texture: "infra/canal", X: float64(130), Y: float64(InfraPanelTop), SX: 32, SY: 32},
+		it: InfraTypeCanal,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/aqueduct", X: float64(170), Y: float64(InfraPanelTop), SX: 32, SY: 32},
+		it: InfraTypeAqueduct,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/bridge", X: float64(210), Y: float64(InfraPanelTop), SX: 32, SY: 32},
+		it: InfraTypeBridge,
 		ic: ic,
 	})
 

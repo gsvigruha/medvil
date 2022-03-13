@@ -11,6 +11,9 @@ const BuildingTypeWorkshop = 2
 const BuildingTypeMine = 3
 
 const BuildingTypeRoad = 10
+const BuildingTypeCanal = 11
+const BuildingTypeAqueduct = 12
+const BuildingTypeBridge = 13
 
 func FloorMaterials(bt BuildingType) []*materials.Material {
 	switch bt {

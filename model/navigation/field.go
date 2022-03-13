@@ -24,12 +24,13 @@ type Field struct {
 	SW uint8
 	NW uint8
 
-	Terrain    terrain.Terrain
-	Building   FieldBuildingObjects
-	Plant      *terrain.Plant
-	Road       *building.Road
-	Travellers []*Traveller
-	Allocated  bool
+	Terrain      terrain.Terrain
+	Building     FieldBuildingObjects
+	Plant        *terrain.Plant
+	Road         *building.Road
+	Travellers   []*Traveller
+	Allocated    bool
+	Construction bool
 }
 
 func (f *Field) Field() *Field {
@@ -38,6 +39,19 @@ func (f *Field) Field() *Field {
 
 func (f *Field) Context() string {
 	return ""
+}
+
+func (f Field) Empty() bool {
+	if !f.Building.Empty() {
+		return false
+	}
+	if f.Plant != nil {
+		return false
+	}
+	if f.Road != nil {
+		return false
+	}
+	return true
 }
 
 func (f Field) Walkable() bool {

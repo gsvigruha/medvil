@@ -15,6 +15,8 @@ var ConstructionInputs = []*artifacts.Artifact{
 type Construction struct {
 	Building    *Building
 	Road        *Road
+	X           uint16
+	Y           uint16
 	Progress    uint16
 	MaxProgress uint16
 	Cost        []artifacts.Artifacts

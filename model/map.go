@@ -85,6 +85,11 @@ func (m *Map) AddRoadConstruction(c *social.Country, x, y uint16, rt *building.R
 	return true
 }
 
+func (m *Map) AddInfraConstruction(c *social.Country, x, y uint16, it *building.InfraType) bool {
+	c.Towns[0].CreateInfraConstruction(x, y, it, m)
+	return true
+}
+
 func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []navigation.FieldWithContext {
 	var fields []navigation.FieldWithContext
 	for i := uint16(0); i < 5; i++ {
@@ -152,21 +157,28 @@ func (m *Map) FindDest(sx, sy uint16, dest navigation.Destination, travellerType
 	return nil
 }
 
+func (m *Map) HasNeighborField(x, y uint16, t terrain.TerrainType) bool {
+	if m.GetField(x+1, y) != nil && m.GetField(x+1, y).Terrain.T == t {
+		return true
+	}
+	if m.GetField(x-1, y) != nil && m.GetField(x-1, y).Terrain.T == t {
+		return true
+	}
+	if m.GetField(x, y+1) != nil && m.GetField(x, y+1).Terrain.T == t {
+		return true
+	}
+	if m.GetField(x, y-1) != nil && m.GetField(x, y-1).Terrain.T == t {
+		return true
+	}
+	return false
+}
+
 func (m *Map) Shore(x, y uint16) bool {
 	f := m.GetField(x, y)
 	if f.Terrain.T != terrain.Water {
 		return false
 	}
-	if m.GetField(x+1, y) != nil && m.GetField(x+1, y).Terrain.T == terrain.Grass {
-		return true
-	}
-	if m.GetField(x-1, y) != nil && m.GetField(x-1, y).Terrain.T == terrain.Grass {
-		return true
-	}
-	if m.GetField(x, y+1) != nil && m.GetField(x, y+1).Terrain.T == terrain.Grass {
-		return true
-	}
-	if m.GetField(x, y-1) != nil && m.GetField(x, y-1).Terrain.T == terrain.Grass {
+	if m.HasNeighborField(x, y, terrain.Grass) {
 		return true
 	}
 	return false
