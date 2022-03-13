@@ -6,6 +6,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/stats"
 	"medvil/model/time"
 	"strings"
 )
@@ -260,4 +261,13 @@ func (h *Household) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	h.Tasks = newTasks
+}
+
+func (h *Household) Stats() *stats.Stats {
+	return &stats.Stats{
+		Money:     h.Money,
+		People:    uint32(len(h.People)),
+		Buildings: 1,
+		Artifacts: h.Resources.NumArtifacts(),
+	}
 }

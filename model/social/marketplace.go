@@ -4,6 +4,7 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/navigation"
+	"medvil/model/stats"
 	"medvil/model/time"
 )
 
@@ -110,4 +111,13 @@ func (mp *Marketplace) Price(as []artifacts.Artifacts) uint32 {
 		price += mp.Prices[a.A] * uint32(a.Quantity)
 	}
 	return price
+}
+
+func (mp *Marketplace) Stats() *stats.Stats {
+	return &stats.Stats{
+		Money:     mp.Money,
+		People:    0,
+		Buildings: 1,
+		Artifacts: mp.Storage.NumArtifacts(),
+	}
 }

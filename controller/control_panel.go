@@ -17,11 +17,15 @@ const CPButtonHighlightSmall = 1
 const CPButtonHighlightLarge = 2
 
 type ControlPanel struct {
-	topPanel     *gui.Panel
-	dynamicPanel Panel
-	dateLabel    *gui.TextLabel
-	timeButton   *ControlPanelButton
-	C            *Controller
+	topPanel       *gui.Panel
+	dynamicPanel   Panel
+	dateLabel      *gui.TextLabel
+	moneyLabel     *gui.TextLabel
+	peopleLabel    *gui.TextLabel
+	artifactsLabel *gui.TextLabel
+	buildingsLabel *gui.TextLabel
+	timeButton     *ControlPanelButton
+	C              *Controller
 }
 
 type ControlPanelButton struct {
@@ -86,6 +90,11 @@ func CPActionTimeScaleChange(c *Controller) {
 
 func (p *ControlPanel) Refresh() {
 	p.dateLabel.Text = strconv.Itoa(int(p.C.Calendar.Day)) + ", " + strconv.Itoa(int(p.C.Calendar.Month)) + ", " + strconv.Itoa(int(p.C.Calendar.Year))
+	stats := p.C.Country.Stats()
+	p.moneyLabel.Text = strconv.Itoa(int(stats.Money))
+	p.peopleLabel.Text = strconv.Itoa(int(stats.People))
+	p.artifactsLabel.Text = strconv.Itoa(int(stats.Artifacts))
+	p.buildingsLabel.Text = strconv.Itoa(int(stats.Buildings))
 	if p.dynamicPanel != nil {
 		p.dynamicPanel.Refresh()
 	}
@@ -101,6 +110,14 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.C = c
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)
+	p.topPanel.AddImageLabel("artifacts/gold_coin", 80, 8, 16, 16, gui.ImageLabelStyleRegular)
+	p.moneyLabel = p.topPanel.AddTextLabel("", 100, 20)
+	p.topPanel.AddImageLabel("person", 150, 8, 16, 16, gui.ImageLabelStyleRegular)
+	p.peopleLabel = p.topPanel.AddTextLabel("", 170, 20)
+	p.topPanel.AddImageLabel("barrel", 200, 8, 16, 16, gui.ImageLabelStyleRegular)
+	p.artifactsLabel = p.topPanel.AddTextLabel("", 220, 20)
+	p.topPanel.AddImageLabel("building", 260, 8, 16, 16, gui.ImageLabelStyleRegular)
+	p.buildingsLabel = p.topPanel.AddTextLabel("", 280, 20)
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: 10, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowFarmController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "mine", X: 50, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowMineController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 90, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowWorkshopController})
