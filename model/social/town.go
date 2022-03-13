@@ -5,6 +5,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/terrain"
 	"medvil/model/time"
 )
 
@@ -108,6 +109,11 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				town.Farms = append(town.Farms, f)
 			case building.BuildingTypeRoad:
 				construction.Road.Construction = false
+			case building.BuildingTypeCanal:
+				f := m.GetField(construction.X, construction.Y)
+				f.Construction = false
+				f.Terrain.T = terrain.Water
+				f.Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
 			}
 			if b != nil {
 				m.SetBuildingUnits(b, false)
@@ -120,7 +126,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m navigation.IMap) {
-	c := &building.Construction{Road: r, Cost: r.T.Cost, T: building.BuildingTypeRoad, Storage: &artifacts.Resources{}}
+	c := &building.Construction{X: x, Y: y, Road: r, Cost: r.T.Cost, T: building.BuildingTypeRoad, Storage: &artifacts.Resources{}}
 	c.Storage.Init(StoragePerArea)
 	town.Constructions = append(town.Constructions, c)
 
@@ -130,12 +136,23 @@ func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m naviga
 }
 
 func (town *Town) CreateBuildingConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
-	c := &building.Construction{Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
+	c := &building.Construction{X: b.X, Y: b.Y, Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
 	c.Storage.Init((b.Plan.Area() + b.Plan.RoofArea()) * StoragePerArea)
 	town.Constructions = append(town.Constructions, c)
 
-	buildingF := m.GetField(c.Building.X, c.Building.Y)
+	buildingF := m.GetField(b.X, b.Y)
 	town.AddConstructionTasks(c, buildingF, m)
+}
+
+func (town *Town) CreateInfraConstruction(x, y uint16, it *building.InfraType, m navigation.IMap) {
+	c := &building.Construction{X: x, Y: y, Cost: it.Cost, T: it.BT, Storage: &artifacts.Resources{}}
+	c.Storage.Init(StoragePerArea)
+	town.Constructions = append(town.Constructions, c)
+
+	f := m.GetField(x, y)
+	f.Allocated = true
+	f.Construction = true
+	town.AddConstructionTasks(c, f, m)
 }
 
 func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navigation.Field, m navigation.IMap) {

@@ -11,7 +11,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const StoragePerArea = 30
+const StoragePerArea = 50
 const WaterTransportQuantity = 10
 const FoodTransportQuantity = 5
 const ProductTransportQuantity = 5
