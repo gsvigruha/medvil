@@ -44,7 +44,7 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 				mp.Prices[a]++
 				mp.Supply[a] = 0
 				mp.Demand[a] = 0
-			} else if mp.Demand[a] == 0 && mp.Supply[a] > 0 && mp.Storage.Get(a) > 0 {
+			} else if mp.Demand[a] == 0 && (mp.Supply[a] > 0 || mp.Storage.Get(a) > 0) {
 				if mp.Prices[a] > 1 {
 					mp.Prices[a]--
 					mp.Supply[a] = 0
@@ -63,6 +63,12 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 				}
 			}
 		}
+	}
+}
+
+func (mp *Marketplace) RegisterDemand(as []artifacts.Artifacts) {
+	for _, a := range as {
+		mp.Demand[a.A] += uint32(a.Quantity)
 	}
 }
 

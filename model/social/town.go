@@ -44,9 +44,10 @@ func (town *Town) Init() {
 		Subsidy:      100,
 	}
 	town.Transfers = &MoneyTransfers{
-		Farm:     defaultTransfers,
-		Workshop: defaultTransfers,
-		Mine:     defaultTransfers,
+		Farm:              defaultTransfers,
+		Workshop:          defaultTransfers,
+		Mine:              defaultTransfers,
+		MarketFundingRate: 30,
 	}
 	town.Stats = &stats.Stats{}
 }
@@ -56,6 +57,9 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	taxing := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
 	town.Marketplace.ElapseTime(Calendar, m)
 	s.Add(town.Marketplace.Stats())
+	if taxing {
+		town.Transfers.FundMarket(&town.Townhall.Household.Money, &town.Marketplace.Money)
+	}
 	for l := range town.Townhall.Household.People {
 		person := town.Townhall.Household.People[l]
 		person.ElapseTime(Calendar, m)
