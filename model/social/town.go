@@ -10,10 +10,6 @@ import (
 	"medvil/model/time"
 )
 
-const FarmTaxRate float64 = 0.2
-const WorkshopTaxRate float64 = 0.1
-const MineTaxRate float64 = 0.1
-
 const ConstructionTransportQuantity = 5
 
 type JSONBuilding struct {
@@ -38,6 +34,21 @@ type Town struct {
 	Mines         []*Mine
 	Constructions []*building.Construction
 	Stats         *stats.Stats
+	Transfers     *MoneyTransfers
+}
+
+func (town *Town) Init() {
+	defaultTransfers := TransferCategories{
+		TaxRate:      20,
+		TaxThreshold: 100,
+		Subsidy:      100,
+	}
+	town.Transfers = &MoneyTransfers{
+		Farm:     defaultTransfers,
+		Workshop: defaultTransfers,
+		Mine:     defaultTransfers,
+	}
+	town.Stats = &stats.Stats{}
 }
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -59,10 +70,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		farm.ElapseTime(Calendar, m)
-		if taxing && farm.Household.Money > 0 {
-			tax := uint32(FarmTaxRate * float64(farm.Household.Money))
-			farm.Household.Money -= tax
-			town.Townhall.Household.Money += tax
+		if taxing {
+			town.Transfers.Farm.Transfer(&town.Townhall.Household.Money, &farm.Household.Money)
 		}
 		farm.Household.Filter(Calendar, m)
 		s.Add(farm.Household.Stats())
@@ -74,10 +83,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		workshop.ElapseTime(Calendar, m)
-		if taxing && workshop.Household.Money > 0 {
-			tax := uint32(WorkshopTaxRate * float64(workshop.Household.Money))
-			workshop.Household.Money -= tax
-			town.Townhall.Household.Money += tax
+		if taxing {
+			town.Transfers.Workshop.Transfer(&town.Townhall.Household.Money, &workshop.Household.Money)
 		}
 		workshop.Household.Filter(Calendar, m)
 		s.Add(workshop.Household.Stats())
@@ -89,10 +96,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		mine.ElapseTime(Calendar, m)
-		if taxing && mine.Household.Money > 0 {
-			tax := uint32(MineTaxRate * float64(mine.Household.Money))
-			mine.Household.Money -= tax
-			town.Townhall.Household.Money += tax
+		if taxing {
+			town.Transfers.Mine.Transfer(&town.Townhall.Household.Money, &mine.Household.Money)
 		}
 		mine.Household.Filter(Calendar, m)
 		s.Add(mine.Household.Stats())
