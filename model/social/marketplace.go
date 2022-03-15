@@ -42,26 +42,21 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		for _, a := range artifacts.All {
 			if mp.Supply[a] == 0 && mp.Demand[a] > 0 && mp.Demand[a] > uint32(mp.Storage.Get(a)) {
 				mp.Prices[a]++
-				mp.Supply[a] = 0
-				mp.Demand[a] = 0
+
 			} else if mp.Demand[a] == 0 && (mp.Supply[a] > 0 || mp.Storage.Get(a) > 0) {
 				if mp.Prices[a] > 1 {
 					mp.Prices[a]--
-					mp.Supply[a] = 0
-					mp.Demand[a] = 0
 				}
 			} else if mp.Demand[a] > 0 && mp.Supply[a] > 0 {
 				r := float64(mp.Supply[a]) / float64(mp.Demand[a])
 				if r >= 1.1 && mp.Prices[a] > 1 {
 					mp.Prices[a]--
-					mp.Supply[a] = 0
-					mp.Demand[a] = 0
 				} else if r <= 0.9 {
 					mp.Prices[a]++
-					mp.Supply[a] = 0
-					mp.Demand[a] = 0
 				}
 			}
+			mp.Supply[a] = 0
+			mp.Demand[a] = 0
 		}
 	}
 }
@@ -72,14 +67,17 @@ func (mp *Marketplace) RegisterDemand(as []artifacts.Artifacts) {
 	}
 }
 
+func (mp *Marketplace) RegisterSupply(as []artifacts.Artifacts) {
+	for _, a := range as {
+		mp.Supply[a.A] += uint32(a.Quantity)
+	}
+}
+
 func (mp *Marketplace) Buy(as []artifacts.Artifacts, wallet *uint32) {
 	price := mp.Price(as)
 	mp.Storage.RemoveAll(as)
 	mp.Money += price
 	*wallet -= price
-	for _, a := range as {
-		mp.Demand[a.A] += uint32(a.Quantity)
-	}
 }
 
 func (mp *Marketplace) BuyAsManyAsPossible(as []artifacts.Artifacts, wallet *uint32) []artifacts.Artifacts {
@@ -87,9 +85,6 @@ func (mp *Marketplace) BuyAsManyAsPossible(as []artifacts.Artifacts, wallet *uin
 	price := mp.Price(existingArtifacts)
 	mp.Money += price
 	*wallet -= price
-	for _, a := range as {
-		mp.Demand[a.A] += uint32(a.Quantity)
-	}
 	return existingArtifacts
 }
 
@@ -98,9 +93,6 @@ func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet *uint32) {
 	mp.Storage.AddAll(as)
 	mp.Money -= price
 	*wallet += price
-	for _, a := range as {
-		mp.Supply[a.A] += uint32(a.Quantity)
-	}
 }
 
 func (mp *Marketplace) CanBuy(as []artifacts.Artifacts) bool {
