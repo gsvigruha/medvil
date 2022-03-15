@@ -1,6 +1,7 @@
 package social
 
 import (
+	"fmt"
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/navigation"
@@ -39,10 +40,11 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		*wallet += price * 2
 		mp.Buy(allGold, wallet)
 
+		fmt.Println(mp.Demand)
+		fmt.Println(mp.Supply)
 		for _, a := range artifacts.All {
 			if mp.Supply[a] == 0 && mp.Demand[a] > 0 && mp.Demand[a] > uint32(mp.Storage.Get(a)) {
 				mp.Prices[a]++
-
 			} else if mp.Demand[a] == 0 && (mp.Supply[a] > 0 || mp.Storage.Get(a) > 0) {
 				if mp.Prices[a] > 1 {
 					mp.Prices[a]--

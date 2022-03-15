@@ -13,6 +13,8 @@ type Exchange interface {
 	CanBuy([]artifacts.Artifacts) bool
 	CanSell([]artifacts.Artifacts) bool
 	Price([]artifacts.Artifacts) uint32
+	RegisterDemand([]artifacts.Artifacts)
+	RegisterSupply([]artifacts.Artifacts)
 }
 
 const ExchangeTaskStatePickupAtHome uint8 = 0
@@ -44,6 +46,13 @@ func (t *ExchangeTask) Field() *navigation.Field {
 		return t.HomeF
 	}
 	return nil
+}
+
+func (t *ExchangeTask) RegisterSupplyAndDemand(Calendar *time.CalendarType) {
+	if Calendar.Day == 30 && Calendar.Hour == 0 {
+		t.Exchange.RegisterDemand(t.GoodsToBuy)
+		t.Exchange.RegisterSupply(t.GoodsToSell)
+	}
 }
 
 func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
@@ -94,6 +103,7 @@ func (t *ExchangeTask) Tag() string {
 }
 
 func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
+	t.RegisterSupplyAndDemand(Calendar)
 	return false
 }
 
