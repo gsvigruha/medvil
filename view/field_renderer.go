@@ -3,9 +3,9 @@ package view
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/controller"
+	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/renderer"
-	//"fmt"
 )
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
@@ -13,18 +13,19 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 	fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
 	cv.DrawImage(fieldImg, xMin, yMin, xMax-xMin, yMax-yMin)
 
-	units := f.Building.BuildingUnits
-	if len(units) > 0 {
-		for k := 0; k < len(units); k++ {
-			unitImg, rbu, x, y := ic.Bic.RenderBuildingUnitOnBuffer(&units[k], rf, k, c)
-			cv.DrawImage(unitImg, x, y, float64(unitImg.Width()), float64(unitImg.Height()))
-			c.AddRenderedBuildingUnit(&rbu)
+	components := f.Building.BuildingComponents
+	if len(components) > 0 {
+		for k := 0; k < len(components); k++ {
+			if unit, ok := components[k].(*building.BuildingUnit); ok {
+				unitImg, rbu, x, y := ic.Bic.RenderBuildingUnitOnBuffer(unit, rf, k, c)
+				cv.DrawImage(unitImg, x, y, float64(unitImg.Width()), float64(unitImg.Height()))
+				c.AddRenderedBuildingUnit(&rbu)
+			} else if roof, ok := components[k].(*building.RoofUnit); ok {
+				roofImg, x, y := ic.Bic.RenderBuildingRoofOnBuffer(roof, rf, k, c)
+				cv.DrawImage(roofImg, x, y, float64(roofImg.Width()), float64(roofImg.Height()))
+			}
 		}
-		if f.Building.RoofUnit != nil {
-			roofImg, x, y := ic.Bic.RenderBuildingRoofOnBuffer(f.Building.RoofUnit, rf, len(units), c)
-			cv.DrawImage(roofImg, x, y, float64(roofImg.Width()), float64(roofImg.Height()))
-		}
-		workshop := c.ReverseReferences.BuildingToWorkshop[units[0].B]
+		workshop := c.ReverseReferences.BuildingToWorkshop[components[0].Building()]
 		if workshop != nil {
 			if workshop.Manufacture != nil {
 				cv.SetFillStyle("#320")

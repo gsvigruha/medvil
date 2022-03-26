@@ -56,8 +56,3 @@ func RoofMaterials(bt BuildingType) []*materials.Material {
 	}
 	return nil
 }
-
-type WindowType uint8
-
-const WindowTypeRegular = 0
-const WindowTypeNone = 1

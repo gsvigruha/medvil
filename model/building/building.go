@@ -31,49 +31,56 @@ func (b *Building) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (b *Building) GetRoof(x uint8, y uint8) *RoofUnit {
+func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 	p := b.Plan
 	if p.BaseShape[x][y] == nil {
 		return nil
 	}
 	z := uint8(len(p.BaseShape[x][y].Floors))
-	return &RoofUnit{
-		B:    b,
-		Roof: *(p.BaseShape[x][y].Roof),
+	unit := &RoofUnit{
+		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
+		Roof:                  *(p.BaseShape[x][y].Roof),
 		Elevated: [4]bool{
 			y > 0 && p.HasUnitOrRoof(x, y-1, z),
 			x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z),
 			y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z),
 			x > 0 && p.HasUnitOrRoof(x-1, y, z)}}
+	unit.B = b
+	return unit
 }
 
-func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []BuildingUnit {
+func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []BuildingComponent {
 	if b.Plan.BaseShape[x][y] == nil {
-		return []BuildingUnit{}
+		return []BuildingComponent{}
 	}
 	p := b.Plan.BaseShape[x][y]
 	numFloors := uint8(len(p.Floors))
-	units := make([]BuildingUnit, numFloors)
-	windows := (b.Plan.WindowType == WindowTypeRegular)
+	units := make([]BuildingComponent, numFloors)
+	windows := (b.Plan.BuildingType != BuildingTypeWall)
 	for i := uint8(0); i < numFloors; i++ {
 		var n *BuildingWall
 		if y == 0 || !b.Plan.HasUnit(x, y-1, i) {
-			n = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y-1, i), Door: false, B: b, Construction: construction}
+			n = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y-1, i), Door: false}
 		}
 		var e *BuildingWall
 		if x == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x+1, y, i) {
-			e = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x+1, y, i), Door: false, B: b, Construction: construction}
+			e = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x+1, y, i), Door: false}
 		}
 		var s *BuildingWall
 		if y == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x, y+1, i) {
-			s = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y+1, i), Door: false, B: b, Construction: construction}
+			s = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y+1, i), Door: false}
 		}
 		var w *BuildingWall
 		if x == 0 || !b.Plan.HasUnit(x-1, y, i) {
-			w = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x-1, y, i), Door: false, B: b, Construction: construction}
+			w = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x-1, y, i), Door: false}
 		}
-		units[i].Walls = []*BuildingWall{n, e, s, w}
-		units[i].B = b
+		units[i] = &BuildingUnit{
+			BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
+			Walls:                 []*BuildingWall{n, e, s, w},
+		}
+	}
+	if !p.Roof.Flat {
+		units = append(units, b.getRoof(x, y, construction))
 	}
 	return units
 }

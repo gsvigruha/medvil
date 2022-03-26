@@ -126,8 +126,7 @@ func AddBuilding(b *building.Building, m *model.Map) {
 			bx := int(b.X+i) - 2
 			by := int(b.Y+j) - 2
 			if b.Plan.BaseShape[i][j] != nil {
-				m.Fields[bx][by].Building.BuildingUnits = b.ToBuildingUnits(uint8(i), uint8(j), false)
-				m.Fields[bx][by].Building.RoofUnit = b.GetRoof(uint8(i), uint8(j))
+				m.Fields[bx][by].Building.BuildingComponents = b.ToBuildingUnits(uint8(i), uint8(j), false)
 			}
 		}
 	}

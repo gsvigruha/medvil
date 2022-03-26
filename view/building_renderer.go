@@ -22,7 +22,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		}
 		rfIdx1 := (3 - (-c.Perspective + i)) % 4
 		rfIdx2 := (2 - (-c.Perspective + i)) % 4
-		if !wall.Construction && (rfIdx1 == 0 || rfIdx1 == 1) {
+		if !unit.Construction && (rfIdx1 == 0 || rfIdx1 == 1) {
 			continue
 		}
 		var suffix = ""
@@ -30,7 +30,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			suffix = "_flipped"
 		}
 		if cv != nil {
-			if !wall.Construction {
+			if !unit.Construction {
 				cv.SetFillStyle("texture/building/" + wall.M.Name + suffix + ".png")
 			} else {
 				cv.SetFillStyle("texture/building/construction" + suffix + ".png")
@@ -48,7 +48,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			rw.Draw(cv)
 			cv.Fill()
 
-			if wall.Windows && !wall.Construction {
+			if wall.Windows && !unit.Construction {
 				cv.SetFillStyle("texture/building/glass.png")
 				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
 				cv.SetLineWidth(2)
@@ -81,7 +81,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				cv.Stroke()
 			}
 
-			if wall.Door && !wall.Construction {
+			if wall.Door && !unit.Construction {
 				cv.SetFillStyle("texture/building/door.png")
 				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
 				cv.SetLineWidth(2)
@@ -118,6 +118,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					suffix = "_flipped"
 				}
 				cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + suffix + ".png")
+
 				cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
 				cv.SetLineWidth(3)
 
