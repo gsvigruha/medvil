@@ -37,7 +37,7 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 		return nil
 	}
 	z := uint8(len(p.BaseShape[x][y].Floors))
-	unit := &RoofUnit{
+	return &RoofUnit{
 		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
 		Roof:                  *(p.BaseShape[x][y].Roof),
 		Elevated: [4]bool{
@@ -45,8 +45,6 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 			x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z),
 			y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z),
 			x > 0 && p.HasUnitOrRoof(x-1, y, z)}}
-	unit.B = b
-	return unit
 }
 
 func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []BuildingComponent {
