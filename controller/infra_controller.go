@@ -4,7 +4,6 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/model/building"
-	"medvil/model/terrain"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -51,7 +50,7 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.DirtRoadType)
 	} else if ic.it == InfraTypeCobbleRoad && rf.F.Walkable() && rf.F.Buildable() {
 		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.CobbleRoadType)
-	} else if ic.it == InfraTypeCanal && c.Map.HasNeighborField(rf.F.X, rf.F.Y, terrain.Water) && rf.F.Buildable() {
+	} else if ic.it == InfraTypeCanal && rf.F.Buildable() {
 		c.Map.AddInfraConstruction(c.Country, rf.F.X, rf.F.Y, building.CanalType)
 	} else if ic.it == InfraTypeBridge && c.Map.Shore(rf.F.X, rf.F.Y) {
 		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.BridgeRoadType)

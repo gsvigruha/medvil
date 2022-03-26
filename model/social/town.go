@@ -129,8 +129,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			case building.BuildingTypeCanal:
 				f := m.GetField(construction.X, construction.Y)
 				f.Construction = false
-				f.Terrain.T = terrain.Water
-				f.Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
+				f.Terrain.T = terrain.Canal
 			}
 			if b != nil {
 				m.SetBuildingUnits(b, false)
