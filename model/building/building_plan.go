@@ -16,14 +16,26 @@ const DirectionN uint8 = 0
 const DirectionE uint8 = 1
 const DirectionS uint8 = 2
 const DirectionW uint8 = 3
+const DirectionNone uint8 = 255
 
 type Floor struct {
 	M *materials.Material `json:"material"`
 }
 
+type RoofType uint8
+
+const RoofTypeFlat = 1
+const RoofTypeSplit = 2
+const RoofTypeRamp = 3
+
 type Roof struct {
-	M    *materials.Material `json:"material"`
-	Flat bool                `json:"flat"`
+	M        *materials.Material `json:"material"`
+	RoofType RoofType
+	RampD    uint8
+}
+
+func (r Roof) Flat() bool {
+	return r.RoofType == RoofTypeFlat
 }
 
 type PlanUnits struct {
@@ -50,7 +62,7 @@ func (b *BuildingPlan) UnmarshalJSON(data []byte) error {
 					if k < len(shape[i][j])-1 {
 						b.BaseShape[i][j].Floors = append(b.BaseShape[i][j].Floors, Floor{M: materials.GetMaterial(shape[i][j][k])})
 					} else {
-						b.BaseShape[i][j].Roof = &Roof{M: materials.GetMaterial(shape[i][j][k]), Flat: false}
+						b.BaseShape[i][j].Roof = &Roof{M: materials.GetMaterial(shape[i][j][k]), RoofType: RoofTypeSplit}
 					}
 				}
 			}
@@ -87,7 +99,7 @@ func (b BuildingPlan) RoofArea() uint16 {
 	var area = uint16(0)
 	for i := 0; i < BuildingBaseMaxSize; i++ {
 		for j := 0; j < BuildingBaseMaxSize; j++ {
-			if b.BaseShape[i][j] != nil && !b.BaseShape[i][j].Roof.Flat {
+			if b.BaseShape[i][j] != nil && !b.BaseShape[i][j].Roof.Flat() {
 				area += 1
 			}
 		}
@@ -172,7 +184,7 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 						cubes += 2
 					}
 				}
-				if !b.BaseShape[i][j].Roof.Flat {
+				if !b.BaseShape[i][j].Roof.Flat() {
 					switch b.BaseShape[i][j].Roof.M {
 					case materials.GetMaterial("tile"):
 						tiles += 1
@@ -180,6 +192,8 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 					case materials.GetMaterial("hay"):
 						thatches += 1
 						boards += 1
+					case materials.GetMaterial("stone"):
+						cubes += 1
 					}
 				}
 			}
@@ -224,7 +238,7 @@ func (b BuildingPlan) HasUnitOrRoof(x, y, z uint8) bool {
 		return false
 	}
 	var oz = len(b.BaseShape[x][y].Floors)
-	if !b.BaseShape[x][y].Roof.Flat {
+	if !b.BaseShape[x][y].Roof.Flat() {
 		oz++
 	}
 	return oz > int(z)

@@ -73,10 +73,10 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 	return &rr
 }
 
-func (m *Map) AddBuildingConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan, bt building.BuildingType) bool {
+func (m *Map) AddBuildingConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
 	b := m.AddBuilding(x, y, bp, true)
 	if b != nil {
-		c.Towns[0].CreateBuildingConstruction(b, bt, m)
+		c.Towns[0].CreateBuildingConstruction(b, m)
 		return true
 	} else {
 		return false
@@ -95,14 +95,50 @@ func (m *Map) AddInfraConstruction(c *social.Country, x, y uint16, it *building.
 	return true
 }
 
-func (m *Map) AddWallConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
-	b := m.AddBuilding(x, y, bp, true)
-	if b != nil {
-		c.Towns[0].CreateBuildingConstruction(b, building.BuildingTypeWall, m)
-		return true
-	} else {
-		return false
+func (m *Map) RampPossible(x, y, x2, y2 uint16) bool {
+	f := m.GetField(x, y)
+	f2 := m.GetField(x2, y2)
+	var d = 1
+	if f.Building.Empty() {
+		d = 2
 	}
+	if f2 != nil && !f2.Building.Empty() && len(f.Building.BuildingComponents)+d == len(f2.Building.BuildingComponents) {
+		return true
+	}
+	return false
+}
+
+func (m *Map) GetRampDirection(x, y uint16) uint8 {
+	if m.RampPossible(x, y, x, y-1) {
+		return building.DirectionN
+	} else if m.RampPossible(x, y, x+1, y) {
+		return building.DirectionE
+	} else if m.RampPossible(x, y, x, y+1) {
+		return building.DirectionS
+	} else if m.RampPossible(x, y, x-1, y) {
+		return building.DirectionW
+	}
+	return building.DirectionNone
+}
+
+func (m *Map) AddWallRampConstruction(c *social.Country, x, y uint16) bool {
+	f := m.GetField(x, y)
+	b := f.Building.GetBuilding()
+	rampD := m.GetRampDirection(x, y)
+	if b != nil && b.Plan.BuildingType == building.BuildingTypeWall && rampD != building.DirectionNone {
+		oldCost := b.Plan.ConstructionCost()
+		roof := b.Plan.BaseShape[2][2].Roof
+		roof.RoofType = building.RoofTypeRamp
+		roof.RampD = rampD
+		f.Building.BuildingComponents[len(f.Building.BuildingComponents)-1].SetConstruction(true)
+		cost := artifacts.ArtifactsDiff(b.Plan.ConstructionCost(), oldCost)
+		c.Towns[0].CreateIncrementalBuildingConstruction(b, cost, m)
+		return true
+	} else if b == nil {
+		bp := building.GetWallRampPlan(rampD)
+		return m.AddBuildingConstruction(c, x, y, bp)
+	}
+	return false
 }
 
 func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []navigation.FieldWithContext {
@@ -145,7 +181,7 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction b
 	if m.GetBuildingBaseFields(x, y, bp) == nil {
 		return nil
 	}
-	b := &building.Building{X: x, Y: y, Plan: bp}
+	b := &building.Building{X: x, Y: y, Plan: *bp}
 	m.SetBuildingUnits(b, construction)
 	return b
 }

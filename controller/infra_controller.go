@@ -16,8 +16,10 @@ const InfraTypeCobbleRoad = 2
 const InfraTypeCanal = 3
 const InfraTypeAqueduct = 4
 const InfraTypeBridge = 5
-const InfraTypeStoneWall2 = 6
-const InfraTypeStoneWall3 = 7
+const InfraTypeStoneWall1 = 11
+const InfraTypeStoneWall2 = 12
+const InfraTypeStoneWall3 = 13
+const InfraTypeStoneWallRamp = 14
 
 const InfraPanelTop = 100
 
@@ -56,10 +58,14 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 		c.Map.AddInfraConstruction(c.Country, rf.F.X, rf.F.Y, building.CanalType)
 	} else if ic.it == InfraTypeBridge && c.Map.Shore(rf.F.X, rf.F.Y) {
 		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.BridgeRoadType)
+	} else if ic.it == InfraTypeStoneWall1 && rf.F.Buildable() {
+		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall1Type)
 	} else if ic.it == InfraTypeStoneWall2 && rf.F.Buildable() {
-		c.Map.AddWallConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall2Type)
+		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall2Type)
 	} else if ic.it == InfraTypeStoneWall3 && rf.F.Buildable() {
-		c.Map.AddWallConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall3Type)
+		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall3Type)
+	} else if ic.it == InfraTypeStoneWallRamp {
+		c.Map.AddWallRampConstruction(c.Country, rf.F.X, rf.F.Y)
 	}
 	return true
 }
@@ -100,13 +106,25 @@ func InfraToControlPanel(cp *ControlPanel) {
 
 	p.AddButton(InfraBuildButton{
 		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(10), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
-		it: InfraTypeStoneWall2,
+		it: InfraTypeStoneWall1,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
 		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(50), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeStoneWall2,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(90), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
 		it: InfraTypeStoneWall3,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(130), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeStoneWallRamp,
 		ic: ic,
 	})
 

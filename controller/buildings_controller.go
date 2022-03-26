@@ -42,22 +42,22 @@ func (b BuildingBaseButton) Click() {
 		if !b.bc.del && !b.bc.Plan.HasUnit(uint8(b.i), uint8(b.j), uint8(b.k)) {
 			if b.bc.Plan.BaseShape[b.i][b.j] == nil {
 				b.bc.Plan.BaseShape[b.i][b.j] = &building.PlanUnits{}
-				b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{Flat: true, M: b.bc.UnitM}
+				b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{RoofType: building.RoofTypeFlat, M: b.bc.UnitM}
 			}
 			b.bc.Plan.BaseShape[b.i][b.j].Floors = append(b.bc.Plan.BaseShape[b.i][b.j].Floors, building.Floor{M: b.bc.UnitM})
 		}
 	} else if b.bc.RoofM != nil {
 		if !b.bc.del && b.bc.Plan.BaseShape[b.i][b.j] != nil {
-			b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{Flat: false, M: b.bc.RoofM}
+			b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{RoofType: building.RoofTypeSplit, M: b.bc.RoofM}
 		}
 	} else if b.bc.del {
 		if b.bc.Plan.BaseShape[b.i][b.j] != nil {
 			maxFloor := len(b.bc.Plan.BaseShape[b.i][b.j].Floors) - 1
 			if maxFloor >= 0 {
-				if b.bc.Plan.BaseShape[b.i][b.j].Roof.Flat {
+				if b.bc.Plan.BaseShape[b.i][b.j].Roof.Flat() {
 					b.bc.Plan.BaseShape[b.i][b.j].Floors = b.bc.Plan.BaseShape[b.i][b.j].Floors[0:maxFloor]
 				} else {
-					b.bc.Plan.BaseShape[b.i][b.j].Roof.Flat = true
+					b.bc.Plan.BaseShape[b.i][b.j].Roof.RoofType = building.RoofTypeFlat
 					b.bc.Plan.BaseShape[b.i][b.j].Roof.M = b.bc.Plan.BaseShape[b.i][b.j].Floors[maxFloor].M
 				}
 			}
@@ -182,7 +182,7 @@ func (b RoofButton) Contains(x float64, y float64) bool {
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if c.ActiveBuildingPlan.IsComplete() {
-		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan, bc.bt)
+		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 		return true
 	}
 	return false
@@ -226,7 +226,7 @@ func (bc *BuildingsController) GenerateButtons() {
 				for k = range bc.Plan.BaseShape[i][j].Floors {
 					bc.p.AddButton(createBuildingBaseButton(bc, i, j, k+1, x, y-DZ*float64(k+1), bc.Plan.BaseShape[i][j].Floors[k].M, nil))
 				}
-				if bc.Plan.BaseShape[i][j].Roof != nil && !bc.Plan.BaseShape[i][j].Roof.Flat {
+				if bc.Plan.BaseShape[i][j].Roof != nil && !bc.Plan.BaseShape[i][j].Roof.Flat() {
 					bc.p.AddButton(createBuildingBaseButton(bc, i, j, k+1, x, y-DZ*float64(k+1), nil, bc.Plan.BaseShape[i][j].Roof.M))
 				}
 			}
@@ -236,7 +236,7 @@ func (bc *BuildingsController) GenerateButtons() {
 
 func BuildingsToControlPanel(cp *ControlPanel, bt building.BuildingType) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY, SingleClick: true}
-	bc := &BuildingsController{Plan: &building.BuildingPlan{}, bt: bt, p: p}
+	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p}
 
 	bc.GenerateButtons()
 
