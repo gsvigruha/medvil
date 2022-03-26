@@ -42,7 +42,7 @@ func (b BuildingUnit) LiftS() int8    { return 0 }
 func (b BuildingUnit) LiftW() int8    { return 0 }
 
 func (r *RoofUnit) CacheKey() string {
-	return fmt.Sprintf("%v#%v", r.Roof.M.Name, r.Elevated)
+	return fmt.Sprintf("%v#%v#%v", r.Roof.M.Name, r.Elevated, r.Construction)
 }
 
 func (r *BuildingUnit) CacheKey() string {

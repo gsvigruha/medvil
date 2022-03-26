@@ -79,9 +79,7 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 			Walls:                 []*BuildingWall{n, e, s, w},
 		}
 	}
-	if !p.Roof.Flat {
-		units = append(units, b.getRoof(x, y, construction))
-	}
+	units = append(units, b.getRoof(x, y, construction))
 	return units
 }
 
