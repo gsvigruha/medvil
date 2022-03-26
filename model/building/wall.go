@@ -5,7 +5,7 @@ import (
 )
 
 var WallFloor = Floor{M: materials.GetMaterial("stone")}
-var WallRoof = &Roof{M: materials.GetMaterial("stone"), Flat: true}
+var WallRoof = &Roof{M: materials.GetMaterial("stone"), RoofType: RoofTypeFlat}
 
 var Wall1 = &PlanUnits{
 	Floors: []Floor{WallFloor},
@@ -64,4 +64,18 @@ var StoneWallRampType = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeWall,
+}
+
+func GetWallRampPlan(rampD uint8) *BuildingPlan {
+	ramp := &PlanUnits{Roof: &Roof{M: materials.GetMaterial("stone"), RoofType: RoofTypeRamp, RampD: rampD}}
+	return &BuildingPlan{
+		BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
+			{nil, nil, nil, nil, nil},
+			{nil, nil, nil, nil, nil},
+			{nil, nil, ramp, nil, nil},
+			{nil, nil, nil, nil, nil},
+			{nil, nil, nil, nil, nil},
+		},
+		BuildingType: BuildingTypeWall,
+	}
 }

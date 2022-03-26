@@ -211,3 +211,10 @@ func (r *Resources) NumArtifacts() uint32 {
 	}
 	return n
 }
+
+func ArtifactsDiff(as1 []Artifacts, as2 []Artifacts) []Artifacts {
+	r := Resources{}
+	r.Init(0)
+	r.AddAll(as2)
+	return r.Needs(as1)
+}

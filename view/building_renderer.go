@@ -104,11 +104,12 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 	if roof == nil {
 		return
 	}
+	startL := 2 + c.Perspective
 	z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
-	if !roof.Roof.Flat {
+	if roof.Roof.RoofType == building.RoofTypeSplit {
 		midX := (rf.X[0] + rf.X[2]) / 2
 		midY := (rf.Y[0] + rf.Y[2]) / 2
-		startL := 2 + c.Perspective
+
 		for l := uint8(startL); l < 4+startL; l++ {
 			rfIdx1 := (3 - (-c.Perspective + l)) % 4
 			rfIdx2 := (2 - (-c.Perspective + l)) % 4
@@ -166,7 +167,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 				cv.Stroke()
 			}
 		}
-	} else {
+	} else if roof.Roof.RoofType == building.RoofTypeFlat {
 		if !roof.Construction {
 			cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + "_flat.png")
 			cv.BeginPath()
@@ -176,6 +177,59 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			cv.LineTo(rf.X[3], rf.Y[3]-z)
 			cv.ClosePath()
 			cv.Fill()
+		}
+	} else if roof.Roof.RoofType == building.RoofTypeRamp {
+		for l := uint8(startL); l < 4+startL; l++ {
+			rfIdx1 := (3 - (-c.Perspective + l)) % 4
+			rfIdx2 := (2 - (-c.Perspective + l)) % 4
+			rfIdx3 := (1 - (-c.Perspective + l)) % 4
+			rfIdx4 := (0 - (-c.Perspective + l)) % 4
+			if roof.Elevated[l%4] {
+				var suffix = ""
+				if rfIdx1%2 == 0 {
+					suffix = "_flipped"
+				}
+
+				if !roof.Construction {
+					cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + suffix + ".png")
+				} else {
+					cv.SetFillStyle("texture/building/construction" + suffix + ".png")
+				}
+
+				cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
+				cv.SetLineWidth(3)
+
+				cv.BeginPath()
+				cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z-BuildingUnitHeight*DZ)
+				cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z)
+				cv.LineTo(rf.X[rfIdx4], rf.Y[rfIdx4]-z)
+				cv.ClosePath()
+				cv.Fill()
+				cv.Stroke()
+
+				cv.BeginPath()
+				cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z-BuildingUnitHeight*DZ)
+				cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z)
+				cv.LineTo(rf.X[rfIdx3], rf.Y[rfIdx3]-z)
+				cv.ClosePath()
+				cv.Fill()
+				cv.Stroke()
+
+				if !roof.Construction {
+					cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + "_flat.png")
+				} else {
+					cv.SetFillStyle("texture/building/construction" + suffix + ".png")
+				}
+
+				cv.BeginPath()
+				cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z-BuildingUnitHeight*DZ)
+				cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z-BuildingUnitHeight*DZ)
+				cv.LineTo(rf.X[rfIdx3], rf.Y[rfIdx3]-z)
+				cv.LineTo(rf.X[rfIdx4], rf.Y[rfIdx4]-z)
+				cv.ClosePath()
+				cv.Fill()
+				cv.Stroke()
+			}
 		}
 	}
 }

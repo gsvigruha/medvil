@@ -139,6 +139,11 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			return
 		}
 		rf := c.CaptureRenderedField(c.X, c.Y)
+		if c.ClickHandler != nil && rf != nil {
+			if c.ClickHandler.HandleClick(c, rf) {
+				return
+			}
+		}
 		for i := range c.RenderedBuildingUnits {
 			rbu := c.RenderedBuildingUnits[i]
 			if rbu.Contains(c.X, c.Y) {
@@ -167,11 +172,6 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				if c.SelectedConstruction != nil {
 					ConstructionToControlPanel(c.ControlPanel, c.SelectedConstruction)
 				}
-				return
-			}
-		}
-		if c.ClickHandler != nil && rf != nil {
-			if c.ClickHandler.HandleClick(c, rf) {
 				return
 			}
 		}

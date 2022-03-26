@@ -152,8 +152,19 @@ func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m naviga
 	town.AddConstructionTasks(c, roadF, m)
 }
 
-func (town *Town) CreateBuildingConstruction(b *building.Building, bt building.BuildingType, m navigation.IMap) {
+func (town *Town) CreateBuildingConstruction(b *building.Building, m navigation.IMap) {
+	bt := b.Plan.BuildingType
 	c := &building.Construction{X: b.X, Y: b.Y, Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
+	c.Storage.Init((b.Plan.Area() + b.Plan.RoofArea()) * StoragePerArea)
+	town.Constructions = append(town.Constructions, c)
+
+	buildingF := m.GetField(b.X, b.Y)
+	town.AddConstructionTasks(c, buildingF, m)
+}
+
+func (town *Town) CreateIncrementalBuildingConstruction(b *building.Building, cost []artifacts.Artifacts, m navigation.IMap) {
+	bt := b.Plan.BuildingType
+	c := &building.Construction{X: b.X, Y: b.Y, Building: b, Cost: cost, T: bt, Storage: &artifacts.Resources{}}
 	c.Storage.Init((b.Plan.Area() + b.Plan.RoofArea()) * StoragePerArea)
 	town.Constructions = append(town.Constructions, c)
 

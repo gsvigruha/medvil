@@ -6,7 +6,7 @@ import (
 )
 
 type Building struct {
-	Plan *BuildingPlan
+	Plan BuildingPlan
 	X    uint16
 	Y    uint16
 }
@@ -27,7 +27,7 @@ func (b *Building) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	plan := BuildingPlanFromJSON("samples/building/" + planName + ".building.json")
-	b.Plan = &plan
+	b.Plan = plan
 	return nil
 }
 
@@ -37,14 +37,31 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 		return nil
 	}
 	z := uint8(len(p.BaseShape[x][y].Floors))
-	return &RoofUnit{
-		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
-		Roof:                  *(p.BaseShape[x][y].Roof),
-		Elevated: [4]bool{
+	roof := p.BaseShape[x][y].Roof
+	var elevated [4]bool
+	if roof.RoofType == RoofTypeSplit {
+		elevated = [4]bool{
 			y > 0 && p.HasUnitOrRoof(x, y-1, z),
 			x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z),
 			y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z),
-			x > 0 && p.HasUnitOrRoof(x-1, y, z)}}
+			x > 0 && p.HasUnitOrRoof(x-1, y, z)}
+	} else if roof.RoofType == RoofTypeFlat {
+		elevated = [4]bool{false, false, false, false}
+	} else if roof.RoofType == RoofTypeRamp {
+		if roof.RampD == DirectionN {
+			elevated = [4]bool{true, false, false, false}
+		} else if roof.RampD == DirectionE {
+			elevated = [4]bool{false, true, false, false}
+		} else if roof.RampD == DirectionS {
+			elevated = [4]bool{false, false, true, false}
+		} else if roof.RampD == DirectionW {
+			elevated = [4]bool{false, false, false, true}
+		}
+	}
+	return &RoofUnit{
+		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
+		Roof:                  *roof,
+		Elevated:              elevated}
 }
 
 func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []BuildingComponent {

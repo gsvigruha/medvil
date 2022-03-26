@@ -59,13 +59,13 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 	} else if ic.it == InfraTypeBridge && c.Map.Shore(rf.F.X, rf.F.Y) {
 		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.BridgeRoadType)
 	} else if ic.it == InfraTypeStoneWall1 && rf.F.Buildable() {
-		c.Map.AddWallConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall1Type)
+		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall1Type)
 	} else if ic.it == InfraTypeStoneWall2 && rf.F.Buildable() {
-		c.Map.AddWallConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall2Type)
+		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall2Type)
 	} else if ic.it == InfraTypeStoneWall3 && rf.F.Buildable() {
-		c.Map.AddWallConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall3Type)
-	} else if ic.it == InfraTypeStoneWallRamp && !rf.F.Building.Empty() && rf.F.Building.BuildingUnits[0].B.Plan.BuildingType == building.BuildingTypeWall {
-		c.Map.AddWallConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWallRampType)
+		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall3Type)
+	} else if ic.it == InfraTypeStoneWallRamp {
+		c.Map.AddWallRampConstruction(c.Country, rf.F.X, rf.F.Y)
 	}
 	return true
 }
@@ -119,6 +119,12 @@ func InfraToControlPanel(cp *ControlPanel) {
 	p.AddButton(InfraBuildButton{
 		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(90), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
 		it: InfraTypeStoneWall3,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(130), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeStoneWallRamp,
 		ic: ic,
 	})
 
