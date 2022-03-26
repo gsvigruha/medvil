@@ -54,22 +54,23 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 	p := b.Plan.BaseShape[x][y]
 	numFloors := uint8(len(p.Floors))
 	units := make([]BuildingUnit, numFloors)
+	windows := (b.Plan.WindowType == WindowTypeRegular)
 	for i := uint8(0); i < numFloors; i++ {
 		var n *BuildingWall
 		if y == 0 || !b.Plan.HasUnit(x, y-1, i) {
-			n = &BuildingWall{M: p.Floors[i].M, Windows: !b.Plan.HasUnitOrRoof(x, y-1, i), Door: false, B: b, Construction: construction}
+			n = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y-1, i), Door: false, B: b, Construction: construction}
 		}
 		var e *BuildingWall
 		if x == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x+1, y, i) {
-			e = &BuildingWall{M: p.Floors[i].M, Windows: !b.Plan.HasUnitOrRoof(x+1, y, i), Door: false, B: b, Construction: construction}
+			e = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x+1, y, i), Door: false, B: b, Construction: construction}
 		}
 		var s *BuildingWall
 		if y == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x, y+1, i) {
-			s = &BuildingWall{M: p.Floors[i].M, Windows: !b.Plan.HasUnitOrRoof(x, y+1, i), Door: false, B: b, Construction: construction}
+			s = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y+1, i), Door: false, B: b, Construction: construction}
 		}
 		var w *BuildingWall
 		if x == 0 || !b.Plan.HasUnit(x-1, y, i) {
-			w = &BuildingWall{M: p.Floors[i].M, Windows: !b.Plan.HasUnitOrRoof(x-1, y, i), Door: false, B: b, Construction: construction}
+			w = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x-1, y, i), Door: false, B: b, Construction: construction}
 		}
 		units[i].Walls = []*BuildingWall{n, e, s, w}
 		units[i].B = b
