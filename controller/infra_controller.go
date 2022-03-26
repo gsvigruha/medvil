@@ -16,6 +16,8 @@ const InfraTypeCobbleRoad = 2
 const InfraTypeCanal = 3
 const InfraTypeAqueduct = 4
 const InfraTypeBridge = 5
+const InfraTypeStoneWall2 = 6
+const InfraTypeStoneWall3 = 7
 
 const InfraPanelTop = 100
 
@@ -54,6 +56,10 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 		c.Map.AddInfraConstruction(c.Country, rf.F.X, rf.F.Y, building.CanalType)
 	} else if ic.it == InfraTypeBridge && c.Map.Shore(rf.F.X, rf.F.Y) {
 		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.BridgeRoadType)
+	} else if ic.it == InfraTypeStoneWall2 && rf.F.Buildable() {
+		c.Map.AddWallConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall2Type)
+	} else if ic.it == InfraTypeStoneWall3 && rf.F.Buildable() {
+		c.Map.AddWallConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall3Type)
 	}
 	return true
 }
@@ -89,6 +95,18 @@ func InfraToControlPanel(cp *ControlPanel) {
 	p.AddButton(InfraBuildButton{
 		b:  gui.ButtonGUI{Icon: "infra/bridge", X: float64(210), Y: float64(InfraPanelTop), SX: 32, SY: 32},
 		it: InfraTypeBridge,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(10), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeStoneWall2,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(50), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeStoneWall3,
 		ic: ic,
 	})
 

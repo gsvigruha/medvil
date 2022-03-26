@@ -95,6 +95,16 @@ func (m *Map) AddInfraConstruction(c *social.Country, x, y uint16, it *building.
 	return true
 }
 
+func (m *Map) AddWallConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
+	b := m.AddBuilding(x, y, bp, true)
+	if b != nil {
+		c.Towns[0].CreateBuildingConstruction(b, building.BuildingTypeWall, m)
+		return true
+	} else {
+		return false
+	}
+}
+
 func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []navigation.FieldWithContext {
 	var fields []navigation.FieldWithContext
 	for i := uint16(0); i < 5; i++ {

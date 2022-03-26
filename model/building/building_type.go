@@ -14,6 +14,7 @@ const BuildingTypeRoad = 10
 const BuildingTypeCanal = 11
 const BuildingTypeAqueduct = 12
 const BuildingTypeBridge = 13
+const BuildingTypeWall = 14
 
 func FloorMaterials(bt BuildingType) []*materials.Material {
 	switch bt {
@@ -55,3 +56,8 @@ func RoofMaterials(bt BuildingType) []*materials.Material {
 	}
 	return nil
 }
+
+type WindowType uint8
+
+const WindowTypeRegular = 0
+const WindowTypeNone = 1
