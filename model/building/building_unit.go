@@ -14,6 +14,10 @@ func (b BuildingComponentBase) Building() *Building {
 	return b.B
 }
 
+func (b *BuildingComponentBase) SetConstruction(c bool) {
+	b.Construction = c
+}
+
 type RoofUnit struct {
 	BuildingComponentBase
 	Roof     Roof
@@ -33,6 +37,7 @@ type BuildingUnit struct {
 
 type BuildingComponent interface {
 	Building() *Building
+	SetConstruction(bool)
 }
 
 func (b BuildingUnit) Walkable() bool { return false }

@@ -122,13 +122,15 @@ func (m *Map) GetRampDirection(x, y uint16) uint8 {
 }
 
 func (m *Map) AddWallRampConstruction(c *social.Country, x, y uint16) bool {
-	b := m.GetField(x, y).Building.GetBuilding()
+	f := m.GetField(x, y)
+	b := f.Building.GetBuilding()
 	rampD := m.GetRampDirection(x, y)
 	if b != nil && b.Plan.BuildingType == building.BuildingTypeWall && rampD != building.DirectionNone {
 		oldCost := b.Plan.ConstructionCost()
 		roof := b.Plan.BaseShape[2][2].Roof
 		roof.RoofType = building.RoofTypeRamp
 		roof.RampD = rampD
+		f.Building.BuildingComponents[len(f.Building.BuildingComponents)-1].SetConstruction(true)
 		cost := artifacts.ArtifactsDiff(b.Plan.ConstructionCost(), oldCost)
 		c.Towns[0].CreateIncrementalBuildingConstruction(b, cost, m)
 		return true
