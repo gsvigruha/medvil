@@ -32,7 +32,7 @@ type PlanUnits struct {
 }
 
 type BuildingPlan struct {
-	BaseShape  [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits
+	BaseShape    [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits
 	BuildingType BuildingType
 }
 

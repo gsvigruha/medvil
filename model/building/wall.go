@@ -9,17 +9,17 @@ var WallRoof = &Roof{M: materials.GetMaterial("stone"), Flat: true}
 
 var Wall1 = &PlanUnits{
 	Floors: []Floor{WallFloor},
-	Roof: WallRoof,
+	Roof:   WallRoof,
 }
 
 var Wall2 = &PlanUnits{
 	Floors: []Floor{WallFloor, WallFloor},
-	Roof: WallRoof,
+	Roof:   WallRoof,
 }
 
 var Wall3 = &PlanUnits{
 	Floors: []Floor{WallFloor, WallFloor, WallFloor},
-	Roof: WallRoof,
+	Roof:   WallRoof,
 }
 
 var StoneWall1Type = &BuildingPlan{
