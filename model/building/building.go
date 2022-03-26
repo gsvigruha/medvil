@@ -54,7 +54,7 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 	p := b.Plan.BaseShape[x][y]
 	numFloors := uint8(len(p.Floors))
 	units := make([]BuildingUnit, numFloors)
-	windows := (b.Plan.WindowType == WindowTypeRegular)
+	windows := (b.Plan.BuildingType != BuildingTypeWall)
 	for i := uint8(0); i < numFloors; i++ {
 		var n *BuildingWall
 		if y == 0 || !b.Plan.HasUnit(x, y-1, i) {

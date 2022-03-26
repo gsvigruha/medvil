@@ -33,7 +33,7 @@ type PlanUnits struct {
 
 type BuildingPlan struct {
 	BaseShape  [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits
-	WindowType WindowType
+	BuildingType BuildingType
 }
 
 func (b *BuildingPlan) UnmarshalJSON(data []byte) error {
