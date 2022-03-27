@@ -200,7 +200,7 @@ func (m *Map) ShortPath(start, dest navigation.Location, travellerType uint8) *n
 func (m *Map) FindDest(start navigation.Location, dest navigation.Destination, travellerType uint8) *navigation.Field {
 	p := FindShortPathBFS(m, start, dest, travellerType)
 	if p != nil {
-		return p[len(p)-1].F
+		return p[len(p)-1].(*navigation.Field)
 	}
 	return nil
 }

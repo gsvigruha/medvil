@@ -1,8 +1,10 @@
 package navigation
 
-type PathElement struct {
-	F *Field
-	Z uint8
+type PathElement interface {
+	GetLocation() Location
+	GetNeighbors(IMap) []PathElement
+	GetSpeed() float64
+	Walkable() bool
 }
 
 type Path struct {
