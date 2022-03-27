@@ -6,6 +6,12 @@ import (
 	"strconv"
 )
 
+type Location struct {
+	X uint16
+	Y uint16
+	Z uint8
+}
+
 type Destination interface {
 	Check(*Field) bool
 }

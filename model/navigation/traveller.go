@@ -138,7 +138,7 @@ func (t *Traveller) MoveToDir(d uint8, m IMap) {
 
 func (t *Traveller) Move(m IMap) {
 	if t.path != nil {
-		f := t.path.F[0]
+		f := t.path.P[0].F
 		f0 := m.GetField(t.FX, t.FY)
 		var steps = 1
 		if f0.Road != nil && !f0.Road.Construction && rand.Float64() < f0.Road.T.Speed-1.0 {
@@ -209,8 +209,8 @@ func (t *Traveller) IncPhase() {
 }
 
 func (t *Traveller) EnsurePath(f *Field, travellerType uint8, m IMap) {
-	if t.path == nil || t.path.LastField() != f {
-		t.path = m.ShortPath(t.FX, t.FY, f.X, f.Y, travellerType)
+	if t.path == nil || t.path.LastElement().F != f {
+		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, Location{X: f.X, Y: f.Y, Z: 0}, travellerType)
 		t.lane = uint8(rand.Intn(3) + 1)
 		t.stuckCntr = 0
 	}

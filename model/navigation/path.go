@@ -1,17 +1,22 @@
 package navigation
 
+type PathElement struct {
+	F *Field
+	Z uint8
+}
+
 type Path struct {
-	F []*Field
+	P []PathElement
 }
 
 func (p *Path) ConsumeElement() *Path {
-	if len(p.F) > 1 {
-		p.F = p.F[1:]
+	if len(p.P) > 1 {
+		p.P = p.P[1:]
 		return p
 	}
 	return nil
 }
 
-func (p *Path) LastField() *Field {
-	return p.F[len(p.F)-1]
+func (p *Path) LastElement() PathElement {
+	return p.P[len(p.P)-1]
 }
