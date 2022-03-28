@@ -126,7 +126,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
 		NumBatchesSimple(int(economy.MaxFoodOrDrinkPerPerson*numP), WaterTransportQuantity) > h.NumTasks("transport", "water") {
 		hx, hy := h.Building.GetRandomBuildingXY()
-		dest := m.FindDest(hx, hy, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
+		dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
 			h.AddTask(&economy.TransportTask{
 				PickupF:  dest,

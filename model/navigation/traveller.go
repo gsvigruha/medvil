@@ -24,13 +24,16 @@ type Traveller struct {
 	Phase     uint8
 	Visible   bool
 	path      *Path
+	PE        PathElement
 	lane      uint8
 	stuckCntr uint8
 }
 
 func (t *Traveller) consumePathElement() {
 	if t.path != nil {
-		t.path = t.path.ConsumeElement()
+		path, removed := t.path.ConsumeElement()
+		t.path = path
+		t.PE = removed
 	}
 }
 
@@ -138,7 +141,8 @@ func (t *Traveller) MoveToDir(d uint8, m IMap) {
 
 func (t *Traveller) Move(m IMap) {
 	if t.path != nil {
-		f := t.path.F[0]
+		pe := t.path.P[0]
+		l := pe.GetLocation()
 		f0 := m.GetField(t.FX, t.FY)
 		var steps = 1
 		if f0.Road != nil && !f0.Road.Construction && rand.Float64() < f0.Road.T.Speed-1.0 {
@@ -147,26 +151,26 @@ func (t *Traveller) Move(m IMap) {
 		for i := 0; i < steps; i++ {
 			var dirToLane uint8 = DirectionNone
 			var dirToNextField uint8 = DirectionNone
-			if t.FY == f.Y {
+			if t.FY == l.Y {
 				if t.PY < MaxPY/4*t.lane {
 					dirToLane = DirectionS
 				} else if t.PY > MaxPY/4*t.lane {
 					dirToLane = DirectionN
 				}
-				if t.FX > f.X {
+				if t.FX > l.X {
 					dirToNextField = DirectionW
-				} else if t.FX < f.X {
+				} else if t.FX < l.X {
 					dirToNextField = DirectionE
 				}
-			} else if t.FX == f.X {
+			} else if t.FX == l.X {
 				if t.PX < MaxPX/4*t.lane {
 					dirToLane = DirectionE
 				} else if t.PX > MaxPX/4*t.lane {
 					dirToLane = DirectionW
 				}
-				if t.FY > f.Y {
+				if t.FY > l.Y {
 					dirToNextField = DirectionN
-				} else if t.FY < f.Y {
+				} else if t.FY < l.Y {
 					dirToNextField = DirectionS
 				}
 			}
@@ -209,8 +213,8 @@ func (t *Traveller) IncPhase() {
 }
 
 func (t *Traveller) EnsurePath(f *Field, travellerType uint8, m IMap) {
-	if t.path == nil || t.path.LastField() != f {
-		t.path = m.ShortPath(t.FX, t.FY, f.X, f.Y, travellerType)
+	if t.path == nil || t.path.LastElement().GetLocation() != f.GetLocation() {
+		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, Location{X: f.X, Y: f.Y, Z: 0}, travellerType)
 		t.lane = uint8(rand.Intn(3) + 1)
 		t.stuckCntr = 0
 	}

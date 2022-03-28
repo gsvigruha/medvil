@@ -1,17 +1,25 @@
 package navigation
 
+type PathElement interface {
+	GetLocation() Location
+	GetNeighbors(IMap) []PathElement
+	GetSpeed() float64
+	Walkable() bool
+}
+
 type Path struct {
-	F []*Field
+	P []PathElement
 }
 
-func (p *Path) ConsumeElement() *Path {
-	if len(p.F) > 1 {
-		p.F = p.F[1:]
-		return p
+func (p *Path) ConsumeElement() (*Path, PathElement) {
+	if len(p.P) > 1 {
+		removed := p.P[0]
+		p.P = p.P[1:]
+		return p, removed
 	}
-	return nil
+	return nil, nil
 }
 
-func (p *Path) LastField() *Field {
-	return p.F[len(p.F)-1]
+func (p *Path) LastElement() PathElement {
+	return p.P[len(p.P)-1]
 }

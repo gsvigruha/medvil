@@ -90,6 +90,9 @@ var ArtifactToPersonState = map[*artifacts.Artifact]PersonStateChange{
 
 type WaterDestination struct{}
 
-func (d WaterDestination) Check(f *navigation.Field) bool {
-	return f.Terrain.T.Water
+func (d WaterDestination) Check(pe navigation.PathElement) bool {
+	if f, ok := pe.(*navigation.Field); ok {
+		return f.Terrain.T.Water
+	}
+	return false
 }

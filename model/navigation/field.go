@@ -6,8 +6,14 @@ import (
 	"strconv"
 )
 
+type Location struct {
+	X uint16
+	Y uint16
+	Z uint8
+}
+
 type Destination interface {
-	Check(*Field) bool
+	Check(PathElement) bool
 }
 
 type FieldWithContext interface {
@@ -31,6 +37,37 @@ type Field struct {
 	Travellers   []*Traveller
 	Allocated    bool
 	Construction bool
+}
+
+func (f *Field) GetLocation() Location {
+	return Location{X: f.X, Y: f.Y, Z: 0}
+}
+
+func (f *Field) GetNeighbors(m IMap) []PathElement {
+	var n = []PathElement{}
+	for dir, coordDelta := range building.CoordDeltaByDirection {
+		x, y := uint16(coordDelta[0]+int(f.X)), uint16(coordDelta[1]+int(f.Y))
+		nf := m.GetField(x, y)
+		if nf != nil {
+			if nf.Building.Empty() {
+				n = append(n, nf)
+			} else {
+				n = append(n, nf)
+				nbc := nf.Building.GetBuildingComponent(0)
+				if nbc != nil && nbc.Connection(building.OppDir(uint8(dir))) == building.ConnectionTypeLowerLevel {
+					n = append(n, &BuildingPathElement{BC: nbc, L: Location{X: nf.X, Y: nf.Y, Z: 1}})
+				}
+			}
+		}
+	}
+	return n
+}
+
+func (f *Field) GetSpeed() float64 {
+	if f.Road != nil && !f.Road.Construction {
+		return f.Road.T.Speed
+	}
+	return 1.0
 }
 
 func (f *Field) Field() *Field {
@@ -103,8 +140,11 @@ func (f *Field) UnregisterTraveller(t *Traveller) {
 	}
 }
 
-func (f *Field) Check(f2 *Field) bool {
-	return f == f2
+func (f *Field) Check(pe PathElement) bool {
+	if f2, ok := pe.(*Field); ok {
+		return f2 == f
+	}
+	return false
 }
 
 func (f *Field) CacheKey() string {

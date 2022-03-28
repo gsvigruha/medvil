@@ -5,6 +5,12 @@ import (
 	"medvil/model/materials"
 )
 
+type ConnectionType uint8
+
+const ConnectionTypeNone = 0
+const ConnectionTypeLowerLevel = 1
+const ConnectionTypeUpperLevel = 2
+
 type BuildingComponentBase struct {
 	B            *Building
 	Construction bool
@@ -18,10 +24,31 @@ func (b *BuildingComponentBase) SetConstruction(c bool) {
 	b.Construction = c
 }
 
+func (b *BuildingComponentBase) IsConstruction() bool {
+	return b.Construction
+}
+
 type RoofUnit struct {
 	BuildingComponentBase
 	Roof     Roof
 	Elevated [4]bool
+}
+
+func (u *RoofUnit) Connection(dir uint8) ConnectionType {
+	switch u.Roof.RoofType {
+	case RoofTypeSplit:
+		return ConnectionTypeNone
+	case RoofTypeRamp:
+		if dir == u.Roof.RampD {
+			return ConnectionTypeUpperLevel
+		}
+		if OppDir(dir) == u.Roof.RampD {
+			return ConnectionTypeLowerLevel
+		}
+	case RoofTypeFlat:
+		return ConnectionTypeLowerLevel
+	}
+	return ConnectionTypeNone
 }
 
 type BuildingWall struct {
@@ -35,9 +62,15 @@ type BuildingUnit struct {
 	Walls []*BuildingWall
 }
 
+func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
+	return ConnectionTypeNone
+}
+
 type BuildingComponent interface {
 	Building() *Building
 	SetConstruction(bool)
+	IsConstruction() bool
+	Connection(dir uint8) ConnectionType
 }
 
 func (b BuildingUnit) Walkable() bool { return false }

@@ -5,6 +5,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"math"
 	"medvil/controller"
+	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/renderer"
 	"medvil/view/animation"
@@ -13,19 +14,28 @@ import (
 const MaxPX = navigation.MaxPX
 const MaxPY = navigation.MaxPY
 
+func getZByDir(bpe *navigation.BuildingPathElement, dir uint8) float64 {
+	if bpe.BC.Connection(dir) == building.ConnectionTypeUpperLevel {
+		return float64(bpe.GetLocation().Z) * DZ * BuildingUnitHeight
+	} else if bpe.BC.Connection(dir) == building.ConnectionTypeLowerLevel {
+		return float64(bpe.GetLocation().Z-1) * DZ * BuildingUnitHeight
+	}
+	return 0
+}
+
 func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) {
 	for i := range travellers {
 		t := travellers[i]
 		px := float64(t.PX)
 		py := float64(t.PY)
 		NEPX := rf.X[(2+c.Perspective)%4]
-		NEPY := rf.Y[(2+c.Perspective)%4]
+		NEPY := rf.Y[(2+c.Perspective)%4] - rf.Z[(2+c.Perspective)%4]
 		SEPX := rf.X[(1+c.Perspective)%4]
-		SEPY := rf.Y[(1+c.Perspective)%4]
+		SEPY := rf.Y[(1+c.Perspective)%4] - rf.Z[(1+c.Perspective)%4]
 		SWPX := rf.X[(0+c.Perspective)%4]
-		SWPY := rf.Y[(0+c.Perspective)%4]
+		SWPY := rf.Y[(0+c.Perspective)%4] - rf.Z[(0+c.Perspective)%4]
 		NWPX := rf.X[(3+c.Perspective)%4]
-		NWPY := rf.Y[(3+c.Perspective)%4]
+		NWPY := rf.Y[(3+c.Perspective)%4] - rf.Z[(3+c.Perspective)%4]
 		x := (NWPX*(MaxPX-px)*(MaxPY-py) +
 			SWPX*(MaxPX-px)*py +
 			NEPX*px*(MaxPY-py) +
@@ -34,7 +44,28 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf 
 			SWPY*(MaxPX-px)*py +
 			NEPY*px*(MaxPY-py) +
 			SEPY*px*py) / (MaxPX * MaxPY)
-		DrawPerson(cv, t, x, y-5, c)
+		if t.PE != nil && t.PE.GetLocation().Z > 0 {
+			if bpe, ok := t.PE.(*navigation.BuildingPathElement); ok {
+				z1 := getZByDir(bpe, t.Direction)
+				z2 := getZByDir(bpe, building.OppDir(t.Direction))
+				var z = 0.0
+				switch t.Direction {
+				case navigation.DirectionN:
+					z = (z1*(MaxPY-py) + z2*py) / MaxPY
+				case navigation.DirectionS:
+					z = (z1*py + z2*(MaxPY-py)) / MaxPY
+				case navigation.DirectionW:
+					z = (z1*(MaxPX-px) + z2*px) / MaxPX
+				case navigation.DirectionE:
+					z = (z1*px + z2*(MaxPX-px)) / MaxPX
+				}
+				DrawPerson(cv, t, x, y-5-z, c)
+			} else {
+				DrawPerson(cv, t, x, y-5, c)
+			}
+		} else {
+			DrawPerson(cv, t, x, y-5, c)
+		}
 	}
 }
 
