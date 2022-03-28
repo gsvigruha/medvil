@@ -62,6 +62,7 @@ func (bpe *BuildingPathElement) GetNeighbors(m IMap) []PathElement {
 				}
 			} else {
 				oppDir := uint8((dir + 2) % 4)
+				// The 0th building unit is the 1st Z, the 0th Z is the field level
 				nbcBelow := nf.Building.GetBuildingComponent(bpe.L.Z - 2)
 				nbcSame := nf.Building.GetBuildingComponent(bpe.L.Z - 1)
 				nbcAbove := nf.Building.GetBuildingComponent(bpe.L.Z)

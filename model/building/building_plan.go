@@ -18,6 +18,10 @@ const DirectionS uint8 = 2
 const DirectionW uint8 = 3
 const DirectionNone uint8 = 255
 
+func OppDir(dir uint8) uint8 {
+	return uint8((dir + 2) % 4)
+}
+
 var CoordDeltaByDirection = [4][2]int{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}
 
 type Floor struct {
@@ -212,8 +216,8 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 }
 
 func (b BuildingPlan) IsComplete() bool {
-	for i := 0; i < BuildingBaseMaxSize-1; i++ {
-		for j := 0; j < BuildingBaseMaxSize-1; j++ {
+	for i := 0; i < BuildingBaseMaxSize; i++ {
+		for j := 0; j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil {
 				return true
 			}
@@ -248,8 +252,8 @@ func (b BuildingPlan) HasUnitOrRoof(x, y, z uint8) bool {
 
 func (b *BuildingPlan) Copy() *BuildingPlan {
 	var bs [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits
-	for i := 0; i < BuildingBaseMaxSize-1; i++ {
-		for j := 0; j < BuildingBaseMaxSize-1; j++ {
+	for i := 0; i < BuildingBaseMaxSize; i++ {
+		for j := 0; j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil {
 				roof := *b.BaseShape[i][j].Roof
 				bs[i][j] = &PlanUnits{

@@ -8,8 +8,8 @@ import (
 type ConnectionType uint8
 
 const ConnectionTypeNone = 0
-const ConnectionTypeUpperLevel = 1
-const ConnectionTypeLowerLevel = 2
+const ConnectionTypeLowerLevel = 1
+const ConnectionTypeUpperLevel = 2
 
 type BuildingComponentBase struct {
 	B            *Building
@@ -42,8 +42,7 @@ func (u *RoofUnit) Connection(dir uint8) ConnectionType {
 		if dir == u.Roof.RampD {
 			return ConnectionTypeUpperLevel
 		}
-		oppDir := uint8((dir + 2) % 4)
-		if oppDir == u.Roof.RampD {
+		if OppDir(dir) == u.Roof.RampD {
 			return ConnectionTypeLowerLevel
 		}
 	case RoofTypeFlat:
