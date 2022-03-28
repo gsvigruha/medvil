@@ -53,9 +53,9 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 				n = append(n, nf)
 			} else {
 				n = append(n, nf)
-				nbc := nf.Building.BuildingComponents[0]
 				oppDir := uint8((dir + 2) % 4)
-				if nbc.Connection(oppDir) == building.ConnectionTypeLowerLevel {
+				nbc := nf.Building.GetBuildingComponent(0)
+				if nbc != nil && nbc.Connection(oppDir) == building.ConnectionTypeLowerLevel {
 					n = append(n, &BuildingPathElement{BC: nbc, L: Location{X: nf.X, Y: nf.Y, Z: 1}})
 				}
 			}

@@ -24,13 +24,16 @@ type Traveller struct {
 	Phase     uint8
 	Visible   bool
 	path      *Path
+	PE        PathElement
 	lane      uint8
 	stuckCntr uint8
 }
 
 func (t *Traveller) consumePathElement() {
 	if t.path != nil {
-		t.path = t.path.ConsumeElement()
+		path, removed := t.path.ConsumeElement()
+		t.path = path
+		t.PE = removed
 	}
 }
 

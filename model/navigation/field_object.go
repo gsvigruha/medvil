@@ -27,7 +27,11 @@ func (o FieldBuildingObjects) GetBuildingComponent(z uint8) building.BuildingCom
 	if len(o.BuildingComponents) <= int(z) {
 		return nil
 	}
-	return o.BuildingComponents[z]
+	bc := o.BuildingComponents[z]
+	if !bc.IsConstruction() {
+		return bc
+	}
+	return nil
 }
 
 func (o FieldBuildingObjects) GetBuilding() *building.Building {

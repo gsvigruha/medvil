@@ -24,6 +24,10 @@ func (b *BuildingComponentBase) SetConstruction(c bool) {
 	b.Construction = c
 }
 
+func (b *BuildingComponentBase) IsConstruction() bool {
+	return b.Construction
+}
+
 type RoofUnit struct {
 	BuildingComponentBase
 	Roof     Roof
@@ -66,6 +70,7 @@ func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
 type BuildingComponent interface {
 	Building() *Building
 	SetConstruction(bool)
+	IsConstruction() bool
 	Connection(dir uint8) ConnectionType
 }
 

@@ -11,12 +11,13 @@ type Path struct {
 	P []PathElement
 }
 
-func (p *Path) ConsumeElement() *Path {
+func (p *Path) ConsumeElement() (*Path, PathElement) {
 	if len(p.P) > 1 {
+		removed := p.P[0]
 		p.P = p.P[1:]
-		return p
+		return p, removed
 	}
-	return nil
+	return nil, nil
 }
 
 func (p *Path) LastElement() PathElement {
