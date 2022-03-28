@@ -45,12 +45,20 @@ func (f *Field) GetLocation() Location {
 
 func (f *Field) GetNeighbors(m IMap) []PathElement {
 	var n = []PathElement{}
-	nextCoords := [][]uint16{{f.X + 1, f.Y}, {f.X - 1, f.Y}, {f.X, f.Y + 1}, {f.X, f.Y - 1}}
-	for idx := range nextCoords {
-		x, y := nextCoords[idx][0], nextCoords[idx][1]
-		f := m.GetField(x, y)
-		if f != nil {
-			n = append(n, f)
+	for dir, coordDelta := range building.CoordDeltaByDirection {
+		x, y := uint16(coordDelta[0]+int(f.X)), uint16(coordDelta[1]+int(f.Y))
+		nf := m.GetField(x, y)
+		if nf != nil {
+			if nf.Building.Empty() {
+				n = append(n, nf)
+			} else {
+				n = append(n, nf)
+				nbc := nf.Building.BuildingComponents[0]
+				oppDir := uint8((dir + 2) % 4)
+				if nbc.Connection(oppDir) == building.ConnectionTypeLowerLevel {
+					n = append(n, &BuildingPathElement{BC: nbc, L: Location{X: nf.X, Y: nf.Y, Z: 1}})
+				}
+			}
 		}
 	}
 	return n

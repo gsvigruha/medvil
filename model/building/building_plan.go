@@ -18,6 +18,8 @@ const DirectionS uint8 = 2
 const DirectionW uint8 = 3
 const DirectionNone uint8 = 255
 
+var CoordDeltaByDirection = [4][2]int{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}
+
 type Floor struct {
 	M *materials.Material `json:"material"`
 }
@@ -242,4 +244,23 @@ func (b BuildingPlan) HasUnitOrRoof(x, y, z uint8) bool {
 		oz++
 	}
 	return oz > int(z)
+}
+
+func (b *BuildingPlan) Copy() *BuildingPlan {
+	var bs [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits
+	for i := 0; i < BuildingBaseMaxSize-1; i++ {
+		for j := 0; j < BuildingBaseMaxSize-1; j++ {
+			if b.BaseShape[i][j] != nil {
+				roof := *b.BaseShape[i][j].Roof
+				bs[i][j] = &PlanUnits{
+					Floors: b.BaseShape[i][j].Floors,
+					Roof:   &roof,
+				}
+			}
+		}
+	}
+	return &BuildingPlan{
+		BaseShape:    bs,
+		BuildingType: b.BuildingType,
+	}
 }
