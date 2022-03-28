@@ -47,7 +47,7 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf 
 		if t.PE != nil && t.PE.GetLocation().Z > 0 {
 			if bpe, ok := t.PE.(*navigation.BuildingPathElement); ok {
 				z1 := getZByDir(bpe, t.Direction)
-				z2 := getZByDir(bpe, (t.Direction+2)%4)
+				z2 := getZByDir(bpe, building.OppDir(t.Direction))
 				var z = 0.0
 				switch t.Direction {
 				case navigation.DirectionN:
