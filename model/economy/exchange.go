@@ -76,7 +76,7 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
 func (t *ExchangeTask) Blocked() bool {
 	switch t.state {
 	case ExchangeTaskStatePickupAtHome:
-		return false
+		return !t.Exchange.CanSell(t.goods) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney || !t.Exchange.CanBuy(t.GoodsToBuy)
 	case ExchangeTaskStateMarket:
 		return !t.Exchange.CanSell(t.goods) || t.Exchange.Price(t.GoodsToBuy) > *t.HouseholdMoney || !t.Exchange.CanBuy(t.GoodsToBuy)
 	case ExchangeTaskStateDropoffAtHome:
