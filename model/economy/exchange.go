@@ -13,6 +13,8 @@ type Exchange interface {
 	CanBuy([]artifacts.Artifacts) bool
 	CanSell([]artifacts.Artifacts) bool
 	Price([]artifacts.Artifacts) uint32
+	RegisterTask(*ExchangeTask)
+	UnregisterTask(*ExchangeTask)
 }
 
 const ExchangeTaskStatePickupAtHome uint8 = 0
@@ -68,6 +70,7 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
 		}
 	case ExchangeTaskStateDropoffAtHome:
 		t.HouseholdR.AddAll(t.goods)
+		t.Exchange.UnregisterTask(t)
 		return true
 	}
 	return false
@@ -94,6 +97,7 @@ func (t *ExchangeTask) Tag() string {
 }
 
 func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
+	t.Exchange.RegisterTask(t)
 	return false
 }
 
