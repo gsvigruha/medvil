@@ -13,8 +13,8 @@ type Artifacts struct {
 }
 
 type Order struct {
-	A        *Artifact
-	Quantity uint16
+	A         *Artifact
+	Quantity  uint16
 	UnitPrice uint16
 }
 
