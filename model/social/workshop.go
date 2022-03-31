@@ -22,7 +22,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				needs := w.Household.Resources.Needs(a.Multiply(ProductTransportQuantity).Wrap())
 				tag := "manufacture_input#" + a.A.Name
 				if needs != nil && w.Household.NumTasks("exchange", tag) == 0 {
-					if mp.Storage.Has(needs) && w.Household.Money >= mp.Price(needs) {
+					if w.Household.Money >= mp.Price(needs) {
 						mx, my := mp.Building.GetRandomBuildingXY()
 						w.Household.AddTask(&economy.ExchangeTask{
 							HomeF:          home,
@@ -52,7 +52,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				if qToSell > 0 {
 					tag := "sell_artifacts#" + a.Name
 					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
-					if w.Household.Town.Marketplace.CanSell(goods) && NumBatchesSimple(int(qToSell), ProductTransportQuantity) > w.Household.NumTasks("exchange", tag) {
+					if NumBatchesSimple(int(qToSell), ProductTransportQuantity) > w.Household.NumTasks("exchange", tag) {
 						mx, my := mp.Building.GetRandomBuildingXY()
 						w.Household.AddTask(&economy.ExchangeTask{
 							HomeF:          home,

@@ -144,7 +144,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			tag := "food_shopping#" + a.Name
 			if NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity) > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
-				if h.Money >= mp.Price(needs) && mp.CanBuy(needs) {
+				if h.Money >= mp.Price(needs) {
 					mx, my := mp.Building.GetRandomBuildingXY()
 					hx, hy := h.Building.GetRandomBuildingXY()
 					h.AddTask(&economy.ExchangeTask{

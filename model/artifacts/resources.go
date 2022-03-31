@@ -12,6 +12,12 @@ type Artifacts struct {
 	Quantity uint16
 }
 
+type Order struct {
+	A         *Artifact
+	Quantity  uint16
+	UnitPrice uint16
+}
+
 func (a Artifacts) Multiply(n uint16) Artifacts {
 	return Artifacts{A: a.A, Quantity: a.Quantity * n}
 }

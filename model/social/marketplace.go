@@ -3,33 +3,64 @@ package social
 import (
 	"medvil/model/artifacts"
 	"medvil/model/building"
+	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/stats"
 	"medvil/model/time"
 )
 
 type Marketplace struct {
-	Town     *Town
-	Building *building.Building
-	Money    uint32
-	Storage  artifacts.Resources
-	Prices   map[*artifacts.Artifact]uint32
-	Supply   map[*artifacts.Artifact]uint32
-	Demand   map[*artifacts.Artifact]uint32
+	Town         *Town
+	Building     *building.Building
+	Money        uint32
+	Storage      artifacts.Resources
+	Prices       map[*artifacts.Artifact]uint32
+	Sold         map[*artifacts.Artifact]uint32
+	Bought       map[*artifacts.Artifact]uint32
+	PendingTasks map[*economy.ExchangeTask]bool
 }
 
 func (mp *Marketplace) Init() {
 	mp.Prices = make(map[*artifacts.Artifact]uint32)
-	mp.Supply = make(map[*artifacts.Artifact]uint32)
-	mp.Demand = make(map[*artifacts.Artifact]uint32)
+	mp.Sold = make(map[*artifacts.Artifact]uint32)
+	mp.Bought = make(map[*artifacts.Artifact]uint32)
+	mp.PendingTasks = make(map[*economy.ExchangeTask]bool)
 	for _, a := range artifacts.All {
 		mp.Prices[a] = 10
-		mp.Supply[a] = 0
-		mp.Demand[a] = 0
+		mp.Reset(a)
 	}
 }
 
+func (mp *Marketplace) Reset(a *artifacts.Artifact) {
+	mp.Sold[a] = 0
+	mp.Bought[a] = 0
+}
+
+type SupplyAndDemand struct {
+	Supply uint32
+	Demand uint32
+}
+
 var gold = artifacts.GetArtifact("gold_coin")
+
+func (mp *Marketplace) pendingSupplyAndDemand() map[*artifacts.Artifact]*SupplyAndDemand {
+	sd := make(map[*artifacts.Artifact]*SupplyAndDemand)
+	for _, a := range artifacts.All {
+		sd[a] = &SupplyAndDemand{Supply: 0, Demand: 0}
+	}
+	for t := range mp.PendingTasks {
+		for _, a := range t.GoodsToSell {
+			sd[a.A].Supply += uint32(a.Quantity)
+		}
+		if mp.Price(t.GoodsToBuy) <= *t.HouseholdMoney {
+			for _, a := range t.GoodsToBuy {
+				sd[a.A].Demand += uint32(a.Quantity)
+			}
+		}
+
+	}
+	return sd
+}
 
 func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if Calendar.Hour == 0 && Calendar.Day == 1 {
@@ -38,38 +69,40 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		wallet := &mp.Town.Townhall.Household.Money
 		*wallet += price * 2
 		mp.Buy(allGold, wallet)
+		sd := mp.pendingSupplyAndDemand()
 
 		for _, a := range artifacts.All {
-			if mp.Supply[a] == 0 && mp.Demand[a] > 0 && mp.Demand[a] > uint32(mp.Storage.Get(a)) {
+			if mp.Sold[a] == 0 && mp.Bought[a] > 0 && mp.Bought[a] > uint32(mp.Storage.Get(a)) {
 				mp.Prices[a]++
-				mp.Supply[a] = 0
-				mp.Demand[a] = 0
-			} else if mp.Demand[a] == 0 && (mp.Supply[a] > 0 || mp.Storage.Get(a) > 0) {
+			} else if mp.Bought[a] == 0 && (mp.Sold[a] > 0 || mp.Storage.Get(a) > 0) {
 				if mp.Prices[a] > 1 {
 					mp.Prices[a]--
-					mp.Supply[a] = 0
-					mp.Demand[a] = 0
 				}
-			} else if mp.Demand[a] > 0 && mp.Supply[a] > 0 {
-				r := float64(mp.Supply[a]) / float64(mp.Demand[a])
+			} else if mp.Bought[a] > 0 && mp.Sold[a] > 0 {
+				r := float64(mp.Sold[a]) / float64(mp.Bought[a])
 				if r >= 1.1 && mp.Prices[a] > 1 {
 					mp.Prices[a]--
-					mp.Supply[a] = 0
-					mp.Demand[a] = 0
 				} else if r <= 0.9 {
 					mp.Prices[a]++
-					mp.Supply[a] = 0
-					mp.Demand[a] = 0
+				}
+			} else {
+				if sd[a].Supply < sd[a].Demand {
+					mp.Prices[a]++
+				} else if sd[a].Supply > sd[a].Demand && mp.Prices[a] > 1 {
+					mp.Prices[a]--
 				}
 			}
+			mp.Reset(a)
 		}
 	}
 }
 
-func (mp *Marketplace) RegisterDemand(as []artifacts.Artifacts) {
-	for _, a := range as {
-		mp.Demand[a.A] += uint32(a.Quantity)
-	}
+func (mp *Marketplace) RegisterTask(t *economy.ExchangeTask) {
+	mp.PendingTasks[t] = true
+}
+
+func (mp *Marketplace) UnregisterTask(t *economy.ExchangeTask) {
+	delete(mp.PendingTasks, t)
 }
 
 func (mp *Marketplace) Buy(as []artifacts.Artifacts, wallet *uint32) {
@@ -78,7 +111,7 @@ func (mp *Marketplace) Buy(as []artifacts.Artifacts, wallet *uint32) {
 	mp.Money += price
 	*wallet -= price
 	for _, a := range as {
-		mp.Demand[a.A] += uint32(a.Quantity)
+		mp.Bought[a.A] += uint32(a.Quantity)
 	}
 }
 
@@ -88,7 +121,7 @@ func (mp *Marketplace) BuyAsManyAsPossible(as []artifacts.Artifacts, wallet *uin
 	mp.Money += price
 	*wallet -= price
 	for _, a := range as {
-		mp.Demand[a.A] += uint32(a.Quantity)
+		mp.Bought[a.A] += uint32(a.Quantity)
 	}
 	return existingArtifacts
 }
@@ -99,7 +132,7 @@ func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet *uint32) {
 	mp.Money -= price
 	*wallet += price
 	for _, a := range as {
-		mp.Supply[a.A] += uint32(a.Quantity)
+		mp.Sold[a.A] += uint32(a.Quantity)
 	}
 }
 
