@@ -69,12 +69,18 @@ func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 		bt, bok := ot.(*economy.BuyTask)
 		if bok && !bt.Blocked() {
 			et.AddBuyTask(bt)
+			delete(mp.BuyTasks, bt)
 			combined = true
+		} else if bt != nil {
+			mp.BuyTasks[bt] = true
 		}
 		st, sok := ot.(*economy.SellTask)
 		if sok && !st.Blocked() {
 			et.AddSellTask(st)
+			delete(mp.SellTasks, st)
 			combined = true
+		} else if st != nil {
+			mp.SellTasks[st] = true
 		}
 		if !combined {
 			tasks = append(tasks, ot)
