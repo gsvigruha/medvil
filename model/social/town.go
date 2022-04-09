@@ -39,15 +39,15 @@ type Town struct {
 
 func (town *Town) Init() {
 	defaultTransfers := TransferCategories{
-		TaxRate:      20,
-		TaxThreshold: 100,
-		Subsidy:      100,
+		TaxRate:      30,
+		TaxThreshold: 300,
+		Subsidy:      200,
 	}
 	town.Transfers = &MoneyTransfers{
 		Farm:              defaultTransfers,
 		Workshop:          defaultTransfers,
 		Mine:              defaultTransfers,
-		MarketFundingRate: 30,
+		MarketFundingRate: 70,
 	}
 	town.Stats = &stats.Stats{}
 }
@@ -55,9 +55,10 @@ func (town *Town) Init() {
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	s := &stats.Stats{}
 	taxing := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
+	funding := (Calendar.Hour == 0 && Calendar.Day == 1)
 	town.Marketplace.ElapseTime(Calendar, m)
 	s.Add(town.Marketplace.Stats())
-	if taxing {
+	if funding {
 		town.Transfers.FundMarket(&town.Townhall.Household.Money, &town.Marketplace.Money)
 	}
 	for l := range town.Townhall.Household.People {

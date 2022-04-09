@@ -25,12 +25,16 @@ func (mp *Marketplace) Init() {
 	mp.Prices = make(map[*artifacts.Artifact]uint32)
 	mp.Sold = make(map[*artifacts.Artifact]uint32)
 	mp.Bought = make(map[*artifacts.Artifact]uint32)
-	mp.BuyTasks = make(map[*economy.BuyTask]bool)
-	mp.SellTasks = make(map[*economy.SellTask]bool)
+	mp.ResetBuyAndSellTasks()
 	for _, a := range artifacts.All {
 		mp.Prices[a] = 10
 		mp.Reset(a)
 	}
+}
+
+func (mp *Marketplace) ResetBuyAndSellTasks() {
+	mp.BuyTasks = make(map[*economy.BuyTask]bool)
+	mp.SellTasks = make(map[*economy.SellTask]bool)
 }
 
 func (mp *Marketplace) Reset(a *artifacts.Artifact) {
@@ -73,12 +77,10 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		sd := mp.pendingSupplyAndDemand()
 
 		for _, a := range artifacts.All {
-			if mp.Sold[a] == 0 && mp.Bought[a] > 0 && mp.Bought[a] > uint32(mp.Storage.Get(a)) {
+			if mp.Sold[a] == 0 && mp.Bought[a] > 0 {
 				mp.Prices[a]++
-			} else if mp.Bought[a] == 0 && (mp.Sold[a] > 0 || mp.Storage.Get(a) > 0) {
-				if mp.Prices[a] > 1 {
-					mp.Prices[a]--
-				}
+			} else if mp.Bought[a] == 0 && mp.Sold[a] > 0 && mp.Prices[a] > 1 {
+				mp.Prices[a]--
 			} else if mp.Bought[a] > 0 && mp.Sold[a] > 0 {
 				r := float64(mp.Sold[a]) / float64(mp.Bought[a])
 				if r >= 1.1 && mp.Prices[a] > 1 {
@@ -87,7 +89,7 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 					mp.Prices[a]++
 				}
 			} else {
-				if sd[a].Supply < sd[a].Demand && sd[a].Supply > 0 {
+				if sd[a].Supply < sd[a].Demand {
 					mp.Prices[a]++
 				} else if sd[a].Supply > sd[a].Demand && mp.Prices[a] > 1 {
 					mp.Prices[a]--

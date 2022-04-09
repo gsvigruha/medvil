@@ -64,12 +64,12 @@ func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 	}
 	var empty = true
 	var tasks []economy.Task
+	mp.ResetBuyAndSellTasks()
 	for _, ot := range h.Tasks {
 		var combined = false
 		bt, bok := ot.(*economy.BuyTask)
 		if bok && !bt.Blocked() {
 			et.AddBuyTask(bt)
-			delete(mp.BuyTasks, bt)
 			combined = true
 		} else if bt != nil {
 			mp.BuyTasks[bt] = true
@@ -77,7 +77,6 @@ func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 		st, sok := ot.(*economy.SellTask)
 		if sok && !st.Blocked() {
 			et.AddSellTask(st)
-			delete(mp.SellTasks, st)
 			combined = true
 		} else if st != nil {
 			mp.SellTasks[st] = true
@@ -175,17 +174,24 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	mp := h.Town.Marketplace
+	var numFoodBatchesNeeded = 0
+	for _, a := range economy.Foods {
+		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
+			numFoodBatchesNeeded += NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity)
+		}
+	}
 	for _, a := range economy.Foods {
 		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			tag := "food_shopping#" + a.Name
 			if NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity) > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
+				maxPrice := h.Money / uint32(numFoodBatchesNeeded)
 				if h.Money >= mp.Price(needs) {
 					h.AddTask(&economy.BuyTask{
 						Exchange:       mp,
 						HouseholdMoney: &h.Money,
 						Goods:          needs,
-						MaxPrice:       mp.Price(needs),
+						MaxPrice:       maxPrice,
 						TaskTag:        tag,
 					})
 				}
