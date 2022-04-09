@@ -50,7 +50,6 @@ func (h *Household) getNextTask() economy.Task {
 }
 
 func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
-	var tasks []economy.Task
 	mp := h.Town.Marketplace
 	mx, my := mp.Building.GetRandomBuildingXY()
 	et := &economy.ExchangeTask{
@@ -64,20 +63,23 @@ func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 		TaskTag:        "",
 	}
 	var empty = true
+	var tasks []economy.Task
 	for _, ot := range h.Tasks {
+		var combined = false
 		bt, bok := ot.(*economy.BuyTask)
 		if bok && !bt.Blocked() {
 			et.AddBuyTask(bt)
-			empty = false
-		} else {
-			tasks = append(tasks, bt)
+			combined = true
 		}
 		st, sok := ot.(*economy.SellTask)
 		if sok && !st.Blocked() {
 			et.AddSellTask(st)
-			empty = false
+			combined = true
+		}
+		if !combined {
+			tasks = append(tasks, ot)
 		} else {
-			tasks = append(tasks, st)
+			empty = false
 		}
 	}
 	if !empty {
