@@ -97,7 +97,6 @@ func CheckMineUseType(useType uint8, f *navigation.Field) bool {
 
 func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 	m.Household.ElapseTime(Calendar, imap)
-	home := imap.GetField(m.Household.Building.X, m.Household.Building.Y)
 	if Calendar.Hour == 0 {
 		for _, land := range m.Land {
 			m.AddTransportTask(land, imap)
@@ -115,16 +114,10 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 			tag := "sell_artifacts#" + a.Name
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
 			if NumBatchesSimple(int(qToSell), ProductTransportQuantity) > m.Household.NumTasks("exchange", tag) {
-				mx, my := m.Household.Town.Marketplace.Building.GetRandomBuildingXY()
-				m.Household.AddTask(&economy.ExchangeTask{
-					HomeF:          home,
-					MarketF:        imap.GetField(mx, my),
-					Exchange:       m.Household.Town.Marketplace,
-					HouseholdR:     &m.Household.Resources,
-					HouseholdMoney: &m.Household.Money,
-					GoodsToBuy:     nil,
-					GoodsToSell:    goods,
-					TaskTag:        tag,
+				m.Household.AddTask(&economy.SellTask{
+					Exchange: m.Household.Town.Marketplace,
+					Goods:    goods,
+					TaskTag:  tag,
 				})
 			}
 		}

@@ -9,14 +9,9 @@ import (
 type BuyTask struct {
 	Exchange       Exchange
 	HouseholdMoney *uint32
-	Artifact       *artifacts.Artifact
-	Quantity       uint16
-	MaxPrice       uint16
+	Goods          []artifacts.Artifacts
+	MaxPrice       uint32
 	TaskTag        string
-}
-
-func (t *BuyTask) GoodsToBuy() []artifacts.Artifacts {
-	return []artifacts.Artifacts{artifacts.Artifacts{A: t.Artifact, Quantity: t.Quantity}}
 }
 
 func (t *BuyTask) Field() *navigation.Field {
@@ -28,11 +23,11 @@ func (t *BuyTask) Complete(Calendar *time.CalendarType) bool {
 }
 
 func (t *BuyTask) Blocked() bool {
-	return t.Exchange.Price(t.GoodsToBuy()) > *t.HouseholdMoney || !t.Exchange.CanBuy(t.GoodsToBuy())
+	return t.Exchange.Price(t.Goods) > *t.HouseholdMoney || !t.Exchange.CanBuy(t.Goods)
 }
 
 func (t *BuyTask) Name() string {
-	return "buy"
+	return "exchange"
 }
 
 func (t *BuyTask) Tag() string {
@@ -40,5 +35,5 @@ func (t *BuyTask) Tag() string {
 }
 
 func (t *BuyTask) Expired(Calendar *time.CalendarType) bool {
-	return false
+	return t.Exchange.Price(t.Goods) > t.MaxPrice
 }

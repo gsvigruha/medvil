@@ -8,13 +8,8 @@ import (
 
 type SellTask struct {
 	Exchange Exchange
-	Artifact *artifacts.Artifact
-	Quantity uint16
+	Goods    []artifacts.Artifacts
 	TaskTag  string
-}
-
-func (t *SellTask) GoodsToSell() []artifacts.Artifacts {
-	return []artifacts.Artifacts{artifacts.Artifacts{A: t.Artifact, Quantity: t.Quantity}}
 }
 
 func (t *SellTask) Field() *navigation.Field {
@@ -26,11 +21,11 @@ func (t *SellTask) Complete(Calendar *time.CalendarType) bool {
 }
 
 func (t *SellTask) Blocked() bool {
-	return !t.Exchange.CanSell(t.GoodsToSell())
+	return !t.Exchange.CanSell(t.Goods)
 }
 
 func (t *SellTask) Name() string {
-	return "buy"
+	return "exchange"
 }
 
 func (t *SellTask) Tag() string {
