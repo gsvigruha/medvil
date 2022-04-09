@@ -101,8 +101,12 @@ func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
 	return false
 }
 
-func (t *ExchangeTask) Combine(ot *ExchangeTask) {
-	t.GoodsToBuy = append(t.GoodsToBuy, ot.GoodsToBuy...)
-	t.GoodsToSell = append(t.GoodsToSell, ot.GoodsToSell...)
-	t.TaskTag = t.TaskTag + ";" + ot.TaskTag
+func (t *ExchangeTask) AddBuyTask(bt *BuyTask) {
+	t.GoodsToBuy = append(t.GoodsToBuy, bt.Goods...)
+	t.TaskTag = t.TaskTag + ";" + bt.TaskTag
+}
+
+func (t *ExchangeTask) AddSellTask(st *SellTask) {
+	t.GoodsToSell = append(t.GoodsToSell, st.Goods...)
+	t.TaskTag = t.TaskTag + ";" + st.TaskTag
 }

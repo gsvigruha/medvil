@@ -49,22 +49,52 @@ func (h *Household) getNextTask() economy.Task {
 	return t
 }
 
-func (h *Household) getNextTaskCombineExchange() economy.Task {
-	t := h.getNextTask()
-	et, ok := t.(*economy.ExchangeTask)
-	if ok {
-		var tasks []economy.Task
-		for _, ot := range h.Tasks {
-			oet, ook := ot.(*economy.ExchangeTask)
-			if ook && !oet.Blocked() {
-				et.Combine(oet)
-			} else {
-				tasks = append(tasks, ot)
-			}
-		}
-		h.Tasks = tasks
+func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
+	mp := h.Town.Marketplace
+	mx, my := mp.Building.GetRandomBuildingXY()
+	et := &economy.ExchangeTask{
+		HomeF:          m.GetField(h.Building.X, h.Building.Y),
+		MarketF:        m.GetField(mx, my),
+		Exchange:       mp,
+		HouseholdR:     &h.Resources,
+		HouseholdMoney: &h.Money,
+		GoodsToBuy:     nil,
+		GoodsToSell:    nil,
+		TaskTag:        "",
 	}
-	return t
+	var empty = true
+	var tasks []economy.Task
+	for _, ot := range h.Tasks {
+		var combined = false
+		bt, bok := ot.(*economy.BuyTask)
+		if bok && !bt.Blocked() {
+			et.AddBuyTask(bt)
+			combined = true
+		}
+		st, sok := ot.(*economy.SellTask)
+		if sok && !st.Blocked() {
+			et.AddSellTask(st)
+			combined = true
+		}
+		if !combined {
+			tasks = append(tasks, ot)
+		} else {
+			empty = false
+		}
+	}
+	if !empty {
+		h.Tasks = tasks
+		return et
+	}
+	return nil
+}
+
+func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
+	et := h.getExchangeTask(m)
+	if et != nil {
+		return et
+	}
+	return h.getNextTask()
 }
 
 func (h *Household) AddTask(t economy.Task) {
@@ -145,16 +175,11 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity) > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
 				if h.Money >= mp.Price(needs) {
-					mx, my := mp.Building.GetRandomBuildingXY()
-					hx, hy := h.Building.GetRandomBuildingXY()
-					h.AddTask(&economy.ExchangeTask{
-						HomeF:          m.GetField(hx, hy),
-						MarketF:        m.GetField(mx, my),
+					h.AddTask(&economy.BuyTask{
 						Exchange:       mp,
-						HouseholdR:     &h.Resources,
 						HouseholdMoney: &h.Money,
-						GoodsToBuy:     needs,
-						GoodsToSell:    nil,
+						Goods:          needs,
+						MaxPrice:       mp.Price(needs),
 						TaskTag:        tag,
 					})
 				}

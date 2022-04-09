@@ -83,7 +83,6 @@ func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 
 func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	f.Household.ElapseTime(Calendar, m)
-	home := m.GetField(f.Household.Building.X, f.Household.Building.Y)
 	if economy.ArgicultureCycleStartTime.Matches(Calendar) {
 		for i := range f.Land {
 			l := f.Land[i]
@@ -127,16 +126,10 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			tag := "sell_artifacts#" + a.Name
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
 			if NumBatchesSimple(int(qToSell), ProductTransportQuantity) > f.Household.NumTasks("exchange", tag) {
-				mx, my := f.Household.Town.Marketplace.Building.GetRandomBuildingXY()
-				f.Household.AddTask(&economy.ExchangeTask{
-					HomeF:          home,
-					MarketF:        m.GetField(mx, my),
-					Exchange:       f.Household.Town.Marketplace,
-					HouseholdR:     &f.Household.Resources,
-					HouseholdMoney: &f.Household.Money,
-					GoodsToBuy:     nil,
-					GoodsToSell:    goods,
-					TaskTag:        tag,
+				f.Household.AddTask(&economy.SellTask{
+					Exchange: f.Household.Town.Marketplace,
+					Goods:    goods,
+					TaskTag:  tag,
 				})
 			}
 		}

@@ -23,15 +23,11 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				tag := "manufacture_input#" + a.A.Name
 				if needs != nil && w.Household.NumTasks("exchange", tag) == 0 {
 					if w.Household.Money >= mp.Price(needs) {
-						mx, my := mp.Building.GetRandomBuildingXY()
-						w.Household.AddTask(&economy.ExchangeTask{
-							HomeF:          home,
-							MarketF:        m.GetField(mx, my),
+						w.Household.AddTask(&economy.BuyTask{
 							Exchange:       mp,
-							HouseholdR:     &w.Household.Resources,
 							HouseholdMoney: &w.Household.Money,
-							GoodsToBuy:     needs,
-							GoodsToSell:    nil,
+							Goods:          needs,
+							MaxPrice:       mp.Price(needs),
 							TaskTag:        tag,
 						})
 					}
@@ -53,16 +49,10 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					tag := "sell_artifacts#" + a.Name
 					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
 					if NumBatchesSimple(int(qToSell), ProductTransportQuantity) > w.Household.NumTasks("exchange", tag) {
-						mx, my := mp.Building.GetRandomBuildingXY()
-						w.Household.AddTask(&economy.ExchangeTask{
-							HomeF:          home,
-							MarketF:        m.GetField(mx, my),
-							Exchange:       w.Household.Town.Marketplace,
-							HouseholdR:     &w.Household.Resources,
-							HouseholdMoney: &w.Household.Money,
-							GoodsToBuy:     nil,
-							GoodsToSell:    goods,
-							TaskTag:        tag,
+						w.Household.AddTask(&economy.SellTask{
+							Exchange: mp,
+							Goods:    goods,
+							TaskTag:  tag,
 						})
 					}
 				}
