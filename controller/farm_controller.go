@@ -84,7 +84,6 @@ func (fc *FarmController) Refresh() {
 }
 
 func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	var owns = false
 	for i := range fc.farm.Land {
 		l := &fc.farm.Land[i]
 		if l.F.X == rf.F.X && l.F.Y == rf.F.Y {
@@ -97,11 +96,10 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 				fc.farm.Land = append(fc.farm.Land[:i], fc.farm.Land[i+1:]...)
 				rf.F.Allocated = false
 			}
-			owns = true
-			break
+			return true
 		}
 	}
-	if !owns && !rf.F.Allocated && fc.UseType != economy.FarmFieldUseTypeBarren {
+	if rf.F.Arable() && !rf.F.Allocated && fc.UseType != economy.FarmFieldUseTypeBarren {
 		fc.farm.Land = append(fc.farm.Land, social.FarmLand{
 			X:       rf.F.X,
 			Y:       rf.F.Y,
@@ -109,6 +107,7 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 			F:       rf.F,
 		})
 		rf.F.Allocated = true
+		return true
 	}
-	return true
+	return false
 }

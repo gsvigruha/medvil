@@ -7,7 +7,7 @@ import (
 	"medvil/model/artifacts"
 )
 
-func RenderActiveBuildingPlanBase(cv *canvas.Canvas, c *controller.Controller) {
+func RenderActiveFields(cv *canvas.Canvas, c *controller.Controller) {
 	fields := c.GetActiveFields()
 	if fields != nil {
 		for _, f := range fields {

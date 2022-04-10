@@ -1,0 +1,33 @@
+package navigation
+
+import (
+	"medvil/model/building"
+)
+
+func RampPossible(m IMap, x, y, x2, y2 uint16) bool {
+	f := m.GetField(x, y)
+	f2 := m.GetField(x2, y2)
+	var d = 1
+	if f.Building.Empty() {
+		d = 2
+	}
+	if f2 != nil && !f2.Building.Empty() &&
+		f2.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeWall &&
+		len(f.Building.BuildingComponents)+d == len(f2.Building.BuildingComponents) {
+		return true
+	}
+	return false
+}
+
+func GetRampDirection(m IMap, x, y uint16) uint8 {
+	if RampPossible(m, x, y, x, y-1) {
+		return building.DirectionN
+	} else if RampPossible(m, x, y, x+1, y) {
+		return building.DirectionE
+	} else if RampPossible(m, x, y, x, y+1) {
+		return building.DirectionS
+	} else if RampPossible(m, x, y, x-1, y) {
+		return building.DirectionW
+	}
+	return DirectionNone
+}
