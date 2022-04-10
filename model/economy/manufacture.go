@@ -78,11 +78,13 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("bread"), Quantity: 2}}},
 	&Manufacture{
-		Name:    "butchering",
-		Time:    30 * 24,
-		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("sheep"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("meat"), Quantity: 3}}},
+		Name:   "butchering",
+		Time:   30 * 24,
+		Power:  1000,
+		Inputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("sheep"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{
+			artifacts.Artifacts{A: artifacts.GetArtifact("meat"), Quantity: 3},
+			artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 1}}},
 }
 
 func GetAllManufactureNames() []string {
