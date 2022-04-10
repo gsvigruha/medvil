@@ -105,25 +105,25 @@ func InfraToControlPanel(cp *ControlPanel) {
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(10), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/tower_1", X: float64(10), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
 		it: InfraTypeStoneWall1,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(50), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/tower_2", X: float64(50), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
 		it: InfraTypeStoneWall2,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(90), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/tower_3", X: float64(90), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
 		it: InfraTypeStoneWall3,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/stone_wall", X: float64(130), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/ramp", X: float64(130), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
 		it: InfraTypeStoneWallRamp,
 		ic: ic,
 	})

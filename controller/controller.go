@@ -175,7 +175,7 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				return
 			}
 		}
-		if rf != nil {
+		if c.ClickHandler == nil && rf != nil {
 			c.Reset()
 			c.SelectedField = rf.F
 			FieldToControlPanel(c.ControlPanel, c.SelectedField)

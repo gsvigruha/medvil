@@ -77,7 +77,6 @@ func (mc *MineController) Refresh() {
 }
 
 func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	var owns = false
 	for i := range mc.mine.Land {
 		l := &mc.mine.Land[i]
 		if l.F.X == rf.F.X && l.F.Y == rf.F.Y {
@@ -90,11 +89,10 @@ func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField)
 				mc.mine.Land = append(mc.mine.Land[:i], mc.mine.Land[i+1:]...)
 				rf.F.Allocated = false
 			}
-			owns = true
-			break
+			return true
 		}
 	}
-	if !owns && !rf.F.Allocated && mc.UseType != economy.MineFieldUseTypeNone {
+	if social.CheckMineUseType(mc.UseType, rf.F) && !rf.F.Allocated && mc.UseType != economy.MineFieldUseTypeNone {
 		if social.CheckMineUseType(mc.UseType, rf.F) {
 			mc.mine.Land = append(mc.mine.Land, social.MineLand{
 				X:       rf.F.X,
@@ -103,7 +101,8 @@ func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField)
 				F:       rf.F,
 			})
 			rf.F.Allocated = true
+			return true
 		}
 	}
-	return true
+	return false
 }
