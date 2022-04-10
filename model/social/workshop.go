@@ -20,7 +20,8 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if w.Manufacture != nil {
 		mp := w.Household.Town.Marketplace
 		purchasableInputs := artifacts.Purchasable(w.Manufacture.Inputs)
-		if float64(mp.Price(purchasableInputs))*ProfitCostRatio < float64(mp.Price(w.Manufacture.Outputs)) {
+		maxUnitCost := float64(mp.Price(w.Manufacture.Outputs)) / ProfitCostRatio
+		if float64(mp.Price(purchasableInputs)) < maxUnitCost {
 			needs := w.Household.Resources.Needs(artifacts.Multiply(purchasableInputs, ProductTransportQuantity))
 			tag := "manufacture_input"
 			if needs != nil && w.Household.NumTasks("exchange", tag) == 0 {
@@ -29,7 +30,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						Exchange:       mp,
 						HouseholdMoney: &w.Household.Money,
 						Goods:          needs,
-						MaxPrice:       uint32(float64(mp.Price(w.Manufacture.Outputs)*ProductTransportQuantity) / ProfitCostRatio),
+						MaxPrice:       uint32(maxUnitCost * ProductTransportQuantity),
 						TaskTag:        tag,
 					})
 				}
