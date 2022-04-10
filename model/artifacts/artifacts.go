@@ -42,10 +42,7 @@ var All = [...]*Artifact{
 	&Artifact{Name: "linen", M: materials.GetMaterial("linen"), V: 1},
 	&Artifact{Name: "wool", M: materials.GetMaterial("wool"), V: 1},
 	&Artifact{Name: "paper", M: materials.GetMaterial("paper"), V: 1},
-	&Artifact{Name: "paper", M: materials.GetMaterial("parchment"), V: 1},
 	// Clothes
-	&Artifact{Name: "clothes", M: materials.GetMaterial("leather"), V: 1},
-	&Artifact{Name: "clothes", M: materials.GetMaterial("linen"), V: 1},
 	&Artifact{Name: "clothes", M: materials.GetMaterial("wool"), V: 1},
 	// Tools
 }
