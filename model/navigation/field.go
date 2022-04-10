@@ -33,6 +33,7 @@ type Field struct {
 	Terrain      terrain.Terrain
 	Building     FieldBuildingObjects
 	Plant        *terrain.Plant
+	Animal       *terrain.Animal
 	Road         *building.Road
 	Travellers   []*Traveller
 	Allocated    bool
