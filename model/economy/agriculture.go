@@ -17,6 +17,8 @@ const AgriculturalTaskPlantingAppleTree = 4
 const AgriculturalTaskPlantingOakTree = 5
 const AgriculturalTaskTreeCutting = 6
 const AgriculturalTaskReedCutting = 7
+const AgriculturalTaskGrazing = 8
+const AgriculturalTaskCorralling = 9
 
 const AgriculturalTaskDurationPloughing = 24 * 30
 const AgriculturalTaskDurationSowing = 24 * 15
@@ -24,6 +26,8 @@ const AgriculturalTaskDurationHarvesting = 24 * 30
 const AgriculturalTaskDurationPlanting = 24 * 5
 const AgriculturalTaskDurationTreeCutting = 24 * 10
 const AgriculturalTaskDurationReedCutting = 24 * 10
+const AgriculturalTaskDurationGrazing = 24 * 5
+const AgriculturalTaskDurationCorralling = 24 * 5
 
 const FarmFieldUseTypeBarren uint8 = 0
 const FarmFieldUseTypeWheat uint8 = 1
@@ -114,6 +118,33 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 			t.F.Plant = nil
 			return true
 		}
+	case AgriculturalTaskGrazing:
+		if t.Progress >= AgriculturalTaskDurationGrazing {
+			if t.F.Animal == nil {
+				t.F.Animal = &terrain.Animal{
+					T:             terrain.Sheep,
+					BirthDateDays: Calendar.DaysElapsed(),
+					Fed:           false,
+					Corralled:     false,
+				}
+			} else {
+				t.F.Animal.Corralled = false
+			}
+			return true
+		}
+	case AgriculturalTaskCorralling:
+		if t.Progress >= AgriculturalTaskDurationCorralling {
+			if t.F.Animal != nil {
+				t.F.Terrain.Resources.Add(t.F.Animal.T.EndOfYearYield.A, t.F.Animal.T.EndOfYearYield.Quantity)
+				if t.F.Animal.IsMature(Calendar) {
+					t.F.Terrain.Resources.Add(t.F.Animal.T.EndOfLifeYield.A, t.F.Animal.T.EndOfLifeYield.Quantity)
+					t.F.Animal = nil
+				} else {
+					t.F.Animal.Corralled = true
+				}
+			}
+			return true
+		}
 	}
 	return false
 }
@@ -134,6 +165,10 @@ func (t *AgriculturalTask) Blocked() bool {
 		return t.F.Plant == nil || !t.F.Plant.IsTree()
 	case AgriculturalTaskReedCutting:
 		return t.F.Plant == nil || t.F.Plant.T.Name != "reed"
+	case AgriculturalTaskGrazing:
+		return t.F.Plant != nil || t.F.Terrain.T != terrain.Grass
+	case AgriculturalTaskCorralling:
+		return t.F.Animal == nil || !t.F.Animal.Fed
 	}
 	return false
 }
@@ -154,6 +189,10 @@ func (t *AgriculturalTask) Name() string {
 		return "treecutting"
 	case AgriculturalTaskReedCutting:
 		return "reedcutting"
+	case AgriculturalTaskGrazing:
+		return "grazing"
+	case AgriculturalTaskCorralling:
+		return "corralling"
 	}
 	return ""
 }

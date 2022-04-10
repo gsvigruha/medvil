@@ -53,6 +53,12 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 					f.Plant = nil
 				}
 			}
+			if f.Animal != nil {
+				f.Animal.ElapseTime(Calendar)
+				if Calendar.Season() == time.Winter && !f.Animal.Corralled {
+					f.Animal = nil
+				}
+			}
 			if f.Terrain.T == terrain.Canal && m.HasNeighborField(f.X, f.Y, terrain.Water) {
 				f.Terrain.T = terrain.Water
 				f.Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)

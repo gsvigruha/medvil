@@ -10,7 +10,7 @@ type ManufactureTask struct {
 	M        *Manufacture
 	F        *navigation.Field
 	R        *artifacts.Resources
-	Progress uint8
+	Progress uint16
 }
 
 func (t *ManufactureTask) Field() *navigation.Field {

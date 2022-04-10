@@ -32,6 +32,8 @@ func (l FarmLand) Context() string {
 		return "log"
 	case economy.FarmFieldUseTypeReed:
 		return "reed"
+	case economy.FarmFieldUseTypePasture:
+		return "sheep"
 	}
 	return ""
 }
@@ -109,6 +111,9 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				if l.F.Plant != nil && l.F.Plant.T.Name == "reed" {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskReedCutting, F: l.F, UseType: l.UseType, Start: *Calendar})
 				}
+			} else if l.UseType == economy.FarmFieldUseTypePasture && l.F.Terrain.T == terrain.Grass {
+				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskGrazing, F: l.F, UseType: l.UseType, Start: *Calendar})
+				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskCorralling, F: l.F, UseType: l.UseType, Start: *Calendar})
 			}
 			if l.F.Plant != nil && l.F.Plant.IsTree() && l.F.Plant.IsMature(Calendar) && l.UseType != economy.FarmFieldUseTypeOrchard {
 				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskTreeCutting, F: l.F, UseType: l.UseType, Start: *Calendar})
