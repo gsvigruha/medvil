@@ -27,7 +27,7 @@ const AgriculturalTaskDurationPlanting = 24 * 5
 const AgriculturalTaskDurationTreeCutting = 24 * 10
 const AgriculturalTaskDurationReedCutting = 24 * 10
 const AgriculturalTaskDurationGrazing = 24 * 5
-const AgriculturalTaskDurationCorralling = 24 * 5
+const AgriculturalTaskDurationCorralling = 24 * 10
 
 const FarmFieldUseTypeBarren uint8 = 0
 const FarmFieldUseTypeWheat uint8 = 1
