@@ -90,6 +90,6 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 		}
 	}
 	c.SwapRenderedObjects()
-	RenderActiveBuildingPlanBase(cv, c)
+	RenderActiveFields(cv, c)
 	c.ControlPanel.Render(cv)
 }
