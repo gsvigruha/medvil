@@ -20,9 +20,7 @@ type Animal struct {
 }
 
 func (a *Animal) ElapseTime(Calendar *time.CalendarType) {
-	if !a.Corralled && Calendar.Month >= 9 {
-		a.Fed = true
-	}
+	a.Fed = !a.Corralled && Calendar.Month >= 9
 }
 
 func (a *Animal) AgeYears(Calendar *time.CalendarType) uint32 {
