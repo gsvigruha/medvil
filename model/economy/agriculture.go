@@ -129,6 +129,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
 				}
 			} else {
 				t.F.Animal.Corralled = false
+				t.F.Animal.Fed = false
 			}
 			return true
 		}
