@@ -30,6 +30,16 @@ func Multiply(as []Artifacts, n uint16) []Artifacts {
 	return r
 }
 
+func Purchasable(as []Artifacts) []Artifacts {
+	r := make([]Artifacts, 0, len(as))
+	for i := range as {
+		if as[i].A != Water {
+			r = append(r, as[i])
+		}
+	}
+	return r
+}
+
 func (a Artifacts) Wrap() []Artifacts {
 	return []Artifacts{a}
 }
