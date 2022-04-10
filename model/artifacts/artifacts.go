@@ -57,3 +57,5 @@ func GetArtifact(name string) *Artifact {
 	}
 	return nil
 }
+
+var Water = GetArtifact("water")

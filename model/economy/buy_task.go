@@ -35,5 +35,7 @@ func (t *BuyTask) Tag() string {
 }
 
 func (t *BuyTask) Expired(Calendar *time.CalendarType) bool {
-	return t.Exchange.Price(t.Goods) > t.MaxPrice
+	expired := t.Exchange.Price(t.Goods) > t.MaxPrice
+	t.Exchange.RegisterBuyTask(t, !expired)
+	return expired
 }

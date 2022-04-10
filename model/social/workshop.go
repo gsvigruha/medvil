@@ -12,25 +12,27 @@ type Workshop struct {
 	Manufacture *economy.Manufacture
 }
 
+const ProfitCostRatio = 2.0
+
 func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.ElapseTime(Calendar, m)
 	home := m.GetField(w.Household.Building.X, w.Household.Building.Y)
 	if w.Manufacture != nil {
 		mp := w.Household.Town.Marketplace
-		if mp.Price(w.Manufacture.Inputs) < mp.Price(w.Manufacture.Outputs) {
-			for _, a := range w.Manufacture.Inputs {
-				needs := w.Household.Resources.Needs(a.Multiply(ProductTransportQuantity).Wrap())
-				tag := "manufacture_input#" + a.A.Name
-				if needs != nil && w.Household.NumTasks("exchange", tag) == 0 {
-					if w.Household.Money >= mp.Price(needs) {
-						w.Household.AddTask(&economy.BuyTask{
-							Exchange:       mp,
-							HouseholdMoney: &w.Household.Money,
-							Goods:          needs,
-							MaxPrice:       mp.Price(needs),
-							TaskTag:        tag,
-						})
-					}
+		purchasableInputs := artifacts.Purchasable(w.Manufacture.Inputs)
+		maxUnitCost := float64(mp.Price(w.Manufacture.Outputs)) / ProfitCostRatio
+		if float64(mp.Price(purchasableInputs)) < maxUnitCost {
+			needs := w.Household.Resources.Needs(artifacts.Multiply(purchasableInputs, ProductTransportQuantity))
+			tag := "manufacture_input"
+			if needs != nil && w.Household.NumTasks("exchange", tag) == 0 {
+				if w.Household.Money >= mp.Price(needs) {
+					w.Household.AddTask(&economy.BuyTask{
+						Exchange:       mp,
+						HouseholdMoney: &w.Household.Money,
+						Goods:          needs,
+						MaxPrice:       uint32(maxUnitCost * ProductTransportQuantity),
+						TaskTag:        tag,
+					})
 				}
 			}
 		}

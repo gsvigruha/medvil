@@ -39,25 +39,26 @@ type Town struct {
 
 func (town *Town) Init() {
 	defaultTransfers := TransferCategories{
-		TaxRate:      20,
-		TaxThreshold: 100,
-		Subsidy:      100,
+		TaxRate:      30,
+		TaxThreshold: 300,
+		Subsidy:      200,
 	}
 	town.Transfers = &MoneyTransfers{
 		Farm:              defaultTransfers,
 		Workshop:          defaultTransfers,
 		Mine:              defaultTransfers,
-		MarketFundingRate: 30,
+		MarketFundingRate: 70,
 	}
 	town.Stats = &stats.Stats{}
 }
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	s := &stats.Stats{}
-	taxing := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
+	eoYear := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
+	eoMonth := (Calendar.Hour == 0 && Calendar.Day == 1)
 	town.Marketplace.ElapseTime(Calendar, m)
 	s.Add(town.Marketplace.Stats())
-	if taxing {
+	if eoMonth {
 		town.Transfers.FundMarket(&town.Townhall.Household.Money, &town.Marketplace.Money)
 	}
 	for l := range town.Townhall.Household.People {
@@ -74,7 +75,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		farm.ElapseTime(Calendar, m)
-		if taxing {
+		if eoYear {
 			town.Transfers.Farm.Transfer(&town.Townhall.Household.Money, &farm.Household.Money)
 		}
 		farm.Household.Filter(Calendar, m)
@@ -87,7 +88,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		workshop.ElapseTime(Calendar, m)
-		if taxing {
+		if eoYear {
 			town.Transfers.Workshop.Transfer(&town.Townhall.Household.Money, &workshop.Household.Money)
 		}
 		workshop.Household.Filter(Calendar, m)
@@ -100,7 +101,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		mine.ElapseTime(Calendar, m)
-		if taxing {
+		if eoYear {
 			town.Transfers.Mine.Transfer(&town.Townhall.Household.Money, &mine.Household.Money)
 		}
 		mine.Household.Filter(Calendar, m)
