@@ -22,6 +22,14 @@ func (a Artifacts) Multiply(n uint16) Artifacts {
 	return Artifacts{A: a.A, Quantity: a.Quantity * n}
 }
 
+func Multiply(as []Artifacts, n uint16) []Artifacts {
+	r := make([]Artifacts, len(as))
+	for i := range as {
+		r[i] = as[i].Multiply(n)
+	}
+	return r
+}
+
 func (a Artifacts) Wrap() []Artifacts {
 	return []Artifacts{a}
 }
