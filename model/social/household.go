@@ -182,7 +182,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
 				var maxPrice = h.Money / uint32(numFoodBatchesNeeded)
 				if maxPrice > mp.Price(needs)*2 {
-					maxPrice = mp.Price(needs)
+					maxPrice = mp.Price(needs)*2
 				}
 				if h.Money >= mp.Price(needs) && mp.HasTraded(a) {
 					h.AddTask(&economy.BuyTask{
