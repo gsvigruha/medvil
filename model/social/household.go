@@ -180,8 +180,11 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			tag := "food_shopping#" + a.Name
 			if NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity) > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
-				maxPrice := h.Money / uint32(numFoodBatchesNeeded)
-				if h.Money >= mp.Price(needs) {
+				var maxPrice = h.Money / uint32(numFoodBatchesNeeded)
+				if maxPrice > mp.Price(needs)*2 {
+					maxPrice = mp.Price(needs)*2
+				}
+				if h.Money >= mp.Price(needs) && mp.HasTraded(a) {
 					h.AddTask(&economy.BuyTask{
 						Exchange:       mp,
 						HouseholdMoney: &h.Money,
