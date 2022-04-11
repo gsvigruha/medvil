@@ -22,7 +22,8 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		purchasableInputs := artifacts.Purchasable(w.Manufacture.Inputs)
 		maxUnitCost := float64(mp.Price(w.Manufacture.Outputs)) / ProfitCostRatio
 		if float64(mp.Price(purchasableInputs)) < maxUnitCost {
-			needs := w.Household.Resources.Needs(artifacts.Multiply(purchasableInputs, ProductTransportQuantity))
+			transportQ := MinProductTransportQuantity(purchasableInputs)
+			needs := w.Household.Resources.Needs(artifacts.Multiply(purchasableInputs, transportQ))
 			tag := "manufacture_input"
 			if needs != nil && w.Household.NumTasks("exchange", tag) == 0 {
 				if w.Household.Money >= mp.Price(needs) {
@@ -30,7 +31,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						Exchange:       mp,
 						HouseholdMoney: &w.Household.Money,
 						Goods:          needs,
-						MaxPrice:       uint32(maxUnitCost * ProductTransportQuantity),
+						MaxPrice:       uint32(maxUnitCost * float64(transportQ)),
 						TaskTag:        tag,
 					})
 				}
@@ -49,8 +50,8 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				qToSell := w.Household.ArtifactToSell(a, q, w.Manufacture.IsOutput(a))
 				if qToSell > 0 {
 					tag := "sell_artifacts#" + a.Name
-					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
-					if NumBatchesSimple(int(qToSell), ProductTransportQuantity) > w.Household.NumTasks("exchange", tag) {
+					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity(a)}}
+					if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > w.Household.NumTasks("exchange", tag) {
 						w.Household.AddTask(&economy.SellTask{
 							Exchange: mp,
 							Goods:    goods,

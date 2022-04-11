@@ -21,7 +21,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		maxPrice := uint32(float64(t.Household.Money) * PercentageSpentOnConstruction / float64(len(building.ConstructionInputs)))
 		for _, a := range building.ConstructionInputs {
 			tag := "construction_input#" + a.Name
-			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity}}
+			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity(a)}}
 			if t.Household.NumTasks("exchange", tag) == 0 && t.Household.Money >= mp.Price(goods) {
 				t.Household.AddTask(&economy.BuyTask{
 					Exchange:       mp,
