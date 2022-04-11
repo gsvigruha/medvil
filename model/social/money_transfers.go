@@ -28,8 +28,8 @@ func (t *TransferCategories) Transfer(townMoney, householdMoney *uint32) {
 }
 
 func (t *MoneyTransfers) FundMarket(townMoney, marketMoney *uint32) {
-	if int(*marketMoney) < int(*townMoney)*100/t.MarketFundingRate {
-		transfer := *townMoney*100/uint32(t.MarketFundingRate) - *marketMoney
+	if int(*marketMoney) < int(*townMoney)*t.MarketFundingRate/100 {
+		transfer := *townMoney*uint32(t.MarketFundingRate)/100 - *marketMoney
 		if transfer <= *townMoney {
 			*townMoney -= transfer
 			*marketMoney += transfer
