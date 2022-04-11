@@ -40,6 +40,14 @@ func Purchasable(as []Artifacts) []Artifacts {
 	return r
 }
 
+func GetVolume(as []Artifacts) uint16 {
+	var v uint16 = 0
+	for _, a := range as {
+		v += a.A.V * a.Quantity
+	}
+	return v
+}
+
 func (a Artifacts) Wrap() []Artifacts {
 	return []Artifacts{a}
 }

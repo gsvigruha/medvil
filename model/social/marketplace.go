@@ -89,7 +89,7 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 					mp.Prices[a]++
 				} else if sd[a].Supply > sd[a].Demand && mp.Prices[a] > 1 {
 					mp.Prices[a]--
-				} else if mp.Storage.Artifacts[a] >= ProductTransportQuantity && sd[a].Demand == 0 && mp.Prices[a] > 1 {
+				} else if mp.Storage.Artifacts[a] >= ProductTransportQuantity(a) && sd[a].Demand == 0 && mp.Prices[a] > 1 {
 					mp.Prices[a]--
 				}
 			}
