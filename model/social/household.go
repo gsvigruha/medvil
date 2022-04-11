@@ -175,7 +175,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			numFoodBatchesNeeded += NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity)
 		}
-		if mp.Prices[a] < minUnitPrice {
+		if mp.Prices[a] < minUnitPrice && mp.Storage.Artifacts[a] >= ProductTransportQuantity {
 			minUnitPrice = mp.Prices[a]
 		}
 	}
