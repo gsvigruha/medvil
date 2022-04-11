@@ -170,9 +170,13 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	mp := h.Town.Marketplace
 	var numFoodBatchesNeeded = 0
+	var minUnitPrice = uint32(65535)
 	for _, a := range economy.Foods {
 		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			numFoodBatchesNeeded += NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity)
+		}
+		if mp.Prices[a] < minUnitPrice {
+			minUnitPrice = mp.Prices[a]
 		}
 	}
 	for _, a := range economy.Foods {
@@ -180,7 +184,10 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			tag := "food_shopping#" + a.Name
 			if NumBatchesSimple(int(economy.BuyFoodOrDrinkPerPerson()*numP), FoodTransportQuantity) > h.NumTasks("exchange", tag) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
-				maxPrice := h.Money / uint32(numFoodBatchesNeeded)
+				var maxPrice = h.Money / uint32(numFoodBatchesNeeded)
+				if maxPrice > minUnitPrice*5 {
+					maxPrice = minUnitPrice * 5
+				}
 				if h.Money >= mp.Price(needs) {
 					h.AddTask(&economy.BuyTask{
 						Exchange:       mp,
