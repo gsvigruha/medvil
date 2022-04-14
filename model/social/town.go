@@ -127,6 +127,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				town.Farms = append(town.Farms, f)
 			case building.BuildingTypeRoad:
 				construction.Road.Construction = false
+				navigation.SetRoadConnections(m, m.GetField(construction.X, construction.Y))
 			case building.BuildingTypeCanal:
 				f := m.GetField(construction.X, construction.Y)
 				f.Construction = false

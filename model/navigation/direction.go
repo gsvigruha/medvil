@@ -6,3 +6,5 @@ const DirectionS = 2
 const DirectionW = 3
 
 const DirectionNone = 255
+
+var DirectionXY = [4][2]int{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}

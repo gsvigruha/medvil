@@ -37,13 +37,7 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 	}
 
 	if f.Construction || f.Road != nil {
-		if f.Construction || f.Road.Construction {
-			cv.SetFillStyle("texture/infra/construction.png")
-		} else {
-			cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
-		}
-		rf.Draw(cv)
-		cv.Fill()
+		RenderRoad(cv, rf, f, c)
 	}
 	if f.Plant != nil {
 		tx := rf.X[0] - PlantBufferW/2

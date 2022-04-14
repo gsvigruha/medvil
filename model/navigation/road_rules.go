@@ -31,3 +31,13 @@ func GetRampDirection(m IMap, x, y uint16) uint8 {
 	}
 	return DirectionNone
 }
+
+func SetRoadConnections(m IMap, f *Field) {
+	for i := 0; i < 4; i++ {
+		d := DirectionXY[i]
+		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		if of != nil && of.Road != nil {
+			f.Road.EdgeConnections[i] = true
+		}
+	}
+}
