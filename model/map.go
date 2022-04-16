@@ -62,6 +62,7 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			if f.Terrain.T == terrain.Canal && m.HasNeighborField(f.X, f.Y, terrain.Water) {
 				f.Terrain.T = terrain.Water
 				f.Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
+				navigation.SetRoadConnectionsForNeighbors(m, f)
 			}
 		}
 	}
