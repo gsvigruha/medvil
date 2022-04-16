@@ -197,7 +197,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	numTools := h.Resources.Get(Tools) + h.PeopleWithTools()
-	if numP > numTools+uint16(h.NumTasks("exchange", "tools_purchase")) {
+	if numP > numTools && h.NumTasks("exchange", "tools_purchase") == 0 {
 		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Tools, Quantity: 1}}
 		if h.Money >= mp.Price(needs) && mp.HasTraded(Tools) {
 			h.AddTask(&economy.BuyTask{
