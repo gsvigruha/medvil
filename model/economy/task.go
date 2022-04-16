@@ -6,7 +6,7 @@ import (
 )
 
 type Task interface {
-	Complete(Calendar *time.CalendarType) bool
+	Complete(Calendar *time.CalendarType, tool bool) bool
 	Field() *navigation.Field
 	Blocked() bool
 	Name() string

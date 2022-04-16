@@ -48,7 +48,7 @@ func (t *ExchangeTask) Field() *navigation.Field {
 	return nil
 }
 
-func (t *ExchangeTask) Complete(Calendar *time.CalendarType) bool {
+func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	switch t.state {
 	case ExchangeTaskStatePickupAtHome:
 		t.goods = t.HouseholdR.GetAsManyAsPossible(t.GoodsToSell)
