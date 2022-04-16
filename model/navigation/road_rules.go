@@ -38,6 +38,15 @@ func SetRoadConnections(m IMap, f *Field) {
 		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
 		if of != nil && of.Road != nil {
 			f.Road.EdgeConnections[i] = true
+			of.Road.EdgeConnections[(i+2)%4] = true
+		}
+	}
+	for i := 0; i < 4; i++ {
+		d := DirectionDiagonalXY[i]
+		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		if of != nil && of.Road != nil {
+			f.Road.CornerConnections[i] = true
+			of.Road.CornerConnections[(i+2)%4] = true
 		}
 	}
 }
