@@ -25,8 +25,6 @@ func RenderRoad(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 			rightEdge := f.Road.EdgeConnections[i]
 			if leftEdge {
 				cv.LineTo((rf.X[idx1]*7+rf.X[idx4])/8, (rf.Y[idx1]*7+rf.Y[idx4])/8-(rf.Z[idx1]*7+rf.Z[idx4])/8)
-			} else {
-				cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
 			}
 			if leftEdge && corner && rightEdge {
 				cv.LineTo(rf.X[idx1], rf.Y[idx1]-rf.Z[idx1])
@@ -35,8 +33,6 @@ func RenderRoad(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 			}
 			if rightEdge {
 				cv.LineTo((rf.X[idx1]*7+rf.X[idx2])/8, (rf.Y[idx1]*7+rf.Y[idx2])/8-(rf.Z[idx1]*7+rf.Z[idx2])/8)
-			} else {
-				cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
 			}
 		} else {
 			cv.LineTo(rf.X[idx1], rf.Y[idx1]-rf.Z[idx1])
