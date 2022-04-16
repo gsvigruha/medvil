@@ -43,7 +43,7 @@ func (t *EatTask) Field() *navigation.Field {
 	return t.F
 }
 
-func (t *EatTask) Complete(Calendar *time.CalendarType) bool {
+func (t *EatTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	t.P.Eat()
 	return true
 }
@@ -68,7 +68,7 @@ func (t *DrinkTask) Field() *navigation.Field {
 	return t.F
 }
 
-func (t *DrinkTask) Complete(Calendar *time.CalendarType) bool {
+func (t *DrinkTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	t.P.Drink()
 	return true
 }
@@ -93,7 +93,7 @@ func (t *GoHomeTask) Field() *navigation.Field {
 	return t.F
 }
 
-func (t *GoHomeTask) Complete(Calendar *time.CalendarType) bool {
+func (t *GoHomeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	t.P.SetHome()
 	return true
 }

@@ -19,7 +19,7 @@ func (t *BuildingTask) Field() *navigation.Field {
 	return t.F
 }
 
-func (t *BuildingTask) Complete(Calendar *time.CalendarType) bool {
+func (t *BuildingTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if !t.started && !t.Blocked() {
 		if len(t.C.Cost) > 0 {
 			a := t.C.Storage.GetArtifacts()[0]

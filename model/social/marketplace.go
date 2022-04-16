@@ -31,6 +31,7 @@ func (mp *Marketplace) Init() {
 		mp.Prices[a] = 10
 		mp.Reset(a)
 	}
+	mp.Prices[Tools] = 20
 }
 
 func (mp *Marketplace) Reset(a *artifacts.Artifact) {

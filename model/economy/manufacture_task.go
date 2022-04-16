@@ -17,9 +17,12 @@ func (t *ManufactureTask) Field() *navigation.Field {
 	return t.F
 }
 
-func (t *ManufactureTask) Complete(Calendar *time.CalendarType) bool {
+func (t *ManufactureTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.Progress < t.M.Time {
 		t.Progress++
+		if tool {
+			t.Progress++
+		}
 	}
 	if t.Progress >= t.M.Time {
 		t.R.AddAll(t.M.Outputs)

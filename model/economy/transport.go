@@ -25,7 +25,7 @@ func (t *TransportTask) Field() *navigation.Field {
 	}
 }
 
-func (t *TransportTask) Complete(Calendar *time.CalendarType) bool {
+func (t *TransportTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.dropoff {
 		t.DropoffR.Add(t.A, t.Quantity)
 		return true

@@ -13,6 +13,9 @@ import (
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
 const StoragePerArea = 50
+const ToolsBudgetRatio = 0.2
+
+var Tools = artifacts.GetArtifact("tools")
 
 type Household struct {
 	People          []*Person
@@ -193,10 +196,36 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	numTools := h.Resources.Get(Tools) + h.PeopleWithTools()
+	if numP > numTools && h.NumTasks("exchange", "tools_purchase") == 0 {
+		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Tools, Quantity: 1}}
+		if h.Money >= mp.Price(needs) && mp.HasTraded(Tools) {
+			h.AddTask(&economy.BuyTask{
+				Exchange:       mp,
+				HouseholdMoney: &h.Money,
+				Goods:          needs,
+				MaxPrice:       uint32(float64(h.Money) * ToolsBudgetRatio),
+				TaskTag:        "tools_purchase",
+			})
+		}
+	}
+}
+
+func (h *Household) PeopleWithTools() uint16 {
+	var n = uint16(0)
+	for _, p := range h.People {
+		if p.Tool {
+			n++
+		}
+	}
+	return n
 }
 
 func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bool) uint16 {
 	if a.Name == "water" {
+		return 0
+	}
+	if a == Tools && !isProduct {
 		return 0
 	}
 	var threshold = economy.MaxFoodOrDrinkPerPerson

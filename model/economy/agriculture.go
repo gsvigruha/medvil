@@ -49,8 +49,11 @@ func (t *AgriculturalTask) Field() *navigation.Field {
 	return t.F
 }
 
-func (t *AgriculturalTask) Complete(Calendar *time.CalendarType) bool {
+func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	t.Progress++
+	if tool {
+		t.Progress++
+	}
 	switch t.T {
 	case AgriculturalTaskPloughing:
 		if t.Progress >= AgriculturalTaskDurationPloughing {

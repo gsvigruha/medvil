@@ -16,7 +16,7 @@ func (t *SellTask) Field() *navigation.Field {
 	return nil
 }
 
-func (t *SellTask) Complete(Calendar *time.CalendarType) bool {
+func (t *SellTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	return false
 }
 

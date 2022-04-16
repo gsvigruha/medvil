@@ -37,7 +37,7 @@ func (t *MiningTask) Field() *navigation.Field {
 	return t.F
 }
 
-func (t *MiningTask) Complete(Calendar *time.CalendarType) bool {
+func (t *MiningTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	t.Progress++
 	switch t.UseType {
 	case MineFieldUseTypeStone:
