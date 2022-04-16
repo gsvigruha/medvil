@@ -19,23 +19,27 @@ func RenderRoad(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 		idx2 := (2 - (-c.Perspective + i)) % 4
 		idx3 := (1 - (-c.Perspective + i)) % 4
 		idx4 := (0 - (-c.Perspective + i)) % 4
-		leftEdge := f.Road.EdgeConnections[(i-1)%4]
-		rightEdge := f.Road.EdgeConnections[i]
-		corner := f.Road.CornerConnections[(i-1)%4]
-		if leftEdge {
-			cv.LineTo((rf.X[idx1]*7+rf.X[idx4])/8, (rf.Y[idx1]*7+rf.Y[idx4])/8-(rf.Z[idx1]*7+rf.Z[idx4])/8)
+		if !f.Construction {
+			leftEdge := f.Road.EdgeConnections[(i-1)%4]
+			corner := f.Road.CornerConnections[(i-1)%4]
+			rightEdge := f.Road.EdgeConnections[i]
+			if leftEdge {
+				cv.LineTo((rf.X[idx1]*7+rf.X[idx4])/8, (rf.Y[idx1]*7+rf.Y[idx4])/8-(rf.Z[idx1]*7+rf.Z[idx4])/8)
+			} else {
+				cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
+			}
+			if leftEdge && corner && rightEdge {
+				cv.LineTo(rf.X[idx1], rf.Y[idx1]-rf.Z[idx1])
+			} else {
+				cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
+			}
+			if rightEdge {
+				cv.LineTo((rf.X[idx1]*7+rf.X[idx2])/8, (rf.Y[idx1]*7+rf.Y[idx2])/8-(rf.Z[idx1]*7+rf.Z[idx2])/8)
+			} else {
+				cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
+			}
 		} else {
-			cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
-		}
-		if leftEdge && corner && rightEdge {
 			cv.LineTo(rf.X[idx1], rf.Y[idx1]-rf.Z[idx1])
-		} else {
-			cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
-		}
-		if rightEdge {
-			cv.LineTo((rf.X[idx1]*7+rf.X[idx2])/8, (rf.Y[idx1]*7+rf.Y[idx2])/8-(rf.Z[idx1]*7+rf.Z[idx2])/8)
-		} else {
-			cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
 		}
 	}
 	cv.ClosePath()
