@@ -33,9 +33,19 @@ func GetRampDirection(m IMap, x, y uint16) uint8 {
 	return DirectionNone
 }
 
+func SetRoadConnectionsForNeighbors(m IMap, f *Field) {
+	for i := 0; i < 8; i++ {
+		d := DirectionAllXY[i]
+		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		if of != nil && of.Road != nil {
+			SetRoadConnections(m, of)
+		}
+	}
+}
+
 func SetRoadConnections(m IMap, f *Field) {
 	for i := 0; i < 4; i++ {
-		d := DirectionXY[i]
+		d := DirectionOrthogonalXY[i]
 		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
 		if of != nil {
 			if of.Road != nil {
@@ -43,6 +53,9 @@ func SetRoadConnections(m IMap, f *Field) {
 				of.Road.EdgeConnections[(i+2)%4] = true
 			}
 			if f.Road.T.Bridge && of.Terrain.T != terrain.Water {
+				f.Road.EdgeConnections[i] = true
+			}
+			if !of.Building.Empty() {
 				f.Road.EdgeConnections[i] = true
 			}
 		}
@@ -53,6 +66,9 @@ func SetRoadConnections(m IMap, f *Field) {
 		if of != nil && of.Road != nil {
 			f.Road.CornerConnections[i] = true
 			of.Road.CornerConnections[(i+2)%4] = true
+		}
+		if !of.Building.Empty() {
+			f.Road.CornerConnections[i] = true
 		}
 	}
 }

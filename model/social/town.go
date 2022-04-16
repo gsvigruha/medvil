@@ -112,26 +112,29 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		construction := town.Constructions[k]
 		if construction.IsComplete() {
 			b := construction.Building
+			field := m.GetField(construction.X, construction.Y)
 			switch construction.T {
 			case building.BuildingTypeMine:
 				mine := &Mine{Household: Household{Building: b, Town: town}}
 				mine.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Mines = append(town.Mines, mine)
+				navigation.SetRoadConnectionsForNeighbors(m, field)
 			case building.BuildingTypeWorkshop:
 				w := &Workshop{Household: Household{Building: b, Town: town}}
 				w.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Workshops = append(town.Workshops, w)
+				navigation.SetRoadConnectionsForNeighbors(m, field)
 			case building.BuildingTypeFarm:
 				f := &Farm{Household: Household{Building: b, Town: town}}
 				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Farms = append(town.Farms, f)
+				navigation.SetRoadConnectionsForNeighbors(m, field)
 			case building.BuildingTypeRoad:
 				construction.Road.Construction = false
-				navigation.SetRoadConnections(m, m.GetField(construction.X, construction.Y))
+				navigation.SetRoadConnections(m, field)
 			case building.BuildingTypeCanal:
-				f := m.GetField(construction.X, construction.Y)
-				f.Construction = false
-				f.Terrain.T = terrain.Canal
+				field.Construction = false
+				field.Terrain.T = terrain.Canal
 			}
 			if b != nil {
 				m.SetBuildingUnits(b, false)
