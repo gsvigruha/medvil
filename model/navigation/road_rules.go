@@ -52,8 +52,8 @@ func SetRoadConnections(m IMap, f *Field) {
 				f.Road.EdgeConnections[i] = true
 				of.Road.EdgeConnections[(i+2)%4] = true
 			}
-			if f.Road.T.Bridge && of.Terrain.T != terrain.Water {
-				f.Road.EdgeConnections[i] = true
+			if f.Road.T.Bridge {
+				f.Road.EdgeConnections[i] = (of.Terrain.T != terrain.Water || of.Road != nil)
 			}
 			if !of.Building.Empty() {
 				f.Road.EdgeConnections[i] = true
