@@ -47,3 +47,7 @@ func (t *ManufactureTask) Tag() string {
 func (t *ManufactureTask) Expired(Calendar *time.CalendarType) bool {
 	return false
 }
+
+func (t *ManufactureTask) Motion() uint8 {
+	return navigation.MotionStand
+}

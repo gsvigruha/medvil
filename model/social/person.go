@@ -36,7 +36,12 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if p.Task != nil {
 		if p.Traveller.FX == p.Task.Field().X && p.Traveller.FY == p.Task.Field().Y {
 			// Work on task
-			p.Traveller.ResetPhase()
+			if p.Task.Motion() == navigation.MotionStand {
+				p.Traveller.ResetPhase()
+			} else {
+				p.Traveller.Motion = p.Task.Motion()
+				p.Traveller.IncPhase()
+			}
 			if p.Task.Complete(Calendar, p.Tool) {
 				p.releaseTask()
 			}

@@ -143,6 +143,7 @@ func (t *Traveller) MoveToDir(d uint8, m IMap) {
 
 func (t *Traveller) Move(m IMap) {
 	if t.path != nil {
+		t.Motion = MotionWalk
 		pe := t.path.P[0]
 		l := pe.GetLocation()
 		f := m.GetField(t.FX, t.FY)

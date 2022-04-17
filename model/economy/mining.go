@@ -84,3 +84,7 @@ func (t *MiningTask) Tag() string {
 func (t *MiningTask) Expired(Calendar *time.CalendarType) bool {
 	return false
 }
+
+func (t *MiningTask) Motion() uint8 {
+	return navigation.MotionStand
+}

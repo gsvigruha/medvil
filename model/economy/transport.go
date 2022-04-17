@@ -62,3 +62,7 @@ func TransportTaskTag(f *navigation.Field, a *artifacts.Artifact) string {
 func (t *TransportTask) Expired(Calendar *time.CalendarType) bool {
 	return false
 }
+
+func (t *TransportTask) Motion() uint8 {
+	return navigation.MotionStand
+}

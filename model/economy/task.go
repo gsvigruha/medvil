@@ -14,6 +14,7 @@ type Task interface {
 	Expired(Calendar *time.CalendarType) bool
 	Pause(bool)
 	IsPaused() bool
+	Motion() uint8
 }
 
 type TaskBase struct {

@@ -209,3 +209,7 @@ func (t *AgriculturalTask) Tag() string {
 func (t *AgriculturalTask) Expired(Calendar *time.CalendarType) bool {
 	return Calendar.DaysElapsed()-t.Start.DaysElapsed() >= 365
 }
+
+func (t *AgriculturalTask) Motion() uint8 {
+	return navigation.MotionFieldWork
+}
