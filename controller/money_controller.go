@@ -35,10 +35,10 @@ func (b MoneyControllerButton) Contains(x float64, y float64) bool {
 }
 
 func MoneyToControlPanel(p *gui.Panel, town *social.Town, targetWallet *uint32, amount uint32, x, y float64) {
-	p.AddTextLabel("money "+strconv.Itoa(int(*targetWallet)), x, y)
+	p.AddTextLabel("$ "+strconv.Itoa(int(*targetWallet)), x, y)
 	if town != nil {
 		p.AddButton(MoneyControllerButton{
-			b:            gui.ButtonGUI{Icon: "plus", X: x + 75, Y: y - 10, SX: 12, SY: 12},
+			b:            gui.ButtonGUI{Icon: "plus", X: x + 60, Y: y - 10, SX: 12, SY: 12},
 			sourceWallet: &town.Townhall.Household.Money,
 			targetWallet: targetWallet,
 			amount:       amount,
