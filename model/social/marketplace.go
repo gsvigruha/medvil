@@ -30,8 +30,14 @@ func (mp *Marketplace) Init() {
 	for _, a := range artifacts.All {
 		mp.Prices[a] = 10
 		mp.Reset(a)
+		for _, m := range economy.AllManufacture {
+			for _, o := range m.Outputs {
+				if a == o.A {
+					mp.Prices[a] = 20
+				}
+			}
+		}
 	}
-	mp.Prices[Tools] = 20
 }
 
 func (mp *Marketplace) Reset(a *artifacts.Artifact) {
