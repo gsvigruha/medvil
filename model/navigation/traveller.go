@@ -145,12 +145,12 @@ func (t *Traveller) Move(m IMap) {
 	if t.path != nil {
 		pe := t.path.P[0]
 		l := pe.GetLocation()
-		f0 := m.GetField(t.FX, t.FY)
+		f := m.GetField(t.FX, t.FY)
 		var steps = 1
-		if rand.Float64() < f0.GetSpeed()-1.0 {
+		if rand.Float64() < f.GetSpeed()-1.0 {
 			steps = 2
 			if rand.Float64() < RoadBreakdownRate {
-				f0.Road.Broken = true
+				f.Road.Broken = true
 			}
 		}
 		for i := 0; i < steps; i++ {
