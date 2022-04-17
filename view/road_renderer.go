@@ -11,7 +11,11 @@ func RenderRoad(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 	if f.Construction || f.Road.Construction {
 		cv.SetFillStyle("texture/infra/construction.png")
 	} else {
-		cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
+		if f.Road.Broken {
+			cv.SetFillStyle("texture/infra/" + f.Road.T.Name + "_broken.png")
+		} else {
+			cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
+		}
 	}
 	cv.BeginPath()
 	for i := uint8(0); i < 4; i++ {

@@ -10,6 +10,9 @@ import (
 	"medvil/model/time"
 )
 
+const ReedSpreadRate = 0.0001
+const GrassGrowRate = 0.0001
+
 type Map struct {
 	SX        uint16
 	SY        uint16
@@ -43,7 +46,7 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			f := &m.Fields[i][j]
 			if f.Plant != nil {
 				f.Plant.ElapseTime(Calendar)
-				if f.Plant.T.Name == "reed" && rand.Float64() < 0.0001 {
+				if f.Plant.T.Name == "reed" && rand.Float64() < ReedSpreadRate {
 					m.SpreadPlant(i-1, j)
 					m.SpreadPlant(i, j-1)
 					m.SpreadPlant(i+1, j)
@@ -63,6 +66,9 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 				f.Terrain.T = terrain.Water
 				f.Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
 				navigation.SetRoadConnectionsForNeighbors(m, f)
+			}
+			if f.Plant == nil && f.Terrain.T == terrain.Dirt && rand.Float64() < GrassGrowRate && Calendar.Season() == time.Winter {
+				f.Terrain.T = terrain.Grass
 			}
 		}
 	}
@@ -91,7 +97,7 @@ func (m *Map) AddBuildingConstruction(c *social.Country, x, y uint16, bp *buildi
 }
 
 func (m *Map) AddRoadConstruction(c *social.Country, x, y uint16, rt *building.RoadType) bool {
-	r := &building.Road{T: rt, Construction: true}
+	r := &building.Road{T: rt, Construction: true, Broken: false}
 	m.GetField(x, y).Road = r
 	c.Towns[0].CreateRoadConstruction(x, y, r, m)
 	return true

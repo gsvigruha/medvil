@@ -4,6 +4,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"strconv"
 )
 
 const BuildingTaskMaxProgress = 30 * 24
@@ -47,11 +48,11 @@ func (t *BuildingTask) Name() string {
 }
 
 func (t *BuildingTask) Tag() string {
-	return BuildingTaskTag()
+	return BuildingTaskTag(t.F)
 }
 
-func BuildingTaskTag() string {
-	return ""
+func BuildingTaskTag(f *navigation.Field) string {
+	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.X))
 }
 
 func (t *BuildingTask) Expired(Calendar *time.CalendarType) bool {
