@@ -130,18 +130,18 @@ func DrawTool(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.Pers
 	cv.SetLineWidth(3)
 
 	lh := m.LeftHand[p]
-	pcx1 := x + lh[0]*pm.XX + lh[1]*pm.XY + lh[2]*pm.XZ
-	pcy1 := y + lh[0]*pm.YX + lh[1]*pm.YY + lh[2]*pm.YZ
+	lhx := x + lh[0]*pm.XX + lh[1]*pm.XY + lh[2]*pm.XZ
+	lhy := y + lh[0]*pm.YX + lh[1]*pm.YY + lh[2]*pm.YZ
 
 	rh := m.RightHand[p]
-	pcx2 := x + rh[0]*pm.XX + rh[1]*pm.XY + rh[2]*pm.XZ
-	pcy2 := y + rh[0]*pm.YX + rh[1]*pm.YY + rh[2]*pm.YZ
+	rhx := x + rh[0]*pm.XX + rh[1]*pm.XY + rh[2]*pm.XZ
+	rhy := y + rh[0]*pm.YX + rh[1]*pm.YY + rh[2]*pm.YZ
 
-	tx := pcx2 + (pcx1-pcx2)*2
-	ty := pcy2 + (pcy1-pcy2)*2
+	tx := rhx + (lhx-rhx)*2
+	ty := rhy + (lhy-rhy)*2
 
 	cv.BeginPath()
-	cv.MoveTo(pcx2, pcy2)
+	cv.MoveTo(rhx, rhy)
 	cv.LineTo(tx, ty)
 	cv.ClosePath()
 	cv.Stroke()
