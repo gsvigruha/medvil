@@ -37,3 +37,7 @@ func (t *SellTask) Expired(Calendar *time.CalendarType) bool {
 	t.Exchange.RegisterSellTask(t, true)
 	return false
 }
+
+func (t *SellTask) Motion() uint8 {
+	return navigation.MotionStand
+}

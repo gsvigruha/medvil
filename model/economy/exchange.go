@@ -111,3 +111,7 @@ func (t *ExchangeTask) AddSellTask(st *SellTask) {
 	t.TaskTag = t.TaskTag + ";" + st.TaskTag
 	t.Exchange.RegisterSellTask(st, false)
 }
+
+func (t *ExchangeTask) Motion() uint8 {
+	return navigation.MotionStand
+}

@@ -124,11 +124,49 @@ func DrawRightArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.
 	DrawLimb(cv, pm, x, y, 2, 1, m.RightElbow[p], m.RightHand[p])
 }
 
+func DrawTool(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
+	// Tool
+	cv.SetStrokeStyle("#321")
+	cv.SetLineWidth(3)
+
+	lh := m.LeftHand[p]
+	pcx1 := x + lh[0]*pm.XX + lh[1]*pm.XY + lh[2]*pm.XZ
+	pcy1 := y + lh[0]*pm.YX + lh[1]*pm.YY + lh[2]*pm.YZ
+
+	rh := m.RightHand[p]
+	pcx2 := x + rh[0]*pm.XX + rh[1]*pm.XY + rh[2]*pm.XZ
+	pcy2 := y + rh[0]*pm.YX + rh[1]*pm.YY + rh[2]*pm.YZ
+
+	tx := pcx2 + (pcx1-pcx2)*2
+	ty := pcy2 + (pcy1-pcy2)*2
+
+	cv.BeginPath()
+	cv.MoveTo(pcx2, pcy2)
+	cv.LineTo(tx, ty)
+	cv.ClosePath()
+	cv.Stroke()
+
+	cv.SetFillStyle("#999")
+	cv.BeginPath()
+	cv.LineTo(tx, ty-2)
+	cv.LineTo(tx-2, ty)
+	cv.LineTo(tx, ty+4)
+	cv.LineTo(tx+2, ty)
+	cv.ClosePath()
+	cv.Fill()
+}
+
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
 	if !t.Visible {
 		return
 	}
-	m := animation.PersonMotionWalk
+	var m animation.PersonMotion
+	switch t.Motion {
+	case navigation.MotionWalk:
+		m = animation.PersonMotionWalk
+	case navigation.MotionFieldWork:
+		m = animation.PersonMotionFieldWork
+	}
 	p := (t.Phase / 2) % 8
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
@@ -139,6 +177,11 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	} else {
 		DrawRightArm(cv, pm, m, x, y, p)
 		DrawRightLeg(cv, pm, m, x, y, p)
+	}
+	if dirIdx == 1 || dirIdx == 2 {
+		if m.Tool {
+			DrawTool(cv, pm, m, x, y, p)
+		}
 	}
 
 	// Body
@@ -158,5 +201,10 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	} else {
 		DrawLeftLeg(cv, pm, m, x, y, p)
 		DrawLeftArm(cv, pm, m, x, y, p)
+	}
+	if dirIdx == 0 || dirIdx == 3 {
+		if m.Tool {
+			DrawTool(cv, pm, m, x, y, p)
+		}
 	}
 }

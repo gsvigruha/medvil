@@ -59,3 +59,7 @@ func BuildingTaskTag(f *navigation.Field) string {
 func (t *BuildingTask) Expired(Calendar *time.CalendarType) bool {
 	return false
 }
+
+func (t *BuildingTask) Motion() uint8 {
+	return navigation.MotionStand
+}
