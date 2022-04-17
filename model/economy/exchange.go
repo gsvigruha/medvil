@@ -23,6 +23,7 @@ const ExchangeTaskStateDropoffAtHome uint8 = 2
 const MaxWaitTime = 24 * 10
 
 type ExchangeTask struct {
+	TaskBase
 	HomeF          *navigation.Field
 	MarketF        *navigation.Field
 	Exchange       Exchange

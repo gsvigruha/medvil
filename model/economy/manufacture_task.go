@@ -7,6 +7,7 @@ import (
 )
 
 type ManufactureTask struct {
+	TaskBase
 	M        *Manufacture
 	F        *navigation.Field
 	R        *artifacts.Resources

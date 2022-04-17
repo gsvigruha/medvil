@@ -10,6 +10,7 @@ import (
 const BuildingTaskMaxProgress = 30 * 24
 
 type BuildingTask struct {
+	TaskBase
 	F        *navigation.Field
 	C        *building.Construction
 	started  bool

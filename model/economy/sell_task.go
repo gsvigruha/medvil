@@ -7,6 +7,7 @@ import (
 )
 
 type SellTask struct {
+	TaskBase
 	Exchange Exchange
 	Goods    []artifacts.Artifacts
 	TaskTag  string

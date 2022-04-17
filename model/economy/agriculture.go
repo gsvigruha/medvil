@@ -38,6 +38,7 @@ const FarmFieldUseTypeForestry uint8 = 5
 const FarmFieldUseTypeReed uint8 = 6
 
 type AgriculturalTask struct {
+	TaskBase
 	T        uint8
 	F        *navigation.Field
 	Progress uint16

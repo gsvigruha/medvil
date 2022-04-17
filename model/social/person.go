@@ -37,14 +37,23 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				}
 			}
 		} else {
-			p.Traveller.EnsurePath(p.Task.Field(), navigation.TravellerTypePedestrian, m)
-			if p.IsHome {
-				// Start on path
-				p.IsHome = false
-				p.Traveller.ResetPhase()
+			if p.Traveller.EnsurePath(p.Task.Field(), navigation.TravellerTypePedestrian, m) {
+				if p.IsHome {
+					// Start on path
+					p.IsHome = false
+					p.Traveller.ResetPhase()
+				} else {
+					// Move on path
+					p.Traveller.Move(m)
+				}
 			} else {
-				// Move on path
-				p.Traveller.Move(m)
+				p.Task.Pause(true)
+				p.Household.AddTask(p.Task)
+				p.Task = nil
+				if p.Tool {
+					p.Tool = false
+					p.Household.Resources.Add(Tools, 1)
+				}
 			}
 		}
 	} else {
