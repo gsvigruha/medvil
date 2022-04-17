@@ -25,16 +25,19 @@ func IsPersonalTask(n string) bool {
 }
 
 type EatTask struct {
+	TaskBase
 	F *navigation.Field
 	P Person
 }
 
 type DrinkTask struct {
+	TaskBase
 	F *navigation.Field
 	P Person
 }
 
 type GoHomeTask struct {
+	TaskBase
 	F *navigation.Field
 	P Person
 }

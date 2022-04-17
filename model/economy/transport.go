@@ -8,6 +8,7 @@ import (
 )
 
 type TransportTask struct {
+	TaskBase
 	PickupF  *navigation.Field
 	DropoffF *navigation.Field
 	PickupR  *artifacts.Resources

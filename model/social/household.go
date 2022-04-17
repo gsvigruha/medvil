@@ -29,7 +29,7 @@ type Household struct {
 
 func (h *Household) HasTask() bool {
 	for i := range h.Tasks {
-		if !h.Tasks[i].Blocked() {
+		if !h.Tasks[i].Blocked() && !h.Tasks[i].IsPaused() {
 			return true
 		}
 	}
@@ -39,7 +39,7 @@ func (h *Household) HasTask() bool {
 func (h *Household) getNextTask() economy.Task {
 	var i = 0
 	for i < len(h.Tasks) {
-		if !h.Tasks[i].Blocked() {
+		if !h.Tasks[i].Blocked() && !h.Tasks[i].IsPaused() {
 			break
 		}
 		i++
@@ -67,12 +67,12 @@ func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 	for _, ot := range h.Tasks {
 		var combined = false
 		bt, bok := ot.(*economy.BuyTask)
-		if bok && !bt.Blocked() && artifacts.GetVolume(et.GoodsToBuy) < ExchangeTaskMaxVolume {
+		if bok && !bt.Blocked() && !bt.IsPaused() && artifacts.GetVolume(et.GoodsToBuy) < ExchangeTaskMaxVolume {
 			et.AddBuyTask(bt)
 			combined = true
 		}
 		st, sok := ot.(*economy.SellTask)
-		if sok && !st.Blocked() && artifacts.GetVolume(et.GoodsToSell) < ExchangeTaskMaxVolume {
+		if sok && !st.Blocked() && !st.IsPaused() && artifacts.GetVolume(et.GoodsToSell) < ExchangeTaskMaxVolume {
 			et.AddSellTask(st)
 			combined = true
 		}
@@ -207,6 +207,13 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				MaxPrice:       uint32(float64(h.Money) * ToolsBudgetRatio),
 				TaskTag:        "tools_purchase",
 			})
+		}
+	}
+	if Calendar.Hour == 0 {
+		for i := 0; i < len(h.Tasks); i++ {
+			if h.Tasks[i].IsPaused() {
+				h.Tasks[i].Pause(false)
+			}
 		}
 	}
 }

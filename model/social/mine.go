@@ -62,8 +62,8 @@ func (m *Mine) UnmarshalJSON(data []byte) error {
 
 func (m *Mine) AddTransportTask(l MineLand, imap navigation.IMap) {
 	home := imap.GetField(m.Household.Building.X, m.Household.Building.Y)
-	if l.F.Terrain.Resources.HasRealArtifacts() {
-		for a, q := range l.F.Terrain.Resources.Artifacts {
+	for a, q := range l.F.Terrain.Resources.Artifacts {
+		if l.F.Terrain.Resources.IsRealArtifact(a) {
 			tag := economy.TransportTaskTag(l.F, a)
 			if m.Household.NumTasks("transport", tag) == 0 {
 				m.Household.AddTask(&economy.TransportTask{

@@ -28,6 +28,7 @@ var iron = artifacts.GetArtifact("iron_ore")
 var gold = artifacts.GetArtifact("gold_ore")
 
 type MiningTask struct {
+	TaskBase
 	F        *navigation.Field
 	Progress uint16
 	UseType  uint8

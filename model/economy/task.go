@@ -12,4 +12,18 @@ type Task interface {
 	Name() string
 	Tag() string
 	Expired(Calendar *time.CalendarType) bool
+	Pause(bool)
+	IsPaused() bool
+}
+
+type TaskBase struct {
+	Paused bool
+}
+
+func (t *TaskBase) Pause(paused bool) {
+	t.Paused = paused
+}
+
+func (t *TaskBase) IsPaused() bool {
+	return t.Paused
 }

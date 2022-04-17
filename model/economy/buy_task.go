@@ -7,6 +7,7 @@ import (
 )
 
 type BuyTask struct {
+	TaskBase
 	Exchange       Exchange
 	HouseholdMoney *uint32
 	Goods          []artifacts.Artifacts

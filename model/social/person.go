@@ -24,27 +24,36 @@ type Person struct {
 	Tool      bool
 }
 
+func (p *Person) releaseTask() {
+	p.Task = nil
+	if p.Tool {
+		p.Tool = false
+		p.Household.Resources.Add(Tools, 1)
+	}
+}
+
 func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if p.Task != nil {
 		if p.Traveller.FX == p.Task.Field().X && p.Traveller.FY == p.Task.Field().Y {
 			// Work on task
 			p.Traveller.ResetPhase()
 			if p.Task.Complete(Calendar, p.Tool) {
-				p.Task = nil
-				if p.Tool {
-					p.Tool = false
-					p.Household.Resources.Add(Tools, 1)
-				}
+				p.releaseTask()
 			}
 		} else {
-			p.Traveller.EnsurePath(p.Task.Field(), navigation.TravellerTypePedestrian, m)
-			if p.IsHome {
-				// Start on path
-				p.IsHome = false
-				p.Traveller.ResetPhase()
+			if p.Traveller.EnsurePath(p.Task.Field(), navigation.TravellerTypePedestrian, m) {
+				if p.IsHome {
+					// Start on path
+					p.IsHome = false
+					p.Traveller.ResetPhase()
+				} else {
+					// Move on path
+					p.Traveller.Move(m)
+				}
 			} else {
-				// Move on path
-				p.Traveller.Move(m)
+				p.Task.Pause(true)
+				p.Household.AddTask(p.Task)
+				p.releaseTask()
 			}
 		}
 	} else {
