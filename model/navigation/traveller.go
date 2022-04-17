@@ -13,6 +13,8 @@ const MaxStuckCntr = 5
 
 const TravellerTypePedestrian uint8 = 0
 
+const RoadBreakdownRate = 0.0001
+
 type Traveller struct {
 	FX        uint16
 	FY        uint16
@@ -145,8 +147,11 @@ func (t *Traveller) Move(m IMap) {
 		l := pe.GetLocation()
 		f0 := m.GetField(t.FX, t.FY)
 		var steps = 1
-		if f0.Road != nil && !f0.Road.Construction && rand.Float64() < f0.Road.T.Speed-1.0 {
+		if rand.Float64() < f0.GetSpeed()-1.0 {
 			steps = 2
+			if rand.Float64() < RoadBreakdownRate {
+				f0.Road.Broken = true
+			}
 		}
 		for i := 0; i < steps; i++ {
 			var dirToLane uint8 = DirectionNone

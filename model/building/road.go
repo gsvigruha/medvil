@@ -26,6 +26,7 @@ var BridgeRoadType = &RoadType{
 type Road struct {
 	T                 *RoadType
 	Construction      bool
+	Broken            bool
 	EdgeConnections   [4]bool
 	CornerConnections [4]bool
 }

@@ -35,6 +35,7 @@ type Town struct {
 	Constructions []*building.Construction
 	Stats         *stats.Stats
 	Transfers     *MoneyTransfers
+	Roads         []*navigation.Field
 }
 
 func (town *Town) Init() {
@@ -130,8 +131,13 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				town.Farms = append(town.Farms, f)
 				navigation.SetRoadConnectionsForNeighbors(m, field)
 			case building.BuildingTypeRoad:
-				construction.Road.Construction = false
-				navigation.SetRoadConnections(m, field)
+				if construction.Road.Construction {
+					construction.Road.Construction = false
+					navigation.SetRoadConnections(m, field)
+					town.Roads = append(town.Roads, field)
+				} else if construction.Road.Broken {
+					construction.Road.Broken = false
+				}
 			case building.BuildingTypeCanal:
 				field.Construction = false
 				field.Terrain.T = terrain.Canal
@@ -145,6 +151,20 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	town.Constructions = constructions
 	town.Stats = s
+	for _, road := range town.Roads {
+		if road.Road.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(road)) == 0 {
+			c := &building.Construction{
+				Road:    road.Road,
+				X:       road.X,
+				Y:       road.Y,
+				Cost:    road.Road.T.Cost,
+				T:       building.BuildingTypeRoad,
+				Storage: &artifacts.Resources{},
+			}
+			town.Constructions = append(town.Constructions, c)
+			town.AddConstructionTasks(c, road, m)
+		}
+	}
 }
 
 func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m navigation.IMap) {

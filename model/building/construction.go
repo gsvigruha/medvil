@@ -25,5 +25,5 @@ type Construction struct {
 }
 
 func (c *Construction) IsComplete() bool {
-	return c.Progress == c.MaxProgress
+	return c.Progress >= c.MaxProgress
 }

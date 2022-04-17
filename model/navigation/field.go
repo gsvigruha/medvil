@@ -65,7 +65,7 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 }
 
 func (f *Field) GetSpeed() float64 {
-	if f.Road != nil && !f.Road.Construction {
+	if f.Road != nil && !f.Road.Construction && !f.Road.Broken {
 		return f.Road.T.Speed
 	}
 	return 1.0

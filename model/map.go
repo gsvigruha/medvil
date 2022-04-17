@@ -97,7 +97,7 @@ func (m *Map) AddBuildingConstruction(c *social.Country, x, y uint16, bp *buildi
 }
 
 func (m *Map) AddRoadConstruction(c *social.Country, x, y uint16, rt *building.RoadType) bool {
-	r := &building.Road{T: rt, Construction: true}
+	r := &building.Road{T: rt, Construction: true, Broken: false}
 	m.GetField(x, y).Road = r
 	c.Towns[0].CreateRoadConstruction(x, y, r, m)
 	return true
