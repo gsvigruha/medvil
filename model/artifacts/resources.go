@@ -96,6 +96,13 @@ func (r *Resources) Add(a *Artifact, q uint16) {
 	}
 }
 
+func (r *Resources) IsRealArtifact(a *Artifact) bool {
+	if q, ok := r.Artifacts[a]; ok {
+		return q < InfiniteQuantity
+	}
+	return false
+}
+
 func (r *Resources) HasRealArtifacts() bool {
 	for _, q := range r.Artifacts {
 		if q > 0 && q < InfiniteQuantity {
