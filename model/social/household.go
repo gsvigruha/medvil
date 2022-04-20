@@ -14,7 +14,9 @@ import (
 const ReproductionRate = 1.0 / (24 * 30 * 12)
 const StoragePerArea = 50
 const ToolsBudgetRatio = 0.2
+const HeatingBudgetRatio = 0.3
 
+var Log = artifacts.GetArtifact("log")
 var Tools = artifacts.GetArtifact("tools")
 
 type Household struct {
@@ -25,6 +27,7 @@ type Household struct {
 	Town            *Town
 	Tasks           []economy.Task
 	Resources       artifacts.Resources
+	Heating         float64
 }
 
 func (h *Household) HasTask() bool {
@@ -209,6 +212,21 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			})
 		}
 	}
+	if h.Resources.Get(Log) < h.heatingFuelNeeded() {
+		tag := "heating_shopping"
+		if NumBatchesSimple(h.heatingFuelNeeded(), ProductTransportQuantity(Log)) > h.NumTasks("exchange", tag) {
+			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Log, Quantity: ProductTransportQuantity(Log)}}
+			if h.Money >= mp.Price(needs) && mp.HasTraded(Log) {
+				h.AddTask(&economy.BuyTask{
+					Exchange:       mp,
+					HouseholdMoney: &h.Money,
+					Goods:          needs,
+					MaxPrice:       uint32(float64(h.Money) * HeatingBudgetRatio),
+					TaskTag:        tag,
+				})
+			}
+		}
+	}
 	if Calendar.Hour == 0 {
 		for i := 0; i < len(h.Tasks); i++ {
 			if h.Tasks[i].IsPaused() {
@@ -216,6 +234,26 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	if Calendar.Day == 1 && Calendar.Hour == 0 {
+		if Calendar.Season() == time.Winter {
+			logs := h.Resources.Remove(Log, h.heatingFuelNeededPerMonth())
+			h.Heating = float64(logs) / float64(h.heatingFuelNeededPerMonth())
+		} else {
+			h.Heating = 1.0
+		}
+	}
+}
+
+func (h *Household) heatingFuelNeededPerMonth() uint16 {
+	fuel := uint16(len(h.People) / 5)
+	if fuel > 0 {
+		return fuel
+	}
+	return 1
+}
+
+func (h *Household) heatingFuelNeeded() uint16 {
+	return h.heatingFuelNeededPerMonth() * time.NumWinterMonths
 }
 
 func (h *Household) PeopleWithTools() uint16 {
@@ -248,6 +286,13 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bo
 		}
 	} else {
 		result = q
+	}
+	if a == Log {
+		if q > h.heatingFuelNeeded() {
+			result = q - h.Building.Plan.Area()*time.NumWinterMonths
+		} else {
+			return 0
+		}
 	}
 	if result >= ProductTransportQuantity(a) || h.Resources.Full() {
 		return result

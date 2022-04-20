@@ -14,6 +14,8 @@ const (
 	Winter uint8 = 3
 )
 
+const NumWinterMonths = 3
+
 const StartDateDays uint32 = 1000 * 12 * 30
 
 func (c *CalendarType) Tick() {
