@@ -213,7 +213,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	if h.Resources.Get(Log) < h.heatingFuelNeeded() {
-		tag := "heating_shopping"
+		tag := "heating_fuel_shopping"
 		if NumBatchesSimple(h.heatingFuelNeeded(), ProductTransportQuantity(Log)) > h.NumTasks("exchange", tag) {
 			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Log, Quantity: ProductTransportQuantity(Log)}}
 			if h.Money >= mp.Price(needs) && mp.HasTraded(Log) {
