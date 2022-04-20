@@ -289,7 +289,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bo
 	}
 	if a == Log {
 		if q > h.heatingFuelNeeded() {
-			result = q - h.Building.Plan.Area()*time.NumWinterMonths
+			result = q - h.heatingFuelNeeded()
 		} else {
 			return 0
 		}
