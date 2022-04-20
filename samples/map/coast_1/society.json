@@ -19,7 +19,8 @@
                 "cube": 50,
                 "board": 40,
                 "tile": 10,
-                "thatch": 10
+                "thatch": 10,
+                "log": 20
               }
             }
           }, 
