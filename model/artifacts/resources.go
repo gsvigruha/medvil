@@ -144,7 +144,7 @@ func (r *Resources) Remove(a *Artifact, q uint16) uint16 {
 			return q
 		} else {
 			r.Artifacts[a] = 0
-			return q - e
+			return e
 		}
 	}
 	return 0
