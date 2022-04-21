@@ -17,7 +17,10 @@ const ToolsBudgetRatio = 0.2
 const HeatingBudgetRatio = 0.3
 
 var Log = artifacts.GetArtifact("log")
+var Firewood = artifacts.GetArtifact("firewood")
 var Tools = artifacts.GetArtifact("tools")
+
+const LogToFirewood = 5
 
 type Household struct {
 	People          []*Person
@@ -212,9 +215,9 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			})
 		}
 	}
-	if h.Resources.Get(Log) < h.heatingFuelNeeded() {
+	if h.Resources.Get(Firewood) < h.heatingFuelNeeded() && h.Resources.Get(Log)*LogToFirewood < h.heatingFuelNeeded() {
 		tag := "heating_fuel_shopping"
-		if NumBatchesSimple(h.heatingFuelNeeded(), ProductTransportQuantity(Log)) > h.NumTasks("exchange", tag) {
+		if NumBatchesSimple(ProductTransportQuantity(Log), ProductTransportQuantity(Log)) > h.NumTasks("exchange", tag) {
 			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Log, Quantity: ProductTransportQuantity(Log)}}
 			if h.Money >= mp.Price(needs) && mp.HasTraded(Log) {
 				h.AddTask(&economy.BuyTask{
@@ -234,10 +237,13 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	if h.Resources.Get(Firewood) < h.heatingFuelNeededPerMonth() && h.Resources.Remove(Log, 1) > 0 {
+		h.Resources.Add(Firewood, LogToFirewood)
+	}
 	if Calendar.Day == 1 && Calendar.Hour == 0 {
 		if Calendar.Season() == time.Winter {
-			logs := h.Resources.Remove(Log, h.heatingFuelNeededPerMonth())
-			h.Heating = float64(logs) / float64(h.heatingFuelNeededPerMonth())
+			wood := h.Resources.Remove(Firewood, h.heatingFuelNeededPerMonth())
+			h.Heating = float64(wood) / float64(h.heatingFuelNeededPerMonth())
 		} else {
 			h.Heating = 1.0
 		}
@@ -245,7 +251,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (h *Household) heatingFuelNeededPerMonth() uint16 {
-	fuel := uint16(len(h.People) / 5)
+	fuel := uint16(len(h.People) / 3)
 	if fuel > 0 {
 		return fuel
 	}
@@ -267,7 +273,7 @@ func (h *Household) PeopleWithTools() uint16 {
 }
 
 func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bool) uint16 {
-	if a.Name == "water" {
+	if a.Name == "water" || a == Firewood {
 		return 0
 	}
 	if a == Tools && !isProduct {
@@ -288,8 +294,9 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bo
 		result = q
 	}
 	if a == Log {
-		if q > h.heatingFuelNeeded() {
-			result = q - h.heatingFuelNeeded()
+		logs := h.heatingFuelNeeded()/LogToFirewood + 1
+		if q > logs {
+			result = q - logs
 		} else {
 			return 0
 		}
