@@ -155,3 +155,12 @@ func (f *Farm) GetFields() []navigation.FieldWithContext {
 	}
 	return fields
 }
+
+func (f *Farm) FieldUsableFor(m navigation.IMap, field *navigation.Field, useType uint8) bool {
+	if useType == economy.FarmFieldUseTypeReed {
+		return m.Shore(field.X, field.Y)
+	} else if useType != economy.FarmFieldUseTypeBarren {
+		return field.Arable()
+	}
+	return false
+}
