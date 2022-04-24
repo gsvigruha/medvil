@@ -30,9 +30,10 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 			ctx:     ctx,
 		},
 		Bic: &BuildingImageCache{
-			unitEntries: make(map[string]*CacheEntry),
-			roofEntries: make(map[string]*CacheEntry),
-			ctx:         ctx,
+			unitEntries:      make(map[string]*CacheEntry),
+			roofEntries:      make(map[string]*CacheEntry),
+			extensionEntries: make(map[string]*CacheEntry),
+			ctx:              ctx,
 		},
 	}
 }
@@ -61,6 +62,12 @@ func (ic *ImageCache) Clean() {
 		if t-v.createdTime > 10000*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Bic.unitEntries, k)
+		}
+	}
+	for k, v := range ic.Bic.extensionEntries {
+		if t-v.createdTime > 10000*1000*1000 {
+			v.offscreen.Delete()
+			delete(ic.Bic.extensionEntries, k)
 		}
 	}
 }

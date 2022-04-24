@@ -12,11 +12,13 @@ import (
 
 var BuildingBufferW = DX * 2
 var BuildingBufferH = DY*2 + DZ*BuildingUnitHeight
+var BuildingExtensionBufferH = 200.0
 
 type BuildingImageCache struct {
-	unitEntries map[string]*CacheEntry
-	roofEntries map[string]*CacheEntry
-	ctx         *goglbackend.GLContext
+	unitEntries      map[string]*CacheEntry
+	roofEntries      map[string]*CacheEntry
+	extensionEntries map[string]*CacheEntry
+	ctx              *goglbackend.GLContext
 }
 
 func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
@@ -72,5 +74,33 @@ func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
 			createdTime: t,
 		}
 		return cv, rbu.Move(xMin, yMin-z), xMin, yMin - z
+	}
+}
+
+func (ic *BuildingImageCache) RenderBuildingExtensionOnBuffer(
+	extension *building.ExtensionUnit,
+	rf renderer.RenderedField,
+	numUnits int,
+	c *controller.Controller) (*canvas.Canvas, float64, float64) {
+
+	t := time.Now().UnixNano()
+	key := extension.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
+	z := BuildingExtensionBufferH / 2
+	xMin, yMin, _, _ := rf.BoundingBox()
+	bufferedRF := rf.Move(-xMin, -yMin+z)
+
+	if ce, ok := ic.extensionEntries[key]; ok {
+		return ce.cv, xMin, yMin - z
+	} else {
+		offscreen, _ := goglbackend.NewOffscreen(int(BuildingBufferW), int(BuildingExtensionBufferH), true, ic.ctx)
+		cv := canvas.New(offscreen)
+		cv.ClearRect(0, 0, BuildingBufferW, BuildingExtensionBufferH)
+		RenderBuildingExtension(cv, extension, bufferedRF, numUnits, c)
+		ic.extensionEntries[key] = &CacheEntry{
+			offscreen:   offscreen,
+			cv:          cv,
+			createdTime: t,
+		}
+		return cv, xMin, yMin - z
 	}
 }

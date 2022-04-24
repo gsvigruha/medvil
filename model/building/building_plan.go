@@ -45,8 +45,9 @@ func (r Roof) Flat() bool {
 }
 
 type PlanUnits struct {
-	Floors []Floor
-	Roof   *Roof
+	Floors    []Floor
+	Roof      *Roof
+	Extension *BuildingExtension
 }
 
 type BuildingPlan struct {
@@ -105,7 +106,7 @@ func (b BuildingPlan) RoofArea() uint16 {
 	var area = uint16(0)
 	for i := 0; i < BuildingBaseMaxSize; i++ {
 		for j := 0; j < BuildingBaseMaxSize; j++ {
-			if b.BaseShape[i][j] != nil && !b.BaseShape[i][j].Roof.Flat() {
+			if b.BaseShape[i][j] != nil && b.BaseShape[i][j].Roof != nil && !b.BaseShape[i][j].Roof.Flat() {
 				area += 1
 			}
 		}
@@ -190,7 +191,7 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 						cubes += 2
 					}
 				}
-				if !b.BaseShape[i][j].Roof.Flat() {
+				if b.BaseShape[i][j].Roof != nil && !b.BaseShape[i][j].Roof.Flat() {
 					switch b.BaseShape[i][j].Roof.M {
 					case materials.GetMaterial("tile"):
 						tiles += 1
@@ -226,6 +227,10 @@ func (b BuildingPlan) IsComplete() bool {
 	return false
 }
 
+func (b BuildingPlan) HasNeighborUnit(x, y, z uint8) bool {
+	return b.HasUnit(x, y-1, z) || b.HasUnit(x+1, y, z) || b.HasUnit(x, y+1, z) || b.HasUnit(x-1, y, z)
+}
+
 func (b BuildingPlan) HasUnit(x, y, z uint8) bool {
 	if x >= BuildingBaseMaxSize || y >= BuildingBaseMaxSize {
 		return false
@@ -244,7 +249,7 @@ func (b BuildingPlan) HasUnitOrRoof(x, y, z uint8) bool {
 		return false
 	}
 	var oz = len(b.BaseShape[x][y].Floors)
-	if !b.BaseShape[x][y].Roof.Flat() {
+	if b.BaseShape[x][y].Roof != nil && !b.BaseShape[x][y].Roof.Flat() {
 		oz++
 	}
 	return oz > int(z)
@@ -255,10 +260,20 @@ func (b *BuildingPlan) Copy() *BuildingPlan {
 	for i := 0; i < BuildingBaseMaxSize; i++ {
 		for j := 0; j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil {
-				roof := *b.BaseShape[i][j].Roof
+				var extension *BuildingExtension = nil
+				var roof *Roof = nil
+				if b.BaseShape[i][j].Extension != nil {
+					e := *b.BaseShape[i][j].Extension
+					extension = &e
+				}
+				if b.BaseShape[i][j].Roof != nil {
+					r := *b.BaseShape[i][j].Roof
+					roof = &r
+				}
 				bs[i][j] = &PlanUnits{
-					Floors: b.BaseShape[i][j].Floors,
-					Roof:   &roof,
+					Floors:    b.BaseShape[i][j].Floors,
+					Roof:      roof,
+					Extension: extension,
 				}
 			}
 		}

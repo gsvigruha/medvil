@@ -23,6 +23,9 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 			} else if roof, ok := components[k].(*building.RoofUnit); ok {
 				roofImg, x, y := ic.Bic.RenderBuildingRoofOnBuffer(roof, rf, k, c)
 				cv.DrawImage(roofImg, x, y, float64(roofImg.Width()), float64(roofImg.Height()))
+			} else if extension, ok := components[k].(*building.ExtensionUnit); ok {
+				extensionImg, x, y := ic.Bic.RenderBuildingExtensionOnBuffer(extension, rf, k, c)
+				cv.DrawImage(extensionImg, x, y, float64(extensionImg.Width()), float64(extensionImg.Height()))
 			}
 		}
 		workshop := c.ReverseReferences.BuildingToWorkshop[components[0].Building()]
