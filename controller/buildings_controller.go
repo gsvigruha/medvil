@@ -37,6 +37,7 @@ type BuildingBaseButton struct {
 	panel *gui.Panel
 	bc    *BuildingsController
 	M     *materials.Material
+	ET    *building.BuildingExtensionType
 }
 
 func (b BuildingBaseButton) Click() {
@@ -110,6 +111,7 @@ func createBuildingBaseButton(
 
 	var polygon renderer.Polygon
 	var M *materials.Material
+	var ET *building.BuildingExtensionType
 	if FloorM == nil && RoofM == nil {
 		polygon = renderer.Polygon{Points: []renderer.Point{
 			renderer.Point{x, y},
@@ -144,7 +146,7 @@ func createBuildingBaseButton(
 			renderer.Point{x + DX, y + DY + DZ},
 			renderer.Point{x + DX, y + DY},
 		}}
-		M = nil
+		ET = ExtensionT
 	}
 	return &BuildingBaseButton{
 		i:     i,
@@ -154,6 +156,7 @@ func createBuildingBaseButton(
 		panel: bc.p,
 		p:     polygon,
 		M:     M,
+		ET:    ET,
 	}
 }
 
