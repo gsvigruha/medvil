@@ -66,6 +66,16 @@ func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
 	return ConnectionTypeNone
 }
 
+type ExtensionUnit struct {
+	BuildingComponentBase
+	Direction uint8
+	T         BuildingExtensionType
+}
+
+func (u *ExtensionUnit) Connection(dir uint8) ConnectionType {
+	return ConnectionTypeNone
+}
+
 type BuildingComponent interface {
 	Building() *Building
 	SetConstruction(bool)
@@ -83,10 +93,14 @@ func (r *RoofUnit) CacheKey() string {
 	return fmt.Sprintf("%v#%v#%v#%v", r.Roof.M.Name, r.Elevated, r.Roof.RoofType, r.Construction)
 }
 
-func (r *BuildingUnit) CacheKey() string {
-	var s = fmt.Sprintf("%v", r.Construction)
-	for i := range r.Walls {
-		w := r.Walls[i]
+func (e *ExtensionUnit) CacheKey() string {
+	return fmt.Sprintf("%v#%v#%v", e.T, e.Direction, e.Construction)
+}
+
+func (u *BuildingUnit) CacheKey() string {
+	var s = fmt.Sprintf("%v", u.Construction)
+	for i := range u.Walls {
+		w := u.Walls[i]
 		if w != nil {
 			s += fmt.Sprintf("[%v#%v#%v#%v]", w.M.Name, w.Windows, w.Door)
 		} else {

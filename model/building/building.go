@@ -33,7 +33,7 @@ func (b *Building) UnmarshalJSON(data []byte) error {
 
 func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 	p := b.Plan
-	if p.BaseShape[x][y] == nil {
+	if p.BaseShape[x][y] == nil || p.BaseShape[x][y].Roof == nil {
 		return nil
 	}
 	z := uint8(len(p.BaseShape[x][y].Floors))
@@ -71,6 +71,14 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 	p := b.Plan.BaseShape[x][y]
 	numFloors := uint8(len(p.Floors))
 	units := make([]BuildingComponent, numFloors)
+	if p.Extension != nil {
+		units = append(units, &ExtensionUnit{
+			T:                     p.Extension.T,
+			Direction:             GetExtensionDirection(p.Extension.T, x, y, b.Plan),
+			BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
+		})
+		return units
+	}
 	windows := (b.Plan.BuildingType != BuildingTypeWall)
 	for i := uint8(0); i < numFloors; i++ {
 		var n *BuildingWall

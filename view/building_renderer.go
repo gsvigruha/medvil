@@ -1,7 +1,6 @@
 package view
 
 import (
-	//"fmt"
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"math"
@@ -231,5 +230,27 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 				cv.Stroke()
 			}
 		}
+	}
+}
+
+func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUnit, rf renderer.RenderedField, k int, c *controller.Controller) {
+	if extension == nil {
+		return
+	}
+	if extension.IsConstruction() {
+		return
+	}
+	if extension.T == building.WaterMillWheel {
+		var suffix = ""
+		rfIdx1 := (3 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx2 := (2 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx3 := (1 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx4 := (0 - (-c.Perspective + extension.Direction)) % 4
+		if rfIdx1%2 == 1 {
+			suffix = "_flipped"
+		}
+		x := (rf.X[rfIdx1]*4 + rf.X[rfIdx2]*4 + rf.X[rfIdx3] + rf.X[rfIdx4]) / 10
+		y := (rf.Y[rfIdx1]*4 + rf.Y[rfIdx2]*4 + rf.Y[rfIdx3] + rf.Y[rfIdx4]) / 10
+		cv.DrawImage("texture/building/watermill_wheel"+suffix+".png", x-36, y-80, 72, 100)
 	}
 }
