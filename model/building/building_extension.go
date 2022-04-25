@@ -12,6 +12,7 @@ type BuildingExtension struct {
 func GetExtensionDirection(t BuildingExtensionType, x, y uint8, bp BuildingPlan) uint8 {
 	switch t {
 	case WaterMillWheel:
+		// TODO: migrate direction and use it here
 		if bp.HasUnit(x, y-1, 0) {
 			return 0
 		} else if bp.HasUnit(x+1, y, 0) {
