@@ -84,7 +84,8 @@ func (ic *BuildingImageCache) RenderBuildingExtensionOnBuffer(
 	c *controller.Controller) (*canvas.Canvas, float64, float64) {
 
 	t := time.Now().UnixNano()
-	key := extension.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
+	phase := c.Calendar.Hour % BuildingAnimationMaxPhase
+	key := extension.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(phase))
 	z := BuildingExtensionBufferH / 2
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
@@ -95,7 +96,7 @@ func (ic *BuildingImageCache) RenderBuildingExtensionOnBuffer(
 		offscreen, _ := goglbackend.NewOffscreen(int(BuildingBufferW), int(BuildingExtensionBufferH), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, BuildingBufferW, BuildingExtensionBufferH)
-		RenderBuildingExtension(cv, extension, bufferedRF, numUnits, c)
+		RenderBuildingExtension(cv, extension, bufferedRF, numUnits, phase, c)
 		ic.extensionEntries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
