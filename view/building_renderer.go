@@ -7,6 +7,7 @@ import (
 	"medvil/controller"
 	"medvil/model/building"
 	"medvil/renderer"
+	"strconv"
 )
 
 const BuildingUnitHeight = 3
@@ -374,7 +375,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		x8 := (x2 + x6) / 2.0
 		y8 := (y2 + y6) / 2.0
 
-		cv.SetFillStyle("texture/building/stone" + suffix1 + ".png")
+		cv.SetFillStyle("texture/building/sandstone" + suffix1 + ".png")
 
 		cv.BeginPath()
 		cv.LineTo(x1, y1)
@@ -400,7 +401,16 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		cv.ClosePath()
 		cv.Fill()
 
-		cv.SetFillStyle("texture/building/stone" + suffix2 + ".png")
+		cv.SetFillStyle("texture/building/fire_" + strconv.Itoa(int(phase/3)) + ".png")
+		cv.BeginPath()
+		cv.LineTo(x8, y8-DZ)
+		cv.LineTo(x8, y8-DZ*2)
+		cv.LineTo(x7, y7-DZ*2)
+		cv.LineTo(x7, y7-DZ)
+		cv.ClosePath()
+		cv.Fill()
+
+		cv.SetFillStyle("texture/building/sandstone" + suffix2 + ".png")
 
 		cv.BeginPath()
 		cv.LineTo(x1, y1)
@@ -422,7 +432,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		cv.ClosePath()
 		cv.Fill()
 
-		cv.SetFillStyle("texture/building/stone_flat.png")
+		cv.SetFillStyle("texture/building/sandstone_flat.png")
 
 		cv.BeginPath()
 		cv.LineTo(x8, y8-DZ)
