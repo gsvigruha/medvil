@@ -342,5 +342,102 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			cv.ClosePath()
 			cv.Stroke()
 		}
+	} else if extension.T == building.Forge {
+		rfIdx1 := (3 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx2 := (2 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx3 := (1 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx4 := (0 - (-c.Perspective + extension.Direction)) % 4
+		var suffix1 = ""
+		var suffix2 = "_flipped"
+		if rfIdx1%2 == 1 {
+			suffix1 = "_flipped"
+			suffix2 = ""
+		}
+
+		x1 := (rf.X[rfIdx1]*3.0 + rf.X[rfIdx2]*1.0) / 4.0
+		y1 := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*3.0 + (rf.Y[rfIdx2]-rf.Z[rfIdx1])*1.0) / 4.0
+		x2 := (rf.X[rfIdx1]*1.0 + rf.X[rfIdx2]*3.0) / 4.0
+		y2 := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*1.0 + (rf.Y[rfIdx2] - -rf.Z[rfIdx2])*3.0) / 4.0
+
+		x3 := (rf.X[rfIdx3]*3.0 + rf.X[rfIdx4]*1.0) / 4.0
+		y3 := ((rf.Y[rfIdx3]-rf.Z[rfIdx3])*3.0 + (rf.Y[rfIdx4]-rf.Z[rfIdx4])*1.0) / 4.0
+		x4 := (rf.X[rfIdx3]*1.0 + rf.X[rfIdx4]*3.0) / 4.0
+		y4 := ((rf.Y[rfIdx3]-rf.Z[rfIdx3])*1.0 + (rf.Y[rfIdx4]-rf.Z[rfIdx4])*3.0) / 4.0
+
+		x5 := (x1 + x4) / 2.0
+		y5 := (y1 + y4) / 2.0
+		x6 := (x2 + x3) / 2.0
+		y6 := (y2 + y3) / 2.0
+
+		x7 := (x1 + x5) / 2.0
+		y7 := (y1 + y5) / 2.0
+		x8 := (x2 + x6) / 2.0
+		y8 := (y2 + y6) / 2.0
+
+		cv.SetFillStyle("texture/building/stone" + suffix1 + ".png")
+
+		cv.BeginPath()
+		cv.LineTo(x1, y1)
+		cv.LineTo(x1, y1-DZ*2)
+		cv.LineTo(x2, y2-DZ*2)
+		cv.LineTo(x2, y2)
+		cv.ClosePath()
+		cv.Fill()
+
+		cv.BeginPath()
+		cv.LineTo(x5, y5)
+		cv.LineTo(x5, y5-DZ)
+		cv.LineTo(x6, y6-DZ)
+		cv.LineTo(x6, y6)
+		cv.ClosePath()
+		cv.Fill()
+
+		cv.BeginPath()
+		cv.LineTo(x8, y8-DZ)
+		cv.LineTo(x8, y8-DZ*2)
+		cv.LineTo(x7, y7-DZ*2)
+		cv.LineTo(x7, y7-DZ)
+		cv.ClosePath()
+		cv.Fill()
+
+		cv.SetFillStyle("texture/building/stone" + suffix2 + ".png")
+
+		cv.BeginPath()
+		cv.LineTo(x1, y1)
+		cv.LineTo(x1, y1-DZ*2)
+		cv.LineTo(x7, y7-DZ*2)
+		cv.LineTo(x7, y7-DZ)
+		cv.LineTo(x5, y5-DZ)
+		cv.LineTo(x5, y5)
+		cv.ClosePath()
+		cv.Fill()
+
+		cv.BeginPath()
+		cv.LineTo(x2, y2)
+		cv.LineTo(x2, y2-DZ*2)
+		cv.LineTo(x8, y8-DZ*2)
+		cv.LineTo(x8, y8-DZ)
+		cv.LineTo(x6, y6-DZ)
+		cv.LineTo(x6, y6)
+		cv.ClosePath()
+		cv.Fill()
+
+		cv.SetFillStyle("texture/building/stone_flat.png")
+
+		cv.BeginPath()
+		cv.LineTo(x8, y8-DZ)
+		cv.LineTo(x7, y7-DZ)
+		cv.LineTo(x5, y5-DZ)
+		cv.LineTo(x6, y6-DZ)
+		cv.ClosePath()
+		cv.Fill()
+
+		cv.BeginPath()
+		cv.LineTo(x8, y8-DZ*2)
+		cv.LineTo(x7, y7-DZ*2)
+		cv.LineTo(x1, y1-DZ*2)
+		cv.LineTo(x2, y2-DZ*2)
+		cv.ClosePath()
+		cv.Fill()
 	}
 }

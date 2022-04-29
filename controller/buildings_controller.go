@@ -277,6 +277,12 @@ func (bc *BuildingsController) GenerateButtons() {
 		bc: bc,
 	})
 
+	bc.p.AddButton(ExtensionButton{
+		b:  gui.ButtonGUI{Icon: "building/forge", X: 50, Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
+		t:  building.Forge,
+		bc: bc,
+	})
+
 	for i := 0; i < building.BuildingBaseMaxSize; i++ {
 		for j := 0; j < building.BuildingBaseMaxSize; j++ {
 			x := float64(120 + i*DX - j*DX + 10)
