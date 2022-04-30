@@ -286,3 +286,14 @@ func (b *BuildingPlan) Copy() *BuildingPlan {
 		BuildingType: b.BuildingType,
 	}
 }
+
+func (b *BuildingPlan) GetExtension() *BuildingExtension {
+	for i := uint16(0); i < 5; i++ {
+		for j := uint16(0); j < 5; j++ {
+			if b.BaseShape[i][j] != nil && b.BaseShape[i][j].Extension != nil {
+				return b.BaseShape[i][j].Extension
+			}
+		}
+	}
+	return nil
+}
