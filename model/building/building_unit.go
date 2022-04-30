@@ -51,6 +51,10 @@ func (u *RoofUnit) Connection(dir uint8) ConnectionType {
 	return ConnectionTypeNone
 }
 
+func (u *RoofUnit) NamePlate() bool {
+	return false
+}
+
 type BuildingWall struct {
 	M       *materials.Material
 	Windows bool
@@ -66,6 +70,10 @@ func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
 	return ConnectionTypeNone
 }
 
+func (u *BuildingUnit) NamePlate() bool {
+	return true
+}
+
 type ExtensionUnit struct {
 	BuildingComponentBase
 	Direction uint8
@@ -76,11 +84,16 @@ func (u *ExtensionUnit) Connection(dir uint8) ConnectionType {
 	return ConnectionTypeNone
 }
 
+func (u *ExtensionUnit) NamePlate() bool {
+	return false
+}
+
 type BuildingComponent interface {
 	Building() *Building
 	SetConstruction(bool)
 	IsConstruction() bool
 	Connection(dir uint8) ConnectionType
+	NamePlate() bool
 }
 
 func (b BuildingUnit) Walkable() bool { return false }

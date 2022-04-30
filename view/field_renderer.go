@@ -29,13 +29,11 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 			}
 		}
 		workshop := c.ReverseReferences.BuildingToWorkshop[components[0].Building()]
-		if workshop != nil {
-			if workshop.Manufacture != nil {
-				cv.SetFillStyle("#320")
-				cv.FillRect(rf.X[2]-10-30, rf.Y[2]-DZ*3-2, 20, 20)
-				cv.FillRect(rf.X[2]-10-30, rf.Y[2]-DZ*3-2, 30, 2)
-				cv.DrawImage("icon/gui/tasks/"+workshop.Manufacture.Name+".png", rf.X[2]-8-30, rf.Y[2]-DZ*3, 16, 16)
-			}
+		if components[0].NamePlate() && workshop != nil && workshop.Manufacture != nil {
+			cv.SetFillStyle("#320")
+			cv.FillRect(rf.X[2]-10-30, rf.Y[2]-DZ*3-2, 20, 20)
+			cv.FillRect(rf.X[2]-10-30, rf.Y[2]-DZ*3-2, 30, 2)
+			cv.DrawImage("icon/gui/tasks/"+workshop.Manufacture.Name+".png", rf.X[2]-8-30, rf.Y[2]-DZ*3, 16, 16)
 		}
 	}
 

@@ -271,17 +271,19 @@ func (bc *BuildingsController) GenerateButtons() {
 		})
 	}
 
-	bc.p.AddButton(ExtensionButton{
-		b:  gui.ButtonGUI{Icon: "building/watermill_wheel", X: 10, Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
-		t:  building.WaterMillWheel,
-		bc: bc,
-	})
+	if bc.bt == building.BuildingTypeWorkshop {
+		bc.p.AddButton(ExtensionButton{
+			b:  gui.ButtonGUI{Icon: "building/watermill_wheel", X: 10, Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
+			t:  building.WaterMillWheel,
+			bc: bc,
+		})
 
-	bc.p.AddButton(ExtensionButton{
-		b:  gui.ButtonGUI{Icon: "building/forge", X: 50, Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
-		t:  building.Forge,
-		bc: bc,
-	})
+		bc.p.AddButton(ExtensionButton{
+			b:  gui.ButtonGUI{Icon: "building/forge", X: 50, Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
+			t:  building.Forge,
+			bc: bc,
+		})
+	}
 
 	for i := 0; i < building.BuildingBaseMaxSize; i++ {
 		for j := 0; j < building.BuildingBaseMaxSize; j++ {

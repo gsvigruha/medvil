@@ -2,14 +2,16 @@ package economy
 
 import (
 	"medvil/model/artifacts"
+	"medvil/model/building"
 )
 
 type Manufacture struct {
-	Name    string
-	Time    uint16
-	Power   uint16
-	Inputs  []artifacts.Artifacts
-	Outputs []artifacts.Artifacts
+	Name                  string
+	Time                  uint16
+	Power                 uint16
+	BuildingExtensionType building.BuildingExtensionType
+	Inputs                []artifacts.Artifacts
+	Outputs               []artifacts.Artifacts
 }
 
 var AllManufacture = [...]*Manufacture{
@@ -34,9 +36,10 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("tile"), Quantity: 2}}},
 	&Manufacture{
-		Name:  "brickmaking",
-		Time:  10 * 24,
-		Power: 1000,
+		Name:                  "brickmaking",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Forge,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
@@ -48,27 +51,30 @@ var AllManufacture = [...]*Manufacture{
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("reed"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("thatch"), Quantity: 1}}},
 	&Manufacture{
-		Name:  "iron_smelting",
-		Time:  10 * 24,
-		Power: 1000,
+		Name:                  "iron_smelting",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Forge,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("iron_ore"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("iron_bar"), Quantity: 1}}},
 	&Manufacture{
-		Name:  "goldsmith",
-		Time:  10 * 24,
-		Power: 1000,
+		Name:                  "goldsmith",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Forge,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("gold_ore"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("gold_coin"), Quantity: 1}}},
 	&Manufacture{
-		Name:    "milling",
-		Time:    10 * 24,
-		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("grain"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1}}},
+		Name:                  "milling",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.WaterMillWheel,
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("grain"), Quantity: 1}},
+		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1}}},
 	&Manufacture{
 		Name:  "baking",
 		Time:  10 * 24,
@@ -95,9 +101,10 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("tools"), Quantity: 1}}},
 	&Manufacture{
-		Name:  "papermill",
-		Time:  30 * 24,
-		Power: 1000,
+		Name:                  "papermill",
+		Time:                  30 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.WaterMillWheel,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("reed"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
@@ -108,6 +115,16 @@ func GetAllManufactureNames() []string {
 	result := make([]string, len(AllManufacture))
 	for i, m := range AllManufacture {
 		result[i] = m.Name
+	}
+	return result
+}
+
+func GetManufactureNames(be *building.BuildingExtension) []string {
+	result := make([]string, 0, len(AllManufacture))
+	for _, m := range AllManufacture {
+		if (be == nil && m.BuildingExtensionType == building.BuildingExtensionTypeNone) || (be != nil && be.T == m.BuildingExtensionType) {
+			result = append(result, m.Name)
+		}
 	}
 	return result
 }
