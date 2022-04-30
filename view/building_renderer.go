@@ -356,9 +356,9 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		}
 
 		xlb := (rf.X[rfIdx1]*3.0 + rf.X[rfIdx2]*1.0) / 4.0
-		ylb := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*3.0 + (rf.Y[rfIdx2]-rf.Z[rfIdx1])*1.0) / 4.0
+		ylb := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*3.0 + (rf.Y[rfIdx2]-rf.Z[rfIdx2])*1.0) / 4.0
 		xrb := (rf.X[rfIdx1]*1.0 + rf.X[rfIdx2]*3.0) / 4.0
-		yrb := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*1.0 + (rf.Y[rfIdx2] - -rf.Z[rfIdx2])*3.0) / 4.0
+		yrb := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*1.0 + (rf.Y[rfIdx2]-rf.Z[rfIdx2])*3.0) / 4.0
 
 		xrfc := (rf.X[rfIdx3]*3.0 + rf.X[rfIdx4]*1.0) / 4.0
 		yrfc := ((rf.Y[rfIdx3]-rf.Z[rfIdx3])*3.0 + (rf.Y[rfIdx4]-rf.Z[rfIdx4])*1.0) / 4.0
