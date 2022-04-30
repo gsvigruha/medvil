@@ -355,98 +355,106 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			suffix2 = ""
 		}
 
-		x1 := (rf.X[rfIdx1]*3.0 + rf.X[rfIdx2]*1.0) / 4.0
-		y1 := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*3.0 + (rf.Y[rfIdx2]-rf.Z[rfIdx1])*1.0) / 4.0
-		x2 := (rf.X[rfIdx1]*1.0 + rf.X[rfIdx2]*3.0) / 4.0
-		y2 := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*1.0 + (rf.Y[rfIdx2] - -rf.Z[rfIdx2])*3.0) / 4.0
+		xlb := (rf.X[rfIdx1]*3.0 + rf.X[rfIdx2]*1.0) / 4.0
+		ylb := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*3.0 + (rf.Y[rfIdx2]-rf.Z[rfIdx1])*1.0) / 4.0
+		xrb := (rf.X[rfIdx1]*1.0 + rf.X[rfIdx2]*3.0) / 4.0
+		yrb := ((rf.Y[rfIdx1]-rf.Z[rfIdx1])*1.0 + (rf.Y[rfIdx2] - -rf.Z[rfIdx2])*3.0) / 4.0
 
-		x3 := (rf.X[rfIdx3]*3.0 + rf.X[rfIdx4]*1.0) / 4.0
-		y3 := ((rf.Y[rfIdx3]-rf.Z[rfIdx3])*3.0 + (rf.Y[rfIdx4]-rf.Z[rfIdx4])*1.0) / 4.0
-		x4 := (rf.X[rfIdx3]*1.0 + rf.X[rfIdx4]*3.0) / 4.0
-		y4 := ((rf.Y[rfIdx3]-rf.Z[rfIdx3])*1.0 + (rf.Y[rfIdx4]-rf.Z[rfIdx4])*3.0) / 4.0
+		xrfc := (rf.X[rfIdx3]*3.0 + rf.X[rfIdx4]*1.0) / 4.0
+		yrfc := ((rf.Y[rfIdx3]-rf.Z[rfIdx3])*3.0 + (rf.Y[rfIdx4]-rf.Z[rfIdx4])*1.0) / 4.0
+		xlfc := (rf.X[rfIdx3]*1.0 + rf.X[rfIdx4]*3.0) / 4.0
+		ylfc := ((rf.Y[rfIdx3]-rf.Z[rfIdx3])*1.0 + (rf.Y[rfIdx4]-rf.Z[rfIdx4])*3.0) / 4.0
 
-		x5 := (x1 + x4) / 2.0
-		y5 := (y1 + y4) / 2.0
-		x6 := (x2 + x3) / 2.0
-		y6 := (y2 + y3) / 2.0
+		xlf := (xlb + xlfc) / 2.0
+		ylf := (ylb + ylfc) / 2.0
+		xrf := (xrb + xrfc) / 2.0
+		yrf := (yrb + yrfc) / 2.0
 
-		x7 := (x1 + x5) / 2.0
-		y7 := (y1 + y5) / 2.0
-		x8 := (x2 + x6) / 2.0
-		y8 := (y2 + y6) / 2.0
+		xlm := (xlb + xlf) / 2.0
+		ylm := (ylb + ylf) / 2.0
+		xrm := (xrb + xrf) / 2.0
+		yrm := (yrb + yrf) / 2.0
 
-		cv.SetFillStyle("texture/building/sandstone" + suffix1 + ".png")
+		cv.SetFillStyle("texture/building/stone" + suffix1 + ".png")
+
+		if rfIdx1 > 1 {
+			cv.BeginPath()
+			cv.LineTo(xlb, ylb)
+			cv.LineTo(xlb, ylb-DZ*2)
+			cv.LineTo(xrb, yrb-DZ*2)
+			cv.LineTo(xrb, yrb)
+			cv.ClosePath()
+			cv.Fill()
+		}
+
+		if rfIdx1 < 2 {
+			cv.BeginPath()
+			cv.LineTo(xlf, ylf)
+			cv.LineTo(xlf, ylf-DZ)
+			cv.LineTo(xrf, yrf-DZ)
+			cv.LineTo(xrf, yrf)
+			cv.ClosePath()
+			cv.Fill()
+
+			cv.BeginPath()
+			cv.LineTo(xlm, ylm-DZ)
+			cv.LineTo(xlm, ylm-DZ*2)
+			cv.LineTo(xrm, yrm-DZ*2)
+			cv.LineTo(xrm, yrm-DZ)
+			cv.ClosePath()
+			cv.Fill()
+
+			cv.SetFillStyle("texture/building/fire_" + strconv.Itoa(int(phase/3)) + ".png")
+			cv.BeginPath()
+			cv.LineTo((xrm*5.0+xlm*1.0)/6.0, (yrm*5.0+ylm*1.0)/6.0-DZ)
+			cv.LineTo((xrm*5.0+xlm*1.0)/6.0, (yrm*5.0+ylm*1.0)/6.0-DZ*9/5)
+			cv.LineTo((xlm*5.0+xrm*1.0)/6.0, (ylm*5.0+yrm*1.0)/6.0-DZ*9/5)
+			cv.LineTo((xlm*5.0+xrm*1.0)/6.0, (ylm*5.0+yrm*1.0)/6.0-DZ)
+			cv.ClosePath()
+			cv.Fill()
+		}
+
+		cv.SetFillStyle("texture/building/stone" + suffix2 + ".png")
+
+		if rfIdx1 == 1 || rfIdx1 == 2 {
+			cv.BeginPath()
+			cv.LineTo(xlb, ylb)
+			cv.LineTo(xlb, ylb-DZ*2)
+			cv.LineTo(xlm, ylm-DZ*2)
+			cv.LineTo(xlm, ylm-DZ)
+			cv.LineTo(xlf, ylf-DZ)
+			cv.LineTo(xlf, ylf)
+			cv.ClosePath()
+			cv.Fill()
+		}
+
+		if rfIdx1 == 0 || rfIdx1 == 3 {
+			cv.BeginPath()
+			cv.LineTo(xrb, yrb)
+			cv.LineTo(xrb, yrb-DZ*2)
+			cv.LineTo(xrm, yrm-DZ*2)
+			cv.LineTo(xrm, yrm-DZ)
+			cv.LineTo(xrf, yrf-DZ)
+			cv.LineTo(xrf, yrf)
+			cv.ClosePath()
+			cv.Fill()
+		}
+
+		cv.SetFillStyle("texture/building/stone_flat.png")
 
 		cv.BeginPath()
-		cv.LineTo(x1, y1)
-		cv.LineTo(x1, y1-DZ*2)
-		cv.LineTo(x2, y2-DZ*2)
-		cv.LineTo(x2, y2)
+		cv.LineTo(xrm, yrm-DZ)
+		cv.LineTo(xlm, ylm-DZ)
+		cv.LineTo(xlf, ylf-DZ)
+		cv.LineTo(xrf, yrf-DZ)
 		cv.ClosePath()
 		cv.Fill()
 
 		cv.BeginPath()
-		cv.LineTo(x5, y5)
-		cv.LineTo(x5, y5-DZ)
-		cv.LineTo(x6, y6-DZ)
-		cv.LineTo(x6, y6)
-		cv.ClosePath()
-		cv.Fill()
-
-		cv.BeginPath()
-		cv.LineTo(x8, y8-DZ)
-		cv.LineTo(x8, y8-DZ*2)
-		cv.LineTo(x7, y7-DZ*2)
-		cv.LineTo(x7, y7-DZ)
-		cv.ClosePath()
-		cv.Fill()
-
-		cv.SetFillStyle("texture/building/fire_" + strconv.Itoa(int(phase/3)) + ".png")
-		cv.BeginPath()
-		cv.LineTo(x8, y8-DZ)
-		cv.LineTo(x8, y8-DZ*2)
-		cv.LineTo(x7, y7-DZ*2)
-		cv.LineTo(x7, y7-DZ)
-		cv.ClosePath()
-		cv.Fill()
-
-		cv.SetFillStyle("texture/building/sandstone" + suffix2 + ".png")
-
-		cv.BeginPath()
-		cv.LineTo(x1, y1)
-		cv.LineTo(x1, y1-DZ*2)
-		cv.LineTo(x7, y7-DZ*2)
-		cv.LineTo(x7, y7-DZ)
-		cv.LineTo(x5, y5-DZ)
-		cv.LineTo(x5, y5)
-		cv.ClosePath()
-		cv.Fill()
-
-		cv.BeginPath()
-		cv.LineTo(x2, y2)
-		cv.LineTo(x2, y2-DZ*2)
-		cv.LineTo(x8, y8-DZ*2)
-		cv.LineTo(x8, y8-DZ)
-		cv.LineTo(x6, y6-DZ)
-		cv.LineTo(x6, y6)
-		cv.ClosePath()
-		cv.Fill()
-
-		cv.SetFillStyle("texture/building/sandstone_flat.png")
-
-		cv.BeginPath()
-		cv.LineTo(x8, y8-DZ)
-		cv.LineTo(x7, y7-DZ)
-		cv.LineTo(x5, y5-DZ)
-		cv.LineTo(x6, y6-DZ)
-		cv.ClosePath()
-		cv.Fill()
-
-		cv.BeginPath()
-		cv.LineTo(x8, y8-DZ*2)
-		cv.LineTo(x7, y7-DZ*2)
-		cv.LineTo(x1, y1-DZ*2)
-		cv.LineTo(x2, y2-DZ*2)
+		cv.LineTo(xrm, yrm-DZ*2)
+		cv.LineTo(xlm, ylm-DZ*2)
+		cv.LineTo(xlb, ylb-DZ*2)
+		cv.LineTo(xrb, yrb-DZ*2)
 		cv.ClosePath()
 		cv.Fill()
 	}

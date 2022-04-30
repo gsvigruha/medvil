@@ -22,6 +22,17 @@ func GetExtensionDirection(t BuildingExtensionType, x, y uint8, bp BuildingPlan)
 		} else if bp.HasUnit(x-1, y, 0) {
 			return 3
 		}
+	case Forge:
+		// TODO: migrate direction and use it here
+		if bp.HasUnit(x, y-1, 0) {
+			return 3
+		} else if bp.HasUnit(x+1, y, 0) {
+			return 0
+		} else if bp.HasUnit(x, y+1, 0) {
+			return 1
+		} else if bp.HasUnit(x-1, y, 0) {
+			return 2
+		}
 	}
 	return 255
 }
