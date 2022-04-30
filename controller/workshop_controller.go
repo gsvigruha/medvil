@@ -30,13 +30,14 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	HouseholdToControlPanel(hp, &workshop.Household)
 	wc := &WorkshopController{workshopPanel: wp, householdPanel: hp, workshop: workshop}
 
+	tasks := economy.GetManufactureNames(workshop.Household.Building.Plan.GetExtension())
 	wc.manufactureDropDown = &gui.DropDown{
 		X:        float64(10),
 		Y:        float64(ManufactureDropDownTop),
 		SX:       128,
 		SY:       20,
-		Options:  economy.GetAllManufactureNames(),
-		Icons:    toTaskNames(economy.GetAllManufactureNames()),
+		Options:  tasks,
+		Icons:    toTaskNames(tasks),
 		Selected: -1,
 	}
 	if workshop.Manufacture != nil {

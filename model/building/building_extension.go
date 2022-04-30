@@ -2,6 +2,7 @@ package building
 
 type BuildingExtensionType uint8
 
+const BuildingExtensionTypeNone BuildingExtensionType = 0
 const WaterMillWheel BuildingExtensionType = 1
 const Forge BuildingExtensionType = 2
 
