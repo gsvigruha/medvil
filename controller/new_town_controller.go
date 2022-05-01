@@ -29,10 +29,10 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 }
 
 func SetupNewTownController(c *NewTownController) {
-	var aI = 2
+	var aI = 0
 	for _, a := range artifacts.All {
 		if q, ok := c.th.Household.Resources.Artifacts[a]; ok {
-			ArtifactsPickerToControlPanel(c, aI, a, q, ArtifactsGUIY)
+			ArtifactsPickerToControlPanel(c, aI, a, q, 100)
 			aI++
 		}
 	}
