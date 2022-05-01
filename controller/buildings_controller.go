@@ -83,20 +83,31 @@ func (b BuildingBaseButton) Click() {
 }
 
 func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
-	if b.M != nil {
-		cv.SetFillStyle("texture/building/" + b.M.Name + ".png")
+	if b.ET == nil {
+		if b.M != nil {
+			cv.SetFillStyle("texture/building/" + b.M.Name + ".png")
+		}
+		cv.SetStrokeStyle("#666")
+		cv.SetLineWidth(2)
+		cv.BeginPath()
+		for _, p := range b.p.Points {
+			cv.LineTo(p.X, p.Y)
+		}
+		cv.ClosePath()
+		if b.M != nil {
+			cv.Fill()
+		}
+		cv.Stroke()
+	} else {
+		var img string
+		switch *b.ET {
+		case building.WaterMillWheel:
+			img = "icon/gui/building/watermill_wheel.png"
+		case building.Forge:
+			img = "icon/gui/building/forge.png"
+		}
+		cv.DrawImage(img, b.p.Points[0].X-16, b.p.Points[0].Y+4, 32, 32)
 	}
-	cv.SetStrokeStyle("#666")
-	cv.SetLineWidth(2)
-	cv.BeginPath()
-	for _, p := range b.p.Points {
-		cv.LineTo(p.X, p.Y)
-	}
-	cv.ClosePath()
-	if b.M != nil {
-		cv.Fill()
-	}
-	cv.Stroke()
 }
 
 func (b BuildingBaseButton) Contains(x float64, y float64) bool {
@@ -114,7 +125,7 @@ func createBuildingBaseButton(
 	var polygon renderer.Polygon
 	var M *materials.Material
 	var ET *building.BuildingExtensionType
-	if FloorM == nil && RoofM == nil {
+	if FloorM == nil && RoofM == nil && ExtensionT == nil {
 		polygon = renderer.Polygon{Points: []renderer.Point{
 			renderer.Point{x, y},
 			renderer.Point{x - DX, y + DY},

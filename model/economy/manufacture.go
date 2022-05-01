@@ -17,10 +17,17 @@ type Manufacture struct {
 var AllManufacture = [...]*Manufacture{
 	&Manufacture{
 		Name:    "sawing",
-		Time:    10 * 24,
+		Time:    30 * 24,
 		Power:   1000,
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
+	&Manufacture{
+		Name:                  "sawmill",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.WaterMillWheel,
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
+		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
 	&Manufacture{
 		Name:    "stonecutting",
 		Time:    10 * 24,
