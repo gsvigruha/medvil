@@ -23,7 +23,7 @@ type NumberPanelButton struct {
 }
 
 func (b NumberPanelButton) Click() {
-	if *b.np.val > b.np.min && *b.np.val < b.np.max {
+	if *b.np.val+b.inc >= b.np.min && *b.np.val+b.inc <= b.np.max {
 		*b.np.val += b.inc
 	}
 }

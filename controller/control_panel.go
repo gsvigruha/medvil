@@ -70,6 +70,10 @@ func CPActionShowInfraController(c *Controller) {
 	c.ShowInfraController()
 }
 
+func CPActionShowNewTownController(c *Controller) {
+	c.ShowNewTownController()
+}
+
 func CPActionCancel(c *Controller) {
 	c.Reset()
 	c.ControlPanel.dynamicPanel = nil
@@ -122,7 +126,8 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "mine", X: 50, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowMineController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 90, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowWorkshopController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "infra", X: 130, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowInfraController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "town", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowNewTownController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 250, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 210, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 }
