@@ -14,7 +14,7 @@ type TownhallController struct {
 
 func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
-	tp := &gui.Panel{X: 0, Y: 600, SX: 300, SY: 100}
+	tp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
 	tc := &TownhallController{householdPanel: hp, th: th, taxPanel: tp}
 
 	HouseholdToControlPanel(hp, &th.Household)
