@@ -107,14 +107,16 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 	return renderer.RenderedBuildingUnit{Walls: rws, Unit: unit}
 }
 
-func RenderPolygon(cv *canvas.Canvas, polygon renderer.Polygon) {
+func RenderPolygon(cv *canvas.Canvas, polygon renderer.Polygon, stroke bool) {
 	cv.BeginPath()
 	for _, p := range polygon.Points {
 		cv.LineTo(p.X, p.Y)
 	}
 	cv.ClosePath()
 	cv.Fill()
-	cv.Stroke()
+	if stroke {
+		cv.Stroke()
+	}
 }
 
 func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.RenderedField, k int, c *controller.Controller) *renderer.RenderedBuildingRoof {
@@ -139,16 +141,17 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				sideMidX := (rf.X[rfIdx1] + rf.X[rfIdx2]) / 2
 				sideMidY := (rf.Y[rfIdx1] + rf.Y[rfIdx2]) / 2
-				roofPolygons = append(roofPolygons, renderer.Polygon{Points: []renderer.Point{
+				rp1 := renderer.Polygon{Points: []renderer.Point{
 					renderer.Point{X: rf.X[rfIdx1], Y: rf.Y[rfIdx1] - z},
 					renderer.Point{X: sideMidX, Y: sideMidY - z - BuildingUnitHeight*DZ},
 					renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ},
-				}})
-				roofPolygons = append(roofPolygons, renderer.Polygon{Points: []renderer.Point{
+				}}
+				rp2 := renderer.Polygon{Points: []renderer.Point{
 					renderer.Point{X: rf.X[rfIdx2], Y: rf.Y[rfIdx2] - z},
 					renderer.Point{X: sideMidX, Y: sideMidY - z - BuildingUnitHeight*DZ},
 					renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ},
-				}})
+				}}
+				roofPolygons = append(roofPolygons, rp1, rp2)
 
 				if cv != nil {
 					if !roof.Construction {
@@ -160,8 +163,8 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
 					cv.SetLineWidth(3)
 
-					RenderPolygon(cv, roofPolygons[0])
-					RenderPolygon(cv, roofPolygons[1])
+					RenderPolygon(cv, rp1, true)
+					RenderPolygon(cv, rp2, true)
 				}
 			} else {
 				var suffix = ""
@@ -169,11 +172,12 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					suffix = "_flipped"
 				}
 
-				roofPolygons = append(roofPolygons, renderer.Polygon{Points: []renderer.Point{
+				rp1 := renderer.Polygon{Points: []renderer.Point{
 					renderer.Point{X: rf.X[rfIdx1], Y: rf.Y[rfIdx1] - z},
 					renderer.Point{X: rf.X[rfIdx2], Y: rf.Y[rfIdx2] - z},
 					renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ},
-				}})
+				}}
+				roofPolygons = append(roofPolygons, rp1)
 
 				if cv != nil {
 					if !roof.Construction {
@@ -183,21 +187,22 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					}
 					cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 32})
 					cv.SetLineWidth(3)
-					RenderPolygon(cv, roofPolygons[0])
+					RenderPolygon(cv, rp1, true)
 				}
 			}
 		}
 	} else if roof.Roof.RoofType == building.RoofTypeFlat {
 		if !roof.Construction {
-			roofPolygons = append(roofPolygons, renderer.Polygon{Points: []renderer.Point{
+			rp1 := renderer.Polygon{Points: []renderer.Point{
 				renderer.Point{X: rf.X[0], Y: rf.Y[0] - z},
 				renderer.Point{X: rf.X[1], Y: rf.Y[1] - z},
 				renderer.Point{X: rf.X[2], Y: rf.Y[2] - z},
 				renderer.Point{X: rf.X[3], Y: rf.Y[3] - z},
-			}})
+			}}
+			roofPolygons = append(roofPolygons, rp1)
 			if cv != nil {
 				cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + "_flat.png")
-				RenderPolygon(cv, roofPolygons[0])
+				RenderPolygon(cv, rp1, false)
 			}
 		}
 	} else if roof.Roof.RoofType == building.RoofTypeRamp {
@@ -211,22 +216,23 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 				if rfIdx1%2 == 0 {
 					suffix = "_flipped"
 				}
-				roofPolygons = append(roofPolygons, renderer.Polygon{Points: []renderer.Point{
+				rp1 := renderer.Polygon{Points: []renderer.Point{
 					renderer.Point{X: rf.X[rfIdx1], Y: rf.Y[rfIdx1] - z - BuildingUnitHeight*DZ},
 					renderer.Point{X: rf.X[rfIdx1], Y: rf.Y[rfIdx1] - z},
 					renderer.Point{X: rf.X[rfIdx4], Y: rf.Y[rfIdx4] - z},
-				}})
-				roofPolygons = append(roofPolygons, renderer.Polygon{Points: []renderer.Point{
+				}}
+				rp2 := renderer.Polygon{Points: []renderer.Point{
 					renderer.Point{X: rf.X[rfIdx2], Y: rf.Y[rfIdx2] - z - BuildingUnitHeight*DZ},
 					renderer.Point{X: rf.X[rfIdx2], Y: rf.Y[rfIdx2] - z},
 					renderer.Point{X: rf.X[rfIdx3], Y: rf.Y[rfIdx3] - z},
-				}})
-				roofPolygons = append(roofPolygons, renderer.Polygon{Points: []renderer.Point{
+				}}
+				rp3 := renderer.Polygon{Points: []renderer.Point{
 					renderer.Point{X: rf.X[rfIdx1], Y: rf.Y[rfIdx1] - z - BuildingUnitHeight*DZ},
 					renderer.Point{X: rf.X[rfIdx2], Y: rf.Y[rfIdx2] - z - BuildingUnitHeight*DZ},
 					renderer.Point{X: rf.X[rfIdx3], Y: rf.Y[rfIdx3] - z},
 					renderer.Point{X: rf.X[rfIdx4], Y: rf.Y[rfIdx4] - z},
-				}})
+				}}
+				roofPolygons = append(roofPolygons, rp1, rp2, rp3)
 
 				if cv != nil {
 					if !roof.Construction {
@@ -238,8 +244,8 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
 					cv.SetLineWidth(3)
 
-					RenderPolygon(cv, roofPolygons[0])
-					RenderPolygon(cv, roofPolygons[1])
+					RenderPolygon(cv, rp1, true)
+					RenderPolygon(cv, rp2, true)
 
 					if !roof.Construction {
 						cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + "_flat.png")
@@ -247,7 +253,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}
 
-					RenderPolygon(cv, roofPolygons[2])
+					RenderPolygon(cv, rp3, true)
 				}
 			}
 		}
