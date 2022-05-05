@@ -19,10 +19,11 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 			if unit, ok := components[k].(*building.BuildingUnit); ok {
 				unitImg, rbu, x, y := ic.Bic.RenderBuildingUnitOnBuffer(unit, rf, k, c)
 				cv.DrawImage(unitImg, x, y, float64(unitImg.Width()), float64(unitImg.Height()))
-				c.AddRenderedBuildingUnit(&rbu)
+				c.AddRenderedBuildingPart(&rbu)
 			} else if roof, ok := components[k].(*building.RoofUnit); ok {
-				roofImg, x, y := ic.Bic.RenderBuildingRoofOnBuffer(roof, rf, k, c)
+				roofImg, rbr, x, y := ic.Bic.RenderBuildingRoofOnBuffer(roof, rf, k, c)
 				cv.DrawImage(roofImg, x, y, float64(roofImg.Width()), float64(roofImg.Height()))
+				c.AddRenderedBuildingPart(&rbr)
 			} else if extension, ok := components[k].(*building.ExtensionUnit); ok {
 				extensionImg, x, y := ic.Bic.RenderBuildingExtensionOnBuffer(extension, rf, k, c)
 				cv.DrawImage(extensionImg, x, y, float64(extensionImg.Width()), float64(extensionImg.Height()))

@@ -17,3 +17,11 @@ func (p *Polygon) Contains(x float64, y float64) bool {
 	}
 	return is%2 == 1
 }
+
+func (p Polygon) Move(dx float64, dy float64) Polygon {
+	np := Polygon{Points: make([]Point, len(p.Points))}
+	for i := range p.Points {
+		np.Points[i] = Point{X: p.Points[i].X + dx, Y: p.Points[i].Y + dy}
+	}
+	return np
+}
