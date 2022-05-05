@@ -25,7 +25,7 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 	roof *building.RoofUnit,
 	rf renderer.RenderedField,
 	numUnits int,
-	c *controller.Controller) (*canvas.Canvas, float64, float64) {
+	c *controller.Controller) (*canvas.Canvas, renderer.RenderedBuildingRoof, float64, float64) {
 
 	t := time.Now().UnixNano()
 	key := roof.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
@@ -34,18 +34,18 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 	bufferedRF := rf.Move(-xMin, -yMin+z)
 
 	if ce, ok := ic.roofEntries[key]; ok {
-		return ce.cv, xMin, yMin - z
+		return ce.cv, RenderBuildingRoof(nil, roof, bufferedRF, numUnits, c).Move(xMin, yMin-z), xMin, yMin - z
 	} else {
 		offscreen, _ := goglbackend.NewOffscreen(int(BuildingBufferW), int(BuildingBufferH), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, BuildingBufferW, BuildingBufferH)
-		RenderBuildingRoof(cv, roof, bufferedRF, numUnits, c)
+		rbr := RenderBuildingRoof(cv, roof, bufferedRF, numUnits, c)
 		ic.roofEntries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
 			createdTime: t,
 		}
-		return cv, xMin, yMin - z
+		return cv, rbr.Move(xMin, yMin-z), xMin, yMin - z
 	}
 }
 
