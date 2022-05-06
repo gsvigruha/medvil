@@ -30,9 +30,9 @@ type Controller struct {
 	Map                       *model.Map
 	Calendar                  *time.CalendarType
 	RenderedFields            []*renderer.RenderedField
-	RenderedBuildingUnits     []*renderer.RenderedBuildingUnit
+	RenderedBuildingParts     []renderer.RenderedBuildingPart
 	TempRenderedFields        []*renderer.RenderedField
-	TempRenderedBuildingUnits []*renderer.RenderedBuildingUnit
+	TempRenderedBuildingParts []renderer.RenderedBuildingPart
 	SelectedField             *navigation.Field
 	SelectedFarm              *social.Farm
 	SelectedWorkshop          *social.Workshop
@@ -149,31 +149,31 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				return
 			}
 		}
-		for i := range c.RenderedBuildingUnits {
-			rbu := c.RenderedBuildingUnits[i]
-			if rbu.Contains(c.X, c.Y) {
+		for i := range c.RenderedBuildingParts {
+			rbp := c.RenderedBuildingParts[i]
+			if rbp.Contains(c.X, c.Y) {
 				c.Reset()
-				c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbu.Unit.B]
+				c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbp.GetBuilding()]
 				if c.SelectedTownhall != nil {
 					TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
 				}
-				c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbu.Unit.B]
+				c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbp.GetBuilding()]
 				if c.SelectedMarketplace != nil {
 					MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
 				}
-				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbu.Unit.B]
+				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbp.GetBuilding()]
 				if c.SelectedFarm != nil {
 					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
 				}
-				c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbu.Unit.B]
+				c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbp.GetBuilding()]
 				if c.SelectedWorkshop != nil {
 					WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
 				}
-				c.SelectedMine = c.ReverseReferences.BuildingToMine[rbu.Unit.B]
+				c.SelectedMine = c.ReverseReferences.BuildingToMine[rbp.GetBuilding()]
 				if c.SelectedMine != nil {
 					MineToControlPanel(c.ControlPanel, c.SelectedMine)
 				}
-				c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbu.Unit.B]
+				c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]
 				if c.SelectedConstruction != nil {
 					ConstructionToControlPanel(c.ControlPanel, c.SelectedConstruction)
 				}
@@ -217,15 +217,15 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 
 func (c *Controller) SwapRenderedObjects() {
 	c.RenderedFields = c.TempRenderedFields
-	c.RenderedBuildingUnits = c.TempRenderedBuildingUnits
+	c.RenderedBuildingParts = c.TempRenderedBuildingParts
 	c.TempRenderedFields = []*renderer.RenderedField{}
-	c.TempRenderedBuildingUnits = []*renderer.RenderedBuildingUnit{}
+	c.TempRenderedBuildingParts = []renderer.RenderedBuildingPart{}
 }
 
 func (c *Controller) AddRenderedField(rf *renderer.RenderedField) {
 	c.TempRenderedFields = append(c.TempRenderedFields, rf)
 }
 
-func (c *Controller) AddRenderedBuildingUnit(rbu *renderer.RenderedBuildingUnit) {
-	c.TempRenderedBuildingUnits = append(c.TempRenderedBuildingUnits, rbu)
+func (c *Controller) AddRenderedBuildingPart(rbp renderer.RenderedBuildingPart) {
+	c.TempRenderedBuildingParts = append(c.TempRenderedBuildingParts, rbp)
 }
