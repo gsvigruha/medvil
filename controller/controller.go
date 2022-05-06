@@ -94,6 +94,11 @@ func (c *Controller) ShowInfraController() {
 	InfraToControlPanel(c.ControlPanel)
 }
 
+func (c *Controller) ShowNewTownController() {
+	c.Reset()
+	NewTownToControlPanel(c.ControlPanel, c.SelectedTownhall)
+}
+
 func (c *Controller) Refresh() {
 	c.ReverseReferences = c.Map.ReverseReferences()
 	c.ControlPanel.Refresh()
