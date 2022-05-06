@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/social"
 	"medvil/view/gui"
 	"strconv"
@@ -10,31 +11,46 @@ import (
 
 const NewTownRowH = IconH + 32
 
+const NewTownControllerStatePickResources = 1
+const NewTownControllerStatePickBuildTownhall = 2
+const NewTownControllerStatePickBuildMarket = 3
+
 type NewTownController struct {
-	p  *gui.Panel
-	r  map[*artifacts.Artifact]*int
-	th *social.Townhall
+	p     *gui.Panel
+	r     map[*artifacts.Artifact]*int
+	th    *social.Townhall
+	cp    *ControlPanel
+	state uint8
 }
 
 func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
+	if th == nil {
+		return
+	}
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	r := make(map[*artifacts.Artifact]*int)
 	for _, a := range artifacts.All {
 		var n int
 		r[a] = &n
 	}
-	c := &NewTownController{p: p, r: r, th: th}
+	c := &NewTownController{p: p, r: r, th: th, cp: cp, state: NewTownControllerStatePickResources}
 	SetupNewTownController(c)
 	cp.SetDynamicPanel(c)
 }
 
 func SetupNewTownController(c *NewTownController) {
-	var aI = 0
-	for _, a := range artifacts.All {
-		if q, ok := c.th.Household.Resources.Artifacts[a]; ok {
-			ArtifactsPickerToControlPanel(c, aI, a, q, 100)
-			aI++
+	if c.state == NewTownControllerStatePickResources {
+		var aI = 0
+		for _, a := range artifacts.All {
+			if q, ok := c.th.Household.Resources.Artifacts[a]; ok {
+				ArtifactsPickerToControlPanel(c, aI, a, q, 100)
+				aI++
+			}
 		}
+	} else if c.state == NewTownControllerStatePickBuildTownhall {
+		BuildingsToControlPanel(c.cp, building.BuildingTypeTownhall)
+	} else if c.state == NewTownControllerStatePickBuildMarket {
+		BuildingsToControlPanel(c.cp, building.BuildingTypeMarket)
 	}
 }
 

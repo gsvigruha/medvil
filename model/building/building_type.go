@@ -16,6 +16,9 @@ const BuildingTypeAqueduct = 12
 const BuildingTypeBridge = 13
 const BuildingTypeWall = 14
 
+const BuildingTypeTownhall = 20
+const BuildingTypeMarket = 21
+
 func FloorMaterials(bt BuildingType) []*materials.Material {
 	switch bt {
 	case BuildingTypeFarm:
