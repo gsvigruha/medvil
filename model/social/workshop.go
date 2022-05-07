@@ -36,13 +36,13 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					})
 				}
 			}
-		}
-		if w.Household.Resources.RemoveAll(w.Manufacture.Inputs) {
-			w.Household.AddTask(&economy.ManufactureTask{
-				M: w.Manufacture,
-				F: home,
-				R: &w.Household.Resources,
-			})
+			if w.Household.Resources.RemoveAll(w.Manufacture.Inputs) {
+				w.Household.AddTask(&economy.ManufactureTask{
+					M: w.Manufacture,
+					F: home,
+					R: &w.Household.Resources,
+				})
+			}
 		}
 
 		for a, q := range w.Household.Resources.Artifacts {

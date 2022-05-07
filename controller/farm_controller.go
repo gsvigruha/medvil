@@ -102,7 +102,7 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 			return true
 		}
 	}
-	if fc.farm.FieldUsableFor(c.Map, rf.F, fc.UseType) {
+	if !rf.F.Allocated && fc.farm.FieldUsableFor(c.Map, rf.F, fc.UseType) {
 		fc.farm.Land = append(fc.farm.Land, social.FarmLand{
 			X:       rf.F.X,
 			Y:       rf.F.Y,
