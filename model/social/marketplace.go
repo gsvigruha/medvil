@@ -9,6 +9,8 @@ import (
 	"medvil/model/time"
 )
 
+const StorageToSoldRatio = 6
+
 type Marketplace struct {
 	Town      *Town
 	Building  *building.Building
@@ -80,7 +82,7 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		sd := mp.pendingSupplyAndDemand()
 
 		for _, a := range artifacts.All {
-			storage := uint32(mp.Storage.Artifacts[a]) / 5
+			storage := uint32(mp.Storage.Artifacts[a]) / StorageToSoldRatio
 			if mp.Sold[a]+storage == 0 && mp.Bought[a] > 0 {
 				mp.Prices[a]++
 			} else if mp.Bought[a] == 0 && mp.Sold[a]+storage > 0 && mp.Prices[a] > 1 {
