@@ -34,6 +34,7 @@ type Controller struct {
 	TempRenderedFields        []*renderer.RenderedField
 	TempRenderedBuildingParts []renderer.RenderedBuildingPart
 	SelectedField             *navigation.Field
+	ActiveTown                *social.Town
 	SelectedFarm              *social.Farm
 	SelectedWorkshop          *social.Workshop
 	SelectedMine              *social.Mine
@@ -155,22 +156,27 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				c.Reset()
 				c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbp.GetBuilding()]
 				if c.SelectedTownhall != nil {
+					c.ActiveTown = c.SelectedTownhall.Household.Town
 					TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
 				}
 				c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbp.GetBuilding()]
 				if c.SelectedMarketplace != nil {
+					c.ActiveTown = c.SelectedMarketplace.Town
 					MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
 				}
 				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbp.GetBuilding()]
 				if c.SelectedFarm != nil {
+					c.ActiveTown = c.SelectedFarm.Household.Town
 					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
 				}
 				c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbp.GetBuilding()]
 				if c.SelectedWorkshop != nil {
+					c.ActiveTown = c.SelectedWorkshop.Household.Town
 					WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
 				}
 				c.SelectedMine = c.ReverseReferences.BuildingToMine[rbp.GetBuilding()]
 				if c.SelectedMine != nil {
+					c.ActiveTown = c.SelectedMine.Household.Town
 					MineToControlPanel(c.ControlPanel, c.SelectedMine)
 				}
 				c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]

@@ -36,6 +36,14 @@ func FloorMaterials(bt BuildingType) []*materials.Material {
 			materials.GetMaterial("stone"),
 			materials.GetMaterial("wood"),
 		}
+	case BuildingTypeTownhall:
+		return []*materials.Material{
+			materials.GetMaterial("sandstone"),
+		}
+	case BuildingTypeMarket:
+		return []*materials.Material{
+			materials.GetMaterial("brick"),
+		}
 	}
 	return nil
 }
@@ -54,6 +62,14 @@ func RoofMaterials(bt BuildingType) []*materials.Material {
 	case BuildingTypeMine:
 		return []*materials.Material{
 			materials.GetMaterial("hay"),
+			materials.GetMaterial("tile"),
+		}
+	case BuildingTypeTownhall:
+		return []*materials.Material{
+			materials.GetMaterial("tile"),
+		}
+	case BuildingTypeMarket:
+		return []*materials.Material{
 			materials.GetMaterial("tile"),
 		}
 	}

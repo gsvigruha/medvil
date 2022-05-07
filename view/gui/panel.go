@@ -19,14 +19,14 @@ type Panel struct {
 func (p *Panel) Render(cv *canvas.Canvas) {
 	cv.SetFillStyle("#210")
 	cv.FillRect(p.X, p.Y, p.SX, p.SY)
+	for i := range p.Panels {
+		p.Panels[i].Render(cv)
+	}
 	for i := range p.Buttons {
 		p.Buttons[i].Render(cv)
 	}
 	for i := range p.Labels {
 		p.Labels[i].Render(cv)
-	}
-	for i := range p.Panels {
-		p.Panels[i].Render(cv)
 	}
 	for i := range p.DropDowns {
 		p.DropDowns[i].Render(cv)
