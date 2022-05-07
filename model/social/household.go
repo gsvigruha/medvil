@@ -361,7 +361,6 @@ func (h *Household) NewPerson() *Person {
 
 func (h *Household) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 	var newPeople = make([]*Person, 0, len(h.People))
-
 	for _, p := range h.People {
 		if p.Health == 0 {
 			m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)
