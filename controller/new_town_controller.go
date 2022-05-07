@@ -15,12 +15,43 @@ const NewTownControllerStatePickResources = 1
 const NewTownControllerStatePickBuildTownhall = 2
 const NewTownControllerStatePickBuildMarket = 3
 
-type NewTownController struct {
-	p     *gui.Panel
-	r     map[*artifacts.Artifact]*int
-	th    *social.Townhall
-	cp    *ControlPanel
+type NewTownControllerButton struct {
+	c     *NewTownController
+	b     gui.ButtonGUI
 	state uint8
+}
+
+func (b *NewTownControllerButton) Click() {
+	b.c.state = b.state
+	if b.state == NewTownControllerStatePickResources {
+		b.c.bc = nil
+	} else {
+		if b.state == NewTownControllerStatePickBuildTownhall {
+			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeTownhall)
+		} else if b.state == NewTownControllerStatePickBuildMarket {
+			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeMarket)
+		}
+		b.c.cp.C.ActiveBuildingPlan = b.c.bc.Plan
+		b.c.cp.C.ClickHandler = b.c.bc
+	}
+}
+
+func (b *NewTownControllerButton) Render(cv *canvas.Canvas) {
+	b.b.Render(cv)
+}
+
+func (b *NewTownControllerButton) Contains(x float64, y float64) bool {
+	return b.b.Contains(x, y)
+}
+
+type NewTownController struct {
+	p        *gui.Panel
+	bc       *BuildingsController
+	r        map[*artifacts.Artifact]*int
+	sourceTH *social.Townhall
+	newTown  *social.Town
+	cp       *ControlPanel
+	state    uint8
 }
 
 func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
@@ -33,25 +64,38 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		var n int
 		r[a] = &n
 	}
-	c := &NewTownController{p: p, r: r, th: th, cp: cp, state: NewTownControllerStatePickResources}
+	newTown := &social.Town{Country: th.Household.Town.Country}
+	c := &NewTownController{p: p, r: r, sourceTH: th, newTown: newTown, cp: cp, state: NewTownControllerStatePickResources}
+
 	SetupNewTownController(c)
 	cp.SetDynamicPanel(c)
 }
 
 func SetupNewTownController(c *NewTownController) {
+	if c.bc != nil {
+		c.p.AddPanel(c.bc.p)
+	}
 	if c.state == NewTownControllerStatePickResources {
 		var aI = 0
 		for _, a := range artifacts.All {
-			if q, ok := c.th.Household.Resources.Artifacts[a]; ok {
-				ArtifactsPickerToControlPanel(c, aI, a, q, 100)
+			if q, ok := c.sourceTH.Household.Resources.Artifacts[a]; ok {
+				ArtifactsPickerToControlPanel(c, aI, a, q, 140)
 				aI++
 			}
 		}
-	} else if c.state == NewTownControllerStatePickBuildTownhall {
-		BuildingsToControlPanel(c.cp, building.BuildingTypeTownhall)
-	} else if c.state == NewTownControllerStatePickBuildMarket {
-		BuildingsToControlPanel(c.cp, building.BuildingTypeMarket)
 	}
+	c.p.AddButton(&NewTownControllerButton{
+		c: c, state: NewTownControllerStatePickResources,
+		b: gui.ButtonGUI{Icon: "barrel", X: float64(10), Y: float64(100), SX: 32, SY: 32},
+	})
+	c.p.AddButton(&NewTownControllerButton{
+		c: c, state: NewTownControllerStatePickBuildTownhall,
+		b: gui.ButtonGUI{Icon: "town", X: float64(50), Y: float64(100), SX: 32, SY: 32},
+	})
+	c.p.AddButton(&NewTownControllerButton{
+		c: c, state: NewTownControllerStatePickBuildMarket,
+		b: gui.ButtonGUI{Icon: "market", X: float64(90), Y: float64(100), SX: 32, SY: 32},
+	})
 }
 
 func ArtifactsPickerToControlPanel(c *NewTownController, i int, a *artifacts.Artifact, q uint16, top float64) {

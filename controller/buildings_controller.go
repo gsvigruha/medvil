@@ -9,9 +9,9 @@ import (
 	"medvil/view/gui"
 )
 
-const RoofPanelTop = 100
+const RoofPanelTop = 150
 const FloorsPanelTop = 200
-const ExtensionPanelTop = 300
+const ExtensionPanelTop = 250
 const BuildingBasePanelTop = 500
 
 const DX = 24
@@ -317,13 +317,17 @@ func (bc *BuildingsController) GenerateButtons() {
 	}
 }
 
-func BuildingsToControlPanel(cp *ControlPanel, bt building.BuildingType) {
+func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *BuildingsController {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY, SingleClick: true}
 	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p}
-
 	bc.GenerateButtons()
+	return bc
+}
 
-	cp.SetDynamicPanel(p)
+func BuildingsToControlPanel(cp *ControlPanel, bt building.BuildingType) {
+	bc := CreateBuildingsController(cp, bt)
+
+	cp.SetDynamicPanel(bc.p)
 	cp.C.ActiveBuildingPlan = bc.Plan
 	cp.C.ClickHandler = bc
 }
