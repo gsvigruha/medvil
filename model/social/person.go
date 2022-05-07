@@ -56,8 +56,10 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					p.Traveller.Move(m)
 				}
 			} else {
-				p.Task.Pause(true)
-				p.Household.AddTask(p.Task)
+				if !economy.IsPersonalTask(p.Task.Name()) {
+					p.Task.Pause(true)
+					p.Household.AddTask(p.Task)
+				}
 				p.releaseTask()
 			}
 		}
