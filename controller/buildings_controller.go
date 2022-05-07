@@ -252,8 +252,11 @@ func (b ExtensionButton) Contains(x float64, y float64) bool {
 }
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+	if c.ActiveTown == nil {
+		return false
+	}
 	if c.ActiveBuildingPlan.IsComplete() {
-		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+		c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 		return true
 	}
 	return false

@@ -86,29 +86,29 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 	return &rr
 }
 
-func (m *Map) AddBuildingConstruction(c *social.Country, x, y uint16, bp *building.BuildingPlan) bool {
+func (m *Map) AddBuildingConstruction(town *social.Town, x, y uint16, bp *building.BuildingPlan) bool {
 	b := m.AddBuilding(x, y, bp.Copy(), true)
 	if b != nil {
-		c.Towns[0].CreateBuildingConstruction(b, m)
+		town.CreateBuildingConstruction(b, m)
 		return true
 	} else {
 		return false
 	}
 }
 
-func (m *Map) AddRoadConstruction(c *social.Country, x, y uint16, rt *building.RoadType) bool {
+func (m *Map) AddRoadConstruction(town *social.Town, x, y uint16, rt *building.RoadType) bool {
 	r := &building.Road{T: rt, Construction: true, Broken: false}
 	m.GetField(x, y).Road = r
-	c.Towns[0].CreateRoadConstruction(x, y, r, m)
+	town.CreateRoadConstruction(x, y, r, m)
 	return true
 }
 
-func (m *Map) AddInfraConstruction(c *social.Country, x, y uint16, it *building.InfraType) bool {
-	c.Towns[0].CreateInfraConstruction(x, y, it, m)
+func (m *Map) AddInfraConstruction(town *social.Town, x, y uint16, it *building.InfraType) bool {
+	town.CreateInfraConstruction(x, y, it, m)
 	return true
 }
 
-func (m *Map) AddWallRampConstruction(c *social.Country, x, y uint16) bool {
+func (m *Map) AddWallRampConstruction(town *social.Town, x, y uint16) bool {
 	f := m.GetField(x, y)
 	b := f.Building.GetBuilding()
 	rampD := navigation.GetRampDirection(m, x, y)
@@ -119,11 +119,11 @@ func (m *Map) AddWallRampConstruction(c *social.Country, x, y uint16) bool {
 		roof.RampD = rampD
 		f.Building.BuildingComponents[len(f.Building.BuildingComponents)-1].SetConstruction(true)
 		cost := artifacts.ArtifactsDiff(b.Plan.ConstructionCost(), oldCost)
-		c.Towns[0].CreateIncrementalBuildingConstruction(b, cost, m)
+		town.CreateIncrementalBuildingConstruction(b, cost, m)
 		return true
 	} else if b == nil {
 		bp := building.GetWallRampPlan(rampD)
-		return m.AddBuildingConstruction(c, x, y, bp)
+		return m.AddBuildingConstruction(town, x, y, bp)
 	}
 	return false
 }

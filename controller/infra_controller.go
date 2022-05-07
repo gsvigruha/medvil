@@ -50,22 +50,25 @@ func (b InfraBuildButton) Contains(x float64, y float64) bool {
 }
 
 func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+	if c.ActiveTown == nil {
+		return false
+	}
 	if ic.it == InfraTypeDirtRoad && rf.F.Walkable() && rf.F.Buildable() {
-		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.DirtRoadType)
+		c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.DirtRoadType)
 	} else if ic.it == InfraTypeCobbleRoad && rf.F.Walkable() && rf.F.Buildable() {
-		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.CobbleRoadType)
+		c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.CobbleRoadType)
 	} else if ic.it == InfraTypeCanal && rf.F.Buildable() {
-		c.Map.AddInfraConstruction(c.Country, rf.F.X, rf.F.Y, building.CanalType)
+		c.Map.AddInfraConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.CanalType)
 	} else if ic.it == InfraTypeBridge && c.Map.Shore(rf.F.X, rf.F.Y) {
-		c.Map.AddRoadConstruction(c.Country, rf.F.X, rf.F.Y, building.BridgeRoadType)
+		c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.BridgeRoadType)
 	} else if ic.it == InfraTypeStoneWall1 && rf.F.Buildable() {
-		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall1Type)
+		c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall1Type)
 	} else if ic.it == InfraTypeStoneWall2 && rf.F.Buildable() {
-		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall2Type)
+		c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall2Type)
 	} else if ic.it == InfraTypeStoneWall3 && rf.F.Buildable() {
-		c.Map.AddBuildingConstruction(c.Country, rf.F.X, rf.F.Y, building.StoneWall3Type)
+		c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall3Type)
 	} else if ic.it == InfraTypeStoneWallRamp {
-		c.Map.AddWallRampConstruction(c.Country, rf.F.X, rf.F.Y)
+		c.Map.AddWallRampConstruction(c.ActiveTown, rf.F.X, rf.F.Y)
 	}
 	return true
 }

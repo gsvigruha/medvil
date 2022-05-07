@@ -65,6 +65,7 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		r[a] = &n
 	}
 	newTown := &social.Town{Country: th.Household.Town.Country}
+	cp.C.ActiveTown = newTown
 	c := &NewTownController{p: p, r: r, sourceTH: th, newTown: newTown, cp: cp, state: NewTownControllerStatePickResources}
 
 	SetupNewTownController(c)
