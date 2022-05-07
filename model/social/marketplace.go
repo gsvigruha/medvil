@@ -80,12 +80,13 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		sd := mp.pendingSupplyAndDemand()
 
 		for _, a := range artifacts.All {
-			if mp.Sold[a] == 0 && mp.Bought[a] > 0 {
+			storage := uint32(mp.Storage.Artifacts[a]) / 5
+			if mp.Sold[a]+storage == 0 && mp.Bought[a] > 0 {
 				mp.Prices[a]++
-			} else if mp.Bought[a] == 0 && mp.Sold[a] > 0 && mp.Prices[a] > 1 {
+			} else if mp.Bought[a] == 0 && mp.Sold[a]+storage > 0 && mp.Prices[a] > 1 {
 				mp.Prices[a]--
-			} else if mp.Bought[a] > 0 && mp.Sold[a] > 0 {
-				r := float64(mp.Sold[a]) / float64(mp.Bought[a])
+			} else if mp.Bought[a] > 0 && mp.Sold[a]+storage > 0 {
+				r := float64(mp.Sold[a]+storage) / float64(mp.Bought[a])
 				if r >= 1.1 && mp.Prices[a] > 1 {
 					mp.Prices[a]--
 				} else if r <= 0.9 {
