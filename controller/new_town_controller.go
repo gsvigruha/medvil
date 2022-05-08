@@ -45,14 +45,9 @@ func (b *NewTownControllerButton) Click() {
 				})
 			}
 		}
-		for pi, person := range srcH.People {
-			if person.Task == nil {
-				person.Reassign(dstH, pi, b.c.cp.C.Map)
-				dstH.TargetNumPeople++
-				if dstH.TargetNumPeople >= uint16(*b.c.numPeople) {
-					break
-				}
-			}
+		for i := 0; i < *b.c.numPeople; i++ {
+			srcH.ReassignFirstPerson(dstH, b.c.cp.C.Map)
+			dstH.TargetNumPeople++
 		}
 		targetMoney := uint32(*b.c.money)
 		if srcH.Money > targetMoney {

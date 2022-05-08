@@ -130,12 +130,7 @@ func (h *Household) HasSurplusPeople() bool {
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if &h.Town.Townhall.Household != h { // Not Townhall, needs better check
 		if h.HasRoomForPeople() {
-			for pi, person := range h.Town.Townhall.Household.People {
-				if person.Task == nil {
-					person.Reassign(h, pi, m)
-					break
-				}
-			}
+			h.Town.Townhall.Household.ReassignFirstPerson(h, m)
 		}
 		if len(h.People) >= 2 && rand.Float64() < ReproductionRate {
 			if h.HasRoomForPeople() {
@@ -149,12 +144,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 		if h.HasSurplusPeople() && h.Town.Townhall.Household.HasRoomForPeople() {
-			for pi, person := range h.People {
-				if person.Task == nil {
-					person.Reassign(&h.Town.Townhall.Household, pi, m)
-					break
-				}
-			}
+			h.ReassignFirstPerson(&h.Town.Townhall.Household, m)
 		}
 	}
 	numP := uint16(len(h.People))
@@ -388,5 +378,17 @@ func (h *Household) Stats() *stats.Stats {
 		People:    uint32(len(h.People)),
 		Buildings: 1,
 		Artifacts: h.Resources.NumArtifacts(),
+	}
+}
+
+func (srcH *Household) ReassignFirstPerson(dstH *Household, m navigation.IMap) {
+	for pi, person := range srcH.People {
+		if person.Task == nil {
+			srcH.People = append(srcH.People[:pi], srcH.People[pi+1:]...)
+			person.Household = dstH
+			dstH.People = append(dstH.People, person)
+			person.Task = &economy.GoHomeTask{F: m.GetField(dstH.Building.X, dstH.Building.Y), P: person}
+			break
+		}
 	}
 }
