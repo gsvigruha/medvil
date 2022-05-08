@@ -199,8 +199,10 @@ func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedFi
 		if b != nil {
 			if ntc.state == NewTownControllerStatePickBuildTownhall {
 				ntc.newTown.Townhall.Household.Building = b
+				ntc.newTown.Townhall.Household.Resources.VolumeCapacity = b.Plan.Area() * social.StoragePerArea
 			} else if ntc.state == NewTownControllerStatePickBuildMarket {
 				ntc.newTown.Marketplace.Building = b
+				ntc.newTown.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * social.StoragePerArea
 			}
 			ntc.newTown.CreateBuildingConstruction(b, c.Map)
 			return true
