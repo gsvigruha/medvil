@@ -212,7 +212,7 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 		Hour:  0,
 	}
 	controlPanel := &ControlPanel{}
-	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: &Map.Countries[0], TimeSpeed: 1}
+	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: Map.Countries[0], TimeSpeed: 1}
 	controlPanel.Setup(C)
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)

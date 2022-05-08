@@ -119,17 +119,14 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				mine := &Mine{Household: Household{Building: b, Town: town}}
 				mine.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Mines = append(town.Mines, mine)
-				navigation.SetRoadConnectionsForNeighbors(m, field)
 			case building.BuildingTypeWorkshop:
 				w := &Workshop{Household: Household{Building: b, Town: town}}
 				w.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Workshops = append(town.Workshops, w)
-				navigation.SetRoadConnectionsForNeighbors(m, field)
 			case building.BuildingTypeFarm:
 				f := &Farm{Household: Household{Building: b, Town: town}}
 				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Farms = append(town.Farms, f)
-				navigation.SetRoadConnectionsForNeighbors(m, field)
 			case building.BuildingTypeRoad:
 				if construction.Road.Construction {
 					construction.Road.Construction = false
@@ -144,6 +141,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 			if b != nil {
 				m.SetBuildingUnits(b, false)
+				navigation.SetRoadConnectionsForNeighbors(m, field)
 			}
 		} else {
 			constructions = append(constructions, construction)

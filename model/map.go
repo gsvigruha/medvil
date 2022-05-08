@@ -17,7 +17,7 @@ type Map struct {
 	SX        uint16
 	SY        uint16
 	Fields    [][]navigation.Field
-	Countries []social.Country
+	Countries []*social.Country
 }
 
 func (m *Map) SpreadPlant(i, j uint16) {
