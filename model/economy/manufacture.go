@@ -116,6 +116,12 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("reed"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("paper"), Quantity: 1}}},
+	&Manufacture{
+		Name:    "textile",
+		Time:    30 * 24,
+		Power:   1000,
+		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 3}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 1}}},
 }
 
 func GetAllManufactureNames() []string {
