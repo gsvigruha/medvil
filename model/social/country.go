@@ -15,3 +15,7 @@ func (c *Country) Stats() *stats.Stats {
 	}
 	return s
 }
+
+func (c *Country) AddTown(town *Town) {
+	c.Towns = append(c.Towns, town)
+}

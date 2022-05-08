@@ -143,7 +143,7 @@ func LoadSociety(dir string, m *model.Map) {
 		fmt.Println(err)
 	}
 
-	var cm map[string][]social.Country
+	var cm map[string][]*social.Country
 	if err := json.Unmarshal(byteValue, &cm); err != nil {
 		fmt.Println(err)
 	}
@@ -152,7 +152,7 @@ func LoadSociety(dir string, m *model.Map) {
 		country := countries[i]
 		for j := range countries[i].Towns {
 			town := countries[i].Towns[j]
-			town.Country = &country
+			town.Country = country
 			town.Init()
 			town.Townhall.Household.People = make([]*social.Person, 5)
 			town.Townhall.Household.TargetNumPeople = 5
