@@ -60,9 +60,9 @@ func (b *NewTownControllerButton) Click() {
 		srcH.Town.Country.AddTown(b.c.newTown)
 	} else {
 		if b.state == NewTownControllerStatePickBuildTownhall {
-			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeTownhall)
+			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeTownhall, b.c.newTown)
 		} else if b.state == NewTownControllerStatePickBuildMarket {
-			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeMarket)
+			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeMarket, b.c.newTown)
 		}
 		b.c.cp.C.ActiveBuildingPlan = b.c.bc.Plan
 		b.c.cp.C.ClickHandler = b.c
@@ -104,7 +104,6 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	newTown.Marketplace = &social.Marketplace{Town: newTown}
 	newTown.Init()
 	newTown.Marketplace.Init()
-	cp.C.ActiveTown = newTown
 	var money int
 	var numPeople int
 	c := &NewTownController{

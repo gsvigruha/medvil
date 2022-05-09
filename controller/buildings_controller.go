@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"medvil/model/building"
 	"medvil/model/materials"
+	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -26,6 +27,7 @@ type BuildingsController struct {
 	ExtensionT *building.BuildingExtensionType
 	bt         building.BuildingType
 	p          *gui.Panel
+	activeTown *social.Town
 	del        bool
 }
 
@@ -252,11 +254,11 @@ func (b ExtensionButton) Contains(x float64, y float64) bool {
 }
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	if c.ActiveTown == nil {
+	if bc.activeTown == nil {
 		return false
 	}
 	if c.ActiveBuildingPlan.IsComplete() {
-		c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
 		return true
 	}
 	return false
@@ -320,15 +322,15 @@ func (bc *BuildingsController) GenerateButtons() {
 	}
 }
 
-func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *BuildingsController {
+func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY, SingleClick: true}
-	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p}
+	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p, activeTown: activeTown}
 	bc.GenerateButtons()
 	return bc
 }
 
 func BuildingsToControlPanel(cp *ControlPanel, bt building.BuildingType) {
-	bc := CreateBuildingsController(cp, bt)
+	bc := CreateBuildingsController(cp, bt, cp.C.ActiveTown)
 
 	cp.SetDynamicPanel(bc.p)
 	cp.C.ActiveBuildingPlan = bc.Plan
