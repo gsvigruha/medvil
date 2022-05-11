@@ -36,6 +36,7 @@ const FarmFieldUseTypePasture uint8 = 3
 const FarmFieldUseTypeVegetables uint8 = 4
 const FarmFieldUseTypeForestry uint8 = 5
 const FarmFieldUseTypeReed uint8 = 6
+const FarmFieldUseTypeHerb uint8 = 7
 
 type AgriculturalTask struct {
 	TaskBase
@@ -68,6 +69,8 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 				cropType = &terrain.AllCropTypes[0]
 			} else if t.UseType == FarmFieldUseTypeVegetables {
 				cropType = &terrain.AllCropTypes[1]
+			} else if t.UseType == FarmFieldUseTypeHerb {
+				cropType = &terrain.AllCropTypes[3]
 			}
 			t.F.Plant = &terrain.Plant{
 				T:             cropType,

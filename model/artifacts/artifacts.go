@@ -37,6 +37,8 @@ var All = [...]*Artifact{
 	&Artifact{Name: "wine", M: materials.GetMaterial("water"), V: 1},
 	&Artifact{Name: "beer", M: materials.GetMaterial("water"), V: 1},
 	&Artifact{Name: "sheep", M: materials.GetMaterial("organic"), V: 3},
+	&Artifact{Name: "herb", M: materials.GetMaterial("organic"), V: 1},
+	&Artifact{Name: "medicine", M: materials.GetMaterial("organic"), V: 1},
 	// Sheets
 	&Artifact{Name: "leather", M: materials.GetMaterial("leather"), V: 1},
 	&Artifact{Name: "linen", M: materials.GetMaterial("linen"), V: 1},
