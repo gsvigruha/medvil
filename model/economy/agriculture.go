@@ -70,7 +70,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 			} else if t.UseType == FarmFieldUseTypeVegetables {
 				cropType = &terrain.AllCropTypes[1]
 			} else if t.UseType == FarmFieldUseTypeHerb {
-				cropType = &terrain.AllCropTypes[2]
+				cropType = &terrain.AllCropTypes[3]
 			}
 			t.F.Plant = &terrain.Plant{
 				T:             cropType,
