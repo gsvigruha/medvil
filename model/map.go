@@ -130,7 +130,7 @@ func (m *Map) AddWallRampConstruction(town *social.Town, x, y uint16) bool {
 
 func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, f *navigation.Field) bool {
 	if pu.Extension != nil && pu.Extension.T == building.WaterMillWheel {
-		return f.Terrain.T == terrain.Water && f.Road == nil
+		return f.Terrain.T == terrain.Water && f.Road == nil && f.Building.Empty()
 	}
 	return f.Buildable()
 }
