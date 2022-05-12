@@ -34,8 +34,25 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						MaxPrice:       uint32(maxUnitCost * float64(transportQ)),
 						TaskTag:        tag,
 					})
+					numP := uint16(len(w.Household.People))
+					water := artifacts.GetArtifact("water")
+					if w.Manufacture.IsInput(water) && w.Household.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP+WaterTransportQuantity {
+						hx, hy := w.Household.Building.GetRandomBuildingXY()
+						dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
+						if dest != nil {
+							w.Household.AddTask(&economy.TransportTask{
+								PickupF:  dest,
+								DropoffF: m.GetField(hx, hy),
+								PickupR:  &dest.Terrain.Resources,
+								DropoffR: &w.Household.Resources,
+								A:        water,
+								Quantity: WaterTransportQuantity,
+							})
+						}
+					}
 				}
 			}
+
 			if w.Household.Resources.RemoveAll(w.Manufacture.Inputs) {
 				w.Household.AddTask(&economy.ManufactureTask{
 					M: w.Manufacture,
