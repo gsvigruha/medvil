@@ -8,9 +8,11 @@ import (
 type Person interface {
 	Eat()
 	Drink()
+	Heal()
 	SetHome()
 	HasFood() bool
 	HasDrink() bool
+	HasMedicine() bool
 }
 
 var PersonalTasks = []string{"eat", "drink", "gohome"}
@@ -31,6 +33,12 @@ type EatTask struct {
 }
 
 type DrinkTask struct {
+	TaskBase
+	F *navigation.Field
+	P Person
+}
+
+type HealTask struct {
 	TaskBase
 	F *navigation.Field
 	P Person
@@ -97,6 +105,35 @@ func (t *DrinkTask) Expired(Calendar *time.CalendarType) bool {
 }
 
 func (t *DrinkTask) Motion() uint8 {
+	return navigation.MotionStand
+}
+
+func (t *HealTask) Field() *navigation.Field {
+	return t.F
+}
+
+func (t *HealTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+	t.P.Heal()
+	return true
+}
+
+func (t *HealTask) Blocked() bool {
+	return !t.P.HasMedicine()
+}
+
+func (t *HealTask) Name() string {
+	return "heal"
+}
+
+func (t *HealTask) Tag() string {
+	return ""
+}
+
+func (t *HealTask) Expired(Calendar *time.CalendarType) bool {
+	return false
+}
+
+func (t *HealTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
