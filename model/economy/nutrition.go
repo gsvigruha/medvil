@@ -14,6 +14,8 @@ var water = artifacts.GetArtifact("water")
 var wine = artifacts.GetArtifact("wine")
 var beer = artifacts.GetArtifact("beer")
 
+var Medicine = artifacts.GetArtifact("medicine")
+
 var Foods = []*artifacts.Artifact{fruit, vegetable, bread, meat}
 var Drinks = []*artifacts.Artifact{water, wine, beer}
 
@@ -31,6 +33,13 @@ func HasFood(r artifacts.Resources) bool {
 
 func HasDrink(r artifacts.Resources) bool {
 	return AvailableDrink(r) != nil
+}
+
+func HasMedicine(r artifacts.Resources) bool {
+	if q, ok := r.Artifacts[Medicine]; ok {
+		return q > 0
+	}
+	return false
 }
 
 func AvailableFood(r artifacts.Resources) []*artifacts.Artifact {
@@ -86,6 +95,7 @@ var ArtifactToPersonState = map[*artifacts.Artifact]PersonStateChange{
 	water:     PersonStateChange{Food: 0, Water: 200, Happiness: 0, Health: 0},
 	wine:      PersonStateChange{Food: 0, Water: 150, Happiness: 100, Health: 50},
 	beer:      PersonStateChange{Food: 0, Water: 150, Happiness: 100, Health: 0},
+	Medicine:  PersonStateChange{Food: 0, Water: 0, Happiness: 0, Health: 150},
 }
 
 type WaterDestination struct{}

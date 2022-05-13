@@ -15,6 +15,7 @@ const ReproductionRate = 1.0 / (24 * 30 * 12)
 const StoragePerArea = 50
 const ToolsBudgetRatio = 0.2
 const HeatingBudgetRatio = 0.3
+const MedicineBudgetRatio = 0.2
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
@@ -220,6 +221,21 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	if h.Resources.Get(economy.Medicine) < numP {
+		tag := "medicine_shopping"
+		if NumBatchesSimple(ProductTransportQuantity(economy.Medicine), ProductTransportQuantity(economy.Medicine)) > h.NumTasks("exchange", tag) {
+			needs := []artifacts.Artifacts{artifacts.Artifacts{A: economy.Medicine, Quantity: ProductTransportQuantity(economy.Medicine)}}
+			if h.Money >= mp.Price(needs) && mp.HasTraded(economy.Medicine) {
+				h.AddTask(&economy.BuyTask{
+					Exchange:       mp,
+					HouseholdMoney: &h.Money,
+					Goods:          needs,
+					MaxPrice:       uint32(float64(h.Money) * MedicineBudgetRatio),
+					TaskTag:        tag,
+				})
+			}
+		}
+	}
 	if Calendar.Hour == 0 {
 		for i := 0; i < len(h.Tasks); i++ {
 			if h.Tasks[i].IsPaused() {
@@ -303,6 +319,10 @@ func (h *Household) HasFood() bool {
 
 func (h *Household) HasDrink() bool {
 	return economy.HasDrink(h.Resources)
+}
+
+func (h *Household) HasMedicine() bool {
+	return economy.HasMedicine(h.Resources)
 }
 
 func countTags(task economy.Task, name, tag string) int {
