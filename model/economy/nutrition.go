@@ -12,12 +12,12 @@ var meat = artifacts.GetArtifact("meat")
 
 var water = artifacts.GetArtifact("water")
 var wine = artifacts.GetArtifact("wine")
-var beer = artifacts.GetArtifact("beer")
+var Beer = artifacts.GetArtifact("beer")
 
 var Medicine = artifacts.GetArtifact("medicine")
 
 var Foods = []*artifacts.Artifact{fruit, vegetable, bread, meat}
-var Drinks = []*artifacts.Artifact{water, wine, beer}
+var Drinks = []*artifacts.Artifact{water, wine, Beer}
 
 const MinFoodOrDrinkPerPerson uint16 = 2
 const MaxFoodOrDrinkPerPerson uint16 = 5
@@ -37,6 +37,13 @@ func HasDrink(r artifacts.Resources) bool {
 
 func HasMedicine(r artifacts.Resources) bool {
 	if q, ok := r.Artifacts[Medicine]; ok {
+		return q > 0
+	}
+	return false
+}
+
+func HasBeer(r artifacts.Resources) bool {
+	if q, ok := r.Artifacts[Beer]; ok {
 		return q > 0
 	}
 	return false
@@ -94,7 +101,7 @@ var ArtifactToPersonState = map[*artifacts.Artifact]PersonStateChange{
 	meat:      PersonStateChange{Food: 200, Water: 0, Happiness: 50, Health: 0},
 	water:     PersonStateChange{Food: 0, Water: 200, Happiness: 0, Health: 0},
 	wine:      PersonStateChange{Food: 0, Water: 150, Happiness: 100, Health: 50},
-	beer:      PersonStateChange{Food: 0, Water: 150, Happiness: 100, Health: 0},
+	Beer:      PersonStateChange{Food: 25, Water: 150, Happiness: 100, Health: 0},
 	Medicine:  PersonStateChange{Food: 0, Water: 0, Happiness: 0, Health: 150},
 }
 
