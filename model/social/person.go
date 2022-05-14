@@ -12,6 +12,7 @@ const MaxPersonState = 250
 const WaterThreshold = 100
 const FoodThreshold = 100
 const HealthThreshold = 100
+const HappinessThreshold = 100
 
 type Person struct {
 	Food      uint8
@@ -73,6 +74,8 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			p.Task = &economy.EatTask{F: home, P: p}
 		} else if p.Health < HealthThreshold && p.Household.HasMedicine() {
 			p.Task = &economy.HealTask{F: home, P: p}
+		} else if p.Happiness < HappinessThreshold && p.Household.HasBeer() {
+			p.Task = &economy.DrinkTask{F: home, P: p}
 		} else if p.Household.HasTask() {
 			p.Task = p.Household.getNextTaskCombineExchange(m)
 			if !p.Tool && p.Household.Resources.Remove(Tools, 1) == 1 {
@@ -154,6 +157,13 @@ func (p *Person) Heal() {
 	}
 }
 
+func (p *Person) DrinkBeer() {
+	if p.Household.HasBeer() {
+		p.Household.Resources.Remove(economy.Beer, 1)
+		p.changePersonState(economy.Beer)
+	}
+}
+
 func (p *Person) SetHome() {
 	p.IsHome = true
 }
@@ -168,4 +178,8 @@ func (p *Person) HasDrink() bool {
 
 func (p *Person) HasMedicine() bool {
 	return p.Household.HasMedicine()
+}
+
+func (p *Person) HasBeer() bool {
+	return p.Household.HasBeer()
 }

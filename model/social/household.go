@@ -13,9 +13,8 @@ import (
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
 const StoragePerArea = 50
-const ToolsBudgetRatio = 0.2
 const HeatingBudgetRatio = 0.3
-const MedicineBudgetRatio = 0.2
+const ExtrasBudgetRatio = 0.2
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
@@ -201,7 +200,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				Exchange:       mp,
 				HouseholdMoney: &h.Money,
 				Goods:          needs,
-				MaxPrice:       uint32(float64(h.Money) * ToolsBudgetRatio),
+				MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
 				TaskTag:        "tools_purchase",
 			})
 		}
@@ -230,7 +229,22 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					Exchange:       mp,
 					HouseholdMoney: &h.Money,
 					Goods:          needs,
-					MaxPrice:       uint32(float64(h.Money) * MedicineBudgetRatio),
+					MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
+					TaskTag:        tag,
+				})
+			}
+		}
+	}
+	if h.Resources.Get(economy.Beer) < numP {
+		tag := "beer_shopping"
+		if NumBatchesSimple(ProductTransportQuantity(economy.Beer), ProductTransportQuantity(economy.Beer)) > h.NumTasks("exchange", tag) {
+			needs := []artifacts.Artifacts{artifacts.Artifacts{A: economy.Beer, Quantity: ProductTransportQuantity(economy.Beer)}}
+			if h.Money >= mp.Price(needs) && mp.HasTraded(economy.Beer) {
+				h.AddTask(&economy.BuyTask{
+					Exchange:       mp,
+					HouseholdMoney: &h.Money,
+					Goods:          needs,
+					MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
 					TaskTag:        tag,
 				})
 			}
@@ -323,6 +337,10 @@ func (h *Household) HasDrink() bool {
 
 func (h *Household) HasMedicine() bool {
 	return economy.HasMedicine(h.Resources)
+}
+
+func (h *Household) HasBeer() bool {
+	return economy.HasBeer(h.Resources)
 }
 
 func countTags(task economy.Task, name, tag string) int {
