@@ -1,7 +1,9 @@
 package vehicles
 
-type Vehicle struct {
-	Name string
+type VehicleType struct {
+	Name  string
+	Water bool
+	Land  bool
 }
 
-var Boat = Vehicle{Name: "boat"}
+var Boat = VehicleType{Name: "boat", Water: true, Land: false}

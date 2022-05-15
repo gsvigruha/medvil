@@ -151,7 +151,7 @@ func GetAllManufactureNames() []string {
 func GetManufactureNames(be *building.BuildingExtension) []string {
 	result := make([]string, 0, len(AllManufacture))
 	for _, m := range AllManufacture {
-		if (be == nil && m.BuildingExtensionType == building.BuildingExtensionTypeNone) || (be != nil && be.T == m.BuildingExtensionType) {
+		if (be == nil && m.BuildingExtensionType == nil) || (be != nil && be.T == m.BuildingExtensionType) {
 			result = append(result, m.Name)
 		}
 	}

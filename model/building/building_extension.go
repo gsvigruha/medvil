@@ -5,7 +5,6 @@ type BuildingExtensionType struct {
 	OnWater bool
 }
 
-var BuildingExtensionTypeNone = &BuildingExtensionType{}
 var WaterMillWheel = &BuildingExtensionType{Name: "water_mill_wheel", OnWater: true}
 var Forge = &BuildingExtensionType{Name: "forge", OnWater: false}
 var Deck = &BuildingExtensionType{Name: "deck", OnWater: true}

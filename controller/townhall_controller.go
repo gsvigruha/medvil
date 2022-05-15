@@ -32,7 +32,11 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	tp.AddPanel(gui.CreateNumberPanel(150, 625, 120, 20, 0, 1000, 10, "mine threshold %v", &th.Household.Town.Transfers.Mine.TaxThreshold).P)
 	tp.AddPanel(gui.CreateNumberPanel(150, 650, 120, 20, 0, 1000, 10, "mine subsidy %v", &th.Household.Town.Transfers.Mine.Subsidy).P)
 
-	tp.AddPanel(gui.CreateNumberPanel(150, 675, 120, 20, 0, 100, 10, "market funding %v", &th.Household.Town.Transfers.MarketFundingRate).P)
+	tp.AddPanel(gui.CreateNumberPanel(150, 675, 120, 20, 0, 100, 10, "factory tax rate %v", &th.Household.Town.Transfers.Factory.TaxRate).P)
+	tp.AddPanel(gui.CreateNumberPanel(150, 700, 120, 20, 0, 1000, 10, "factory threshold %v", &th.Household.Town.Transfers.Factory.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPanel(150, 725, 120, 20, 0, 1000, 10, "factory subsidy %v", &th.Household.Town.Transfers.Factory.Subsidy).P)
+
+	tp.AddPanel(gui.CreateNumberPanel(10, 750, 120, 20, 0, 100, 10, "market funding %v", &th.Household.Town.Transfers.MarketFundingRate).P)
 
 	cp.SetDynamicPanel(tc)
 }

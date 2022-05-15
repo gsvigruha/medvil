@@ -38,6 +38,7 @@ type Controller struct {
 	SelectedFarm              *social.Farm
 	SelectedWorkshop          *social.Workshop
 	SelectedMine              *social.Mine
+	SelectedFactory           *social.Factory
 	SelectedTownhall          *social.Townhall
 	SelectedConstruction      *building.Construction
 	SelectedMarketplace       *social.Marketplace
@@ -109,6 +110,7 @@ func (c *Controller) Reset() {
 	c.SelectedField = nil
 	c.SelectedFarm = nil
 	c.SelectedMine = nil
+	c.SelectedFactory = nil
 	c.SelectedWorkshop = nil
 	c.ActiveBuildingPlan = nil
 	c.ClickHandler = nil
@@ -179,6 +181,11 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 					c.ActiveTown = c.SelectedMine.Household.Town
 					MineToControlPanel(c.ControlPanel, c.SelectedMine)
 				}
+				c.SelectedFactory = c.ReverseReferences.BuildingToFactory[rbp.GetBuilding()]
+				if c.SelectedFactory != nil {
+					c.ActiveTown = c.SelectedFactory.Household.Town
+					FactoryToControlPanel(c.ControlPanel, c.SelectedFactory)
+				}
 				c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]
 				if c.SelectedConstruction != nil {
 					ConstructionToControlPanel(c.ControlPanel, c.SelectedConstruction)
@@ -212,7 +219,7 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 		Hour:  0,
 	}
 	controlPanel := &ControlPanel{}
-	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: Map.Countries[0], TimeSpeed: 1}
+	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: Map.Countries[0], TimeSpeed: 1, ActiveTown: Map.Countries[0].Towns[0]}
 	controlPanel.Setup(C)
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
