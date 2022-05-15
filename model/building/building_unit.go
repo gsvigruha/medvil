@@ -77,7 +77,7 @@ func (u *BuildingUnit) NamePlate() bool {
 type ExtensionUnit struct {
 	BuildingComponentBase
 	Direction uint8
-	T         BuildingExtensionType
+	T         *BuildingExtensionType
 }
 
 func (u *ExtensionUnit) Connection(dir uint8) ConnectionType {

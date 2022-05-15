@@ -60,7 +60,7 @@ func (b BuildingBaseButton) Click() {
 	} else if b.bc.ExtensionT != nil && b.bc.Plan.HasNeighborUnit(uint8(b.i), uint8(b.j), 0) && b.bc.Plan.GetExtension() == nil {
 		if !b.bc.del && b.bc.Plan.BaseShape[b.i][b.j] == nil {
 			b.bc.Plan.BaseShape[b.i][b.j] = &building.PlanUnits{}
-			b.bc.Plan.BaseShape[b.i][b.j].Extension = &building.BuildingExtension{T: *b.bc.ExtensionT}
+			b.bc.Plan.BaseShape[b.i][b.j].Extension = &building.BuildingExtension{T: b.bc.ExtensionT}
 		}
 	} else if b.bc.del {
 		if b.bc.Plan.BaseShape[b.i][b.j] != nil {
@@ -101,13 +101,7 @@ func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
 		}
 		cv.Stroke()
 	} else {
-		var img string
-		switch *b.ET {
-		case building.WaterMillWheel:
-			img = "icon/gui/building/watermill_wheel.png"
-		case building.Forge:
-			img = "icon/gui/building/forge.png"
-		}
+		img := "icon/gui/building/" + b.ET.Name + ".png"
 		cv.DrawImage(img, b.p.Points[0].X-16, b.p.Points[0].Y+4, 32, 32)
 	}
 }
@@ -229,7 +223,7 @@ func (b RoofButton) Contains(x float64, y float64) bool {
 
 type ExtensionButton struct {
 	b   gui.ButtonGUI
-	t   building.BuildingExtensionType
+	t   *building.BuildingExtensionType
 	bc  *BuildingsController
 	del bool
 }
@@ -237,13 +231,13 @@ type ExtensionButton struct {
 func (b ExtensionButton) Click() {
 	b.bc.UnitM = nil
 	b.bc.RoofM = nil
-	b.bc.ExtensionT = &b.t
+	b.bc.ExtensionT = b.t
 	b.bc.del = b.del
 }
 
 func (b ExtensionButton) Render(cv *canvas.Canvas) {
 	b.b.Render(cv)
-	if b.bc.ExtensionT == nil || *b.bc.ExtensionT != b.t || (!b.bc.del && b.del) {
+	if b.bc.ExtensionT == nil || b.bc.ExtensionT != b.t || (!b.bc.del && b.del) {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 128})
 		cv.FillRect(b.b.X, b.b.Y, 32, 32)
 	}
@@ -287,16 +281,10 @@ func (bc *BuildingsController) GenerateButtons() {
 		})
 	}
 
-	if bc.bt == building.BuildingTypeWorkshop {
+	for i, e := range building.ExtensionTypes(bc.bt) {
 		bc.p.AddButton(ExtensionButton{
-			b:  gui.ButtonGUI{Icon: "building/watermill_wheel", X: 10, Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
-			t:  building.WaterMillWheel,
-			bc: bc,
-		})
-
-		bc.p.AddButton(ExtensionButton{
-			b:  gui.ButtonGUI{Icon: "building/forge", X: 50, Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
-			t:  building.Forge,
+			b:  gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i*40 + 10), Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
+			t:  e,
 			bc: bc,
 		})
 	}
@@ -315,7 +303,7 @@ func (bc *BuildingsController) GenerateButtons() {
 					bc.p.AddButton(createBuildingBaseButton(bc, i, j, k+1, x, y-DZ*float64(k+1), nil, bc.Plan.BaseShape[i][j].Roof.M, nil))
 				}
 				if bc.Plan.BaseShape[i][j].Extension != nil {
-					bc.p.AddButton(createBuildingBaseButton(bc, i, j, k+1, x, y-DZ*float64(k+1), nil, nil, &bc.Plan.BaseShape[i][j].Extension.T))
+					bc.p.AddButton(createBuildingBaseButton(bc, i, j, k+1, x, y-DZ*float64(k+1), nil, nil, bc.Plan.BaseShape[i][j].Extension.T))
 				}
 			}
 		}
