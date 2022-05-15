@@ -482,5 +482,26 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		cv.LineTo(xrb, yrb-DZ*2)
 		cv.ClosePath()
 		cv.Fill()
+	} else if extension.T == building.Deck {
+		rfIdx1 := (3 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx2 := (2 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx3 := (1 - (-c.Perspective + extension.Direction)) % 4
+		rfIdx4 := (0 - (-c.Perspective + extension.Direction)) % 4
+
+		xw1 := (rf.X[rfIdx1]*2.0 + rf.X[rfIdx4]*1.0) / 3.0
+		yw1 := (rf.Y[rfIdx1]*2.0 + rf.Y[rfIdx4]*1.0) / 3.0
+		zw1 := (rf.Z[rfIdx1]*2.0 + rf.Z[rfIdx4]*1.0) / 3.0
+		xw2 := (rf.X[rfIdx2]*2.0 + rf.X[rfIdx3]*1.0) / 3.0
+		yw2 := (rf.Y[rfIdx2]*2.0 + rf.Y[rfIdx3]*1.0) / 3.0
+		zw2 := (rf.Z[rfIdx2]*2.0 + rf.Z[rfIdx3]*1.0) / 3.0
+
+		cv.SetFillStyle("texture/building/deck.png")
+		cv.BeginPath()
+		cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-rf.Z[rfIdx1])
+		cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-rf.Z[rfIdx2])
+		cv.LineTo(xw2, yw2-zw2)
+		cv.LineTo(xw1, yw1-zw1)
+		cv.ClosePath()
+		cv.Fill()
 	}
 }

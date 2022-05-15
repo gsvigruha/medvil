@@ -66,6 +66,10 @@ func CPActionShowMineController(c *Controller) {
 	c.ShowBuildingController(building.BuildingTypeMine)
 }
 
+func CPActionShowVehicleController(c *Controller) {
+	c.ShowBuildingController(building.BuildingTypeVehicle)
+}
+
 func CPActionShowInfraController(c *Controller) {
 	c.ShowInfraController()
 }
@@ -120,15 +124,16 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.peopleLabel = p.topPanel.AddTextLabel("", 170, 20)
 	p.topPanel.AddImageLabel("barrel", 200, 8, 16, 16, gui.ImageLabelStyleRegular)
 	p.artifactsLabel = p.topPanel.AddTextLabel("", 220, 20)
-	p.topPanel.AddImageLabel("building", 260, 8, 16, 16, gui.ImageLabelStyleRegular)
+	p.topPanel.AddImageLabel("workshop", 260, 8, 16, 16, gui.ImageLabelStyleRegular)
 	p.buildingsLabel = p.topPanel.AddTextLabel("", 280, 20)
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: 10, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowFarmController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "mine", X: 50, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowMineController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "building", X: 90, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowWorkshopController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "infra", X: 130, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowInfraController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "town", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowNewTownController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "workshop", X: 90, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowWorkshopController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "vehicle", X: 130, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowVehicleController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "infra", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowInfraController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "town", X: 210, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowNewTownController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 250, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
-	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 210, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
+	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 250, Y: 70, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 }
 

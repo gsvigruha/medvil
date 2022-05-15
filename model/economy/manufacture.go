@@ -9,7 +9,7 @@ type Manufacture struct {
 	Name                  string
 	Time                  uint16
 	Power                 uint16
-	BuildingExtensionType building.BuildingExtensionType
+	BuildingExtensionType *building.BuildingExtensionType
 	Inputs                []artifacts.Artifacts
 	Outputs               []artifacts.Artifacts
 }
