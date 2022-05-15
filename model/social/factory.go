@@ -42,6 +42,10 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	f.Orders = newOrders
 }
 
+func (f *Factory) CreateOrder(vc *economy.VehicleConstruction) {
+	f.Orders = append(f.Orders, &VehicleOrder{T: vc})
+}
+
 func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
 	var n int
 	for _, order := range f.Orders {

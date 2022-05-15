@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/tfriedel6/canvas"
 	"medvil/model/economy"
 	"medvil/model/social"
@@ -20,8 +21,7 @@ func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 	fc := &FactoryController{factoryPanel: fp, householdPanel: hp, factory: factory}
 
 	for i, vc := range economy.GetVehicleConstructions(factory.Household.Building.Plan.GetExtension()) {
-		order := factory.NumOrders(vc)
-		fp.AddPanel(gui.CreateNumberPanel(float64(i*40+10), 600, 80, 20, 0, 10, 1, vc.Name+" %v", &order).P)
+		fp.AddPanel(CreateOrderPanel(float64(i*40+10), 600, 60, 20, factory, vc))
 	}
 
 	cp.SetDynamicPanel(fc)
@@ -42,4 +42,36 @@ func (fc *FactoryController) Clear() {}
 func (fc *FactoryController) Refresh() {
 	fc.householdPanel.Clear()
 	HouseholdToControlPanel(fc.householdPanel, &fc.factory.Household)
+}
+
+type OrderButton struct {
+	b       gui.ButtonGUI
+	factory *social.Factory
+	vc      *economy.VehicleConstruction
+	l       *gui.TextLabel
+}
+
+func (b OrderButton) Click() {
+	b.factory.CreateOrder(b.vc)
+}
+
+func (b OrderButton) Render(cv *canvas.Canvas) {
+	b.b.Render(cv)
+	b.l.Text = fmt.Sprintf("%v %v", b.vc.Name, b.factory.NumOrders(b.vc))
+}
+
+func (b OrderButton) Contains(x float64, y float64) bool {
+	return b.b.Contains(x, y)
+}
+
+func CreateOrderPanel(x, y, sx, sy float64, factory *social.Factory, vc *economy.VehicleConstruction) *gui.Panel {
+	p := &gui.Panel{}
+	l := p.AddTextLabel("", x, y+sy*2/3)
+	p.AddButton(OrderButton{
+		b:       gui.ButtonGUI{Icon: "plus", X: x + sx, Y: y, SX: sy, SY: sy},
+		factory: factory,
+		vc:      vc,
+		l:       l,
+	})
+	return p
 }
