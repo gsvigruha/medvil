@@ -6,9 +6,14 @@ import (
 	"medvil/model/time"
 )
 
+type VehicleOrder interface {
+	CompleteBuild()
+}
+
 type VehicleConstructionTask struct {
 	TaskBase
 	T        *VehicleConstruction
+	O        VehicleOrder
 	F        *navigation.Field
 	R        *artifacts.Resources
 	Progress uint16
@@ -19,6 +24,16 @@ func (t *VehicleConstructionTask) Field() *navigation.Field {
 }
 
 func (t *VehicleConstructionTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+	if t.Progress < t.T.Time {
+		t.Progress++
+		if tool {
+			t.Progress++
+		}
+	}
+	if t.Progress >= t.T.Time {
+		t.O.CompleteBuild()
+		return true
+	}
 	return false
 }
 

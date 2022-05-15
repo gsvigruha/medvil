@@ -17,6 +17,10 @@ type VehicleOrder struct {
 	State uint8
 }
 
+func (o *VehicleOrder) CompleteBuild() {
+	o.State = OrderStateBuilt
+}
+
 type Factory struct {
 	Household Household
 	Orders    []*VehicleOrder
@@ -58,6 +62,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
 			f.Household.AddTask(&economy.VehicleConstructionTask{
 				T: order.T,
+				O: order,
 				F: home,
 				R: &f.Household.Resources,
 			})
