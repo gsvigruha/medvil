@@ -8,6 +8,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/stats"
 	"medvil/model/time"
+	"medvil/model/vehicles"
 	"strings"
 )
 
@@ -29,6 +30,7 @@ type Household struct {
 	Building        *building.Building
 	Town            *Town
 	Tasks           []economy.Task
+	Vehicles        []*vehicles.Vehicle
 	Resources       artifacts.Resources
 	Heating         float64
 }
