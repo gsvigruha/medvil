@@ -20,8 +20,8 @@ func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 	fc := &FactoryController{factoryPanel: fp, householdPanel: hp, factory: factory}
 
 	for i, vc := range economy.GetVehicleConstructions(factory.Household.Building.Plan.GetExtension()) {
-		order := factory.Orders[vc]
-		fp.AddPanel(gui.CreateNumberPanel(float64(i*40+10), 600, 80, 20, 0, 10, 1, vc.Name+" %v", &order.N).P)
+		order := factory.NumOrders(vc)
+		fp.AddPanel(gui.CreateNumberPanel(float64(i*40+10), 600, 80, 20, 0, 10, 1, vc.Name+" %v", &order).P)
 	}
 
 	cp.SetDynamicPanel(fc)

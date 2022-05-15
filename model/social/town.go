@@ -144,7 +144,6 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				town.Farms = append(town.Farms, f)
 			case building.BuildingTypeFactory:
 				f := &Factory{Household: Household{Building: b, Town: town}}
-				f.Init()
 				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Factories = append(town.Factories, f)
 			case building.BuildingTypeRoad:
