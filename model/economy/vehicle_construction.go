@@ -12,7 +12,7 @@ type VehicleConstruction struct {
 	Power                 uint16
 	BuildingExtensionType *building.BuildingExtensionType
 	Inputs                []artifacts.Artifacts
-	Output                vehicles.VehicleType
+	Output                *vehicles.VehicleType
 }
 
 var AllVehicleConstruction = [...]*VehicleConstruction{

@@ -5,7 +5,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
-	//"medvil/model/vehicles"
+	"medvil/model/vehicles"
 )
 
 const OrderStateOrdered = 0
@@ -15,10 +15,12 @@ const OrderStateBuilt = 2
 type VehicleOrder struct {
 	T     *economy.VehicleConstruction
 	State uint8
+	F     *Factory
 }
 
 func (o *VehicleOrder) CompleteBuild() {
 	o.State = OrderStateBuilt
+	o.F.Household.Vehicles = append(o.F.Household.Vehicles, &vehicles.Vehicle{T: o.T.Output})
 }
 
 type Factory struct {
@@ -72,7 +74,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (f *Factory) CreateOrder(vc *economy.VehicleConstruction) {
-	f.Orders = append(f.Orders, &VehicleOrder{T: vc, State: OrderStateOrdered})
+	f.Orders = append(f.Orders, &VehicleOrder{T: vc, F: f, State: OrderStateOrdered})
 }
 
 func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
