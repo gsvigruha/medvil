@@ -9,7 +9,7 @@ type BuildingType uint8
 const BuildingTypeFarm = 1
 const BuildingTypeWorkshop = 2
 const BuildingTypeMine = 3
-const BuildingTypeVehicle = 4
+const BuildingTypeFactory = 4
 
 const BuildingTypeRoad = 10
 const BuildingTypeCanal = 11
@@ -37,7 +37,7 @@ func FloorMaterials(bt BuildingType) []*materials.Material {
 			materials.GetMaterial("stone"),
 			materials.GetMaterial("wood"),
 		}
-	case BuildingTypeVehicle:
+	case BuildingTypeFactory:
 		return []*materials.Material{
 			materials.GetMaterial("stone"),
 			materials.GetMaterial("wood"),
@@ -70,7 +70,7 @@ func RoofMaterials(bt BuildingType) []*materials.Material {
 			materials.GetMaterial("hay"),
 			materials.GetMaterial("tile"),
 		}
-	case BuildingTypeVehicle:
+	case BuildingTypeFactory:
 		return []*materials.Material{
 			materials.GetMaterial("tile"),
 		}
@@ -93,7 +93,7 @@ func ExtensionTypes(bt BuildingType) []*BuildingExtensionType {
 			WaterMillWheel,
 			Forge,
 		}
-	case BuildingTypeVehicle:
+	case BuildingTypeFactory:
 		return []*BuildingExtensionType{
 			Deck,
 		}

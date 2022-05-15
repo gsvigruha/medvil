@@ -32,6 +32,7 @@ type Town struct {
 	Farms         []*Farm
 	Workshops     []*Workshop
 	Mines         []*Mine
+	Factories     []*Factory
 	Constructions []*building.Construction
 	Stats         *stats.Stats
 	Transfers     *MoneyTransfers
@@ -48,6 +49,7 @@ func (town *Town) Init() {
 		Farm:              defaultTransfers,
 		Workshop:          defaultTransfers,
 		Mine:              defaultTransfers,
+		Factory:           defaultTransfers,
 		MarketFundingRate: 70,
 	}
 	town.Stats = &stats.Stats{}
@@ -108,6 +110,19 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		mine.Household.Filter(Calendar, m)
 		s.Add(mine.Household.Stats())
 	}
+	for k := range town.Factories {
+		factory := town.Factories[k]
+		for l := range factory.Household.People {
+			person := factory.Household.People[l]
+			person.ElapseTime(Calendar, m)
+		}
+		factory.ElapseTime(Calendar, m)
+		if eoYear {
+			town.Transfers.Factory.Transfer(&town.Townhall.Household.Money, &factory.Household.Money)
+		}
+		factory.Household.Filter(Calendar, m)
+		s.Add(factory.Household.Stats())
+	}
 	var constructions []*building.Construction
 	for k := range town.Constructions {
 		construction := town.Constructions[k]
@@ -127,6 +142,10 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				f := &Farm{Household: Household{Building: b, Town: town}}
 				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Farms = append(town.Farms, f)
+			case building.BuildingTypeFactory:
+				f := &Factory{Household: Household{Building: b, Town: town}}
+				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Factories = append(town.Factories, f)
 			case building.BuildingTypeRoad:
 				if construction.Road.Construction {
 					construction.Road.Construction = false

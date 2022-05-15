@@ -10,6 +10,7 @@ type MoneyTransfers struct {
 	Farm              TransferCategories
 	Workshop          TransferCategories
 	Mine              TransferCategories
+	Factory           TransferCategories
 	MarketFundingRate int
 }
 

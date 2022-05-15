@@ -66,8 +66,8 @@ func CPActionShowMineController(c *Controller) {
 	c.ShowBuildingController(building.BuildingTypeMine)
 }
 
-func CPActionShowVehicleController(c *Controller) {
-	c.ShowBuildingController(building.BuildingTypeVehicle)
+func CPActionShowFactoryController(c *Controller) {
+	c.ShowBuildingController(building.BuildingTypeFactory)
 }
 
 func CPActionShowInfraController(c *Controller) {
@@ -129,7 +129,7 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: 10, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowFarmController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "mine", X: 50, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowMineController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "workshop", X: 90, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowWorkshopController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "vehicle", X: 130, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowVehicleController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "factory", X: 130, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowFactoryController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "infra", X: 170, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowInfraController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "town", X: 210, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionShowNewTownController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 250, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
