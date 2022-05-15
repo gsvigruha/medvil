@@ -8,8 +8,14 @@ import (
 	//"medvil/model/vehicles"
 )
 
+const OrderStateStart = 0
+const OrderStateInputsPurchased = 1
+const OrderStateBuilt = 2
+const OrderStateDone = 3
+
 type VehicleOrder struct {
-	T *economy.VehicleConstruction
+	T     *economy.VehicleConstruction
+	State uint8
 }
 
 type Factory struct {
@@ -25,16 +31,21 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 	var newOrders []*VehicleOrder
 	for _, order := range f.Orders {
-		needs := artifacts.Purchasable(order.T.Inputs)
-		tag := "order_input"
-		if needs != nil && f.Household.Money >= mp.Price(needs) {
-			f.Household.AddTask(&economy.BuyTask{
-				Exchange:       mp,
-				HouseholdMoney: &f.Household.Money,
-				Goods:          needs,
-				MaxPrice:       mp.Price(needs) * 2,
-				TaskTag:        tag,
-			})
+		if order.State == OrderStateStart {
+			needs := artifacts.Purchasable(order.T.Inputs)
+			tag := "order_input"
+			if needs != nil && f.Household.Money >= mp.Price(needs) {
+				f.Household.AddTask(&economy.BuyTask{
+					Exchange:       mp,
+					HouseholdMoney: &f.Household.Money,
+					Goods:          needs,
+					MaxPrice:       mp.Price(needs) * 2,
+					TaskTag:        tag,
+				})
+				order.State = OrderStateInputsPurchased
+			}
+		} else if order.State == OrderStateInputsPurchased {
+		} else if order.State == OrderStateBuilt {
 		} else {
 			newOrders = append(newOrders, order)
 		}
@@ -43,7 +54,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (f *Factory) CreateOrder(vc *economy.VehicleConstruction) {
-	f.Orders = append(f.Orders, &VehicleOrder{T: vc})
+	f.Orders = append(f.Orders, &VehicleOrder{T: vc, State: OrderStateStart})
 }
 
 func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {

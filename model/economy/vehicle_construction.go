@@ -28,7 +28,7 @@ var AllVehicleConstruction = [...]*VehicleConstruction{
 func GetVehicleConstructions(be *building.BuildingExtension) []*VehicleConstruction {
 	result := make([]*VehicleConstruction, 0, len(AllVehicleConstruction))
 	for _, m := range AllVehicleConstruction {
-		if (be == nil && m.BuildingExtensionType == building.BuildingExtensionTypeNone) || (be != nil && be.T == m.BuildingExtensionType) {
+		if (be == nil && m.BuildingExtensionType == nil) || (be != nil && be.T == m.BuildingExtensionType) {
 			result = append(result, m)
 		}
 	}
