@@ -120,3 +120,11 @@ func (b *Building) GetRandomBuildingXY() (uint16, uint16) {
 	idx := rand.Intn(len(fields))
 	return fields[idx][0], fields[idx][1]
 }
+
+func (b *Building) GetExtensionWithCoords() (*BuildingExtension, uint16, uint16) {
+	e, i, j := b.Plan.GetExtensionWithCoords()
+	if e != nil {
+		return e, uint16(b.X+i) - 2, uint16(b.Y+j) - 2
+	}
+	return nil, 0, 0
+}

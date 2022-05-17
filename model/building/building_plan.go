@@ -288,12 +288,17 @@ func (b *BuildingPlan) Copy() *BuildingPlan {
 }
 
 func (b *BuildingPlan) GetExtension() *BuildingExtension {
+	e, _, _ := b.GetExtensionWithCoords()
+	return e
+}
+
+func (b *BuildingPlan) GetExtensionWithCoords() (*BuildingExtension, uint16, uint16) {
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
 			if b.BaseShape[i][j] != nil && b.BaseShape[i][j].Extension != nil {
-				return b.BaseShape[i][j].Extension
+				return b.BaseShape[i][j].Extension, i, j
 			}
 		}
 	}
-	return nil
+	return nil, 0, 0
 }

@@ -59,12 +59,12 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf 
 				case navigation.DirectionE:
 					z = (z1*px + z2*(MaxPX-px)) / MaxPX
 				}
-				DrawPerson(cv, t, x, y-5-z, c)
+				DrawTraveller(cv, t, x, y-5-z, c)
 			} else {
-				DrawPerson(cv, t, x, y-5, c)
+				DrawTraveller(cv, t, x, y-5, c)
 			}
 		} else {
-			DrawPerson(cv, t, x, y-5, c)
+			DrawTraveller(cv, t, x, y-5, c)
 		}
 	}
 }
@@ -154,6 +154,13 @@ func DrawTool(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.Pers
 	cv.LineTo(tx+2, ty)
 	cv.ClosePath()
 	cv.Fill()
+}
+
+func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
+	if t.T == navigation.TravellerTypePedestrian {
+		DrawPerson(cv, t, x, y, c)
+	} else if t.T == navigation.TravellerTypeBoat {
+	}
 }
 
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {

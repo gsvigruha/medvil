@@ -385,6 +385,7 @@ func (h *Household) NewPerson() *Person {
 			FZ: 0,
 			PX: 0,
 			PY: 0,
+			T:  navigation.TravellerTypePedestrian,
 		},
 	}
 }

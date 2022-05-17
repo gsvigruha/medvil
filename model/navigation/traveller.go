@@ -12,6 +12,7 @@ const TravellerMinD = 25
 const MaxStuckCntr = 5
 
 const TravellerTypePedestrian uint8 = 0
+const TravellerTypeBoat uint8 = 1
 
 const RoadBreakdownRate = 0.0001
 
@@ -25,6 +26,7 @@ type Traveller struct {
 	Motion    uint8
 	Phase     uint8
 	Visible   bool
+	T         uint8
 	path      *Path
 	PE        PathElement
 	lane      uint8

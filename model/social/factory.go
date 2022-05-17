@@ -18,9 +18,19 @@ type VehicleOrder struct {
 	F     *Factory
 }
 
-func (o *VehicleOrder) CompleteBuild() {
+func (o *VehicleOrder) CompleteBuild(f *navigation.Field) {
 	o.State = OrderStateBuilt
-	o.F.Household.Vehicles = append(o.F.Household.Vehicles, &vehicles.Vehicle{T: o.T.Output})
+	vehicle := &vehicles.Vehicle{T: o.T.Output, Traveller: &navigation.Traveller{
+		FX:      f.X,
+		FY:      f.Y,
+		FZ:      0,
+		PX:      50,
+		PY:      50,
+		Visible: true,
+		T:       navigation.TravellerTypeBoat,
+	}}
+	o.F.Household.Vehicles = append(o.F.Household.Vehicles, vehicle)
+	f.RegisterTraveller(vehicle.Traveller)
 }
 
 type Factory struct {
@@ -31,7 +41,7 @@ type Factory struct {
 func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	f.Household.ElapseTime(Calendar, m)
 
-	home := m.GetField(f.Household.Building.X, f.Household.Building.Y)
+	//home := m.GetField(f.Household.Building.X, f.Household.Building.Y)
 	mp := f.Household.Town.Marketplace
 
 	needs := artifacts.Resources{}
@@ -62,10 +72,12 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 	for _, order := range f.Orders {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
+			_, x, y := f.Household.Building.GetExtensionWithCoords()
+			deck := m.GetField(x, y)
 			f.Household.AddTask(&economy.VehicleConstructionTask{
 				T: order.T,
 				O: order,
-				F: home,
+				F: deck,
 				R: &f.Household.Resources,
 			})
 			order.State = OrderStateStarted
