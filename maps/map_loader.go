@@ -214,5 +214,6 @@ func LoadMap(dir string) model.Map {
 	LoadFields(dir, &m)
 	LoadPlants(dir, &m)
 	LoadSociety(dir, &m)
+
 	return m
 }

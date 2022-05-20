@@ -7,7 +7,7 @@ import (
 )
 
 type VehicleOrder interface {
-	CompleteBuild()
+	CompleteBuild(*navigation.Field)
 }
 
 type VehicleConstructionTask struct {
@@ -31,7 +31,7 @@ func (t *VehicleConstructionTask) Complete(Calendar *time.CalendarType, tool boo
 		}
 	}
 	if t.Progress >= t.T.Time {
-		t.O.CompleteBuild()
+		t.O.CompleteBuild(t.F)
 		return true
 	}
 	return false

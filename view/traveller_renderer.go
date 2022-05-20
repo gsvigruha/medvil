@@ -59,12 +59,12 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf 
 				case navigation.DirectionE:
 					z = (z1*px + z2*(MaxPX-px)) / MaxPX
 				}
-				DrawPerson(cv, t, x, y-5-z, c)
+				DrawTraveller(cv, t, x, y-5-z, c)
 			} else {
-				DrawPerson(cv, t, x, y-5, c)
+				DrawTraveller(cv, t, x, y-5, c)
 			}
 		} else {
-			DrawPerson(cv, t, x, y-5, c)
+			DrawTraveller(cv, t, x, y-5, c)
 		}
 	}
 }
@@ -154,6 +154,74 @@ func DrawTool(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.Pers
 	cv.LineTo(tx+2, ty)
 	cv.ClosePath()
 	cv.Fill()
+}
+
+func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
+	if t.T == navigation.TravellerTypePedestrian {
+		DrawPerson(cv, t, x, y, c)
+	} else if t.T == navigation.TravellerTypeBoat {
+		DrawBoat(cv, t, x, y, c)
+	}
+}
+
+func DrawBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
+	dirIdx := (c.Perspective - t.Direction) % 4
+	pm := animation.ProjectionMatrices[dirIdx]
+	var r = 8.0 - float64(t.Phase)
+	if r < 0.0 {
+		r = -r
+	}
+
+	f := 18.0
+	s := 8.0
+	z := 6.0
+	h := 6.0
+	p := 16.0
+
+	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
+	cv.BeginPath()
+	cv.LineTo(x-f*pm.XX+0*pm.XY+0*pm.XZ, y-f*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+0*pm.XX+0*pm.XY-z*pm.XZ, y+0*pm.YX+0*pm.YY-z*pm.YZ)
+	cv.LineTo(x+f*pm.XX+0*pm.XY+0*pm.XZ, y+f*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+0*pm.XX+0*pm.XY+z*pm.XZ, y+0*pm.YX+0*pm.YY+z*pm.YZ)
+	cv.ClosePath()
+	cv.Fill()
+
+	cv.SetFillStyle("texture/vehicle/boat_side.png")
+	cv.BeginPath()
+	cv.LineTo(x-f*pm.XX+0*pm.XY+0*pm.XZ, y-f*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+0*pm.XX+0*pm.XY-z*pm.XZ, y+0*pm.YX+0*pm.YY-z*pm.YZ)
+	cv.LineTo(x+f*pm.XX+0*pm.XY+0*pm.XZ, y+f*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+f*pm.XX-h*pm.XY+0*pm.XZ, y+f*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.LineTo(x+0*pm.XX-h*pm.XY-s*pm.XZ, y+0*pm.YX-h*pm.YY-s*pm.YZ)
+	cv.LineTo(x-f*pm.XX-h*pm.XY+0*pm.XZ, y-f*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.ClosePath()
+	cv.Fill()
+
+	cv.SetFillStyle("texture/vehicle/boat_side.png")
+	cv.BeginPath()
+	cv.LineTo(x-f*pm.XX+0*pm.XY+0*pm.XZ, y-f*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+0*pm.XX+0*pm.XY+z*pm.XZ, y+0*pm.YX+0*pm.YY+z*pm.YZ)
+	cv.LineTo(x+f*pm.XX+0*pm.XY+0*pm.XZ, y+f*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+f*pm.XX-h*pm.XY+0*pm.XZ, y+f*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.LineTo(x+0*pm.XX-h*pm.XY+s*pm.XZ, y+0*pm.YX-h*pm.YY+s*pm.YZ)
+	cv.LineTo(x-f*pm.XX-h*pm.XY+0*pm.XZ, y-f*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.ClosePath()
+	cv.Fill()
+
+	cv.SetStrokeStyle("#321")
+	cv.SetLineWidth(2)
+	cv.BeginPath()
+	cv.MoveTo(x+0*pm.XX-h*pm.XY+s*pm.XZ, y+0*pm.YX-h*pm.YY+s*pm.YZ)
+	cv.LineTo(x+r*pm.XX-0*pm.XY+p*pm.XZ, y+r*pm.YX-0*pm.YY+p*pm.YZ)
+	cv.ClosePath()
+	cv.Stroke()
+	cv.BeginPath()
+	cv.MoveTo(x+0*pm.XX-h*pm.XY-s*pm.XZ, y+0*pm.YX-h*pm.YY-s*pm.YZ)
+	cv.LineTo(x+r*pm.XX-0*pm.XY-p*pm.XZ, y+r*pm.YX-0*pm.YY-p*pm.YZ)
+	cv.ClosePath()
+	cv.Stroke()
+
 }
 
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
