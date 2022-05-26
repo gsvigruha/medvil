@@ -59,7 +59,7 @@ func (h *Household) getNextTask() economy.Task {
 
 func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 	mp := h.Town.Marketplace
-	mx, my := mp.Building.GetRandomBuildingXY()
+	mx, my := GetRandomBuildingXY(mp.Building, m, navigation.Field.Walkable)
 	et := &economy.ExchangeTask{
 		HomeF:          m.GetField(h.Building.X, h.Building.Y),
 		MarketF:        m.GetField(mx, my),
@@ -136,9 +136,9 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 		if len(h.People) >= 2 && rand.Float64() < ReproductionRate {
 			if h.HasRoomForPeople() {
-				h.People = append(h.People, h.NewPerson())
+				h.People = append(h.People, h.NewPerson(m))
 			} else if h.Town.Townhall.Household.HasRoomForPeople() {
-				person := h.Town.Townhall.Household.NewPerson()
+				person := h.Town.Townhall.Household.NewPerson(m)
 				h.Town.Townhall.Household.People = append(h.Town.Townhall.Household.People, person)
 				person.Traveller.FX = h.Building.X
 				person.Traveller.FY = h.Building.Y
@@ -153,7 +153,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	water := artifacts.GetArtifact("water")
 	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
 		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", "water") {
-		hx, hy := h.Building.GetRandomBuildingXY()
+		hx, hy := GetRandomBuildingXY(h.Building, m, navigation.Field.Walkable)
 		dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 		if dest != nil {
 			h.AddTask(&economy.TransportTask{
@@ -369,8 +369,8 @@ func (h *Household) NumTasks(name string, tag string) int {
 	return i
 }
 
-func (h *Household) NewPerson() *Person {
-	hx, hy := h.Building.GetRandomBuildingXY()
+func (h *Household) NewPerson(m navigation.IMap) *Person {
+	hx, hy := GetRandomBuildingXY(h.Building, m, navigation.Field.Walkable)
 	return &Person{
 		Food:      MaxPersonState,
 		Water:     MaxPersonState,

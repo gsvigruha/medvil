@@ -106,7 +106,7 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 	return units
 }
 
-func (b *Building) GetRandomBuildingXY() (uint16, uint16) {
+func (b *Building) GetBuildingXYs() [][2]uint16 {
 	var fields [][2]uint16
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
@@ -117,6 +117,11 @@ func (b *Building) GetRandomBuildingXY() (uint16, uint16) {
 			}
 		}
 	}
+	return fields
+}
+
+func (b *Building) GetRandomBuildingXY() (uint16, uint16) {
+	fields := b.GetBuildingXYs()
 	idx := rand.Intn(len(fields))
 	return fields[idx][0], fields[idx][1]
 }

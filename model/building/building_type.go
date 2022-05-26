@@ -97,6 +97,18 @@ func ExtensionTypes(bt BuildingType) []*BuildingExtensionType {
 		return []*BuildingExtensionType{
 			Deck,
 		}
+	case BuildingTypeFarm:
+		return []*BuildingExtensionType{
+			Deck,
+		}
+	case BuildingTypeMine:
+		return []*BuildingExtensionType{
+			Deck,
+		}
+	case BuildingTypeMarket:
+		return []*BuildingExtensionType{
+			Deck,
+		}
 	}
 	return nil
 }
