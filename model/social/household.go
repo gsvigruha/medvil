@@ -59,7 +59,10 @@ func (h *Household) getNextTask() economy.Task {
 
 func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 	mp := h.Town.Marketplace
-	mx, my := GetRandomBuildingXY(mp.Building, m, navigation.Field.Walkable)
+	mx, my, ok := GetRandomBuildingXY(mp.Building, m, navigation.Field.Walkable)
+	if !ok {
+		return nil
+	}
 	et := &economy.ExchangeTask{
 		HomeF:          m.GetField(h.Building.X, h.Building.Y),
 		MarketF:        m.GetField(mx, my),
@@ -153,17 +156,19 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	water := artifacts.GetArtifact("water")
 	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
 		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", "water") {
-		hx, hy := GetRandomBuildingXY(h.Building, m, navigation.Field.Walkable)
-		dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
-		if dest != nil {
-			h.AddTask(&economy.TransportTask{
-				PickupF:  dest,
-				DropoffF: m.GetField(hx, hy),
-				PickupR:  &dest.Terrain.Resources,
-				DropoffR: &h.Resources,
-				A:        water,
-				Quantity: WaterTransportQuantity,
-			})
+		hx, hy, ok := GetRandomBuildingXY(h.Building, m, navigation.Field.Walkable)
+		if ok {
+			dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
+			if dest != nil {
+				h.AddTask(&economy.TransportTask{
+					PickupF:  dest,
+					DropoffF: m.GetField(hx, hy),
+					PickupR:  &dest.Terrain.Resources,
+					DropoffR: &h.Resources,
+					A:        water,
+					Quantity: WaterTransportQuantity,
+				})
+			}
 		}
 	}
 	mp := h.Town.Marketplace
@@ -370,7 +375,7 @@ func (h *Household) NumTasks(name string, tag string) int {
 }
 
 func (h *Household) NewPerson(m navigation.IMap) *Person {
-	hx, hy := GetRandomBuildingXY(h.Building, m, navigation.Field.Walkable)
+	hx, hy, _ := GetRandomBuildingXY(h.Building, m, func(navigation.Field) bool { return true })
 	return &Person{
 		Food:      MaxPersonState,
 		Water:     MaxPersonState,

@@ -26,8 +26,11 @@ func MinProductTransportQuantity(as []artifacts.Artifacts) uint16 {
 	return q
 }
 
-func GetRandomBuildingXY(b *building.Building, m navigation.IMap, check func(navigation.Field) bool) (uint16, uint16) {
+func GetRandomBuildingXY(b *building.Building, m navigation.IMap, check func(navigation.Field) bool) (uint16, uint16, bool) {
 	fields := b.GetBuildingXYs()
+	if fields == nil {
+		return 0, 0, false
+	}
 	var filteredFields [][2]uint16
 	for i := range fields {
 		f := fields[i]
@@ -36,5 +39,5 @@ func GetRandomBuildingXY(b *building.Building, m navigation.IMap, check func(nav
 		}
 	}
 	idx := rand.Intn(len(filteredFields))
-	return filteredFields[idx][0], filteredFields[idx][1]
+	return filteredFields[idx][0], filteredFields[idx][1], true
 }

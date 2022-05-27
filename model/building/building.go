@@ -107,7 +107,7 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 }
 
 func (b *Building) GetBuildingXYs() [][2]uint16 {
-	var fields [][2]uint16
+	var fields [][2]uint16 = nil
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
 			bx := uint16(b.X+i) - 2
@@ -120,10 +120,13 @@ func (b *Building) GetBuildingXYs() [][2]uint16 {
 	return fields
 }
 
-func (b *Building) GetRandomBuildingXY() (uint16, uint16) {
+func (b *Building) GetRandomBuildingXY() (uint16, uint16, bool) {
 	fields := b.GetBuildingXYs()
+	if fields == nil {
+		return 0, 0, false
+	}
 	idx := rand.Intn(len(fields))
-	return fields[idx][0], fields[idx][1]
+	return fields[idx][0], fields[idx][1], true
 }
 
 func (b *Building) GetExtensionWithCoords() (*BuildingExtension, uint16, uint16) {
