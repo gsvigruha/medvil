@@ -66,6 +66,7 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 				f.Terrain.T = terrain.Water
 				f.Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
 				navigation.SetRoadConnectionsForNeighbors(m, f)
+				navigation.SetBuildingDeckForNeighbors(m, f)
 			}
 			if f.Plant == nil && f.Terrain.T == terrain.Dirt && rand.Float64() < GrassGrowRate && Calendar.Season() == time.Winter {
 				f.Terrain.T = terrain.Grass
