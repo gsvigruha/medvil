@@ -72,3 +72,25 @@ func SetRoadConnections(m IMap, f *Field) {
 		}
 	}
 }
+
+func SetBuildingDeck(m IMap, f *Field, of *Field) {
+	b := of.Building.GetBuilding()
+	if !of.Building.IsBuildingExtension() {
+		i := f.X + 2 - b.X
+		j := f.Y + 2 - b.Y
+		if i < 5 && j < 5 {
+			b.Plan.BaseShape[i][j] = &building.PlanUnits{Extension: &building.BuildingExtension{T: building.Deck}}
+			f.Building.BuildingComponents = b.ToBuildingUnits(uint8(i), uint8(j), false)
+		}
+	}
+}
+
+func SetBuildingDeckForNeighbors(m IMap, f *Field) {
+	for i := 0; i < 4; i++ {
+		d := DirectionOrthogonalXY[i]
+		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		if of != nil && of.Building.GetBuilding() != nil {
+			SetBuildingDeck(m, f, of)
+		}
+	}
+}

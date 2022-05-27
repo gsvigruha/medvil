@@ -41,6 +41,14 @@ func (o FieldBuildingObjects) GetBuilding() *building.Building {
 	return o.BuildingComponents[0].Building()
 }
 
+func (o FieldBuildingObjects) IsBuildingExtension() bool {
+	if o.Empty() {
+		return false
+	}
+	_, ok := o.BuildingComponents[0].(*building.ExtensionUnit)
+	return ok
+}
+
 type BuildingPathElement struct {
 	BC building.BuildingComponent
 	L  Location
