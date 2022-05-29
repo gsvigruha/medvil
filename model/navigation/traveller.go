@@ -31,6 +31,7 @@ type Traveller struct {
 	PE        PathElement
 	lane      uint8
 	stuckCntr uint8
+	Vehicle   Vehicle
 }
 
 func (t *Traveller) consumePathElement() {
@@ -220,11 +221,18 @@ func (t *Traveller) IncPhase() {
 	}
 }
 
-func (t *Traveller) EnsurePath(f *Field, travellerType uint8, m IMap) bool {
+func (t *Traveller) EnsurePath(f *Field, m IMap) bool {
 	if t.path == nil || t.path.LastElement().GetLocation() != f.GetLocation() {
-		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, Location{X: f.X, Y: f.Y, Z: 0}, travellerType)
+		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, Location{X: f.X, Y: f.Y, Z: 0}, t.TravellerType())
 		t.lane = uint8(rand.Intn(3) + 1)
 		t.stuckCntr = 0
 	}
 	return t.path != nil
+}
+
+func (t *Traveller) TravellerType() uint8 {
+	if t.Vehicle != nil {
+		return t.Vehicle.TravellerType()
+	}
+	return TravellerTypePedestrian
 }
