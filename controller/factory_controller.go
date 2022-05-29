@@ -73,5 +73,6 @@ func CreateOrderPanel(x, y, sx, sy float64, factory *social.Factory, vc *economy
 		vc:      vc,
 		l:       l,
 	})
+	p.AddTextLabel(fmt.Sprintf("$%v", factory.Price(vc)), x+sx+sy*2, y+sy*2/3)
 	return p
 }

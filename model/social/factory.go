@@ -85,6 +85,10 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
+func (f *Factory) Price(vc *economy.VehicleConstruction) uint32 {
+	return f.Household.Town.Marketplace.Price(artifacts.Purchasable(vc.Inputs)) * 2
+}
+
 func (f *Factory) CreateOrder(vc *economy.VehicleConstruction) {
 	f.Orders = append(f.Orders, &VehicleOrder{T: vc, F: f, State: OrderStateOrdered})
 }
@@ -97,4 +101,15 @@ func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
 		}
 	}
 	return n
+}
+
+func PickFactory(fs []*Factory) *Factory {
+	var f *Factory = nil
+	var orders = 0
+	for _, fi := range fs {
+		if f == nil || orders < len(fi.Orders) {
+			f = fi
+		}
+	}
+	return f
 }

@@ -129,6 +129,11 @@ func (b *Building) GetRandomBuildingXY() (uint16, uint16, bool) {
 	return fields[idx][0], fields[idx][1], true
 }
 
+func (b *Building) HasExtension(et *BuildingExtensionType) bool {
+	e, _, _ := b.GetExtensionWithCoords()
+	return e != nil && e.T == et
+}
+
 func (b *Building) GetExtensionWithCoords() (*BuildingExtension, uint16, uint16) {
 	e, i, j := b.Plan.GetExtensionWithCoords()
 	if e != nil {

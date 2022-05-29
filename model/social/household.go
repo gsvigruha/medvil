@@ -257,6 +257,12 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	if h.numBoats() == 0 && h.Building.HasExtension(building.Deck) {
+		factory := PickFactory(h.Town.Factories)
+		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
+			factory.CreateOrder(economy.BoatConstruction)
+		}
+	}
 	if Calendar.Hour == 0 {
 		for i := 0; i < len(h.Tasks); i++ {
 			if h.Tasks[i].IsPaused() {
@@ -275,6 +281,16 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			h.Heating = 1.0
 		}
 	}
+}
+
+func (h *Household) numBoats() int {
+	var n = 0
+	for _, v := range h.Vehicles {
+		if v.T == vehicles.Boat {
+			n++
+		}
+	}
+	return n
 }
 
 func (h *Household) heatingFuelNeededPerMonth() uint16 {
