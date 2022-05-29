@@ -52,7 +52,7 @@ type OrderButton struct {
 }
 
 func (b OrderButton) Click() {
-	b.factory.CreateOrder(b.vc)
+	b.factory.CreateOrder(b.vc, &b.factory.Household.Town.Townhall.Household)
 }
 
 func (b OrderButton) Render(cv *canvas.Canvas) {

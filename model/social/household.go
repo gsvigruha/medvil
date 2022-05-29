@@ -260,7 +260,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if h.numBoats() == 0 && h.Building.HasExtension(building.Deck) {
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
-			factory.CreateOrder(economy.BoatConstruction)
+			factory.CreateOrder(economy.BoatConstruction, h)
 		}
 	}
 	if Calendar.Hour == 0 {

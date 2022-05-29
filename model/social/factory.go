@@ -89,8 +89,15 @@ func (f *Factory) Price(vc *economy.VehicleConstruction) uint32 {
 	return f.Household.Town.Marketplace.Price(artifacts.Purchasable(vc.Inputs)) * 2
 }
 
-func (f *Factory) CreateOrder(vc *economy.VehicleConstruction) {
-	f.Orders = append(f.Orders, &VehicleOrder{T: vc, F: f, State: OrderStateOrdered})
+func (f *Factory) CreateOrder(vc *economy.VehicleConstruction, h *Household) bool {
+	price := f.Price(vc)
+	if h.Money >= price {
+		f.Orders = append(f.Orders, &VehicleOrder{T: vc, F: f, State: OrderStateOrdered})
+		h.Money -= price
+		f.Household.Money += price
+		return true
+	}
+	return false
 }
 
 func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
