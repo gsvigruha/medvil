@@ -167,7 +167,7 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 func DrawBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
-	var r = 8.0 - float64(t.Phase)
+	var r = 8.0 - float64(t.Phase%16)
 	if r < 0.0 {
 		r = -r
 	}

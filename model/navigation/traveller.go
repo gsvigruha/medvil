@@ -207,6 +207,9 @@ func (t *Traveller) Move(m IMap) {
 			}
 		}
 		t.IncPhase()
+		if t.Vehicle != nil {
+			t.Vehicle.GetTraveller().MoveWith(m, t)
+		}
 	}
 }
 
@@ -239,9 +242,28 @@ func (t *Traveller) TravellerType() uint8 {
 
 func (t *Traveller) UseVehicle(v Vehicle) {
 	t.Vehicle = v
-	vt := v.GetTraveller()
-	t.FX = vt.FX
-	t.FY = vt.FY
-	t.PX = vt.PX
-	t.PY = vt.PY
+	t.SyncTo(v.GetTraveller())
+}
+
+func (t *Traveller) ExitVehicle() {
+	t.Vehicle.GetTraveller().PX = 50
+	t.Vehicle.GetTraveller().PY = 50
+	t.Vehicle = nil
+}
+
+func (t *Traveller) MoveWith(m IMap, ot *Traveller) {
+	oFX, oFY := t.FX, t.FY
+	t.SyncTo(ot)
+	t.FX = ot.FX
+	t.FY = ot.FY
+	if oFX != t.FX || oFY != t.FY {
+		m.GetField(oFX, oFY).UnregisterTraveller(t)
+		m.GetField(t.FX, t.FY).RegisterTraveller(t)
+	}
+}
+
+func (t *Traveller) SyncTo(ot *Traveller) {
+	t.PX = ot.PX
+	t.PY = ot.PY
+	t.Phase = ot.Phase
 }
