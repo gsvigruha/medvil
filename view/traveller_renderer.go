@@ -158,7 +158,7 @@ func DrawTool(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.Pers
 
 func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
 	if t.T == navigation.TravellerTypePedestrian {
-		DrawPerson(cv, t, x, y, t.Vehicle == nil, c)
+		DrawPerson(cv, t, x, y, t.Vehicle != nil, c)
 	} else if t.T == navigation.TravellerTypeBoat {
 		DrawBoat(cv, t, x, y, c)
 	}
@@ -244,12 +244,12 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 
 	if dirIdx >= 2 {
 		DrawLeftArm(cv, pm, m, x, y, p)
-		if InVehicle {
+		if !InVehicle {
 			DrawLeftLeg(cv, pm, m, x, y, p)
 		}
 	} else {
 		DrawRightArm(cv, pm, m, x, y, p)
-		if InVehicle {
+		if !InVehicle {
 			DrawRightLeg(cv, pm, m, x, y, p)
 		}
 	}
@@ -271,12 +271,12 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	cv.Fill()
 
 	if dirIdx >= 2 {
-		if InVehicle {
+		if !InVehicle {
 			DrawRightLeg(cv, pm, m, x, y, p)
 		}
 		DrawRightArm(cv, pm, m, x, y, p)
 	} else {
-		if InVehicle {
+		if !InVehicle {
 			DrawLeftLeg(cv, pm, m, x, y, p)
 		}
 		DrawLeftArm(cv, pm, m, x, y, p)
