@@ -23,3 +23,7 @@ func (v *Vehicle) TravellerType() uint8 {
 	}
 	return navigation.TravellerTypePedestrian
 }
+
+func (v *Vehicle) GetTraveller() *navigation.Traveller {
+	return v.Traveller
+}

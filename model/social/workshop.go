@@ -81,4 +81,5 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	w.Household.MaybeBuyBoat(Calendar, m)
 }

@@ -236,3 +236,12 @@ func (t *Traveller) TravellerType() uint8 {
 	}
 	return TravellerTypePedestrian
 }
+
+func (t *Traveller) UseVehicle(v Vehicle) {
+	t.Vehicle = v
+	vt := v.GetTraveller()
+	t.FX = vt.FX
+	t.FY = vt.FY
+	t.PX = vt.PX
+	t.PY = vt.PY
+}

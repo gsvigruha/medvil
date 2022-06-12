@@ -122,6 +122,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 			}
 		}
 	}
+	m.Household.MaybeBuyBoat(Calendar, imap)
 }
 
 func (m *Mine) GetFields() []navigation.FieldWithContext {

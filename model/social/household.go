@@ -257,12 +257,6 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
-	if h.numBoats() == 0 && h.Building.HasExtension(building.Deck) {
-		factory := PickFactory(h.Town.Factories)
-		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
-			factory.CreateOrder(economy.BoatConstruction, h)
-		}
-	}
 	if Calendar.Hour == 0 {
 		for i := 0; i < len(h.Tasks); i++ {
 			if h.Tasks[i].IsPaused() {
@@ -279,6 +273,25 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			h.Heating = float64(wood) / float64(h.heatingFuelNeededPerMonth())
 		} else {
 			h.Heating = 1.0
+		}
+	}
+}
+
+func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap) {
+	if h.numBoats() == 0 && h.Building.HasExtension(building.Deck) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
+		factory := PickFactory(h.Town.Factories)
+		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
+			hx, hy, hok := GetRandomBuildingXY(h.Building, m, navigation.Field.Sailable)
+			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.Walkable)
+			if hok && fok {
+				order := factory.CreateOrder(economy.BoatConstruction, h)
+				h.AddTask(&economy.FactoryPickupTask{
+					PickupF:   m.GetField(fx, fy),
+					DropoffF:  m.GetField(hx, hy),
+					Order:     order,
+					Household: h,
+				})
+			}
 		}
 	}
 }
@@ -432,6 +445,10 @@ func (h *Household) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	h.Tasks = newTasks
+}
+
+func (h *Household) AddVehicle(v *vehicles.Vehicle) {
+	h.Vehicles = append(h.Vehicles, v)
 }
 
 func (h *Household) Stats() *stats.Stats {
