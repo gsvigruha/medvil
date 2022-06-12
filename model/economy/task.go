@@ -16,11 +16,13 @@ type Task interface {
 	IsPaused() bool
 	SetTraveller(traveller *navigation.Traveller)
 	Motion() uint8
+	IsFieldCenter() bool
 }
 
 type TaskBase struct {
-	Paused    bool
-	Traveller *navigation.Traveller
+	Paused      bool
+	Traveller   *navigation.Traveller
+	FieldCenter bool
 }
 
 func (t *TaskBase) Pause(paused bool) {
@@ -33,4 +35,8 @@ func (t *TaskBase) IsPaused() bool {
 
 func (t *TaskBase) SetTraveller(traveller *navigation.Traveller) {
 	t.Traveller = traveller
+}
+
+func (t *TaskBase) IsFieldCenter() bool {
+	return t.FieldCenter
 }
