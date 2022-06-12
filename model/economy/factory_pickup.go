@@ -68,3 +68,11 @@ func (t *FactoryPickupTask) Expired(Calendar *time.CalendarType) bool {
 func (t *FactoryPickupTask) Motion() uint8 {
 	return navigation.MotionStand
 }
+
+func (t *FactoryPickupTask) IsFieldCenter() bool {
+	if t.dropoff {
+		return t.FieldCenter
+	} else {
+		return false
+	}
+}
