@@ -277,6 +277,35 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
+func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap) {
+	if h.numBoats() == 0 && h.Building.HasExtension(building.Deck) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
+		factory := PickFactory(h.Town.Factories)
+		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
+			hx, hy, hok := GetRandomBuildingXY(h.Building, m, navigation.Field.Sailable)
+			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.Sailable)
+			if hok && fok {
+				order := factory.CreateOrder(economy.BoatConstruction, h)
+				h.AddTask(&economy.FactoryPickupTask{
+					PickupF:   m.GetField(fx, fy),
+					DropoffF:  m.GetField(hx, hy),
+					Order:     order,
+					Household: h,
+				})
+			}
+		}
+	}
+}
+
+func (h *Household) numBoats() int {
+	var n = 0
+	for _, v := range h.Vehicles {
+		if v.T == vehicles.Boat {
+			n++
+		}
+	}
+	return n
+}
+
 func (h *Household) heatingFuelNeededPerMonth() uint16 {
 	fuel := uint16(len(h.People) / 3)
 	if fuel > 0 {
@@ -416,6 +445,10 @@ func (h *Household) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	h.Tasks = newTasks
+}
+
+func (h *Household) AddVehicle(v *vehicles.Vehicle) {
+	h.Vehicles = append(h.Vehicles, v)
 }
 
 func (h *Household) Stats() *stats.Stats {

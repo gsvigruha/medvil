@@ -31,6 +31,7 @@ type Traveller struct {
 	PE        PathElement
 	lane      uint8
 	stuckCntr uint8
+	Vehicle   Vehicle
 }
 
 func (t *Traveller) consumePathElement() {
@@ -206,6 +207,9 @@ func (t *Traveller) Move(m IMap) {
 			}
 		}
 		t.IncPhase()
+		if t.Vehicle != nil {
+			t.Vehicle.GetTraveller().MoveWith(m, t)
+		}
 	}
 }
 
@@ -220,11 +224,46 @@ func (t *Traveller) IncPhase() {
 	}
 }
 
-func (t *Traveller) EnsurePath(f *Field, travellerType uint8, m IMap) bool {
+func (t *Traveller) EnsurePath(f *Field, m IMap) bool {
 	if t.path == nil || t.path.LastElement().GetLocation() != f.GetLocation() {
-		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, Location{X: f.X, Y: f.Y, Z: 0}, travellerType)
+		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, Location{X: f.X, Y: f.Y, Z: 0}, t.TravellerType())
 		t.lane = uint8(rand.Intn(3) + 1)
 		t.stuckCntr = 0
 	}
 	return t.path != nil
+}
+
+func (t *Traveller) TravellerType() uint8 {
+	if t.Vehicle != nil {
+		return t.Vehicle.TravellerType()
+	}
+	return TravellerTypePedestrian
+}
+
+func (t *Traveller) UseVehicle(v Vehicle) {
+	t.Vehicle = v
+	t.SyncTo(v.GetTraveller())
+}
+
+func (t *Traveller) ExitVehicle() {
+	t.Vehicle.GetTraveller().PX = 50
+	t.Vehicle.GetTraveller().PY = 50
+	t.Vehicle = nil
+}
+
+func (t *Traveller) MoveWith(m IMap, ot *Traveller) {
+	oFX, oFY := t.FX, t.FY
+	t.SyncTo(ot)
+	t.FX = ot.FX
+	t.FY = ot.FY
+	if oFX != t.FX || oFY != t.FY {
+		m.GetField(oFX, oFY).UnregisterTraveller(t)
+		m.GetField(t.FX, t.FY).RegisterTraveller(t)
+	}
+}
+
+func (t *Traveller) SyncTo(ot *Traveller) {
+	t.PX = ot.PX
+	t.PY = ot.PY
+	t.Phase = ot.Phase
 }

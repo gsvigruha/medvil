@@ -13,9 +13,22 @@ const OrderStateStarted = 1
 const OrderStateBuilt = 2
 
 type VehicleOrder struct {
-	T     *economy.VehicleConstruction
-	State uint8
-	F     *Factory
+	T       *economy.VehicleConstruction
+	State   uint8
+	F       *Factory
+	Vehicle *vehicles.Vehicle
+}
+
+func (o *VehicleOrder) IsBuilt() bool {
+	return o.State == OrderStateBuilt
+}
+
+func (o *VehicleOrder) PickupVehicle() *vehicles.Vehicle {
+	return o.Vehicle
+}
+
+func (o *VehicleOrder) Name() string {
+	return o.T.Name
 }
 
 func (o *VehicleOrder) CompleteBuild(f *navigation.Field) {
@@ -29,7 +42,7 @@ func (o *VehicleOrder) CompleteBuild(f *navigation.Field) {
 		Visible: true,
 		T:       navigation.TravellerTypeBoat,
 	}}
-	o.F.Household.Vehicles = append(o.F.Household.Vehicles, vehicle)
+	o.Vehicle = vehicle
 	f.RegisterTraveller(vehicle.Traveller)
 }
 
@@ -85,8 +98,20 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
-func (f *Factory) CreateOrder(vc *economy.VehicleConstruction) {
-	f.Orders = append(f.Orders, &VehicleOrder{T: vc, F: f, State: OrderStateOrdered})
+func (f *Factory) Price(vc *economy.VehicleConstruction) uint32 {
+	return f.Household.Town.Marketplace.Price(artifacts.Purchasable(vc.Inputs)) * 2
+}
+
+func (f *Factory) CreateOrder(vc *economy.VehicleConstruction, h *Household) *VehicleOrder {
+	price := f.Price(vc)
+	if h.Money >= price {
+		order := &VehicleOrder{T: vc, F: f, State: OrderStateOrdered}
+		f.Orders = append(f.Orders, order)
+		h.Money -= price
+		f.Household.Money += price
+		return order
+	}
+	return nil
 }
 
 func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
@@ -97,4 +122,15 @@ func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
 		}
 	}
 	return n
+}
+
+func PickFactory(fs []*Factory) *Factory {
+	var f *Factory = nil
+	var orders = 0
+	for _, fi := range fs {
+		if f == nil || orders < len(fi.Orders) {
+			f = fi
+		}
+	}
+	return f
 }

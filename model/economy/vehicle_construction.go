@@ -15,14 +15,17 @@ type VehicleConstruction struct {
 	Output                *vehicles.VehicleType
 }
 
+var BoatConstruction = &VehicleConstruction{
+	Name:                  "boat",
+	Time:                  30 * 24,
+	Power:                 1000,
+	BuildingExtensionType: building.Deck,
+	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
+	Output:                vehicles.Boat,
+}
+
 var AllVehicleConstruction = [...]*VehicleConstruction{
-	&VehicleConstruction{
-		Name:                  "boat",
-		Time:                  30 * 24,
-		Power:                 1000,
-		BuildingExtensionType: building.Deck,
-		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
-		Output:                vehicles.Boat},
+	BoatConstruction,
 }
 
 func GetVehicleConstructions(be *building.BuildingExtension) []*VehicleConstruction {

@@ -5,6 +5,7 @@ type PathElement interface {
 	GetNeighbors(IMap) []PathElement
 	GetSpeed() float64
 	Walkable() bool
+	Sailable() bool
 }
 
 type Path struct {

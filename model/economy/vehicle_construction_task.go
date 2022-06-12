@@ -4,10 +4,14 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"medvil/model/vehicles"
 )
 
 type VehicleOrder interface {
 	CompleteBuild(*navigation.Field)
+	IsBuilt() bool
+	PickupVehicle() *vehicles.Vehicle
+	Name() string
 }
 
 type VehicleConstructionTask struct {

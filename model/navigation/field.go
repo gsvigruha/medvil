@@ -102,6 +102,13 @@ func (f Field) Walkable() bool {
 	return f.Terrain.T.Walkable && ((f.NE == f.NW && f.SE == f.SW) || (f.NE == f.SE && f.NW == f.SW))
 }
 
+func (f Field) Sailable() bool {
+	if f.Road != nil && !f.Road.Construction {
+		return false
+	}
+	return f.Terrain.T == terrain.Water
+}
+
 func (f Field) Buildable() bool {
 	if !f.Building.Empty() {
 		return false

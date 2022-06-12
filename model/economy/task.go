@@ -14,11 +14,13 @@ type Task interface {
 	Expired(Calendar *time.CalendarType) bool
 	Pause(bool)
 	IsPaused() bool
+	SetTraveller(traveller *navigation.Traveller)
 	Motion() uint8
 }
 
 type TaskBase struct {
-	Paused bool
+	Paused    bool
+	Traveller *navigation.Traveller
 }
 
 func (t *TaskBase) Pause(paused bool) {
@@ -27,4 +29,8 @@ func (t *TaskBase) Pause(paused bool) {
 
 func (t *TaskBase) IsPaused() bool {
 	return t.Paused
+}
+
+func (t *TaskBase) SetTraveller(traveller *navigation.Traveller) {
+	t.Traveller = traveller
 }

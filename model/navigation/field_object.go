@@ -96,3 +96,7 @@ func (bpe *BuildingPathElement) GetSpeed() float64 {
 func (bpe *BuildingPathElement) Walkable() bool {
 	return bpe.BC.Building().Plan.BuildingType == building.BuildingTypeWall
 }
+
+func (bpe *BuildingPathElement) Sailable() bool {
+	return false
+}

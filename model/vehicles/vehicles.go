@@ -16,3 +16,14 @@ type Vehicle struct {
 	T         *VehicleType
 	Traveller *navigation.Traveller
 }
+
+func (v *Vehicle) TravellerType() uint8 {
+	if v.T == Boat {
+		return navigation.TravellerTypeBoat
+	}
+	return navigation.TravellerTypePedestrian
+}
+
+func (v *Vehicle) GetTraveller() *navigation.Traveller {
+	return v.Traveller
+}
