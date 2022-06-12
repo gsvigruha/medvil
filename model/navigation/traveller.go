@@ -266,4 +266,9 @@ func (t *Traveller) SyncTo(ot *Traveller) {
 	t.PX = ot.PX
 	t.PY = ot.PY
 	t.Phase = ot.Phase
+	t.Direction = ot.Direction
+}
+
+func (t *Traveller) IsOnFieldCenter() bool {
+	return t.PX > MaxPX/4 && t.PY > MaxPY/4 && t.PX < MaxPX*3/4 && t.PY < MaxPY*3/4
 }

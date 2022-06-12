@@ -30,11 +30,13 @@ func (t *FactoryPickupTask) Field() *navigation.Field {
 func (t *FactoryPickupTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.dropoff {
 		t.Traveller.ExitVehicle()
+		t.Traveller.Visible = true
 		return true
 	} else {
 		v := t.Order.PickupVehicle()
 		t.Household.AddVehicle(v)
 		t.Traveller.UseVehicle(v)
+		t.Traveller.Visible = false
 		t.dropoff = true
 	}
 	return false
