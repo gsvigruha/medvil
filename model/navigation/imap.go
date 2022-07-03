@@ -10,4 +10,5 @@ type IMap interface {
 	FindDest(start Location, dest Destination, travellerType uint8) *Field
 	SetBuildingUnits(b *building.Building, construction bool)
 	Shore(x, y uint16) bool
+	GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []FieldWithContext
 }

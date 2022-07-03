@@ -160,7 +160,11 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 			if b != nil {
 				m.SetBuildingUnits(b, false)
-				navigation.SetRoadConnectionsForNeighbors(m, field)
+				for _, coords := range b.GetBuildingXYs(false) {
+					bf := m.GetField(coords[0], coords[1])
+					navigation.SetRoadConnectionsForNeighbors(m, bf)
+					navigation.SetBuildingDeckForNeighbors(m, bf)
+				}
 			}
 		} else {
 			constructions = append(constructions, construction)

@@ -27,7 +27,7 @@ func MinProductTransportQuantity(as []artifacts.Artifacts) uint16 {
 }
 
 func GetRandomBuildingXY(b *building.Building, m navigation.IMap, check func(navigation.Field) bool) (uint16, uint16, bool) {
-	fields := b.GetBuildingXYs()
+	fields := b.GetBuildingXYs(true)
 	if fields == nil {
 		return 0, 0, false
 	}

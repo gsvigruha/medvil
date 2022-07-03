@@ -89,8 +89,11 @@ func SetBuildingDeckForNeighbors(m IMap, f *Field) {
 	for i := 0; i < 4; i++ {
 		d := DirectionOrthogonalXY[i]
 		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
-		if of != nil && of.Building.GetBuilding() != nil {
+		if f != nil && f.Terrain.T == terrain.Water && of != nil && of.Building.GetBuilding() != nil {
 			SetBuildingDeck(m, f, of)
+		}
+		if of != nil && of.Terrain.T == terrain.Water && f != nil && f.Building.GetBuilding() != nil {
+			SetBuildingDeck(m, of, f)
 		}
 	}
 }
