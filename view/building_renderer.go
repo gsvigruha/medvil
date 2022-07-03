@@ -72,7 +72,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			cv.Fill()
 
 			if wall.Windows && !unit.Construction {
-				cv.SetFillStyle("texture/building/glass.png")
+				cv.SetFillStyle("texture/building/glass_2.png")
 				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
 				cv.SetLineWidth(2)
 
