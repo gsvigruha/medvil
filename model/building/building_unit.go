@@ -115,7 +115,7 @@ func (u *BuildingUnit) CacheKey() string {
 	for i := range u.Walls {
 		w := u.Walls[i]
 		if w != nil {
-			s += fmt.Sprintf("[%v#%v#%v#%v]", w.M.Name, w.Windows, w.Door)
+			s += fmt.Sprintf("[%v#%v#%v#%v#%v]", w.M.Name, w.Windows, w.Door, u.B.Shape)
 		} else {
 			s += "[]"
 		}
