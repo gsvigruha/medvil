@@ -17,6 +17,7 @@ const PerspectiveNW uint8 = 3
 
 type ClickHandler interface {
 	HandleClick(c *Controller, rf *renderer.RenderedField) bool
+	GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext
 }
 
 type Controller struct {
@@ -44,7 +45,6 @@ type Controller struct {
 	SelectedMarketplace       *social.Marketplace
 	ReverseReferences         *model.ReverseReferences
 	ControlPanel              *ControlPanel
-	ActiveBuildingPlan        *building.BuildingPlan
 	Country                   *social.Country
 	ClickHandler              ClickHandler
 	TimeSpeed                 int
@@ -112,7 +112,6 @@ func (c *Controller) Reset() {
 	c.SelectedMine = nil
 	c.SelectedFactory = nil
 	c.SelectedWorkshop = nil
-	c.ActiveBuildingPlan = nil
 	c.ClickHandler = nil
 }
 
@@ -127,15 +126,11 @@ func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField 
 }
 
 func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
-	if c.ActiveBuildingPlan != nil && c.ActiveBuildingPlan.IsComplete() {
+	if c.ClickHandler != nil {
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if rf != nil {
-			return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+			return c.ClickHandler.GetActiveFields(c, rf)
 		}
-	} else if c.SelectedFarm != nil {
-		return c.SelectedFarm.GetFields()
-	} else if c.SelectedMine != nil {
-		return c.SelectedMine.GetFields()
 	}
 	return nil
 }

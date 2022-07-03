@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"medvil/model/building"
 	"medvil/model/materials"
+	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/gui"
@@ -247,12 +248,16 @@ func (b ExtensionButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
+	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan)
+}
+
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if bc.activeTown == nil {
 		return false
 	}
-	if c.ActiveBuildingPlan.IsComplete() {
-		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, c.ActiveBuildingPlan)
+	if bc.Plan.IsComplete() {
+		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, bc.Plan)
 		return true
 	}
 	return false
@@ -321,6 +326,5 @@ func BuildingsToControlPanel(cp *ControlPanel, bt building.BuildingType) {
 	bc := CreateBuildingsController(cp, bt, cp.C.ActiveTown)
 
 	cp.SetDynamicPanel(bc.p)
-	cp.C.ActiveBuildingPlan = bc.Plan
 	cp.C.ClickHandler = bc
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/model/building"
+	"medvil/model/navigation"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -49,26 +50,50 @@ func (b InfraBuildButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField) bool {
+	if ic.it == InfraTypeDirtRoad || ic.it == InfraTypeCobbleRoad {
+		return rf.F.Walkable() && rf.F.Buildable()
+	} else if ic.it == InfraTypeCanal {
+		return rf.F.Buildable()
+	} else if ic.it == InfraTypeBridge {
+		return c.Map.Shore(rf.F.X, rf.F.Y)
+	} else if ic.it == InfraTypeStoneWall1 || ic.it == InfraTypeStoneWall2 || ic.it == InfraTypeStoneWall3 {
+		return rf.F.Buildable()
+	} else if ic.it == InfraTypeStoneWallRamp {
+		return true
+	}
+	return false
+}
+
+func (ic *InfraController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
+	if ic.CheckField(c, rf) {
+		return []navigation.FieldWithContext{rf.F}
+	}
+	return nil
+}
+
 func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if c.ActiveTown == nil {
 		return false
 	}
-	if ic.it == InfraTypeDirtRoad && rf.F.Walkable() && rf.F.Buildable() {
-		c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.DirtRoadType)
-	} else if ic.it == InfraTypeCobbleRoad && rf.F.Walkable() && rf.F.Buildable() {
-		c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.CobbleRoadType)
-	} else if ic.it == InfraTypeCanal && rf.F.Buildable() {
-		c.Map.AddInfraConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.CanalType)
-	} else if ic.it == InfraTypeBridge && c.Map.Shore(rf.F.X, rf.F.Y) {
-		c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.BridgeRoadType)
-	} else if ic.it == InfraTypeStoneWall1 && rf.F.Buildable() {
-		c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall1Type)
-	} else if ic.it == InfraTypeStoneWall2 && rf.F.Buildable() {
-		c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall2Type)
-	} else if ic.it == InfraTypeStoneWall3 && rf.F.Buildable() {
-		c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall3Type)
-	} else if ic.it == InfraTypeStoneWallRamp {
-		c.Map.AddWallRampConstruction(c.ActiveTown, rf.F.X, rf.F.Y)
+	if ic.CheckField(c, rf) {
+		if ic.it == InfraTypeDirtRoad {
+			c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.DirtRoadType)
+		} else if ic.it == InfraTypeCobbleRoad {
+			c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.CobbleRoadType)
+		} else if ic.it == InfraTypeCanal {
+			c.Map.AddInfraConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.CanalType)
+		} else if ic.it == InfraTypeBridge {
+			c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.BridgeRoadType)
+		} else if ic.it == InfraTypeStoneWall1 {
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall1Type)
+		} else if ic.it == InfraTypeStoneWall2 {
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall2Type)
+		} else if ic.it == InfraTypeStoneWall3 {
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall3Type)
+		} else if ic.it == InfraTypeStoneWallRamp {
+			c.Map.AddWallRampConstruction(c.ActiveTown, rf.F.X, rf.F.Y)
+		}
 	}
 	return true
 }

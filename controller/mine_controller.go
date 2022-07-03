@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/economy"
+	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/gui"
@@ -74,6 +75,10 @@ func (mc *MineController) Clear() {}
 func (mc *MineController) Refresh() {
 	mc.householdPanel.Clear()
 	HouseholdToControlPanel(mc.householdPanel, &mc.mine.Household)
+}
+
+func (mc *MineController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
+	return mc.mine.GetFields()
 }
 
 func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
