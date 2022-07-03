@@ -5,6 +5,7 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
+	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/gui"
@@ -29,7 +30,6 @@ func (b *NewTownControllerButton) Click() {
 	if b.state == NewTownControllerStatePickResources {
 		b.c.bc = nil
 	} else if b.state == NewTownControllerStateStart {
-		b.c.cp.C.ActiveBuildingPlan = nil
 		b.c.cp.C.ClickHandler = nil
 		srcH := &b.c.sourceTH.Household
 		dstH := &b.c.newTown.Townhall.Household
@@ -64,7 +64,6 @@ func (b *NewTownControllerButton) Click() {
 		} else if b.state == NewTownControllerStatePickBuildMarket {
 			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeMarket, b.c.newTown)
 		}
-		b.c.cp.C.ActiveBuildingPlan = b.c.bc.Plan
 		b.c.cp.C.ClickHandler = b.c
 	}
 }
@@ -184,12 +183,16 @@ func (ntc *NewTownController) Refresh() {
 	SetupNewTownController(ntc)
 }
 
+func (ntc *NewTownController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
+	return ntc.bc.GetActiveFields(c, rf)
+}
+
 func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if c.ActiveTown == nil {
 		return false
 	}
-	if c.ActiveBuildingPlan.IsComplete() {
-		b := c.Map.AddBuilding(rf.F.X, rf.F.Y, c.ActiveBuildingPlan, true)
+	if ntc.bc.Plan.IsComplete() {
+		b := c.Map.AddBuilding(rf.F.X, rf.F.Y, ntc.bc.Plan, true)
 		if b != nil {
 			if ntc.state == NewTownControllerStatePickBuildTownhall {
 				ntc.newTown.Townhall.Household.Building = b

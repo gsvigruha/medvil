@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/model/building"
+	"medvil/model/navigation"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -47,6 +48,10 @@ func (b InfraBuildButton) Render(cv *canvas.Canvas) {
 
 func (b InfraBuildButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
+}
+
+func (ic *InfraController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
+	return nil
 }
 
 func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
