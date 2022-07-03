@@ -75,7 +75,7 @@ func SetRoadConnections(m IMap, f *Field) {
 
 func SetBuildingDeck(m IMap, f *Field, of *Field) {
 	b := of.Building.GetBuilding()
-	if b != nil && !of.Building.IsBuildingExtension() {
+	if b != nil && !of.Building.IsBuildingExtension() && f.Building.GetBuilding() == nil {
 		i := f.X + 2 - b.X
 		j := f.Y + 2 - b.Y
 		if i < 5 && j < 5 {
@@ -89,8 +89,11 @@ func SetBuildingDeckForNeighbors(m IMap, f *Field) {
 	for i := 0; i < 4; i++ {
 		d := DirectionOrthogonalXY[i]
 		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
-		if of != nil && of.Building.GetBuilding() != nil {
+		if f != nil && f.Terrain.T == terrain.Water && of != nil && of.Building.GetBuilding() != nil {
 			SetBuildingDeck(m, f, of)
+		}
+		if of != nil && of.Terrain.T == terrain.Water && f != nil && f.Building.GetBuilding() != nil {
+			SetBuildingDeck(m, of, f)
 		}
 	}
 }
