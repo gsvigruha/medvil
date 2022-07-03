@@ -5,10 +5,13 @@ import (
 	"math/rand"
 )
 
+const NumShapes = 4
+
 type Building struct {
-	Plan BuildingPlan
-	X    uint16
-	Y    uint16
+	Plan  BuildingPlan
+	X     uint16
+	Y     uint16
+	Shape uint8
 }
 
 func (b *Building) UnmarshalJSON(data []byte) error {

@@ -6,6 +6,7 @@ import (
 	"math"
 	"medvil/controller"
 	"medvil/model/building"
+	"medvil/model/materials"
 	"medvil/renderer"
 	"strconv"
 )
@@ -13,6 +14,21 @@ import (
 const BuildingUnitHeight = 3
 
 const BuildingAnimationMaxPhase = 24
+
+func MaterialName(m *materials.Material, shape uint8) string {
+	if m == materials.GetMaterial("brick") {
+		if shape == 0 {
+			return "painted_yellow"
+		} else if shape == 1 {
+			return "painted_red"
+		} else if shape == 2 {
+			return "painted_blue"
+		} else if shape == 3 {
+			return "painted_beige"
+		}
+	}
+	return m.Name
+}
 
 func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer.RenderedField, k int, c *controller.Controller) renderer.RenderedBuildingUnit {
 	var rws = []renderer.RenderedWall{}
@@ -33,7 +49,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		}
 		if cv != nil {
 			if !unit.Construction {
-				cv.SetFillStyle("texture/building/" + wall.M.Name + suffix + ".png")
+				cv.SetFillStyle("texture/building/" + MaterialName(wall.M, unit.B.Shape) + suffix + ".png")
 			} else {
 				cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 			}
