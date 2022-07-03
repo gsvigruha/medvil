@@ -78,7 +78,7 @@ func (mc *MineController) Refresh() {
 }
 
 func (mc *MineController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return nil
+	return mc.mine.GetFields()
 }
 
 func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {

@@ -131,10 +131,6 @@ func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 		if rf != nil {
 			return c.ClickHandler.GetActiveFields(c, rf)
 		}
-	} else if c.SelectedFarm != nil {
-		return c.SelectedFarm.GetFields()
-	} else if c.SelectedMine != nil {
-		return c.SelectedMine.GetFields()
 	}
 	return nil
 }

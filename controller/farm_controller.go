@@ -95,7 +95,7 @@ func (fc *FarmController) Refresh() {
 }
 
 func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return nil
+	return fc.farm.GetFields()
 }
 
 func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
