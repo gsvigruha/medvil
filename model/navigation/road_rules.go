@@ -75,7 +75,7 @@ func SetRoadConnections(m IMap, f *Field) {
 
 func SetBuildingDeck(m IMap, f *Field, of *Field) {
 	b := of.Building.GetBuilding()
-	if b != nil && !of.Building.IsBuildingExtension() {
+	if b != nil && !of.Building.IsBuildingExtension() && f.Building.GetBuilding() == nil {
 		i := f.X + 2 - b.X
 		j := f.Y + 2 - b.Y
 		if i < 5 && j < 5 {
