@@ -28,7 +28,6 @@ func FloorMaterials(bt BuildingType) []*materials.Material {
 		}
 	case BuildingTypeWorkshop:
 		return []*materials.Material{
-			materials.GetMaterial("stone"),
 			materials.GetMaterial("sandstone"),
 			materials.GetMaterial("brick"),
 		}
