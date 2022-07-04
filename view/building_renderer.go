@@ -22,7 +22,7 @@ func WallMaterialName(m *materials.Material, shape uint8) string {
 		} else if shape == 1 {
 			return "painted_red"
 		} else if shape == 2 {
-			return "painted_blue"
+			return "painted_brown"
 		} else if shape == 3 {
 			return "painted_beige"
 		}
@@ -78,6 +78,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		}
 		rws = append(rws, rw)
 		if cv != nil {
+			cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 24})
 			cv.BeginPath()
 			cv.LineTo(rw.X[0], rw.Y[0])
 			cv.LineTo(rw.X[1], rw.Y[1])
@@ -85,6 +86,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			cv.LineTo(rw.X[3], rw.Y[3])
 			cv.ClosePath()
 			cv.Fill()
+			cv.Stroke()
 
 			if wall.Windows && !unit.Construction {
 				cv.SetFillStyle("texture/building/glass_2.png")
@@ -116,6 +118,14 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				cv.LineTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 				cv.ClosePath()
 				cv.Fill()
+				cv.Stroke()
+
+				cv.SetStrokeStyle(color.RGBA{R: 128, G: 64, B: 32, A: 32})
+				cv.SetLineWidth(3)
+				cv.BeginPath()
+				cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z-BuildingUnitHeight*DZ*1/3+2)
+				cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z-BuildingUnitHeight*DZ*1/3+2)
+				cv.ClosePath()
 				cv.Stroke()
 			}
 
