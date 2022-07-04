@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-const NumShapes = 4
+const NumShapes = 5
 
 type Building struct {
 	Plan  BuildingPlan

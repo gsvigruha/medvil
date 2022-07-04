@@ -14,7 +14,6 @@ var All = [...]Material{
 	Material{Name: "wood", Density: 700, Liquid: false},
 	Material{Name: "brick", Density: 2000, Liquid: false},
 	Material{Name: "marble", Density: 2600, Liquid: false},
-	Material{Name: "hay", Density: 150, Liquid: false},
 	Material{Name: "reed", Density: 150, Liquid: false},
 	Material{Name: "tile", Density: 2000, Liquid: false},
 	Material{Name: "clay", Density: 1600, Liquid: true},

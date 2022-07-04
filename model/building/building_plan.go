@@ -185,10 +185,10 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 						cubes += 2
 					case materials.GetMaterial("brick"):
 						boards += 1
-						cubes += 2
+						bricks += 2
 					case materials.GetMaterial("whitewash"):
 						boards += 1
-						cubes += 2
+						bricks += 2
 					}
 				}
 				if b.BaseShape[i][j].Roof != nil && !b.BaseShape[i][j].Roof.Flat() {
@@ -196,7 +196,7 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 					case materials.GetMaterial("tile"):
 						tiles += 1
 						boards += 1
-					case materials.GetMaterial("hay"):
+					case materials.GetMaterial("reed"):
 						thatches += 1
 						boards += 1
 					case materials.GetMaterial("stone"):

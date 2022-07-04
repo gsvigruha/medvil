@@ -76,7 +76,7 @@ func (u *BuildingUnit) NamePlate() bool {
 
 func (u *BuildingUnit) HasDoor() bool {
 	for _, w := range u.Walls {
-		if w.Door {
+		if w != nil && w.Door {
 			return true
 		}
 	}

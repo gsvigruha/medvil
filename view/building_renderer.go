@@ -25,6 +25,8 @@ func WallMaterialName(m *materials.Material, shape uint8) string {
 			return "painted_brown"
 		} else if shape == 3 {
 			return "painted_beige"
+		} else if shape == 4 {
+			return "painted_sand"
 		}
 	}
 	return m.Name
@@ -40,6 +42,8 @@ func RoofMaterialName(m *materials.Material, shape uint8) string {
 			return "tile_darkred"
 		} else if shape == 3 {
 			return "tile_red"
+		} else if shape == 4 {
+			return "tile_darkred"
 		}
 	}
 	return m.Name
@@ -112,7 +116,6 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				cv.Stroke()
 
 				if !wall.Door {
-
 					cv.BeginPath()
 					cv.LineTo((2*rf.X[rfIdx1]+5*rf.X[rfIdx2])/7, (2*rf.Y[rfIdx1]+5*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 					cv.LineTo((2*rf.X[rfIdx1]+5*rf.X[rfIdx2])/7, (2*rf.Y[rfIdx1]+5*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
@@ -145,6 +148,25 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				cv.ClosePath()
 				cv.Fill()
 				cv.Stroke()
+
+				workshop := c.ReverseReferences.BuildingToWorkshop[unit.Building()]
+				if unit.NamePlate() && workshop != nil && workshop.Manufacture != nil {
+					dX := float64((int(rfIdx1)%2)*2 - 1)
+					cv.SetStrokeStyle("#320")
+					cv.SetFillStyle("#320")
+					cv.SetLineWidth(2)
+					cv.BeginPath()
+					xm, ym := (3*rf.X[rfIdx1]+7*rf.X[rfIdx2])/10, (3*rf.Y[rfIdx1]+7*rf.Y[rfIdx2])/10-BuildingUnitHeight*DZ*4/5
+					cv.LineTo(xm, ym)
+					cv.LineTo(xm+dX*18, ym+12)
+					cv.LineTo(xm+dX*18, ym+28)
+					cv.LineTo(xm+dX*2, ym+17)
+					cv.LineTo(xm+dX*2, ym+1)
+					cv.ClosePath()
+					cv.Stroke()
+					cv.Fill()
+					cv.DrawImage("icon/gui/tasks/"+workshop.Manufacture.Name+".png", xm+dX*2, ym+5, 16*dX, 16)
+				}
 			}
 		}
 	}
