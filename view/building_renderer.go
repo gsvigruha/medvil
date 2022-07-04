@@ -334,10 +334,10 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 	if extension == nil {
 		return
 	}
-	if extension.IsConstruction() {
-		return
-	}
 	if extension.T == building.WaterMillWheel {
+		if extension.IsConstruction() {
+			return
+		}
 		var dir = 1.0
 		var phi float64
 		phi = float64(phase) * math.Pi * 2.0 / 12.0 / float64(BuildingAnimationMaxPhase)
@@ -438,7 +438,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			cv.Stroke()
 		}
 	} else if extension.T == building.Forge {
-		RenderBuildingUnit(cv, building.ForgeBuildingUnit(extension.B, materials.GetMaterial("stone")), rf, 0, c)
+		RenderBuildingUnit(cv, building.ForgeBuildingUnit(extension.B, materials.GetMaterial("stone"), extension.Construction), rf, 0, c)
 		rfIdx1 := (3 - (-c.Perspective + extension.Direction)) % 4
 		rfIdx2 := (2 - (-c.Perspective + extension.Direction)) % 4
 		rfIdx3 := (1 - (-c.Perspective + extension.Direction)) % 4
@@ -451,8 +451,12 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 				RenderWindows(cv, rf, rfIdx3, rfIdx4, 0, false)
 			}
 		}
-		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("stone")), rf, 1, c)
+		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("stone"), extension.Construction), rf, 1, c)
 	} else if extension.T == building.Deck {
+		if extension.IsConstruction() {
+			return
+		}
+
 		rfIdx1 := (3 - (-c.Perspective + extension.Direction)) % 4
 		rfIdx2 := (2 - (-c.Perspective + extension.Direction)) % 4
 		rfIdx3 := (1 - (-c.Perspective + extension.Direction)) % 4

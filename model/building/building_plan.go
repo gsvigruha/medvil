@@ -203,6 +203,14 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 						cubes += 1
 					}
 				}
+				if b.BaseShape[i][j].Extension != nil {
+					switch b.BaseShape[i][j].Extension.T {
+					case WaterMillWheel:
+						boards += 2
+					case Forge:
+						cubes += 2
+					}
+				}
 			}
 		}
 	}
