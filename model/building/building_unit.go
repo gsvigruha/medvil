@@ -74,6 +74,15 @@ func (u *BuildingUnit) NamePlate() bool {
 	return true
 }
 
+func (u *BuildingUnit) HasDoor() bool {
+	for _, w := range u.Walls {
+		if w.Door {
+			return true
+		}
+	}
+	return false
+}
+
 type ExtensionUnit struct {
 	BuildingComponentBase
 	Direction uint8
