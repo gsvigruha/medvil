@@ -1,5 +1,9 @@
 package building
 
+import (
+	"medvil/model/materials"
+)
+
 type BuildingExtensionType struct {
 	Name    string
 	OnWater bool
@@ -50,4 +54,20 @@ func GetExtensionDirection(t *BuildingExtensionType, x, y uint8, bp BuildingPlan
 		}
 	}
 	return 255
+}
+
+func ForgeBuildingUnit(b *Building, m *materials.Material) *BuildingUnit {
+	w := &BuildingWall{M: m, Windows: false, Door: false}
+	return &BuildingUnit{
+		BuildingComponentBase: BuildingComponentBase{B: b, Construction: false},
+		Walls:                 []*BuildingWall{w, w, w, w},
+	}
+}
+
+func ForgeBuildingRoof(b *Building, m *materials.Material) *RoofUnit {
+	return &RoofUnit{
+		BuildingComponentBase: BuildingComponentBase{B: b, Construction: false},
+		Roof:                  Roof{M: m, RoofType: RoofTypeFlat},
+		Elevated:              [4]bool{false, false, false, false},
+	}
 }
