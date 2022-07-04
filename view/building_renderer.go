@@ -15,7 +15,7 @@ const BuildingUnitHeight = 3
 
 const BuildingAnimationMaxPhase = 24
 
-func MaterialName(m *materials.Material, shape uint8) string {
+func WallMaterialName(m *materials.Material, shape uint8) string {
 	if m == materials.GetMaterial("brick") {
 		if shape == 0 {
 			return "painted_yellow"
@@ -25,6 +25,21 @@ func MaterialName(m *materials.Material, shape uint8) string {
 			return "painted_blue"
 		} else if shape == 3 {
 			return "painted_beige"
+		}
+	}
+	return m.Name
+}
+
+func RoofMaterialName(m *materials.Material, shape uint8) string {
+	if m == materials.GetMaterial("tile") {
+		if shape == 0 {
+			return "tile_red"
+		} else if shape == 1 {
+			return "tile_darkred"
+		} else if shape == 2 {
+			return "tile_darkred"
+		} else if shape == 3 {
+			return "tile_red"
 		}
 	}
 	return m.Name
@@ -49,7 +64,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		}
 		if cv != nil {
 			if !unit.Construction {
-				cv.SetFillStyle("texture/building/" + MaterialName(wall.M, unit.B.Shape) + suffix + ".png")
+				cv.SetFillStyle("texture/building/" + WallMaterialName(wall.M, unit.B.Shape) + suffix + ".png")
 			} else {
 				cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 			}
@@ -72,7 +87,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			cv.Fill()
 
 			if wall.Windows && !unit.Construction {
-				cv.SetFillStyle("texture/building/glass.png")
+				cv.SetFillStyle("texture/building/glass_2.png")
 				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
 				cv.SetLineWidth(2)
 
@@ -171,7 +186,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + suffix + ".png")
+						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + suffix + ".png")
 					} else {
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}
@@ -197,7 +212,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + suffix + ".png")
+						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + suffix + ".png")
 					} else {
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}
@@ -217,7 +232,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			}}
 			roofPolygons = append(roofPolygons, rp1)
 			if cv != nil {
-				cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + "_flat.png")
+				cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + "_flat.png")
 				RenderPolygon(cv, rp1, false)
 			}
 		}
@@ -252,7 +267,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + suffix + ".png")
+						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + suffix + ".png")
 					} else {
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}
@@ -264,7 +279,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					RenderPolygon(cv, rp2, true)
 
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + roof.Roof.M.Name + "_flat.png")
+						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + "_flat.png")
 					} else {
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}
