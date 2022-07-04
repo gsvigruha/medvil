@@ -25,6 +25,8 @@ func WallMaterialName(m *materials.Material, shape uint8) string {
 			return "painted_brown"
 		} else if shape == 3 {
 			return "painted_beige"
+		} else if shape == 4 {
+			return "painted_white"
 		}
 	}
 	return m.Name
@@ -39,6 +41,8 @@ func RoofMaterialName(m *materials.Material, shape uint8) string {
 		} else if shape == 2 {
 			return "tile_darkred"
 		} else if shape == 3 {
+			return "tile_red"
+		} else if shape == 4 {
 			return "tile_red"
 		}
 	}
