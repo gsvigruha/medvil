@@ -57,7 +57,7 @@ func (h *Household) getNextTask() economy.Task {
 	return t
 }
 
-func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
+func (h *Household) getExchangeTask(m navigation.IMap, maxVolume uint16) *economy.ExchangeTask {
 	mp := h.Town.Marketplace
 	mx, my, ok := GetRandomBuildingXY(mp.Building, m, navigation.Field.Walkable)
 	if !ok {
@@ -78,12 +78,12 @@ func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 	for _, ot := range h.Tasks {
 		var combined = false
 		bt, bok := ot.(*economy.BuyTask)
-		if bok && !bt.Blocked() && !bt.IsPaused() && artifacts.GetVolume(et.GoodsToBuy) < ExchangeTaskMaxVolume {
+		if bok && !bt.Blocked() && !bt.IsPaused() && artifacts.GetVolume(et.GoodsToBuy) < maxVolume {
 			et.AddBuyTask(bt)
 			combined = true
 		}
 		st, sok := ot.(*economy.SellTask)
-		if sok && !st.Blocked() && !st.IsPaused() && artifacts.GetVolume(et.GoodsToSell) < ExchangeTaskMaxVolume {
+		if sok && !st.Blocked() && !st.IsPaused() && artifacts.GetVolume(et.GoodsToSell) < maxVolume {
 			et.AddSellTask(st)
 			combined = true
 		}
@@ -101,7 +101,11 @@ func (h *Household) getExchangeTask(m navigation.IMap) *economy.ExchangeTask {
 }
 
 func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
-	et := h.getExchangeTask(m)
+	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
+	if h.numBoats() > 0 && !h.Vehicles[0].InUse {
+		maxVolume = ExchangeTaskMaxVolumeBoat
+	}
+	et := h.getExchangeTask(m, maxVolume)
 	if et != nil {
 		return et
 	}

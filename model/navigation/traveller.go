@@ -243,11 +243,13 @@ func (t *Traveller) TravellerType() uint8 {
 func (t *Traveller) UseVehicle(v Vehicle) {
 	t.Vehicle = v
 	t.SyncTo(v.GetTraveller())
+	v.SetInUse(true)
 }
 
 func (t *Traveller) ExitVehicle() {
 	t.Vehicle.GetTraveller().PX = 50
 	t.Vehicle.GetTraveller().PY = 50
+	t.Vehicle.SetInUse(false)
 	t.Vehicle = nil
 }
 

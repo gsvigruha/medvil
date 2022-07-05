@@ -15,6 +15,7 @@ var Boat = &VehicleType{Name: "boat", Water: true, Land: false}
 type Vehicle struct {
 	T         *VehicleType
 	Traveller *navigation.Traveller
+	InUse     bool
 }
 
 func (v *Vehicle) TravellerType() uint8 {
@@ -26,4 +27,8 @@ func (v *Vehicle) TravellerType() uint8 {
 
 func (v *Vehicle) GetTraveller() *navigation.Traveller {
 	return v.Traveller
+}
+
+func (v *Vehicle) SetInUse(inUse bool) {
+	v.InUse = inUse
 }
