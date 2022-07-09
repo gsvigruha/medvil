@@ -453,8 +453,11 @@ func (h *Household) AddVehicle(v *vehicles.Vehicle) {
 }
 
 func (h *Household) GetVehicle() *vehicles.Vehicle {
-	if len(h.Vehicles) > 0 && !h.Vehicles[0].InUse {
-		return h.Vehicles[0]
+	for _, v := range h.Vehicles {
+		if !v.InUse {
+			v.SetInUse(true)
+			return v
+		}
 	}
 	return nil
 }
