@@ -8,15 +8,15 @@ import (
 
 type Household interface {
 	AddVehicle(*vehicles.Vehicle)
+	GetVehicle() *vehicles.Vehicle
 }
 
 type FactoryPickupTask struct {
 	TaskBase
-	PickupF   *navigation.Field
-	DropoffF  *navigation.Field
-	Order     VehicleOrder
-	Household Household
-	dropoff   bool
+	PickupF  *navigation.Field
+	DropoffF *navigation.Field
+	Order    VehicleOrder
+	dropoff  bool
 }
 
 func (t *FactoryPickupTask) Field() *navigation.Field {

@@ -14,7 +14,7 @@ type Task interface {
 	Expired(Calendar *time.CalendarType) bool
 	Pause(bool)
 	IsPaused() bool
-	SetTraveller(traveller *navigation.Traveller)
+	SetUp(traveller *navigation.Traveller, household Household)
 	Motion() uint8
 	IsFieldCenter() bool
 }
@@ -23,6 +23,7 @@ type TaskBase struct {
 	Paused      bool
 	Traveller   *navigation.Traveller
 	FieldCenter bool
+	Household   Household
 }
 
 func (t *TaskBase) Pause(paused bool) {
@@ -33,8 +34,9 @@ func (t *TaskBase) IsPaused() bool {
 	return t.Paused
 }
 
-func (t *TaskBase) SetTraveller(traveller *navigation.Traveller) {
+func (t *TaskBase) SetUp(traveller *navigation.Traveller, household Household) {
 	t.Traveller = traveller
+	t.Household = household
 }
 
 func (t *TaskBase) IsFieldCenter() bool {

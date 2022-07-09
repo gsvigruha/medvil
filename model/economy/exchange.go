@@ -53,6 +53,10 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	switch t.state {
 	case ExchangeTaskStatePickupAtHome:
 		t.goods = t.HouseholdR.GetAsManyAsPossible(t.GoodsToSell)
+		v := t.Household.GetVehicle()
+		if v != nil {
+			t.Traveller.UseVehicle(v)
+		}
 		t.state = ExchangeTaskStateMarket
 	case ExchangeTaskStateMarket:
 		if t.Exchange.CanSell(t.goods) && t.Exchange.Price(t.GoodsToBuy) <= *t.HouseholdMoney {
@@ -71,6 +75,7 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		}
 	case ExchangeTaskStateDropoffAtHome:
 		t.HouseholdR.AddAll(t.goods)
+		t.Traveller.ExitVehicle()
 		return true
 	}
 	return false
