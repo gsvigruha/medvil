@@ -102,9 +102,6 @@ func (h *Household) getExchangeTask(m navigation.IMap, maxVolume uint16) *econom
 
 func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
 	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
-	if h.numBoats() > 0 && !h.Vehicles[0].InUse {
-		maxVolume = ExchangeTaskMaxVolumeBoat
-	}
 	et := h.getExchangeTask(m, maxVolume)
 	if et != nil {
 		return et
