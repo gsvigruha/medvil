@@ -57,7 +57,8 @@ func SetRoadConnections(m IMap, f *Field) {
 			}
 			if !of.Building.Empty() && f.Terrain.T != terrain.Water {
 				f.Road.EdgeConnections[i] = true
-				if of.X == of.Building.GetBuilding().X && of.Y == of.Building.GetBuilding().Y {
+				b := of.Building.GetBuilding()
+				if b.Plan.BuildingType != building.BuildingTypeWall && of.X == b.X && of.Y == b.Y {
 					if unit, ok := of.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
 						if !unit.HasDoor() {
 							unit.Walls[(i+2)%4].Door = true
