@@ -287,11 +287,10 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 			if ext != nil && ext.T == building.Deck && fok {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
 				h.AddTask(&economy.FactoryPickupTask{
-					PickupF:   m.GetField(fx, fy),
-					DropoffF:  m.GetField(hx, hy),
-					Order:     order,
-					Household: h,
-					TaskBase:  economy.TaskBase{FieldCenter: true},
+					PickupF:  m.GetField(fx, fy),
+					DropoffF: m.GetField(hx, hy),
+					Order:    order,
+					TaskBase: economy.TaskBase{FieldCenter: true},
 				})
 			}
 		}
@@ -451,6 +450,16 @@ func (h *Household) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 
 func (h *Household) AddVehicle(v *vehicles.Vehicle) {
 	h.Vehicles = append(h.Vehicles, v)
+}
+
+func (h *Household) GetVehicle() *vehicles.Vehicle {
+	for _, v := range h.Vehicles {
+		if !v.InUse {
+			v.SetInUse(true)
+			return v
+		}
+	}
+	return nil
 }
 
 func (h *Household) Stats() *stats.Stats {

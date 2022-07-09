@@ -248,11 +248,13 @@ func (t *Traveller) UseVehicle(v Vehicle) {
 }
 
 func (t *Traveller) ExitVehicle() {
-	t.Vehicle.GetTraveller().PX = 50
-	t.Vehicle.GetTraveller().PY = 50
-	t.Vehicle.SetInUse(false)
-	t.Vehicle = nil
-	t.Visible = true
+	if t.Vehicle != nil {
+		t.Vehicle.GetTraveller().PX = 50
+		t.Vehicle.GetTraveller().PY = 50
+		t.Vehicle.SetInUse(false)
+		t.Vehicle = nil
+		t.Visible = true
+	}
 }
 
 func (t *Traveller) MoveWith(m IMap, ot *Traveller) {

@@ -32,6 +32,7 @@ func (p *Person) releaseTask() {
 		p.Tool = false
 		p.Household.Resources.Add(Tools, 1)
 	}
+	p.Traveller.ExitVehicle()
 }
 
 func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -81,7 +82,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if !p.Tool && p.Household.Resources.Remove(Tools, 1) == 1 {
 				p.Tool = true
 			}
-			p.Task.SetTraveller(p.Traveller)
+			p.Task.SetUp(p.Traveller, p.Household)
 		} else if !p.IsHome {
 			p.Task = &economy.GoHomeTask{F: home, P: p}
 		}
