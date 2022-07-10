@@ -32,12 +32,15 @@ func GetRandomBuildingXY(b *building.Building, m navigation.IMap, check func(nav
 	if fields == nil {
 		return 0, 0, false
 	}
-	var filteredFields [][2]uint16
+	var filteredFields [][2]uint16 = nil
 	for i := range fields {
 		f := fields[i]
-		if check(*m.GetField(f[0]-1, f[1])) || check(*m.GetField(f[0], f[1]-1)) || check(*m.GetField(f[0]+1, f[1])) || check(*m.GetField(f[0], f[1]+1)) {
+		if check(*m.GetField(f[0], f[1])) {
 			filteredFields = append(filteredFields, f)
 		}
+	}
+	if filteredFields == nil {
+		return 0, 0, false
 	}
 	idx := rand.Intn(len(filteredFields))
 	return filteredFields[idx][0], filteredFields[idx][1], true

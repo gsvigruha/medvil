@@ -47,7 +47,10 @@ func (h *Household) HasTask() bool {
 func (h *Household) getNextTask() economy.Task {
 	var i = 0
 	for i < len(h.Tasks) {
-		if !h.Tasks[i].Blocked() && !h.Tasks[i].IsPaused() {
+		t := h.Tasks[i]
+		_, sok := t.(*economy.SellTask)
+		_, bok := t.(*economy.BuyTask)
+		if !sok && !bok && !t.Blocked() && !t.IsPaused() {
 			break
 		}
 		i++
@@ -59,7 +62,7 @@ func (h *Household) getNextTask() economy.Task {
 
 func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle) *economy.ExchangeTask {
 	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
-	var buildingCheckFn = navigation.Field.Walkable
+	var buildingCheckFn = navigation.Field.BuildingNonExtension
 	if vehicle != nil {
 		maxVolume = ExchangeTaskMaxVolumeBoat
 		buildingCheckFn = navigation.Field.Sailable
@@ -169,7 +172,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	water := artifacts.GetArtifact("water")
 	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
 		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", "water") {
-		hx, hy, ok := GetRandomBuildingXY(h.Building, m, navigation.Field.Walkable)
+		hx, hy, ok := GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
 		if ok {
 			dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 			if dest != nil {
@@ -295,7 +298,7 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			ext, hx, hy := h.Building.GetExtensionWithCoords()
-			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.Sailable)
+			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
 			if ext != nil && ext.T == building.Deck && fok {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
 				h.AddTask(&economy.FactoryPickupTask{
