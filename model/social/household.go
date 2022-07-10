@@ -47,7 +47,10 @@ func (h *Household) HasTask() bool {
 func (h *Household) getNextTask() economy.Task {
 	var i = 0
 	for i < len(h.Tasks) {
-		if !h.Tasks[i].Blocked() && !h.Tasks[i].IsPaused() {
+		t := h.Tasks[i]
+		_, sok := t.(*economy.SellTask)
+		_, bok := t.(*economy.BuyTask)
+		if !sok && !bok && !t.Blocked() && !t.IsPaused() {
 			break
 		}
 		i++
@@ -57,18 +60,29 @@ func (h *Household) getNextTask() economy.Task {
 	return t
 }
 
-func (h *Household) getExchangeTask(m navigation.IMap, maxVolume uint16) *economy.ExchangeTask {
+func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle) *economy.ExchangeTask {
 	mp := h.Town.Marketplace
-	mx, my, ok := GetRandomBuildingXY(mp.Building, m, navigation.Field.Walkable)
-	if !ok {
+	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
+	var buildingCheckFn = navigation.Field.BuildingNonExtension
+	_, _, sailableMP := GetRandomBuildingXY(mp.Building, m, navigation.Field.Sailable)
+	_, _, sailableH := GetRandomBuildingXY(h.Building, m, navigation.Field.Sailable)
+	if vehicle != nil && sailableMP && sailableH {
+		maxVolume = ExchangeTaskMaxVolumeBoat
+		buildingCheckFn = navigation.Field.Sailable
+	}
+
+	mx, my, mok := GetRandomBuildingXY(mp.Building, m, buildingCheckFn)
+	hx, hy, hok := GetRandomBuildingXY(h.Building, m, buildingCheckFn)
+	if !hok || !mok {
 		return nil
 	}
 	et := &economy.ExchangeTask{
-		HomeF:          m.GetField(h.Building.X, h.Building.Y),
+		HomeF:          m.GetField(hx, hy),
 		MarketF:        m.GetField(mx, my),
 		Exchange:       mp,
 		HouseholdR:     &h.Resources,
 		HouseholdMoney: &h.Money,
+		Vehicle:        vehicle,
 		GoodsToBuy:     nil,
 		GoodsToSell:    nil,
 		TaskTag:        "",
@@ -101,8 +115,11 @@ func (h *Household) getExchangeTask(m navigation.IMap, maxVolume uint16) *econom
 }
 
 func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
-	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
-	et := h.getExchangeTask(m, maxVolume)
+	vehicle := h.GetVehicle()
+	et := h.getExchangeTask(m, vehicle)
+	if et == nil && vehicle != nil {
+		vehicle.SetInUse(false)
+	}
 	if et != nil {
 		return et
 	}
@@ -157,7 +174,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	water := artifacts.GetArtifact("water")
 	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
 		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", "water") {
-		hx, hy, ok := GetRandomBuildingXY(h.Building, m, navigation.Field.Walkable)
+		hx, hy, ok := GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
 		if ok {
 			dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 			if dest != nil {
@@ -283,7 +300,7 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			ext, hx, hy := h.Building.GetExtensionWithCoords()
-			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.Sailable)
+			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
 			if ext != nil && ext.T == building.Deck && fok {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
 				h.AddTask(&economy.FactoryPickupTask{
