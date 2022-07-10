@@ -4,6 +4,7 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"medvil/model/vehicles"
 )
 
 type Exchange interface {
@@ -29,6 +30,7 @@ type ExchangeTask struct {
 	Exchange       Exchange
 	HouseholdR     *artifacts.Resources
 	HouseholdMoney *uint32
+	Vehicle        *vehicles.Vehicle
 	GoodsToBuy     []artifacts.Artifacts
 	GoodsToSell    []artifacts.Artifacts
 	TaskTag        string
@@ -53,9 +55,8 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	switch t.state {
 	case ExchangeTaskStatePickupAtHome:
 		t.goods = t.HouseholdR.GetAsManyAsPossible(t.GoodsToSell)
-		v := t.Household.GetVehicle()
-		if v != nil {
-			t.Traveller.UseVehicle(v)
+		if t.Vehicle != nil {
+			t.Traveller.UseVehicle(t.Vehicle)
 		}
 		t.state = ExchangeTaskStateMarket
 	case ExchangeTaskStateMarket:
