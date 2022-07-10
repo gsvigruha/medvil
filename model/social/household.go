@@ -67,7 +67,7 @@ func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle
 	mp := h.Town.Marketplace
 
 	mx, my, mok := GetRandomBuildingXY(mp.Building, m, buildingCheckFn)
-	hx, hy, hok := GetRandomBuildingXY(h.Building, m, navigation.Field.Walkable)
+	hx, hy, hok := GetRandomBuildingXY(h.Building, m, buildingCheckFn)
 	if !hok || !mok {
 		return nil
 	}
@@ -110,9 +110,13 @@ func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle
 }
 
 func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
-	et := h.getExchangeTask(m, h.GetVehicle())
+	vehicle := h.GetVehicle()
+	et := h.getExchangeTask(m, vehicle)
 	if et != nil {
 		return et
+	}
+	if et == nil && vehicle != nil {
+		vehicle.SetInUse(false)
 	}
 	return h.getNextTask()
 }
