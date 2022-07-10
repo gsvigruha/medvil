@@ -117,11 +117,11 @@ func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle
 func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
 	vehicle := h.GetVehicle()
 	et := h.getExchangeTask(m, vehicle)
-	if et != nil {
-		return et
-	}
 	if et == nil && vehicle != nil {
 		vehicle.SetInUse(false)
+	}
+	if et != nil {
+		return et
 	}
 	return h.getNextTask()
 }
