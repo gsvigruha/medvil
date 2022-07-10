@@ -5,6 +5,7 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/social"
+	"medvil/model/vehicles"
 	"medvil/view/gui"
 	"strconv"
 )
@@ -16,7 +17,9 @@ const PersonGUIY = 110
 const ArtifactsGUIY = 350
 const TaskGUIY = 440
 const MaxNumTasks = 24
-const HouseholdControllerGUIBottomY = 620
+const VehicleGUIY = 600
+const HouseholdControllerSY = 550
+const HouseholdControllerGUIBottomY = ControlPanelDynamicPanelTop + HouseholdControllerSY
 
 type HouseholdControllerButton struct {
 	b      gui.ButtonGUI
@@ -86,6 +89,9 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 		}
 		TaskToControlPanel(p, i%IconRowMax, float64(TaskGUIY+i/IconRowMax*IconH), task, IconW)
 	}
+	for i, vehicle := range h.Vehicles {
+		VehicleToControlPanel(p, i, VehicleGUIY, vehicle, IconW)
+	}
 }
 
 func PersonToControlPanel(p *gui.Panel, i int, person *social.Person, w int) {
@@ -112,4 +118,12 @@ func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task, w int
 		style = gui.ImageLabelStyleDisabled
 	}
 	p.AddImageLabel("tasks/"+task.Name(), float64(10+i*w), y, 32, 32, style)
+}
+
+func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Vehicle, w int) {
+	var style uint8 = gui.ImageLabelStyleHighlight
+	if !vehicle.InUse {
+		style = gui.ImageLabelStyleDisabled
+	}
+	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(10+i*w), y, 32, 32, style)
 }

@@ -9,8 +9,6 @@ import (
 	"medvil/view/gui"
 )
 
-const HouseholdControllerSY = 500
-
 type FarmController struct {
 	householdPanel *gui.Panel
 	farmPanel      *gui.Panel
