@@ -75,6 +75,16 @@ func (b *Building) hasWall(d uint8) bool {
 	return b.Direction%2 != d%2
 }
 
+func (b *Building) hasDoor(d uint8, floor uint8) bool {
+	if b.Direction != d {
+		return false
+	}
+	if floor != 0 {
+		return false
+	}
+	return true
+}
+
 func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []BuildingComponent {
 	if b.Plan.BaseShape[x][y] == nil {
 		return []BuildingComponent{}
@@ -94,19 +104,19 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 	for i := uint8(0); i < numFloors; i++ {
 		var n *BuildingWall
 		if y == 0 || (!b.Plan.HasUnit(x, y-1, i) && b.hasWall(0)) {
-			n = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y-1, i), Door: false}
+			n = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y-1, i), Door: b.hasDoor(0, i)}
 		}
 		var e *BuildingWall
 		if x == BuildingBaseMaxSize-1 || (!b.Plan.HasUnit(x+1, y, i) && b.hasWall(1)) {
-			e = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x+1, y, i), Door: false}
+			e = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x+1, y, i), Door: b.hasDoor(1, i)}
 		}
 		var s *BuildingWall
 		if y == BuildingBaseMaxSize-1 || (!b.Plan.HasUnit(x, y+1, i) && b.hasWall(2)) {
-			s = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y+1, i), Door: false}
+			s = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y+1, i), Door: b.hasDoor(2, i)}
 		}
 		var w *BuildingWall
 		if x == 0 || (!b.Plan.HasUnit(x-1, y, i) && b.hasWall(3)) {
-			w = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x-1, y, i), Door: false}
+			w = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x-1, y, i), Door: b.hasDoor(3, i)}
 		}
 		units[i] = &BuildingUnit{
 			BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
