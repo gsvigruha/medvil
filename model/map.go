@@ -129,9 +129,12 @@ func (m *Map) AddWallRampConstruction(town *social.Town, x, y uint16) bool {
 	return false
 }
 
-func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, f *navigation.Field) bool {
+func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, bt building.BuildingType, f *navigation.Field) bool {
 	if pu.Extension != nil && pu.Extension.T.OnWater {
 		return f.Terrain.T == terrain.Water && f.Road == nil && f.Building.Empty()
+	}
+	if bt == building.BuildingTypeGate && f.Terrain.T == terrain.Water {
+		return true
 	}
 	return f.Buildable()
 }
@@ -145,7 +148,7 @@ func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []na
 			if bp.BaseShape[i][j] != nil {
 				if bx >= 0 && by >= 0 && bx < int(m.SX) && by < int(m.SY) {
 					f := &m.Fields[bx][by]
-					if m.CheckBuildingBaseField(bp.BaseShape[i][j], f) {
+					if m.CheckBuildingBaseField(bp.BaseShape[i][j], bp.BuildingType, f) {
 						fields = append(fields, f)
 					} else {
 						return nil
