@@ -129,17 +129,18 @@ func (m *Map) AddWallRampConstruction(town *social.Town, x, y uint16) bool {
 	return false
 }
 
-func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, bt building.BuildingType, f *navigation.Field) bool {
+func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, bt building.BuildingType, f *navigation.Field, direction uint8) bool {
 	if pu.Extension != nil && pu.Extension.T.OnWater {
 		return f.Terrain.T == terrain.Water && f.Road == nil && f.Building.Empty()
 	}
 	if bt == building.BuildingTypeGate && f.Terrain.T == terrain.Water {
-		return true
+		return (m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+1)%4) ||
+			m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+3)%4))
 	}
 	return f.Buildable()
 }
 
-func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []navigation.FieldWithContext {
+func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan, direction uint8) []navigation.FieldWithContext {
 	var fields []navigation.FieldWithContext
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
@@ -148,7 +149,7 @@ func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan) []na
 			if bp.BaseShape[i][j] != nil {
 				if bx >= 0 && by >= 0 && bx < int(m.SX) && by < int(m.SY) {
 					f := &m.Fields[bx][by]
-					if m.CheckBuildingBaseField(bp.BaseShape[i][j], bp.BuildingType, f) {
+					if m.CheckBuildingBaseField(bp.BaseShape[i][j], bp.BuildingType, f, direction) {
 						fields = append(fields, f)
 					} else {
 						return nil
@@ -176,7 +177,7 @@ func (m *Map) SetBuildingUnits(b *building.Building, construction bool) {
 }
 
 func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction bool, direction uint8) *building.Building {
-	if m.GetBuildingBaseFields(x, y, bp) == nil {
+	if m.GetBuildingBaseFields(x, y, bp, direction) == nil {
 		return nil
 	}
 	b := &building.Building{X: x, Y: y, Plan: *bp, Shape: uint8(rand.Intn(building.NumShapes)), Direction: direction}
@@ -201,6 +202,14 @@ func (m *Map) FindDest(start navigation.Location, dest navigation.Destination, t
 		return p[len(p)-1].(*navigation.Field)
 	}
 	return nil
+}
+
+func (m *Map) HasNeighborFieldInDirection(x, y uint16, t terrain.TerrainType, direction uint8) bool {
+	d := navigation.DirectionOrthogonalXY[direction]
+	if m.GetField(x+uint16(d[0]), y+uint16(d[1])) != nil && m.GetField(x+uint16(d[0]), y+uint16(d[1])).Terrain.T == t {
+		return true
+	}
+	return false
 }
 
 func (m *Map) HasNeighborField(x, y uint16, t terrain.TerrainType) bool {

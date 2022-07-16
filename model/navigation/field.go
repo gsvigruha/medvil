@@ -114,9 +114,6 @@ func (f Field) Sailable() bool {
 	if f.Road != nil && !f.Road.Construction {
 		return false
 	}
-	if !f.Building.Empty() && f.Building.GetBuilding().Plan.BuildingType != building.BuildingTypeGate {
-		return false
-	}
 	return f.Terrain.T == terrain.Water
 }
 
