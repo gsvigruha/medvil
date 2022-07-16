@@ -192,7 +192,7 @@ func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedFi
 		return false
 	}
 	if ntc.bc.Plan.IsComplete() {
-		b := c.Map.AddBuilding(rf.F.X, rf.F.Y, ntc.bc.Plan, true)
+		b := c.Map.AddBuilding(rf.F.X, rf.F.Y, ntc.bc.Plan, true, building.DirectionNone)
 		if b != nil {
 			if ntc.state == NewTownControllerStatePickBuildTownhall {
 				ntc.newTown.Townhall.Household.Building = b

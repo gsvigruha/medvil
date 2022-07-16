@@ -67,6 +67,11 @@ type BuildingUnit struct {
 }
 
 func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
+	if u.B.Plan.BuildingType == BuildingTypeGate {
+		if dir%2 == u.B.Direction%2 {
+			return ConnectionTypeLowerLevel
+		}
+	}
 	return ConnectionTypeNone
 }
 

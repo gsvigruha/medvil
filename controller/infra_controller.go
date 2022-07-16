@@ -21,6 +21,8 @@ const InfraTypeStoneWall1 = 11
 const InfraTypeStoneWall2 = 12
 const InfraTypeStoneWall3 = 13
 const InfraTypeStoneWallRamp = 14
+const InfraTypeGateNS = 15
+const InfraTypeGateEW = 16
 
 const InfraPanelTop = 100
 
@@ -61,6 +63,8 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 		return rf.F.Buildable()
 	} else if ic.it == InfraTypeStoneWallRamp {
 		return true
+	} else if ic.it == InfraTypeGateNS || ic.it == InfraTypeGateEW {
+		return rf.F.Buildable() || c.Map.Shore(rf.F.X, rf.F.Y)
 	}
 	return false
 }
@@ -86,13 +90,17 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 		} else if ic.it == InfraTypeBridge {
 			c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.BridgeRoadType)
 		} else if ic.it == InfraTypeStoneWall1 {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall1Type)
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall1Type, building.DirectionNone)
 		} else if ic.it == InfraTypeStoneWall2 {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall2Type)
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall2Type, building.DirectionNone)
 		} else if ic.it == InfraTypeStoneWall3 {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall3Type)
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall3Type, building.DirectionNone)
 		} else if ic.it == InfraTypeStoneWallRamp {
 			c.Map.AddWallRampConstruction(c.ActiveTown, rf.F.X, rf.F.Y)
+		} else if ic.it == InfraTypeGateNS {
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionN)
+		} else if ic.it == InfraTypeGateEW {
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionE)
 		}
 	}
 	return true
@@ -153,6 +161,18 @@ func InfraToControlPanel(cp *ControlPanel) {
 	p.AddButton(InfraBuildButton{
 		b:  gui.ButtonGUI{Icon: "infra/ramp", X: float64(130), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
 		it: InfraTypeStoneWallRamp,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/gate_ns", X: float64(170), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeGateNS,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/gate_ew", X: float64(210), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeGateEW,
 		ic: ic,
 	})
 
