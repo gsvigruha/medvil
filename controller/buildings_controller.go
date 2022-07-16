@@ -249,7 +249,7 @@ func (b ExtensionButton) Contains(x float64, y float64) bool {
 }
 
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan)
+	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
