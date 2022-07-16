@@ -87,9 +87,8 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 	return &rr
 }
 
-func (m *Map) AddBuildingConstruction(town *social.Town, x, y uint16, bp *building.BuildingPlan, Direction uint8) bool {
-	b := m.AddBuilding(x, y, bp.Copy(), true)
-	b.Direction = Direction
+func (m *Map) AddBuildingConstruction(town *social.Town, x, y uint16, bp *building.BuildingPlan, direction uint8) bool {
+	b := m.AddBuilding(x, y, bp.Copy(), true, direction)
 	if b != nil {
 		town.CreateBuildingConstruction(b, m)
 		return true
@@ -173,11 +172,11 @@ func (m *Map) SetBuildingUnits(b *building.Building, construction bool) {
 	}
 }
 
-func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction bool) *building.Building {
+func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction bool, direction uint8) *building.Building {
 	if m.GetBuildingBaseFields(x, y, bp) == nil {
 		return nil
 	}
-	b := &building.Building{X: x, Y: y, Plan: *bp, Shape: uint8(rand.Intn(building.NumShapes))}
+	b := &building.Building{X: x, Y: y, Plan: *bp, Shape: uint8(rand.Intn(building.NumShapes)), Direction: direction}
 	m.SetBuildingUnits(b, construction)
 	return b
 }
