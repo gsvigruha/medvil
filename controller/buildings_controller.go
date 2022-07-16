@@ -257,7 +257,7 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 		return false
 	}
 	if bc.Plan.IsComplete() {
-		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, bc.Plan)
+		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 		return true
 	}
 	return false

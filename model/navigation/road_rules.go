@@ -17,6 +17,12 @@ func RampPossible(m IMap, x, y, x2, y2 uint16) bool {
 		len(f.Building.BuildingComponents)+d == len(f2.Building.BuildingComponents) {
 		return true
 	}
+	if f2 != nil && !f2.Building.Empty() &&
+		f2.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeGate &&
+		(f2.Building.GetBuilding().Direction%2 == 0 && y == y2 || f2.Building.GetBuilding().Direction%2 == 1 && x == x2) &&
+		len(f.Building.BuildingComponents)+d == len(f2.Building.BuildingComponents) {
+		return true
+	}
 	return false
 }
 
@@ -58,7 +64,7 @@ func SetRoadConnections(m IMap, f *Field) {
 			if !of.Building.Empty() && f.Terrain.T != terrain.Water {
 				f.Road.EdgeConnections[i] = true
 				b := of.Building.GetBuilding()
-				if b.Plan.BuildingType != building.BuildingTypeWall && of.X == b.X && of.Y == b.Y {
+				if b.Plan.BuildingType != building.BuildingTypeWall && b.Plan.BuildingType != building.BuildingTypeGate && of.X == b.X && of.Y == b.Y {
 					if unit, ok := of.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
 						if !unit.HasDoor() {
 							unit.Walls[(i+2)%4].Door = true

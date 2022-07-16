@@ -98,7 +98,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		}
 		rfIdx1 := (3 - (-c.Perspective + i)) % 4
 		rfIdx2 := (2 - (-c.Perspective + i)) % 4
-		if !unit.Construction && (rfIdx1 == 0 || rfIdx1 == 1) {
+		if !unit.Construction && (rfIdx1 == 0 || rfIdx1 == 1) && unit.B.Plan.BuildingType != building.BuildingTypeGate {
 			continue
 		}
 		var suffix = ""

@@ -87,8 +87,9 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 	return &rr
 }
 
-func (m *Map) AddBuildingConstruction(town *social.Town, x, y uint16, bp *building.BuildingPlan) bool {
+func (m *Map) AddBuildingConstruction(town *social.Town, x, y uint16, bp *building.BuildingPlan, Direction uint8) bool {
 	b := m.AddBuilding(x, y, bp.Copy(), true)
+	b.Direction = Direction
 	if b != nil {
 		town.CreateBuildingConstruction(b, m)
 		return true
@@ -122,9 +123,9 @@ func (m *Map) AddWallRampConstruction(town *social.Town, x, y uint16) bool {
 		cost := artifacts.ArtifactsDiff(b.Plan.ConstructionCost(), oldCost)
 		town.CreateIncrementalBuildingConstruction(b, cost, m)
 		return true
-	} else if b == nil {
+	} else if b == nil && rampD != building.DirectionNone {
 		bp := building.GetWallRampPlan(rampD)
-		return m.AddBuildingConstruction(town, x, y, bp)
+		return m.AddBuildingConstruction(town, x, y, bp, building.DirectionNone)
 	}
 	return false
 }

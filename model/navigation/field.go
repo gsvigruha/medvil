@@ -94,7 +94,7 @@ func (f Field) Empty() bool {
 
 func (f Field) Walkable() bool {
 	if !f.Building.Empty() {
-		return false
+		return f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeGate
 	}
 	if f.Road != nil && !f.Road.Construction {
 		return true

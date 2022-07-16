@@ -79,3 +79,18 @@ func GetWallRampPlan(rampD uint8) *BuildingPlan {
 		BuildingType: BuildingTypeWall,
 	}
 }
+
+var Gate1 = &PlanUnits{
+	Floors: []Floor{WallFloor},
+	Roof:   WallRoof,
+}
+var SmallGate = &BuildingPlan{
+	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, Gate1, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+	},
+	BuildingType: BuildingTypeGate,
+}
