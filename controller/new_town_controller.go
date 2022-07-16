@@ -184,7 +184,10 @@ func (ntc *NewTownController) Refresh() {
 }
 
 func (ntc *NewTownController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return ntc.bc.GetActiveFields(c, rf)
+	if ntc.bc != nil {
+		return ntc.bc.GetActiveFields(c, rf)
+	}
+	return []navigation.FieldWithContext{}
 }
 
 func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
