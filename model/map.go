@@ -213,19 +213,10 @@ func (m *Map) HasNeighborFieldInDirection(x, y uint16, t terrain.TerrainType, di
 }
 
 func (m *Map) HasNeighborField(x, y uint16, t terrain.TerrainType) bool {
-	if m.GetField(x+1, y) != nil && m.GetField(x+1, y).Terrain.T == t {
-		return true
-	}
-	if m.GetField(x-1, y) != nil && m.GetField(x-1, y).Terrain.T == t {
-		return true
-	}
-	if m.GetField(x, y+1) != nil && m.GetField(x, y+1).Terrain.T == t {
-		return true
-	}
-	if m.GetField(x, y-1) != nil && m.GetField(x, y-1).Terrain.T == t {
-		return true
-	}
-	return false
+	return (m.HasNeighborFieldInDirection(x, y, t, 0) ||
+		m.HasNeighborFieldInDirection(x, y, t, 1) ||
+		m.HasNeighborFieldInDirection(x, y, t, 2) ||
+		m.HasNeighborFieldInDirection(x, y, t, 3))
 }
 
 func (m *Map) Shore(x, y uint16) bool {
