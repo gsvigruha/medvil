@@ -123,10 +123,23 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		if cv != nil {
 			cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 24})
 			cv.BeginPath()
-			cv.LineTo(rw.X[0], rw.Y[0])
-			cv.LineTo(rw.X[1], rw.Y[1])
-			cv.LineTo(rw.X[2], rw.Y[2])
-			cv.LineTo(rw.X[3], rw.Y[3])
+			if wall.Arch {
+				cv.LineTo(rw.X[0], rw.Y[0])
+				dx := (rw.X[3]*0.8 - rw.X[0]*0.8) / 12
+				dy := (rw.Y[3]*0.8 - rw.Y[0]*0.8) / 12
+				for n := 0.0; n <= 12; n++ {
+					zn := math.Pow((6.0-(math.Abs(n-6.0))) / 6.0, 0.2) * 0.8
+					cv.LineTo(rw.X[0]*0.9+rw.X[3]*0.1+n*dx, rw.Y[0]*0.9+rw.Y[3]*0.1+n*dy-zn * BuildingUnitHeight * DZ)
+				}
+				cv.LineTo(rw.X[3], rw.Y[3])
+				cv.LineTo(rw.X[2], rw.Y[2])
+				cv.LineTo(rw.X[1], rw.Y[1])
+			} else {
+				cv.LineTo(rw.X[0], rw.Y[0])
+				cv.LineTo(rw.X[1], rw.Y[1])
+				cv.LineTo(rw.X[2], rw.Y[2])
+				cv.LineTo(rw.X[3], rw.Y[3])
+			}
 			cv.ClosePath()
 			cv.Fill()
 			cv.Stroke()

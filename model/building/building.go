@@ -68,14 +68,17 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 		Elevated:              elevated}
 }
 
-func (b *Building) hasWall(d uint8) bool {
+func (b *Building) hasArch(d uint8) bool {
 	if b.Plan.BuildingType != BuildingTypeGate {
-		return true
+		return false
 	}
-	return b.Direction%2 != d%2
+	return b.Direction%2 == d%2
 }
 
 func (b *Building) hasDoor(d uint8, floor uint8) bool {
+	if b.Plan.BuildingType == BuildingTypeGate {
+		return false
+	}
 	if b.Direction != d {
 		return false
 	}
@@ -103,20 +106,20 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 	windows := (b.Plan.BuildingType != BuildingTypeWall && b.Plan.BuildingType != BuildingTypeGate)
 	for i := uint8(0); i < numFloors; i++ {
 		var n *BuildingWall
-		if y == 0 || (!b.Plan.HasUnit(x, y-1, i) && b.hasWall(0)) {
-			n = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y-1, i), Door: b.hasDoor(0, i)}
+		if y == 0 || !b.Plan.HasUnit(x, y-1, i) {
+			n = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y-1, i), Door: b.hasDoor(0, i), Arch: b.hasArch(0)}
 		}
 		var e *BuildingWall
-		if x == BuildingBaseMaxSize-1 || (!b.Plan.HasUnit(x+1, y, i) && b.hasWall(1)) {
-			e = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x+1, y, i), Door: b.hasDoor(1, i)}
+		if x == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x+1, y, i) {
+			e = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x+1, y, i), Door: b.hasDoor(1, i), Arch: b.hasArch(1)}
 		}
 		var s *BuildingWall
-		if y == BuildingBaseMaxSize-1 || (!b.Plan.HasUnit(x, y+1, i) && b.hasWall(2)) {
-			s = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y+1, i), Door: b.hasDoor(2, i)}
+		if y == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x, y+1, i) {
+			s = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x, y+1, i), Door: b.hasDoor(2, i), Arch: b.hasArch(2)}
 		}
 		var w *BuildingWall
-		if x == 0 || (!b.Plan.HasUnit(x-1, y, i) && b.hasWall(3)) {
-			w = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x-1, y, i), Door: b.hasDoor(3, i)}
+		if x == 0 || !b.Plan.HasUnit(x-1, y, i) {
+			w = &BuildingWall{M: p.Floors[i].M, Windows: windows && !b.Plan.HasUnitOrRoof(x-1, y, i), Door: b.hasDoor(3, i), Arch: b.hasArch(3)}
 		}
 		units[i] = &BuildingUnit{
 			BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
