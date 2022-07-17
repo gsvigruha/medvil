@@ -76,7 +76,7 @@ func (b *Building) hasArch(d uint8) bool {
 }
 
 func (b *Building) hasDoor(d uint8, floor uint8) bool {
-	if b.Plan.BuildingType == BuildingTypeGate {
+	if b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeWall {
 		return false
 	}
 	if b.Direction != d {
