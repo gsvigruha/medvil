@@ -164,6 +164,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					bf := m.GetField(coords[0], coords[1])
 					navigation.SetRoadConnectionsForNeighbors(m, bf)
 					navigation.SetBuildingDeckForNeighbors(m, bf)
+					navigation.SetWallConnections(m, bf)
 				}
 			}
 		} else {

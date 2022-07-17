@@ -50,7 +50,7 @@ func SetRoadConnectionsForNeighbors(m IMap, f *Field) {
 }
 
 func SetRoadConnections(m IMap, f *Field) {
-	for i := 0; i < 4; i++ {
+	for i := uint8(0); i < 4; i++ {
 		d := DirectionOrthogonalXY[i]
 		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
 		if of != nil {
@@ -67,7 +67,7 @@ func SetRoadConnections(m IMap, f *Field) {
 				if b.Plan.BuildingType != building.BuildingTypeWall && b.Plan.BuildingType != building.BuildingTypeGate && of.X == b.X && of.Y == b.Y {
 					if unit, ok := of.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
 						if !unit.HasDoor() {
-							unit.Walls[(i+2)%4].Door = true
+							unit.Walls[building.OppDir(i)].Door = true
 						}
 					}
 				}
@@ -83,6 +83,30 @@ func SetRoadConnections(m IMap, f *Field) {
 		}
 		if !of.Building.Empty() {
 			f.Road.CornerConnections[i] = true
+		}
+	}
+}
+
+func SetWallConnectionsForFields(f *Field, of *Field, dir uint8) {
+	if f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeTower &&
+		(of.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeWall ||
+			of.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeGate) {
+		ofH := len(of.Building.BuildingComponents)
+		if len(f.Building.BuildingComponents) > ofH {
+			if unit, ok := f.Building.BuildingComponents[ofH-1].(*building.BuildingUnit); ok {
+				unit.Walls[dir].Door = true
+			}
+		}
+	}
+}
+
+func SetWallConnections(m IMap, f *Field) {
+	for i := uint8(0); i < 4; i++ {
+		d := DirectionOrthogonalXY[i]
+		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		if of != nil && !of.Building.Empty() {
+			SetWallConnectionsForFields(m.GetField(f.X, f.Y), of, i)
+			SetWallConnectionsForFields(of, f, building.OppDir(i))
 		}
 	}
 }

@@ -6,6 +6,7 @@ import (
 
 var WallFloor = Floor{M: materials.GetMaterial("stone")}
 var WallRoof = &Roof{M: materials.GetMaterial("stone"), RoofType: RoofTypeFlat}
+var TowerRoof = &Roof{M: materials.GetMaterial("tile"), RoofType: RoofTypeSplit}
 
 var Wall1 = &PlanUnits{
 	Floors: []Floor{WallFloor},
@@ -17,9 +18,14 @@ var Wall2 = &PlanUnits{
 	Roof:   WallRoof,
 }
 
-var Wall3 = &PlanUnits{
+var Tower1 = &PlanUnits{
+	Floors: []Floor{WallFloor, WallFloor},
+	Roof:   TowerRoof,
+}
+
+var Tower2 = &PlanUnits{
 	Floors: []Floor{WallFloor, WallFloor, WallFloor},
-	Roof:   WallRoof,
+	Roof:   TowerRoof,
 }
 
 var StoneWall1Type = &BuildingPlan{
@@ -44,26 +50,26 @@ var StoneWall2Type = &BuildingPlan{
 	BuildingType: BuildingTypeWall,
 }
 
-var StoneWall3Type = &BuildingPlan{
+var Tower1Type = &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
-		{nil, nil, Wall3, nil, nil},
+		{nil, nil, Tower1, nil, nil},
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
 	},
-	BuildingType: BuildingTypeWall,
+	BuildingType: BuildingTypeTower,
 }
 
-var StoneWallRampType = &BuildingPlan{
+var Tower2Type = &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
-		{nil, nil, Wall3, nil, nil},
+		{nil, nil, Tower2, nil, nil},
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
 	},
-	BuildingType: BuildingTypeWall,
+	BuildingType: BuildingTypeTower,
 }
 
 func GetWallRampPlan(rampD uint8) *BuildingPlan {

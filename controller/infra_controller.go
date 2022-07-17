@@ -19,10 +19,11 @@ const InfraTypeAqueduct = 4
 const InfraTypeBridge = 5
 const InfraTypeStoneWall1 = 11
 const InfraTypeStoneWall2 = 12
-const InfraTypeStoneWall3 = 13
 const InfraTypeStoneWallRamp = 14
-const InfraTypeGateNS = 15
-const InfraTypeGateEW = 16
+const InfraTypeStoneTower1 = 15
+const InfraTypeStoneTower2 = 16
+const InfraTypeGateNS = 21
+const InfraTypeGateEW = 22
 
 const InfraPanelTop = 100
 
@@ -59,7 +60,9 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 		return rf.F.Buildable()
 	} else if ic.it == InfraTypeBridge {
 		return c.Map.Shore(rf.F.X, rf.F.Y)
-	} else if ic.it == InfraTypeStoneWall1 || ic.it == InfraTypeStoneWall2 || ic.it == InfraTypeStoneWall3 {
+	} else if ic.it == InfraTypeStoneWall1 || ic.it == InfraTypeStoneWall2 {
+		return rf.F.Buildable()
+	} else if ic.it == InfraTypeStoneTower1 || ic.it == InfraTypeStoneTower2 {
 		return rf.F.Buildable()
 	} else if ic.it == InfraTypeStoneWallRamp {
 		return true
@@ -93,8 +96,10 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall1Type, building.DirectionNone)
 		} else if ic.it == InfraTypeStoneWall2 {
 			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall2Type, building.DirectionNone)
-		} else if ic.it == InfraTypeStoneWall3 {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall3Type, building.DirectionNone)
+		} else if ic.it == InfraTypeStoneTower1 {
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.Tower1Type, building.DirectionNone)
+		} else if ic.it == InfraTypeStoneTower2 {
+			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.Tower2Type, building.DirectionNone)
 		} else if ic.it == InfraTypeStoneWallRamp {
 			c.Map.AddWallRampConstruction(c.ActiveTown, rf.F.X, rf.F.Y)
 		} else if ic.it == InfraTypeGateNS {
@@ -153,25 +158,31 @@ func InfraToControlPanel(cp *ControlPanel) {
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/tower_3", X: float64(90), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
-		it: InfraTypeStoneWall3,
+		b:  gui.ButtonGUI{Icon: "infra/tower_1", X: float64(90), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeStoneTower1,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/ramp", X: float64(130), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/tower_2", X: float64(130), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		it: InfraTypeStoneTower2,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Icon: "infra/ramp", X: float64(170), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
 		it: InfraTypeStoneWallRamp,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/gate_ns", X: float64(170), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/gate_ns", X: float64(10), Y: float64(InfraPanelTop + 90), SX: 32, SY: 32},
 		it: InfraTypeGateNS,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/gate_ew", X: float64(210), Y: float64(InfraPanelTop + 50), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/gate_ew", X: float64(50), Y: float64(InfraPanelTop + 90), SX: 32, SY: 32},
 		it: InfraTypeGateEW,
 		ic: ic,
 	})

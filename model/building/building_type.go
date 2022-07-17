@@ -17,6 +17,7 @@ const BuildingTypeAqueduct = 12
 const BuildingTypeBridge = 13
 const BuildingTypeWall = 14
 const BuildingTypeGate = 15
+const BuildingTypeTower = 16
 
 const BuildingTypeTownhall = 20
 const BuildingTypeMarket = 21
