@@ -59,6 +59,7 @@ type BuildingWall struct {
 	M       *materials.Material
 	Windows bool
 	Door    bool
+	Arch    bool
 }
 
 type BuildingUnit struct {
@@ -129,7 +130,7 @@ func (u *BuildingUnit) CacheKey() string {
 	for i := range u.Walls {
 		w := u.Walls[i]
 		if w != nil {
-			s += fmt.Sprintf("[%v#%v#%v#%v#%v]", w.M.Name, w.Windows, w.Door, u.B.Shape)
+			s += fmt.Sprintf("[%v#%v#%v#%v#%v#%v]", w.M.Name, w.Windows, w.Door, u.B.Shape, w.Arch)
 		} else {
 			s += "[]"
 		}
