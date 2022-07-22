@@ -103,7 +103,7 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 		})
 		return units
 	}
-	windows := (b.Plan.BuildingType != BuildingTypeWall && b.Plan.BuildingType != BuildingTypeGate)
+	windows := (b.Plan.BuildingType != BuildingTypeWall && b.Plan.BuildingType != BuildingTypeGate && b.Plan.BuildingType != BuildingTypeTower)
 	for i := uint8(0); i < numFloors; i++ {
 		var n *BuildingWall
 		if y == 0 || !b.Plan.HasUnit(x, y-1, i) {

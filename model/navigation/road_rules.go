@@ -95,6 +95,9 @@ func SetWallConnectionsForFields(f *Field, of *Field, dir uint8) {
 		if len(f.Building.BuildingComponents) > ofH {
 			if unit, ok := f.Building.BuildingComponents[ofH-1].(*building.BuildingUnit); ok {
 				unit.Walls[dir].Door = true
+				for i := range unit.Walls {
+					unit.Walls[i].Windows = true
+				}
 			}
 		}
 	}
