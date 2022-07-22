@@ -51,6 +51,9 @@ var All = [...]*Artifact{
 	&Artifact{Name: "tools", M: materials.GetMaterial("iron"), V: 1},
 	// Heating
 	&Artifact{Name: "firewood", M: materials.GetMaterial("wood"), V: 1},
+	// Military
+	&Artifact{Name: "sword", M: materials.GetMaterial("iron"), V: 1},
+	&Artifact{Name: "shield", M: materials.GetMaterial("iron"), V: 1},
 }
 
 func GetArtifact(name string) *Artifact {
