@@ -40,6 +40,7 @@ type Controller struct {
 	SelectedWorkshop          *social.Workshop
 	SelectedMine              *social.Mine
 	SelectedFactory           *social.Factory
+	SelectedTower             *social.Tower
 	SelectedTownhall          *social.Townhall
 	SelectedConstruction      *building.Construction
 	SelectedMarketplace       *social.Marketplace
@@ -111,6 +112,7 @@ func (c *Controller) Reset() {
 	c.SelectedFarm = nil
 	c.SelectedMine = nil
 	c.SelectedFactory = nil
+	c.SelectedTower = nil
 	c.SelectedWorkshop = nil
 	c.ClickHandler = nil
 }
@@ -180,6 +182,11 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				if c.SelectedFactory != nil {
 					c.ActiveTown = c.SelectedFactory.Household.Town
 					FactoryToControlPanel(c.ControlPanel, c.SelectedFactory)
+				}
+				c.SelectedTower = c.ReverseReferences.BuildingToTower[rbp.GetBuilding()]
+				if c.SelectedTower != nil {
+					c.ActiveTown = c.SelectedTower.Household.Town
+					TowerToControlPanel(c.ControlPanel, c.SelectedTower)
 				}
 				c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]
 				if c.SelectedConstruction != nil {

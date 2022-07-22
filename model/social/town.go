@@ -33,6 +33,7 @@ type Town struct {
 	Workshops     []*Workshop
 	Mines         []*Mine
 	Factories     []*Factory
+	Towers        []*Tower
 	Constructions []*building.Construction
 	Stats         *stats.Stats
 	Transfers     *MoneyTransfers
@@ -146,6 +147,10 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				f := &Factory{Household: Household{Building: b, Town: town}}
 				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Factories = append(town.Factories, f)
+			case building.BuildingTypeTower:
+				t := &Tower{Household: Household{Building: b, Town: town}}
+				t.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Towers = append(town.Towers, t)
 			case building.BuildingTypeRoad:
 				if construction.Road.Construction {
 					construction.Road.Construction = false

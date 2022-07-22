@@ -10,6 +10,7 @@ type ReverseReferences struct {
 	BuildingToMine         map[*building.Building]*social.Mine
 	BuildingToWorkshop     map[*building.Building]*social.Workshop
 	BuildingToFactory      map[*building.Building]*social.Factory
+	BuildingToTower        map[*building.Building]*social.Tower
 	BuildingToTownhall     map[*building.Building]*social.Townhall
 	BuildingToMarketplace  map[*building.Building]*social.Marketplace
 	BuildingToConstruction map[*building.Building]*building.Construction
@@ -20,6 +21,7 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 	BuildingToMine := make(map[*building.Building]*social.Mine)
 	BuildingToWorkshop := make(map[*building.Building]*social.Workshop)
 	BuildingToFactory := make(map[*building.Building]*social.Factory)
+	BuildingToTower := make(map[*building.Building]*social.Tower)
 	BuildingToTownhall := make(map[*building.Building]*social.Townhall)
 	BuildingToMarketplace := make(map[*building.Building]*social.Marketplace)
 	BuildingToConstruction := make(map[*building.Building]*building.Construction)
@@ -42,6 +44,9 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 			for k := range town.Factories {
 				BuildingToFactory[town.Factories[k].Household.Building] = town.Factories[k]
 			}
+			for k := range town.Towers {
+				BuildingToTower[town.Towers[k].Household.Building] = town.Towers[k]
+			}
 			for k := range town.Constructions {
 				if town.Constructions[k].Building != nil {
 					BuildingToConstruction[town.Constructions[k].Building] = town.Constructions[k]
@@ -54,6 +59,7 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 		BuildingToMine:         BuildingToMine,
 		BuildingToWorkshop:     BuildingToWorkshop,
 		BuildingToFactory:      BuildingToFactory,
+		BuildingToTower:        BuildingToTower,
 		BuildingToTownhall:     BuildingToTownhall,
 		BuildingToMarketplace:  BuildingToMarketplace,
 		BuildingToConstruction: BuildingToConstruction,
