@@ -11,6 +11,7 @@ type MoneyTransfers struct {
 	Workshop          TransferCategories
 	Mine              TransferCategories
 	Factory           TransferCategories
+	Tower             TransferCategories
 	MarketFundingRate int
 }
 

@@ -46,11 +46,17 @@ func (town *Town) Init() {
 		TaxThreshold: 300,
 		Subsidy:      200,
 	}
+	militaryTransfers := TransferCategories{
+		TaxRate:      0,
+		TaxThreshold: 0,
+		Subsidy:      100,
+	}
 	town.Transfers = &MoneyTransfers{
 		Farm:              defaultTransfers,
 		Workshop:          defaultTransfers,
 		Mine:              defaultTransfers,
 		Factory:           defaultTransfers,
+		Tower:             militaryTransfers,
 		MarketFundingRate: 70,
 	}
 	town.Stats = &stats.Stats{}
@@ -123,6 +129,19 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 		factory.Household.Filter(Calendar, m)
 		s.Add(factory.Household.Stats())
+	}
+	for k := range town.Towers {
+		tower := town.Towers[k]
+		for l := range tower.Household.People {
+			person := tower.Household.People[l]
+			person.ElapseTime(Calendar, m)
+		}
+		tower.ElapseTime(Calendar, m)
+		if eoYear {
+			town.Transfers.Tower.Transfer(&town.Townhall.Household.Money, &tower.Household.Money)
+		}
+		tower.Household.Filter(Calendar, m)
+		s.Add(tower.Household.Stats())
 	}
 	var constructions []*building.Construction
 	for k := range town.Constructions {
