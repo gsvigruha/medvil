@@ -7,6 +7,8 @@ import (
 	"medvil/model/time"
 )
 
+const WeaponBudgetRatio = 0.5
+
 type PatrolLand struct {
 	X uint16
 	Y uint16
@@ -38,9 +40,9 @@ var Sword = artifacts.GetArtifact("sword")
 var Shield = artifacts.GetArtifact("shield")
 
 func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	h := t.Household
-	mp := h.Town.Marketplace
+	h := &t.Household
 	h.ElapseTime(Calendar, m)
+	mp := h.Town.Marketplace
 
 	unarmedPeople := t.numUnarmedPeople()
 	if unarmedPeople > 0 {
@@ -57,7 +59,7 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				Exchange:       mp,
 				HouseholdMoney: &h.Money,
 				Goods:          needs,
-				MaxPrice:       uint32(float64(h.Money) * 0.5),
+				MaxPrice:       uint32(float64(h.Money) * WeaponBudgetRatio),
 				TaskTag:        tag,
 			})
 		}
