@@ -2,6 +2,7 @@ package social
 
 import (
 	"medvil/model/navigation"
+	"medvil/model/time"
 )
 
 type PatrolLand struct {
@@ -30,3 +31,8 @@ func (t *Tower) GetFields() []navigation.FieldWithContext {
 	}
 	return fields
 }
+
+func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+	t.Household.ElapseTime(Calendar, m)
+}
+
