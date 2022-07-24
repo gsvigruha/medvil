@@ -67,7 +67,7 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 func (t *Tower) numUnarmedPeople() uint16 {
 	var i = uint16(0)
 	for _, p := range t.Household.People {
-		if p.Equipment.Weapon() {
+		if !p.Equipment.Weapon() {
 			i++
 		}
 	}
