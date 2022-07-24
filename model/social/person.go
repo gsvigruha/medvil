@@ -23,13 +23,13 @@ type Person struct {
 	Task      economy.Task
 	IsHome    bool
 	Traveller *navigation.Traveller
-	Tool      bool
+	Equipment Equipment
 }
 
 func (p *Person) releaseTask() {
 	p.Task = nil
-	if p.Tool {
-		p.Tool = false
+	if p.Equipment.Tool() {
+		p.Equipment = &NoEquipment{}
 		p.Household.Resources.Add(Tools, 1)
 	}
 	p.Traveller.ExitVehicle()
@@ -45,7 +45,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Traveller.Motion = p.Task.Motion()
 				p.Traveller.IncPhase()
 			}
-			if p.Task.Complete(Calendar, p.Tool) {
+			if p.Task.Complete(Calendar, p.Equipment.Tool()) {
 				p.releaseTask()
 			}
 		} else {
@@ -79,8 +79,8 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			p.Task = &economy.DrinkTask{F: home, P: p}
 		} else if p.Household.HasTask() {
 			p.Task = p.Household.getNextTaskCombineExchange(m)
-			if !p.Tool && p.Household.Resources.Remove(Tools, 1) == 1 {
-				p.Tool = true
+			if !p.Equipment.Tool() && p.Household.Resources.Remove(Tools, 1) == 1 {
+				p.Equipment = &Tool{}
 			}
 			p.Task.SetUp(p.Traveller, p.Household)
 		} else if !p.IsHome {

@@ -339,7 +339,7 @@ func (h *Household) heatingFuelNeeded() uint16 {
 func (h *Household) PeopleWithTools() uint16 {
 	var n = uint16(0)
 	for _, p := range h.People {
-		if p.Tool {
+		if p.Equipment.Tool() {
 			n++
 		}
 	}
@@ -439,6 +439,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 			PY: 0,
 			T:  navigation.TravellerTypePedestrian,
 		},
+		Equipment: &NoEquipment{},
 	}
 }
 
