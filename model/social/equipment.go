@@ -26,3 +26,14 @@ func (t *Tool) Tool() bool {
 func (t *Tool) Weapon() bool {
 	return false
 }
+
+type Weapon struct {
+}
+
+func (w *Weapon) Tool() bool {
+	return false
+}
+
+func (w *Weapon) Weapon() bool {
+	return true
+}

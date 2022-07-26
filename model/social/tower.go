@@ -46,22 +46,41 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 	unarmedPeople := t.numUnarmedPeople()
 	if unarmedPeople > 0 {
-		tag := "weapon_shopping"
-		var quantity = (ProductTransportQuantity(Sword) + ProductTransportQuantity(Shield)) / 2
-		if quantity > unarmedPeople {
-			quantity = unarmedPeople
+		tag := "weapon_buying"
+		var weapons = h.Resources.Get(Sword)
+		if weapons > h.Resources.Get(Shield) {
+			weapons = h.Resources.Get(Shield)
 		}
-		needs := []artifacts.Artifacts{
-			artifacts.Artifacts{A: Sword, Quantity: quantity},
-			artifacts.Artifacts{A: Shield, Quantity: quantity}}
-		if h.Money >= mp.Price(needs) && mp.HasTraded(Sword) && mp.HasTraded(Shield) {
-			h.AddTask(&economy.BuyTask{
-				Exchange:       mp,
-				HouseholdMoney: &h.Money,
-				Goods:          needs,
-				MaxPrice:       uint32(float64(h.Money) * WeaponBudgetRatio),
-				TaskTag:        tag,
-			})
+
+		if h.NumTasks("exchange", tag) == 0 && weapons == 0 {
+			var quantity = (ProductTransportQuantity(Sword) + ProductTransportQuantity(Shield)) / 2
+			if quantity > unarmedPeople {
+				quantity = unarmedPeople
+			}
+			needs := []artifacts.Artifacts{
+				artifacts.Artifacts{A: Sword, Quantity: quantity},
+				artifacts.Artifacts{A: Shield, Quantity: quantity}}
+			if h.Money >= mp.Price(needs) && mp.HasTraded(Sword) && mp.HasTraded(Shield) {
+				h.AddTask(&economy.BuyTask{
+					Exchange:       mp,
+					HouseholdMoney: &h.Money,
+					Goods:          needs,
+					MaxPrice:       uint32(float64(h.Money) * WeaponBudgetRatio),
+					TaskTag:        tag,
+				})
+			}
+		}
+
+		if weapons > 0 {
+			for _, p := range h.People {
+				if !p.Equipment.Weapon() {
+					p.Equipment = &Weapon{}
+					weapons--
+					if weapons == 0 {
+						break
+					}
+				}
+			}
 		}
 	}
 }
