@@ -73,7 +73,7 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 		if weapons > 0 {
 			for _, p := range h.People {
-				if !p.Equipment.Weapon() {
+				if !p.Equipment.Weapon() && h.Resources.Remove(Sword, 1) > 0 && h.Resources.Remove(Shield, 1) > 0 {
 					p.Equipment = &Weapon{}
 					weapons--
 					if weapons == 0 {
