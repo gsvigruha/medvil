@@ -85,10 +85,13 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 
-	if Calendar.Hour == 0 && Calendar.Day == 1 && h.NumTasks("patrol", "") == 0 {
-		h.AddTask(&military.PatrolTask{
-			Fields: t.getPatrolFields(),
-		})
+	if Calendar.Hour == 0 && Calendar.Day == 1 {
+		patrolFields := t.getPatrolFields()
+		if h.NumTasks("patrol", "") == 0 && len(patrolFields) > 0 {
+			h.AddTask(&military.PatrolTask{
+				Fields: patrolFields,
+			})
+		}
 	}
 }
 
