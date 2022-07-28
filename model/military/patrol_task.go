@@ -17,7 +17,7 @@ func (t *PatrolTask) Field() *navigation.Field {
 }
 
 func (t *PatrolTask) Complete(Calendar *time.CalendarType, tool bool) bool {
-	if t.state < len(t.Fields) {
+	if t.state < len(t.Fields)-1 {
 		t.state++
 		return false
 	} else {
