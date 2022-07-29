@@ -3,6 +3,7 @@ package social
 import (
 	"medvil/model/artifacts"
 	"medvil/model/economy"
+	"medvil/model/military"
 	"medvil/model/navigation"
 	"medvil/model/time"
 )
@@ -83,6 +84,23 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+
+	if Calendar.Hour == 0 && Calendar.Day == 1 {
+		patrolFields := t.getPatrolFields()
+		if h.NumTasks("patrol", "") == 0 && len(patrolFields) > 0 {
+			h.AddTask(&military.PatrolTask{
+				Fields: patrolFields,
+			})
+		}
+	}
+}
+
+func (t *Tower) getPatrolFields() []*navigation.Field {
+	var f []*navigation.Field
+	for _, l := range t.Land {
+		f = append(f, l.F)
+	}
+	return f
 }
 
 func (t *Tower) numUnarmedPeople() uint16 {
