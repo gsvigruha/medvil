@@ -129,7 +129,7 @@ func SetupNewTownController(c *NewTownController) {
 		c.p.AddTextLabel(strconv.Itoa(len(c.sourceTH.Household.People)), 10, 140+IconH+4)
 		c.p.AddPanel(gui.CreateNumberPanel(10, 140+IconH+8, 32, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
 
-		c.p.AddImageLabel("artifacts/gold_coin", 50, 140, 32, 32, gui.ImageLabelStyleRegular)
+		c.p.AddImageLabel("coin", 50, 140, 32, 32, gui.ImageLabelStyleRegular)
 		c.p.AddTextLabel(strconv.Itoa(int(c.sourceTH.Household.Money)), 50, 140+IconH+4)
 		c.p.AddPanel(gui.CreateNumberPanel(50, 140+IconH+8, 32, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
 

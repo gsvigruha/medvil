@@ -6,19 +6,43 @@ import (
 	"medvil/view/gui"
 )
 
+type TownhallControllerButton struct {
+	tc       *TownhallController
+	b        gui.ButtonGUI
+	subPanel *gui.Panel
+}
+
+func (b *TownhallControllerButton) Click() {
+	b.tc.subPanel = b.subPanel
+}
+
+func (b *TownhallControllerButton) Render(cv *canvas.Canvas) {
+	b.b.Render(cv)
+}
+
+func (b *TownhallControllerButton) Contains(x float64, y float64) bool {
+	return b.b.Contains(x, y)
+}
+
 type TownhallController struct {
 	householdPanel *gui.Panel
-	taxPanel       *gui.Panel
+	buttons        []*TownhallControllerButton
+	subPanel       *gui.Panel
 	th             *social.Townhall
 }
 
 func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	tp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
-	tc := &TownhallController{householdPanel: hp, th: th, taxPanel: tp}
+	sp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
+
+	tc := &TownhallController{householdPanel: hp, th: th}
+	tc.buttons = []*TownhallControllerButton{
+		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "taxes", X: 10, Y: 550, SX: 32, SY: 32}},
+		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: 50, Y: 550, SX: 32, SY: 32}},
+	}
 
 	HouseholdToControlPanel(hp, &th.Household)
-	hp.AddPanel(tp)
 
 	tp.AddPanel(gui.CreateNumberPanel(10, 600, 120, 20, 0, 100, 10, "farm tax rate %v", &th.Household.Town.Transfers.Farm.TaxRate).P)
 	tp.AddPanel(gui.CreateNumberPanel(10, 625, 120, 20, 0, 1000, 10, "farm threshold %v", &th.Household.Town.Transfers.Farm.TaxThreshold).P)
@@ -54,5 +78,10 @@ func (tc *TownhallController) Clear() {}
 func (tc *TownhallController) Refresh() {
 	tc.householdPanel.Clear()
 	HouseholdToControlPanel(tc.householdPanel, &tc.th.Household)
-	tc.householdPanel.AddPanel(tc.taxPanel)
+	for _, button := range tc.buttons {
+		tc.householdPanel.AddButton(button)
+	}
+	if tc.subPanel != nil {
+		tc.householdPanel.AddPanel(tc.subPanel)
+	}
 }

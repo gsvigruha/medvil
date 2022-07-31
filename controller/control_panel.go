@@ -118,7 +118,7 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.C = c
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)
-	p.topPanel.AddImageLabel("artifacts/gold_coin", 80, 8, 16, 16, gui.ImageLabelStyleRegular)
+	p.topPanel.AddImageLabel("coin", 80, 8, 16, 16, gui.ImageLabelStyleRegular)
 	p.moneyLabel = p.topPanel.AddTextLabel("", 100, 20)
 	p.topPanel.AddImageLabel("person", 150, 8, 16, 16, gui.ImageLabelStyleRegular)
 	p.peopleLabel = p.topPanel.AddTextLabel("", 170, 20)
