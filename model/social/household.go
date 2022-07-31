@@ -35,16 +35,10 @@ type Household struct {
 	Heating         float64
 }
 
-func (h *Household) HasTask() bool {
-	for i := range h.Tasks {
-		if !h.Tasks[i].Blocked() && !h.Tasks[i].IsPaused() {
-			return true
-		}
-	}
-	return false
-}
-
 func (h *Household) getNextTask() economy.Task {
+	if len(h.Tasks) == 0 {
+		return nil
+	}
 	var i = 0
 	for i < len(h.Tasks) {
 		t := h.Tasks[i]
@@ -54,6 +48,9 @@ func (h *Household) getNextTask() economy.Task {
 			break
 		}
 		i++
+	}
+	if i == len(h.Tasks) {
+		return nil
 	}
 	t := h.Tasks[i]
 	h.Tasks = append(h.Tasks[0:i], h.Tasks[i+1:]...)
