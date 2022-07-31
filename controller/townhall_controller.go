@@ -80,7 +80,7 @@ func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *
 	yI := i / IconRowMax
 	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI)*NewTownRowH, 32, 32, gui.ImageLabelStyleRegular)
 	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI)*NewTownRowH+IconH+4)
-	p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI)*NewTownRowH+IconH+8, 32, 20, 0, int(q), 5, "%v", th.StorageTarget[a]).P)
+	p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI)*NewTownRowH+IconH+8, 32, 20, 0, 100, 5, "%v", th.StorageTarget[a]).P)
 }
 
 func (tc *TownhallController) CaptureClick(x, y float64) {

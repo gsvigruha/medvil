@@ -2,7 +2,6 @@ package social
 
 import (
 	"medvil/model/artifacts"
-	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -19,21 +18,30 @@ const ConstructionStorageCapacity = 0.7
 func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Household.ElapseTime(Calendar, m)
 	mp := t.Household.Town.Marketplace
-	if t.Household.Resources.UsedVolumeCapacity() < ConstructionStorageCapacity {
-		maxPrice := uint32(float64(t.Household.Money) * ConstructionBudgetPercentage / float64(len(building.ConstructionInputs)))
-		maxVolumePerArtifact := t.Household.Resources.VolumeCapacity / uint16(len(building.ConstructionInputs))
-		for _, a := range building.ConstructionInputs {
-			if maxVolumePerArtifact > t.Household.Resources.Get(a)*a.V {
-				tag := "construction_input#" + a.Name
-				goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity(a)}}
-				if t.Household.NumTasks("exchange", tag) == 0 && t.Household.Money >= mp.Price(goods) {
-					t.Household.AddTask(&economy.BuyTask{
-						Exchange:       mp,
-						HouseholdMoney: &t.Household.Money,
-						Goods:          goods,
-						MaxPrice:       maxPrice,
-						TaskTag:        tag,
+
+	for _, a := range artifacts.All {
+		tag := "exchange#" + a.Name
+		purchaseQuantity := ProductTransportQuantity(a)
+		goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: purchaseQuantity}}
+		if q, ok := t.Household.Resources.Artifacts[a]; ok {
+			if t.Household.NumTasks("exchange", tag) == 0 {
+				targetQ := uint16(*(t.StorageTarget[a]))
+				if q > targetQ {
+					t.Household.AddTask(&economy.SellTask{
+						Exchange: mp,
+						Goods:    goods,
+						TaskTag:  tag,
 					})
+				} else if q < targetQ {
+					if t.Household.Money >= mp.Price(goods) && mp.HasTraded(a) {
+						t.Household.AddTask(&economy.BuyTask{
+							Exchange:       mp,
+							HouseholdMoney: &t.Household.Money,
+							Goods:          goods,
+							MaxPrice:       uint32(mp.Price(goods) * 2),
+							TaskTag:        tag,
+						})
+					}
 				}
 			}
 		}

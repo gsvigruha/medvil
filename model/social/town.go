@@ -64,6 +64,9 @@ func (town *Town) Init() {
 	town.Townhall.StorageTarget = make(map[*artifacts.Artifact]*int)
 	for _, a := range artifacts.All {
 		var amount int = 0
+		if q, ok := town.Townhall.Household.Resources.Artifacts[a]; ok {
+			amount = int(q)
+		}
 		town.Townhall.StorageTarget[a] = &amount
 	}
 }
