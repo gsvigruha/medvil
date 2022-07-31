@@ -439,7 +439,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 			PY: 0,
 			T:  navigation.TravellerTypePedestrian,
 		},
-		Equipment: &NoEquipment{},
+		Equipment: &economy.NoEquipment{},
 	}
 }
 
