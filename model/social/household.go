@@ -35,7 +35,7 @@ type Household struct {
 	Heating         float64
 }
 
-func (h *Household) getNextTask() economy.Task {
+func (h *Household) getNextTask(e economy.Equipment) economy.Task {
 	if len(h.Tasks) == 0 {
 		return nil
 	}
@@ -44,7 +44,7 @@ func (h *Household) getNextTask() economy.Task {
 		t := h.Tasks[i]
 		_, sok := t.(*economy.SellTask)
 		_, bok := t.(*economy.BuyTask)
-		if !sok && !bok && !t.Blocked() && !t.IsPaused() {
+		if !sok && !bok && !t.Blocked() && !t.IsPaused() && t.Equipped(e) {
 			break
 		}
 		i++
@@ -111,7 +111,7 @@ func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle
 	return nil
 }
 
-func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
+func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e economy.Equipment) economy.Task {
 	vehicle := h.GetVehicle()
 	et := h.getExchangeTask(m, vehicle)
 	if et == nil && vehicle != nil {
@@ -120,7 +120,7 @@ func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
 	if et != nil {
 		return et
 	}
-	return h.getNextTask()
+	return h.getNextTask(e)
 }
 
 func (h *Household) AddTask(t economy.Task) {
