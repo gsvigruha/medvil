@@ -35,25 +35,22 @@ type Household struct {
 	Heating         float64
 }
 
-func (h *Household) HasTask() bool {
-	for i := range h.Tasks {
-		if !h.Tasks[i].Blocked() && !h.Tasks[i].IsPaused() {
-			return true
-		}
+func (h *Household) getNextTask(e economy.Equipment) economy.Task {
+	if len(h.Tasks) == 0 {
+		return nil
 	}
-	return false
-}
-
-func (h *Household) getNextTask() economy.Task {
 	var i = 0
 	for i < len(h.Tasks) {
 		t := h.Tasks[i]
 		_, sok := t.(*economy.SellTask)
 		_, bok := t.(*economy.BuyTask)
-		if !sok && !bok && !t.Blocked() && !t.IsPaused() {
+		if !sok && !bok && !t.Blocked() && !t.IsPaused() && t.Equipped(e) {
 			break
 		}
 		i++
+	}
+	if i == len(h.Tasks) {
+		return nil
 	}
 	t := h.Tasks[i]
 	h.Tasks = append(h.Tasks[0:i], h.Tasks[i+1:]...)
@@ -114,7 +111,7 @@ func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle
 	return nil
 }
 
-func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
+func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e economy.Equipment) economy.Task {
 	vehicle := h.GetVehicle()
 	et := h.getExchangeTask(m, vehicle)
 	if et == nil && vehicle != nil {
@@ -123,7 +120,7 @@ func (h *Household) getNextTaskCombineExchange(m navigation.IMap) economy.Task {
 	if et != nil {
 		return et
 	}
-	return h.getNextTask()
+	return h.getNextTask(e)
 }
 
 func (h *Household) AddTask(t economy.Task) {
@@ -439,7 +436,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 			PY: 0,
 			T:  navigation.TravellerTypePedestrian,
 		},
-		Equipment: &NoEquipment{},
+		Equipment: &economy.NoEquipment{},
 	}
 }
 

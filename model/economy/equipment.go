@@ -1,4 +1,4 @@
-package social
+package economy
 
 type Equipment interface {
 	Weapon() bool

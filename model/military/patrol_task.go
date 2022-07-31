@@ -44,3 +44,7 @@ func (t *PatrolTask) Expired(Calendar *time.CalendarType) bool {
 func (t *PatrolTask) Motion() uint8 {
 	return navigation.MotionStand
 }
+
+func (t *PatrolTask) Equipped(e economy.Equipment) bool {
+	return e.Weapon()
+}
