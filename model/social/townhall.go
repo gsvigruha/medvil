@@ -9,7 +9,8 @@ import (
 )
 
 type Townhall struct {
-	Household Household
+	Household     Household
+	StorageTarget map[*artifacts.Artifact]*int
 }
 
 const ConstructionBudgetPercentage = 0.3

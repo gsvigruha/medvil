@@ -60,6 +60,12 @@ func (town *Town) Init() {
 		MarketFundingRate: 70,
 	}
 	town.Stats = &stats.Stats{}
+
+	town.Townhall.StorageTarget = make(map[*artifacts.Artifact]*int)
+	for _, a := range artifacts.All {
+		var amount int = 0
+		town.Townhall.StorageTarget[a] = &amount
+	}
 }
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
