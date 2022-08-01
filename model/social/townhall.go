@@ -21,17 +21,20 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 	for _, a := range artifacts.All {
 		tag := "exchange#" + a.Name
-		purchaseQuantity := ProductTransportQuantity(a)
-		goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: purchaseQuantity}}
+		transportQuantity := ProductTransportQuantity(a)
+		goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: transportQuantity}}
 		if q, ok := t.Household.Resources.Artifacts[a]; ok {
 			if t.Household.NumTasks("exchange", tag) == 0 {
 				targetQ := uint16(*(t.StorageTarget[a]))
 				if q > targetQ {
-					t.Household.AddTask(&economy.SellTask{
-						Exchange: mp,
-						Goods:    goods,
-						TaskTag:  tag,
-					})
+					qToSell := t.Household.ArtifactToSell(a, q, false)
+					if qToSell > 0 {
+						t.Household.AddTask(&economy.SellTask{
+							Exchange: mp,
+							Goods:    goods,
+							TaskTag:  tag,
+						})
+					}
 				} else if q < targetQ {
 					if t.Household.Money >= mp.Price(goods) && mp.HasTraded(a) {
 						t.Household.AddTask(&economy.BuyTask{
