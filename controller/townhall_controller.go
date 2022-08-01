@@ -2,8 +2,10 @@ package controller
 
 import (
 	"github.com/tfriedel6/canvas"
+	"medvil/model/artifacts"
 	"medvil/model/social"
 	"medvil/view/gui"
+	"strconv"
 )
 
 type TownhallControllerButton struct {
@@ -62,7 +64,23 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 	tp.AddPanel(gui.CreateNumberPanel(10, 750, 120, 20, 0, 100, 10, "market funding %v", &th.Household.Town.Transfers.MarketFundingRate).P)
 
+	var aI = 0
+	for _, a := range artifacts.All {
+		if q, ok := th.Household.Resources.Artifacts[a]; ok {
+			ArtifactStorageToControlPanel(sp, th, aI, a, q, 600)
+			aI++
+		}
+	}
+
 	cp.SetDynamicPanel(tc)
+}
+
+func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *artifacts.Artifact, q uint16, top float64) {
+	xI := i % IconRowMax
+	yI := i / IconRowMax
+	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI)*NewTownRowH, 32, 32, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI)*NewTownRowH+IconH+4)
+	p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI)*NewTownRowH+IconH+8, 32, 20, 0, 100, 5, "%v", th.StorageTarget[a]).P)
 }
 
 func (tc *TownhallController) CaptureClick(x, y float64) {

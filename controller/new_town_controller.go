@@ -95,7 +95,7 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	resources := make(map[*artifacts.Artifact]*int)
 	for _, a := range artifacts.All {
-		var n int
+		var n int = 0
 		resources[a] = &n
 	}
 	newTown := &social.Town{Country: th.Household.Town.Country}
