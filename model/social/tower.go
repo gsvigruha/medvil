@@ -90,6 +90,7 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if h.NumTasks("patrol", "") == 0 && len(patrolFields) > 0 {
 			h.AddTask(&military.PatrolTask{
 				Fields: patrolFields,
+				Start:  *Calendar,
 			})
 		}
 	}
