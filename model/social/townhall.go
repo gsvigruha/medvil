@@ -12,7 +12,7 @@ type Townhall struct {
 	StorageTarget map[*artifacts.Artifact]*int
 }
 
-const ConstructionBudgetPercentage = 0.3
+const StorageRefillBudgetPercentage = 0.5
 const ConstructionStorageCapacity = 0.7
 
 func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -20,7 +20,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	mp := t.Household.Town.Marketplace
 
 	for _, a := range artifacts.All {
-		tag := "exchange#" + a.Name
+		tag := "storage_target#" + a.Name
 		transportQuantity := ProductTransportQuantity(a)
 		goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: transportQuantity}}
 		if q, ok := t.Household.Resources.Artifacts[a]; ok {
@@ -36,12 +36,13 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						})
 					}
 				} else if q < targetQ {
+					maxPrice := uint32(float64(t.Household.Money) * StorageRefillBudgetPercentage / float64(len(t.Household.Resources.Artifacts)))
 					if t.Household.Money >= mp.Price(goods) && mp.HasTraded(a) {
 						t.Household.AddTask(&economy.BuyTask{
 							Exchange:       mp,
 							HouseholdMoney: &t.Household.Money,
 							Goods:          goods,
-							MaxPrice:       uint32(mp.Price(goods) * 2),
+							MaxPrice:       maxPrice,
 							TaskTag:        tag,
 						})
 					}
