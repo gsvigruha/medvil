@@ -27,11 +27,11 @@ type Traveller struct {
 	Phase     uint8
 	Visible   bool
 	T         uint8
+	Vehicle   Vehicle
 	path      *Path
 	PE        PathElement
 	lane      uint8
 	stuckCntr uint8
-	Vehicle   Vehicle
 }
 
 func (t *Traveller) consumePathElement() {

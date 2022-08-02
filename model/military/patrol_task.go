@@ -9,6 +9,7 @@ import (
 type PatrolTask struct {
 	economy.TaskBase
 	Fields []*navigation.Field
+	Start  time.CalendarType
 	state  int
 }
 
@@ -38,7 +39,7 @@ func (t *PatrolTask) Tag() string {
 }
 
 func (t *PatrolTask) Expired(Calendar *time.CalendarType) bool {
-	return false
+	return Calendar.DaysElapsed()-t.Start.DaysElapsed() >= 30
 }
 
 func (t *PatrolTask) Motion() uint8 {

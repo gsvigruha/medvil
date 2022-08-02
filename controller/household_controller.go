@@ -12,7 +12,7 @@ import (
 
 const IconH = 40
 const IconW = 40
-const IconRowMax = 6
+const IconRowMax = 7
 const PersonGUIY = 110
 const ArtifactsGUIY = 350
 const TaskGUIY = 440
