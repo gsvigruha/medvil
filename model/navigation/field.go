@@ -12,6 +12,10 @@ type Location struct {
 	Z uint8
 }
 
+func (l Location) Check(pe PathElement) bool {
+	return l == pe.GetLocation()
+}
+
 type Destination interface {
 	Check(PathElement) bool
 }

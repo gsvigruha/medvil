@@ -143,3 +143,13 @@ func SetBuildingDeckForNeighbors(m IMap, f *Field) {
 		}
 	}
 }
+
+func GetZForField(f *Field) uint8 {
+	if f.Building.Empty() {
+		return 0
+	}
+	if !f.Building.BuildingComponents[0].IsConstruction() && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeWall {
+		return uint8(len(f.Building.BuildingComponents)) - 1
+	}
+	return 0
+}

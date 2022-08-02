@@ -189,7 +189,7 @@ func (m *Map) ShortPath(start, dest navigation.Location, travellerType uint8) *n
 	if start == dest {
 		return nil
 	}
-	p := FindShortPathBFS(m, start, m.GetField(dest.X, dest.Y), travellerType)
+	p := FindShortPathBFS(m, start, dest, travellerType)
 	if p != nil {
 		return &navigation.Path{P: p[1:]}
 	}
