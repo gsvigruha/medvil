@@ -48,6 +48,13 @@ func (f *Field) GetLocation() Location {
 	return Location{X: f.X, Y: f.Y, Z: 0}
 }
 
+func (f *Field) GetPathElement(z uint8) PathElement {
+	if z == 0 {
+		return f
+	}
+	return &BuildingPathElement{BC: f.Building.GetBuildingComponent(z), L: Location{X: f.X, Y: f.Y, Z: z}}
+}
+
 func (f *Field) GetNeighbors(m IMap) []PathElement {
 	var n = []PathElement{}
 	for dir, coordDelta := range building.CoordDeltaByDirection {
