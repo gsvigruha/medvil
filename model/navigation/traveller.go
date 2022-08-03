@@ -39,8 +39,8 @@ func (t *Traveller) consumePathElement() {
 		path, removed := t.path.ConsumeElement()
 		t.path = path
 		t.PE = removed
-		if removed != nil {
-			t.FZ = removed.GetLocation().Z
+		if t.PE != nil {
+			t.FZ = t.PE.GetLocation().Z
 		}
 	}
 }
