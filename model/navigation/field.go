@@ -12,6 +12,10 @@ type Location struct {
 	Z uint8
 }
 
+func (l Location) Check(pe PathElement) bool {
+	return l == pe.GetLocation()
+}
+
 type Destination interface {
 	Check(PathElement) bool
 }
@@ -44,6 +48,17 @@ func (f *Field) GetLocation() Location {
 	return Location{X: f.X, Y: f.Y, Z: 0}
 }
 
+func (f *Field) GetPathElement(z uint8) PathElement {
+	if z == 0 {
+		return f
+	}
+	bc := f.Building.GetBuildingComponent(z - 1)
+	if bc != nil {
+		return &BuildingPathElement{BC: bc, L: Location{X: f.X, Y: f.Y, Z: z}}
+	}
+	return nil
+}
+
 func (f *Field) GetNeighbors(m IMap) []PathElement {
 	var n = []PathElement{}
 	for dir, coordDelta := range building.CoordDeltaByDirection {
@@ -54,7 +69,7 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 				n = append(n, nf)
 			} else {
 				nbc := nf.Building.GetBuildingComponent(0)
-				if nbc == nil || (nbc.Building().Plan.BuildingType != building.BuildingTypeWall && nbc.Building().Plan.BuildingType != building.BuildingTypeGate) {
+				if nbc == nil || nbc.IsConstruction() || (nbc.Building().Plan.BuildingType != building.BuildingTypeWall && nbc.Building().Plan.BuildingType != building.BuildingTypeGate) {
 					n = append(n, nf)
 				}
 				if nbc != nil && nbc.Connection(building.OppDir(uint8(dir))) == building.ConnectionTypeLowerLevel {

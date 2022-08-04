@@ -118,6 +118,7 @@ func (m *Map) AddWallRampConstruction(town *social.Town, x, y uint16) bool {
 		roof := b.Plan.BaseShape[2][2].Roof
 		roof.RoofType = building.RoofTypeRamp
 		roof.RampD = rampD
+		f.Building.BuildingComponents = b.ToBuildingUnits(2, 2, false)
 		f.Building.BuildingComponents[len(f.Building.BuildingComponents)-1].SetConstruction(true)
 		cost := artifacts.ArtifactsDiff(b.Plan.ConstructionCost(), oldCost)
 		town.CreateIncrementalBuildingConstruction(b, cost, m)
@@ -189,7 +190,7 @@ func (m *Map) ShortPath(start, dest navigation.Location, travellerType uint8) *n
 	if start == dest {
 		return nil
 	}
-	p := FindShortPathBFS(m, start, m.GetField(dest.X, dest.Y), travellerType)
+	p := FindShortPathBFS(m, start, dest, travellerType)
 	if p != nil {
 		return &navigation.Path{P: p[1:]}
 	}

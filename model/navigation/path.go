@@ -18,6 +18,9 @@ func (p *Path) ConsumeElement() (*Path, PathElement) {
 		p.P = p.P[1:]
 		return p, removed
 	}
+	if len(p.P) == 1 {
+		return nil, p.P[0]
+	}
 	return nil, nil
 }
 

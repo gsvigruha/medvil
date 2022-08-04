@@ -39,6 +39,9 @@ func (t *Traveller) consumePathElement() {
 		path, removed := t.path.ConsumeElement()
 		t.path = path
 		t.PE = removed
+		if t.PE != nil {
+			t.FZ = t.PE.GetLocation().Z
+		}
 	}
 }
 
@@ -225,8 +228,9 @@ func (t *Traveller) IncPhase() {
 }
 
 func (t *Traveller) EnsurePath(f *Field, m IMap) bool {
-	if t.path == nil || t.path.LastElement().GetLocation() != f.GetLocation() {
-		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, Location{X: f.X, Y: f.Y, Z: 0}, t.TravellerType())
+	dest := Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
+	if t.path == nil || t.path.LastElement().GetLocation() != dest {
+		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, dest, t.TravellerType())
 		t.lane = uint8(rand.Intn(3) + 1)
 		t.stuckCntr = 0
 	}

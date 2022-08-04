@@ -35,7 +35,7 @@ func CheckField(pe navigation.PathElement, travellerType uint8) bool {
 func FindShortPathBFS(m *Map, start navigation.Location, dest navigation.Destination, travellerType uint8) []navigation.PathElement {
 	var iter = 0
 	visited := make(map[navigation.Location]*[]navigation.PathElement, capacity)
-	se := &BFSElement{PE: m.GetField(start.X, start.Y), prev: nil, d: 1}
+	se := &BFSElement{PE: m.GetField(start.X, start.Y).GetPathElement(start.Z), prev: nil, d: 1}
 	var toVisit = []*BFSElement{se}
 	var inQueue = make(map[navigation.Location]bool, capacity)
 	for len(toVisit) > 0 {
