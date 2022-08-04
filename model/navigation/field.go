@@ -52,7 +52,11 @@ func (f *Field) GetPathElement(z uint8) PathElement {
 	if z == 0 {
 		return f
 	}
-	return &BuildingPathElement{BC: f.Building.GetBuildingComponent(z - 1), L: Location{X: f.X, Y: f.Y, Z: z}}
+	bc := f.Building.GetBuildingComponent(z - 1)
+	if bc != nil {
+		return &BuildingPathElement{BC: bc, L: Location{X: f.X, Y: f.Y, Z: z}}
+	}
+	return nil
 }
 
 func (f *Field) GetNeighbors(m IMap) []PathElement {

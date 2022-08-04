@@ -27,11 +27,7 @@ func (o FieldBuildingObjects) GetBuildingComponent(z uint8) building.BuildingCom
 	if len(o.BuildingComponents) <= int(z) {
 		return nil
 	}
-	bc := o.BuildingComponents[z]
-	if !bc.IsConstruction() {
-		return bc
-	}
-	return nil
+	return o.BuildingComponents[z]
 }
 
 func (o FieldBuildingObjects) GetBuilding() *building.Building {
@@ -94,6 +90,9 @@ func (bpe *BuildingPathElement) GetSpeed() float64 {
 }
 
 func (bpe *BuildingPathElement) Walkable() bool {
+	if bpe.BC.IsConstruction() {
+		return false
+	}
 	return bpe.BC.Building().Plan.BuildingType == building.BuildingTypeWall || bpe.BC.Building().Plan.BuildingType == building.BuildingTypeGate
 }
 
