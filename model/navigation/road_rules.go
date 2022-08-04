@@ -148,7 +148,12 @@ func GetZForField(f *Field) uint8 {
 	if f.Building.Empty() {
 		return 0
 	}
-	if !f.Building.BuildingComponents[0].IsConstruction() && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeWall {
+	if f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeWall {
+		for _, c := range f.Building.BuildingComponents {
+			if c.IsConstruction() {
+				return 0
+			}
+		}
 		return uint8(len(f.Building.BuildingComponents))
 	}
 	return 0
