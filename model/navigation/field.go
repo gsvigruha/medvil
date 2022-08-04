@@ -65,7 +65,7 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 				n = append(n, nf)
 			} else {
 				nbc := nf.Building.GetBuildingComponent(0)
-				if nbc == nil || (nbc.Building().Plan.BuildingType != building.BuildingTypeWall && nbc.Building().Plan.BuildingType != building.BuildingTypeGate) {
+				if nbc == nil || nbc.IsConstruction() || (nbc.Building().Plan.BuildingType != building.BuildingTypeWall && nbc.Building().Plan.BuildingType != building.BuildingTypeGate) {
 					n = append(n, nf)
 				}
 				if nbc != nil && nbc.Connection(building.OppDir(uint8(dir))) == building.ConnectionTypeLowerLevel {
