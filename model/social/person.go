@@ -106,6 +106,9 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if p.Household.Heating < rand.Float64() && p.Health > 0 {
 			p.Health--
 		}
+		if !p.Household.HasEnoughTextile() && p.Happiness > 0 {
+			p.Happiness--
+		}
 	}
 }
 
