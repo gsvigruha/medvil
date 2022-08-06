@@ -161,7 +161,30 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 		DrawPerson(cv, t, x, y, t.Vehicle != nil, c)
 	} else if t.T == navigation.TravellerTypeBoat {
 		DrawBoat(cv, t, x, y, c)
+	} else if t.T == navigation.TravellerTypeCart {
+		DrawCart(cv, t, x, y, c)
 	}
+}
+
+func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
+	dirIdx := (c.Perspective - t.Direction) % 4
+	pm := animation.ProjectionMatrices[dirIdx]
+	var r = 8.0 - float64(t.Phase%16)
+	if r < 0.0 {
+		r = -r
+	}
+
+	f := 18.0
+	z := 6.0
+
+	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
+	cv.BeginPath()
+	cv.LineTo(x-f*pm.XX+0*pm.XY+0*pm.XZ, y-f*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+0*pm.XX+0*pm.XY-z*pm.XZ, y+0*pm.YX+0*pm.YY-z*pm.YZ)
+	cv.LineTo(x+f*pm.XX+0*pm.XY+0*pm.XZ, y+f*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+0*pm.XX+0*pm.XY+z*pm.XZ, y+0*pm.YX+0*pm.YY+z*pm.YZ)
+	cv.ClosePath()
+	cv.Fill()
 }
 
 func DrawBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
