@@ -55,6 +55,7 @@ func (bpe *BuildingPathElement) GetLocation() Location {
 }
 
 func (bpe *BuildingPathElement) GetNeighbors(m IMap) []PathElement {
+	f := m.GetField(bpe.L.X, bpe.L.Y)
 	var n = []PathElement{}
 	for dir, coordDelta := range building.CoordDeltaByDirection {
 		x, y := uint16(coordDelta[0]+int(bpe.L.X)), uint16(coordDelta[1]+int(bpe.L.Y))
@@ -82,6 +83,15 @@ func (bpe *BuildingPathElement) GetNeighbors(m IMap) []PathElement {
 			}
 		}
 	}
+	// Towers allow vertical movement
+	if bpe.BC.Building().Plan.BuildingType == building.BuildingTypeTower {
+		for l := uint8(0); l < uint8(len(f.Building.BuildingComponents)); l++ {
+			bc := f.Building.GetBuildingComponent(l)
+			if bc != nil && !bc.IsConstruction() {
+				n = append(n, &BuildingPathElement{BC: bc, L: Location{X: f.X, Y: f.Y, Z: l + 1}})
+			}
+		}
+	}
 	return n
 }
 
@@ -93,9 +103,15 @@ func (bpe *BuildingPathElement) Walkable() bool {
 	if bpe.BC.IsConstruction() {
 		return false
 	}
-	return bpe.BC.Building().Plan.BuildingType == building.BuildingTypeWall || bpe.BC.Building().Plan.BuildingType == building.BuildingTypeGate
+	return (bpe.BC.Building().Plan.BuildingType == building.BuildingTypeWall ||
+		bpe.BC.Building().Plan.BuildingType == building.BuildingTypeGate ||
+		bpe.BC.Building().Plan.BuildingType == building.BuildingTypeTower)
 }
 
 func (bpe *BuildingPathElement) Sailable() bool {
 	return false
+}
+
+func (bpe *BuildingPathElement) TravellerVisible() bool {
+	return bpe.BC.Building().Plan.BuildingType != building.BuildingTypeTower
 }

@@ -41,6 +41,7 @@ func (t *Traveller) consumePathElement() {
 		t.PE = removed
 		if t.PE != nil {
 			t.FZ = t.PE.GetLocation().Z
+			t.Visible = t.PE.TravellerVisible()
 		}
 	}
 }
@@ -134,6 +135,10 @@ func (t *Traveller) MoveDown(m IMap) {
 	t.Direction = DirectionS
 }
 
+func (t *Traveller) Jump(m IMap) {
+	t.consumePathElement()
+}
+
 func (t *Traveller) MoveToDir(d uint8, m IMap) {
 	switch d {
 	case DirectionN:
@@ -163,7 +168,9 @@ func (t *Traveller) Move(m IMap) {
 		for i := 0; i < steps; i++ {
 			var dirToLane uint8 = DirectionNone
 			var dirToNextField uint8 = DirectionNone
-			if t.FY == l.Y {
+			if t.FX == l.X && t.FY == l.Y {
+				t.Jump(m)
+			} else if t.FY == l.Y {
 				if t.PY < MaxPY/4*t.lane {
 					dirToLane = DirectionS
 				} else if t.PY > MaxPY/4*t.lane {
@@ -281,4 +288,10 @@ func (t *Traveller) SyncTo(ot *Traveller) {
 
 func (t *Traveller) IsOnFieldCenter() bool {
 	return t.PX > MaxPX/4 && t.PY > MaxPY/4 && t.PX < MaxPX*3/4 && t.PY < MaxPY*3/4
+}
+
+func (t *Traveller) SetHome(home bool) {
+	if home {
+		t.Visible = false
+	}
 }
