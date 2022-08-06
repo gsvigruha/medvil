@@ -82,6 +82,12 @@ func (bpe *BuildingPathElement) GetNeighbors(m IMap) []PathElement {
 			}
 		}
 	}
+	f := m.GetField(bpe.L.X, bpe.L.Y)
+	if bpe.BC.Building().Plan.BuildingType == building.BuildingTypeTower {
+		for l := uint8(0); l < uint8(len(f.Building.BuildingComponents)); l++ {
+			n = append(n, &BuildingPathElement{BC: f.Building.GetBuildingComponent(l), L: Location{X: f.X, Y: f.Y, Z: l + 1}})
+		}
+	}
 	return n
 }
 
@@ -93,7 +99,7 @@ func (bpe *BuildingPathElement) Walkable() bool {
 	if bpe.BC.IsConstruction() {
 		return false
 	}
-	return bpe.BC.Building().Plan.BuildingType == building.BuildingTypeWall || bpe.BC.Building().Plan.BuildingType == building.BuildingTypeGate
+	return bpe.BC.Building().Plan.BuildingType == building.BuildingTypeWall || bpe.BC.Building().Plan.BuildingType == building.BuildingTypeGate || bpe.BC.Building().Plan.BuildingType == building.BuildingTypeTower
 }
 
 func (bpe *BuildingPathElement) Sailable() bool {

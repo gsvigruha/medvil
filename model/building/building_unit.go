@@ -73,6 +73,9 @@ func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
 			return ConnectionTypeLowerLevel
 		}
 	}
+	if u.B.Plan.BuildingType == BuildingTypeTower {
+		return ConnectionTypeLowerLevel
+	}
 	return ConnectionTypeNone
 }
 

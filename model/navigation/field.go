@@ -78,6 +78,11 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 			}
 		}
 	}
+	if !f.Building.Empty() && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeTower {
+		for l := uint8(0); l < uint8(len(f.Building.BuildingComponents)); l++ {
+			n = append(n, &BuildingPathElement{BC: f.Building.GetBuildingComponent(l), L: Location{X: f.X, Y: f.Y, Z: l + 1}})
+		}
+	}
 	return n
 }
 

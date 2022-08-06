@@ -134,6 +134,10 @@ func (t *Traveller) MoveDown(m IMap) {
 	t.Direction = DirectionS
 }
 
+func (t *Traveller) Climb(m IMap) {
+	t.consumePathElement()
+}
+
 func (t *Traveller) MoveToDir(d uint8, m IMap) {
 	switch d {
 	case DirectionN:
@@ -163,7 +167,9 @@ func (t *Traveller) Move(m IMap) {
 		for i := 0; i < steps; i++ {
 			var dirToLane uint8 = DirectionNone
 			var dirToNextField uint8 = DirectionNone
-			if t.FY == l.Y {
+			if t.FX == l.X && t.FY == l.Y {
+				t.Climb(m)
+			} else if t.FY == l.Y {
 				if t.PY < MaxPY/4*t.lane {
 					dirToLane = DirectionS
 				} else if t.PY > MaxPY/4*t.lane {
