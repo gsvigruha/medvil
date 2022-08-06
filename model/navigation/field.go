@@ -87,11 +87,9 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 	}
 	// Towers allow vertical movement
 	if !f.Building.Empty() && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeTower {
-		for l := uint8(0); l < uint8(len(f.Building.BuildingComponents)); l++ {
-			bc := f.Building.GetBuildingComponent(l)
-			if bc != nil && !bc.IsConstruction() {
-				n = append(n, &BuildingPathElement{BC: bc, L: Location{X: f.X, Y: f.Y, Z: l + 1}})
-			}
+		bc := f.Building.GetBuildingComponent(0)
+		if bc != nil && !bc.IsConstruction() {
+			n = append(n, &BuildingPathElement{BC: bc, L: Location{X: f.X, Y: f.Y, Z: 1}})
 		}
 	}
 	return n
