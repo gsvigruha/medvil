@@ -20,6 +20,7 @@ const ExtrasBudgetRatio = 0.2
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
 var Tools = artifacts.GetArtifact("tools")
+var Textile = artifacts.GetArtifact("textile")
 
 const LogToFirewood = 5
 
@@ -272,6 +273,21 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	if h.Resources.Get(Textile) < numP {
+		tag := "textile_shopping"
+		if NumBatchesSimple(ProductTransportQuantity(Textile), ProductTransportQuantity(Textile)) > h.NumTasks("exchange", tag) {
+			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Textile, Quantity: ProductTransportQuantity(Textile)}}
+			if h.Money >= mp.Price(needs) && mp.HasTraded(Textile) {
+				h.AddTask(&economy.BuyTask{
+					Exchange:       mp,
+					HouseholdMoney: &h.Money,
+					Goods:          needs,
+					MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
+					TaskTag:        tag,
+				})
+			}
+		}
+	}
 	if Calendar.Hour == 0 {
 		for i := 0; i < len(h.Tasks); i++ {
 			if h.Tasks[i].IsPaused() {
@@ -344,6 +360,7 @@ func (h *Household) PeopleWithTools() uint16 {
 }
 
 func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bool) uint16 {
+	p := uint16(len(h.People))
 	if a.Name == "water" || a == Firewood {
 		return 0
 	}
@@ -356,8 +373,8 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bo
 	}
 	var result uint16
 	if economy.IsFoodOrDrink(a) {
-		if q > threshold*uint16(len(h.People)) {
-			result = q - threshold*uint16(len(h.People))
+		if q > threshold*p {
+			result = q - threshold*p
 		} else {
 			return 0
 		}
@@ -368,6 +385,13 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bo
 		logs := h.heatingFuelNeeded()/LogToFirewood + 1
 		if q > logs {
 			result = q - logs
+		} else {
+			return 0
+		}
+	}
+	if a == Textile {
+		if q > p {
+			result = q - p
 		} else {
 			return 0
 		}
