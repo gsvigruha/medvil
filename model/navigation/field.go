@@ -61,6 +61,7 @@ func (f *Field) GetPathElement(z uint8) PathElement {
 
 func (f *Field) GetNeighbors(m IMap) []PathElement {
 	var n = []PathElement{}
+	// Connecting field to other field or building component neighbors
 	for dir, coordDelta := range building.CoordDeltaByDirection {
 		x, y := uint16(coordDelta[0]+int(f.X)), uint16(coordDelta[1]+int(f.Y))
 		nf := m.GetField(x, y)
@@ -78,6 +79,7 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 			}
 		}
 	}
+	// Towers allow vertical movement
 	if !f.Building.Empty() && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeTower {
 		for l := uint8(0); l < uint8(len(f.Building.BuildingComponents)); l++ {
 			n = append(n, &BuildingPathElement{BC: f.Building.GetBuildingComponent(l), L: Location{X: f.X, Y: f.Y, Z: l + 1}})

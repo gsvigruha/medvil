@@ -68,11 +68,13 @@ type BuildingUnit struct {
 }
 
 func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
+	// Gates can only be passed through one direction
 	if u.B.Plan.BuildingType == BuildingTypeGate {
 		if dir%2 == u.B.Direction%2 {
 			return ConnectionTypeLowerLevel
 		}
 	}
+	// Towers are accessible to all neighbors
 	if u.B.Plan.BuildingType == BuildingTypeTower {
 		return ConnectionTypeLowerLevel
 	}
