@@ -307,7 +307,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if Calendar.Season() == time.Winter {
 			wood := h.Resources.Remove(Firewood, h.heatingFuelNeededPerMonth())
 			heating := float64(wood) / float64(h.heatingFuelNeededPerMonth())
-			if h.Resources.Get(Textile) < numP {
+			if h.HasEnoughTextile() {
 				h.Heating = heating
 			} else {
 				h.Heating = math.Max(heating, 0.5)
