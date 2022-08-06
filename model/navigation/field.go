@@ -74,9 +74,8 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 				if nbc == nil || nbc.IsConstruction() {
 					n = append(n, nf)
 				} else if nbc.Building().Plan.BuildingType != building.BuildingTypeWall &&
-					nbc.Building().Plan.BuildingType != building.BuildingTypeGate &&
-					nbc.Building().Plan.BuildingType != building.BuildingTypeTower {
-					// Regular (not tower, wall, gate) buildings can be final ground destinations
+					nbc.Building().Plan.BuildingType != building.BuildingTypeGate {
+					// Regular (not wall, gate) buildings can be final ground destinations
 					n = append(n, nf)
 				}
 				// Upper level (building type) connections
@@ -89,7 +88,10 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 	// Towers allow vertical movement
 	if !f.Building.Empty() && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeTower {
 		for l := uint8(0); l < uint8(len(f.Building.BuildingComponents)); l++ {
-			n = append(n, &BuildingPathElement{BC: f.Building.GetBuildingComponent(l), L: Location{X: f.X, Y: f.Y, Z: l + 1}})
+			bc := f.Building.GetBuildingComponent(l)
+			if bc != nil && !bc.IsConstruction() {
+				n = append(n, &BuildingPathElement{BC: bc, L: Location{X: f.X, Y: f.Y, Z: l + 1}})
+			}
 		}
 	}
 	return n

@@ -86,7 +86,10 @@ func (bpe *BuildingPathElement) GetNeighbors(m IMap) []PathElement {
 	// Towers allow vertical movement
 	if bpe.BC.Building().Plan.BuildingType == building.BuildingTypeTower {
 		for l := uint8(0); l < uint8(len(f.Building.BuildingComponents)); l++ {
-			n = append(n, &BuildingPathElement{BC: f.Building.GetBuildingComponent(l), L: Location{X: f.X, Y: f.Y, Z: l + 1}})
+			bc := f.Building.GetBuildingComponent(l)
+			if bc != nil && !bc.IsConstruction() {
+				n = append(n, &BuildingPathElement{BC: bc, L: Location{X: f.X, Y: f.Y, Z: l + 1}})
+			}
 		}
 	}
 	return n
@@ -110,5 +113,5 @@ func (bpe *BuildingPathElement) Sailable() bool {
 }
 
 func (bpe *BuildingPathElement) TravellerVisible() bool {
-	return false
+	return bpe.BC.Building().Plan.BuildingType != building.BuildingTypeTower
 }
