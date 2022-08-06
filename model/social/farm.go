@@ -123,6 +123,7 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	f.Household.MaybeBuyBoat(Calendar, m)
+	f.Household.MaybeBuyCart(Calendar, m)
 	if Calendar.Hour == 0 {
 		for _, land := range f.Land {
 			f.AddTransportTask(land, m)
