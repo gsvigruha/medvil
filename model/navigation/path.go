@@ -6,6 +6,7 @@ type PathElement interface {
 	GetSpeed() float64
 	Walkable() bool
 	Sailable() bool
+	TravellerVisible() bool
 }
 
 type Path struct {

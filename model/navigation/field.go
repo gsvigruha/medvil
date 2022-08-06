@@ -70,9 +70,16 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 				n = append(n, nf)
 			} else {
 				nbc := nf.Building.GetBuildingComponent(0)
-				if nbc == nil || nbc.IsConstruction() || (nbc.Building().Plan.BuildingType != building.BuildingTypeWall && nbc.Building().Plan.BuildingType != building.BuildingTypeGate) {
+				// Ground level connections
+				if nbc == nil || nbc.IsConstruction() {
+					n = append(n, nf)
+				} else if nbc.Building().Plan.BuildingType != building.BuildingTypeWall &&
+					nbc.Building().Plan.BuildingType != building.BuildingTypeGate &&
+					nbc.Building().Plan.BuildingType != building.BuildingTypeTower {
+					// Regular (not tower, wall, gate) buildings can be final ground destinations
 					n = append(n, nf)
 				}
+				// Upper level (building type) connections
 				if nbc != nil && nbc.Connection(building.OppDir(uint8(dir))) == building.ConnectionTypeLowerLevel {
 					n = append(n, &BuildingPathElement{BC: nbc, L: Location{X: nf.X, Y: nf.Y, Z: 1}})
 				}
@@ -193,4 +200,8 @@ func (f *Field) CacheKey() string {
 		strconv.Itoa(int(f.SW)) + "#" +
 		strconv.Itoa(int(f.NW)) + "#" +
 		f.Terrain.T.Name)
+}
+
+func (f *Field) TravellerVisible() bool {
+	return true
 }

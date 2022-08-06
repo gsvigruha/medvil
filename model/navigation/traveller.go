@@ -41,6 +41,7 @@ func (t *Traveller) consumePathElement() {
 		t.PE = removed
 		if t.PE != nil {
 			t.FZ = t.PE.GetLocation().Z
+			t.Visible = t.PE.TravellerVisible()
 		}
 	}
 }
@@ -287,4 +288,10 @@ func (t *Traveller) SyncTo(ot *Traveller) {
 
 func (t *Traveller) IsOnFieldCenter() bool {
 	return t.PX > MaxPX/4 && t.PY > MaxPY/4 && t.PX < MaxPX*3/4 && t.PY < MaxPY*3/4
+}
+
+func (t *Traveller) SetHome(home bool) {
+	if home {
+		t.Visible = false
+	}
 }

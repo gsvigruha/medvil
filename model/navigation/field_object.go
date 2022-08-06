@@ -108,3 +108,7 @@ func (bpe *BuildingPathElement) Walkable() bool {
 func (bpe *BuildingPathElement) Sailable() bool {
 	return false
 }
+
+func (bpe *BuildingPathElement) TravellerVisible() bool {
+	return false
+}
