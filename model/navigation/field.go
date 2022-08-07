@@ -149,19 +149,26 @@ func (f Field) Sailable() bool {
 }
 
 func (f Field) Buildable() bool {
-	if !f.Building.Empty() {
-		return false
-	}
-	if f.Plant != nil {
+	if !f.Empty() {
 		return false
 	}
 	if f.Allocated {
 		return false
 	}
-	if f.Road != nil {
+	return f.Terrain.T.Buildable && f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
+}
+
+func (f Field) RoadCompatible() bool {
+	if !f.Empty() {
 		return false
 	}
-	return f.Terrain.T.Buildable && f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
+	if f.Allocated {
+		return false
+	}
+	if !f.Walkable() {
+		return false
+	}
+	return f.Terrain.T.Buildable
 }
 
 func (f Field) Arable() bool {

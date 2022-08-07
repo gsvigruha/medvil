@@ -55,7 +55,7 @@ func (b InfraBuildButton) Contains(x float64, y float64) bool {
 
 func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField) bool {
 	if ic.it == InfraTypeDirtRoad || ic.it == InfraTypeCobbleRoad {
-		return rf.F.Walkable() && rf.F.Buildable()
+		return rf.F.RoadCompatible()
 	} else if ic.it == InfraTypeCanal {
 		return rf.F.Buildable()
 	} else if ic.it == InfraTypeBridge {
