@@ -6,6 +6,8 @@ import (
 	"strconv"
 )
 
+const MaxFieldCornerDiff = 2
+
 type Location struct {
 	X uint16
 	Y uint16

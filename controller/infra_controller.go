@@ -24,6 +24,8 @@ const InfraTypeStoneTower1 = 15
 const InfraTypeStoneTower2 = 16
 const InfraTypeGateNS = 21
 const InfraTypeGateEW = 22
+const InfraTypeLevelForBuilding = 31
+const InfraTypeLevelForRoad = 32
 
 const InfraPanelTop = 100
 
@@ -68,6 +70,10 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 		return true
 	} else if ic.it == InfraTypeGateNS || ic.it == InfraTypeGateEW {
 		return rf.F.Buildable() || c.Map.Shore(rf.F.X, rf.F.Y)
+	} else if ic.it == InfraTypeLevelForBuilding {
+		return navigation.FieldCanBeLeveledForBuilding(*rf.F, c.Map)
+	} else if ic.it == InfraTypeLevelForRoad {
+		return false
 	}
 	return false
 }
@@ -184,6 +190,18 @@ func InfraToControlPanel(cp *ControlPanel) {
 	p.AddButton(InfraBuildButton{
 		b:  gui.ButtonGUI{Icon: "infra/gate_ew", X: float64(50), Y: float64(InfraPanelTop + 90), SX: 32, SY: 32},
 		it: InfraTypeGateEW,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Texture: "infra/dirt_road", X: float64(10), Y: float64(InfraPanelTop + 130), SX: 32, SY: 32},
+		it: InfraTypeLevelForBuilding,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Texture: "infra/dirt_road", X: float64(50), Y: float64(InfraPanelTop + 130), SX: 32, SY: 32},
+		it: InfraTypeLevelForRoad,
 		ic: ic,
 	})
 
