@@ -182,8 +182,8 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 		dir = -1.0
 	}
 
-	f1 := 2.0
-	f2 := 16.0
+	f1 := 3.0
+	f2 := 17.0
 	z := 6.0
 	h1 := 8.0
 	h2 := 12.0
@@ -225,7 +225,7 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	cv.SetLineWidth(1)
 	cv.BeginPath()
 	for i := 0.0; i < 8; i++ {
-		dx0 := math.Cos(math.Pi*2.0*i/8.0)*(h1/2.0) + (f2-f1)/2.0
+		dx0 := math.Cos(math.Pi*2.0*i/8.0)*(h1/2.0) + (f2-f1)/2.0 + f1
 		dy0 := math.Sin(math.Pi*2.0*i/8.0)*(h1/2.0) + h1/2.0
 		cv.LineTo(x+dx0*pm.XX-dy0*pm.XY+z*pm.XZ*dir, y+dx0*pm.YX-dy0*pm.YY+z*pm.YZ*dir)
 	}
