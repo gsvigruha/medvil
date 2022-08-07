@@ -295,4 +295,7 @@ func (t *Traveller) SetHome(home bool) {
 	if home {
 		t.Visible = false
 	}
+	if t.Vehicle != nil {
+		t.Vehicle.SetHome(home)	
+	}
 }

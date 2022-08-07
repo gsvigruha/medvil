@@ -5,13 +5,14 @@ import (
 )
 
 type VehicleType struct {
-	Name  string
-	Water bool
-	Land  bool
+	Name          string
+	Water         bool
+	Land          bool
+	IndoorStorage bool
 }
 
-var Boat = &VehicleType{Name: "boat", Water: true, Land: false}
-var Cart = &VehicleType{Name: "cart", Water: false, Land: true}
+var Boat = &VehicleType{Name: "boat", Water: true, Land: false, IndoorStorage: false}
+var Cart = &VehicleType{Name: "cart", Water: false, Land: true, IndoorStorage: true}
 
 type Vehicle struct {
 	T         *VehicleType
@@ -32,4 +33,13 @@ func (v *Vehicle) GetTraveller() *navigation.Traveller {
 
 func (v *Vehicle) SetInUse(inUse bool) {
 	v.InUse = inUse
+	if v.Traveller != nil && v.T.IndoorStorage {
+		v.Traveller.Visible = inUse
+	}
+}
+
+func (v *Vehicle) SetHome(home bool) {
+	if v.Traveller != nil && v.T.IndoorStorage {
+		v.Traveller.Visible = !home
+	}
 }
