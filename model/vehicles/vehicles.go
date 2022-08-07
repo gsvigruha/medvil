@@ -37,3 +37,9 @@ func (v *Vehicle) SetInUse(inUse bool) {
 		v.Traveller.Visible = inUse
 	}
 }
+
+func (v *Vehicle) SetHome(home bool) {
+	if v.Traveller != nil && v.T.IndoorStorage {
+		v.Traveller.Visible = !home
+	}
+}
