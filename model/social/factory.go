@@ -33,6 +33,12 @@ func (o *VehicleOrder) Name() string {
 
 func (o *VehicleOrder) CompleteBuild(f *navigation.Field) {
 	o.State = OrderStateBuilt
+	var travellerType uint8
+	if o.T.Output == vehicles.Boat {
+		travellerType = navigation.TravellerTypeBoat
+	} else if o.T.Output == vehicles.Cart {
+		travellerType = navigation.TravellerTypeCart
+	}
 	vehicle := &vehicles.Vehicle{T: o.T.Output, Traveller: &navigation.Traveller{
 		FX:      f.X,
 		FY:      f.Y,
@@ -40,7 +46,7 @@ func (o *VehicleOrder) CompleteBuild(f *navigation.Field) {
 		PX:      50,
 		PY:      50,
 		Visible: true,
-		T:       navigation.TravellerTypeBoat,
+		T:       travellerType,
 	}}
 	o.Vehicle = vehicle
 	f.RegisterTraveller(vehicle.Traveller)

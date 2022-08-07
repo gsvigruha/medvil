@@ -66,9 +66,13 @@ func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle
 	var buildingCheckFn = navigation.Field.BuildingNonExtension
 	_, _, sailableMP := GetRandomBuildingXY(mp.Building, m, navigation.Field.Sailable)
 	_, _, sailableH := GetRandomBuildingXY(h.Building, m, navigation.Field.Sailable)
-	if vehicle != nil && sailableMP && sailableH {
-		maxVolume = ExchangeTaskMaxVolumeBoat
-		buildingCheckFn = navigation.Field.Sailable
+	if vehicle != nil {
+		if vehicle.T.Water && sailableMP && sailableH {
+			maxVolume = ExchangeTaskMaxVolumeBoat
+			buildingCheckFn = navigation.Field.Sailable
+		} else if vehicle.T.Land {
+			maxVolume = ExchangeTaskMaxVolumeBoat
+		}
 	}
 
 	mx, my, mok := GetRandomBuildingXY(mp.Building, m, buildingCheckFn)
@@ -319,7 +323,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap) {
-	if h.numBoats() == 0 && h.Building.HasExtension(building.Deck) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
+	if h.numVehicles(vehicles.Boat) == 0 && h.Building.HasExtension(building.Deck) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			ext, hx, hy := h.Building.GetExtensionWithCoords()
@@ -337,10 +341,29 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 	}
 }
 
-func (h *Household) numBoats() int {
+func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap) {
+	if h.numVehicles(vehicles.Cart) == 0 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
+		factory := PickFactory(h.Town.Factories)
+		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
+			hx, hy, _ := GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
+			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
+			if fok {
+				order := factory.CreateOrder(economy.CartConstruction, h)
+				h.AddTask(&economy.FactoryPickupTask{
+					PickupF:  m.GetField(fx, fy),
+					DropoffF: m.GetField(hx, hy),
+					Order:    order,
+					TaskBase: economy.TaskBase{FieldCenter: true},
+				})
+			}
+		}
+	}
+}
+
+func (h *Household) numVehicles(t *vehicles.VehicleType) int {
 	var n = 0
 	for _, v := range h.Vehicles {
-		if v.T == vehicles.Boat {
+		if v.T == t {
 			n++
 		}
 	}

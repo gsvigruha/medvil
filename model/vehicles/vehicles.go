@@ -11,6 +11,7 @@ type VehicleType struct {
 }
 
 var Boat = &VehicleType{Name: "boat", Water: true, Land: false}
+var Cart = &VehicleType{Name: "cart", Water: false, Land: true}
 
 type Vehicle struct {
 	T         *VehicleType

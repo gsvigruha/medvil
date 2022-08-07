@@ -13,6 +13,7 @@ const MaxStuckCntr = 5
 
 const TravellerTypePedestrian uint8 = 0
 const TravellerTypeBoat uint8 = 1
+const TravellerTypeCart uint8 = 2
 
 const RoadBreakdownRate = 0.0001
 

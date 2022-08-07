@@ -24,14 +24,24 @@ var BoatConstruction = &VehicleConstruction{
 	Output:                vehicles.Boat,
 }
 
+var CartConstruction = &VehicleConstruction{
+	Name:                  "cart",
+	Time:                  30 * 24,
+	Power:                 1000,
+	BuildingExtensionType: nil,
+	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
+	Output:                vehicles.Cart,
+}
+
 var AllVehicleConstruction = [...]*VehicleConstruction{
 	BoatConstruction,
+	CartConstruction,
 }
 
 func GetVehicleConstructions(be *building.BuildingExtension) []*VehicleConstruction {
 	result := make([]*VehicleConstruction, 0, len(AllVehicleConstruction))
 	for _, m := range AllVehicleConstruction {
-		if (be == nil && m.BuildingExtensionType == nil) || (be != nil && be.T == m.BuildingExtensionType) {
+		if m.BuildingExtensionType == nil || (be != nil && be.T == m.BuildingExtensionType) {
 			result = append(result, m)
 		}
 	}
