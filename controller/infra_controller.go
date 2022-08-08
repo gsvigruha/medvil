@@ -112,6 +112,10 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionN)
 		} else if ic.it == InfraTypeGateEW {
 			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionE)
+		} else if ic.it == InfraTypeLevelForBuilding {
+			c.Map.LeveledFieldForBuilding(c.ActiveTown, rf.F.X, rf.F.Y)
+		} else if ic.it == InfraTypeLevelForRoad {
+			//
 		}
 	}
 	return true
