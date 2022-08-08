@@ -73,7 +73,7 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 	} else if ic.it == InfraTypeLevelForBuilding {
 		return navigation.FieldCanBeLeveledForBuilding(*rf.F, c.Map)
 	} else if ic.it == InfraTypeLevelForRoad {
-		return false
+		return navigation.FieldCanBeLeveledForRoad(*rf.F, c.Map)
 	}
 	return false
 }
@@ -115,7 +115,7 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 		} else if ic.it == InfraTypeLevelForBuilding {
 			c.Map.LeveledFieldForBuilding(c.ActiveTown, rf.F.X, rf.F.Y)
 		} else if ic.it == InfraTypeLevelForRoad {
-			//
+			c.Map.LeveledFieldForRoad(c.ActiveTown, rf.F.X, rf.F.Y)
 		}
 	}
 	return true

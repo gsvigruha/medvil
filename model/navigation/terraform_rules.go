@@ -110,7 +110,7 @@ func setElevationForCorner(f *Field, dir uint8, newH uint8, m IMap) {
 	}
 }
 
-func LeveledFieldForBuilding(f *Field, m IMap) bool {
+func LevelFieldForBuilding(f *Field, m IMap) bool {
 	if FieldCanBeLeveledForBuilding(*f, m) {
 		avgH := uint8(averageHeight(*f))
 		setElevationForCorner(f, 0, avgH, m)
@@ -120,4 +120,25 @@ func LeveledFieldForBuilding(f *Field, m IMap) bool {
 		return true
 	}
 	return false
+}
+
+func checkEdge(f Field, dir uint8, m IMap) bool {
+	return true
+}
+
+func FieldCanBeLeveledForRoad(f Field, m IMap) bool {
+	if !f.Empty() {
+		return false
+	}
+	if !f.Terrain.T.Buildable {
+		return false
+	}
+	return (checkEdge(f, 0, m) &&
+		checkEdge(f, 1, m) &&
+		checkEdge(f, 2, m) &&
+		checkEdge(f, 3, m))
+}
+
+func LevelFieldForRoad(f *Field, m IMap) bool {
+	return true
 }
