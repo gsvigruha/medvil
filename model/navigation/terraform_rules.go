@@ -123,7 +123,18 @@ func LevelFieldForBuilding(f *Field, m IMap) bool {
 }
 
 func checkEdge(f Field, dir uint8, m IMap) bool {
-	return true
+	e1 := getElevation(f, dir)
+	e2 := getElevation(f, (dir+1)%4)
+	if e1 != e2 {
+		return false
+	}
+	e3 := getElevation(f, (dir+2)%4)
+	e4 := getElevation(f, (dir+3)%4)
+	if e3 == e4 {
+		return true
+	}
+	newH := int(math.Round((float64(e3)+float64(e4))/2.0 - 0.01))
+	return checkCorner(f, (dir+2)%4, newH, m) && checkCorner(f, (dir+3)%4, newH, m)
 }
 
 func FieldCanBeLeveledForRoad(f Field, m IMap) bool {
@@ -133,12 +144,26 @@ func FieldCanBeLeveledForRoad(f Field, m IMap) bool {
 	if !f.Terrain.T.Buildable {
 		return false
 	}
-	return (checkEdge(f, 0, m) &&
-		checkEdge(f, 1, m) &&
-		checkEdge(f, 2, m) &&
-		checkEdge(f, 3, m))
+	for dir := uint8(0); dir < 4; dir++ {
+		if checkEdge(f, dir, m) {
+			return true
+		}
+	}
+	return false
 }
 
 func LevelFieldForRoad(f *Field, m IMap) bool {
-	return true
+	if FieldCanBeLeveledForRoad(*f, m) {
+		for dir := uint8(0); dir < 4; dir++ {
+			if checkEdge(*f, dir, m) {
+				e3 := getElevation(*f, (dir+2)%4)
+				e4 := getElevation(*f, (dir+3)%4)
+				newH := uint8(math.Round((float64(e3)+float64(e4))/2.0 - 0.01))
+				setElevationForCorner(f, (dir+2)%4, uint8(newH), m)
+				setElevationForCorner(f, (dir+3)%4, uint8(newH), m)
+				return true
+			}
+		}
+	}
+	return false
 }
