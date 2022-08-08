@@ -110,7 +110,12 @@ func (m *Map) AddInfraConstruction(town *social.Town, x, y uint16, it *building.
 }
 
 func (m *Map) LeveledFieldForBuilding(town *social.Town, x, y uint16) bool {
-	navigation.LeveledFieldForBuilding(m.GetField(x, y), m)
+	navigation.LevelFieldForBuilding(m.GetField(x, y), m)
+	return true
+}
+
+func (m *Map) LeveledFieldForRoad(town *social.Town, x, y uint16) bool {
+	navigation.LevelFieldForRoad(m.GetField(x, y), m)
 	return true
 }
 
