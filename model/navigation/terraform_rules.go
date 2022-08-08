@@ -1,5 +1,9 @@
 package navigation
 
+import (
+	"math"
+)
+
 func abs(x int) int {
 	if x < 0 {
 		return -x
@@ -63,6 +67,10 @@ func checkCorner(f Field, dir uint8, newH int, m IMap) bool {
 	return true
 }
 
+func averageHeight(f Field) int {
+	return int(math.Round((float64(f.NE)+float64(f.NW)+float64(f.SE)+float64(f.SW))/4.0 - 0.01))
+}
+
 func FieldCanBeLeveledForBuilding(f Field, m IMap) bool {
 	if !f.Empty() {
 		return false
@@ -70,7 +78,7 @@ func FieldCanBeLeveledForBuilding(f Field, m IMap) bool {
 	if !f.Terrain.T.Buildable {
 		return false
 	}
-	avgH := (int(f.NE) + int(f.NW) + int(f.SE) + int(f.SW)) / 4
+	avgH := averageHeight(f)
 	return (checkCorner(f, 0, avgH, m) &&
 		checkCorner(f, 1, avgH, m) &&
 		checkCorner(f, 2, avgH, m) &&
@@ -104,7 +112,7 @@ func setElevationForCorner(f *Field, dir uint8, newH uint8, m IMap) {
 
 func LeveledFieldForBuilding(f *Field, m IMap) bool {
 	if FieldCanBeLeveledForBuilding(*f, m) {
-		avgH := uint8((int(f.NE) + int(f.NW) + int(f.SE) + int(f.SW)) / 4)
+		avgH := uint8(averageHeight(*f))
 		setElevationForCorner(f, 0, avgH, m)
 		setElevationForCorner(f, 1, avgH, m)
 		setElevationForCorner(f, 2, avgH, m)
