@@ -60,5 +60,5 @@ func (t *TerraformTask) Expired(Calendar *time.CalendarType) bool {
 }
 
 func (t *TerraformTask) Motion() uint8 {
-	return navigation.MotionStand
+	return navigation.MotionFieldWork
 }

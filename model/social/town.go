@@ -265,11 +265,13 @@ func (town *Town) CreateInfraConstruction(x, y uint16, it *building.InfraType, m
 
 func (town *Town) CreateLevelingTask(f *navigation.Field, taskType uint8, m navigation.IMap) {
 	f.Construction = true
-	town.Townhall.Household.AddTask(&economy.TerraformTask{
-		F: f,
-		M: m,
-		T: taskType,
-	})
+	if town.Townhall.Household.NumTasks("terraform", economy.TerraformTaskTag(f)) == 0 {
+		town.Townhall.Household.AddTask(&economy.TerraformTask{
+			F: f,
+			M: m,
+			T: taskType,
+		})
+	}
 }
 
 func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navigation.Field, m navigation.IMap) {
