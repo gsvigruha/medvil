@@ -198,13 +198,13 @@ func InfraToControlPanel(cp *ControlPanel) {
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Texture: "infra/dirt_road", X: float64(10), Y: float64(InfraPanelTop + 130), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/terraform", X: float64(10), Y: float64(InfraPanelTop + 130), SX: 32, SY: 32},
 		it: InfraTypeLevelForBuilding,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Texture: "infra/dirt_road", X: float64(50), Y: float64(InfraPanelTop + 130), SX: 32, SY: 32},
+		b:  gui.ButtonGUI{Icon: "infra/terraform", X: float64(50), Y: float64(InfraPanelTop + 130), SX: 32, SY: 32},
 		it: InfraTypeLevelForRoad,
 		ic: ic,
 	})

@@ -81,6 +81,7 @@ func FieldCanBeLeveledForBuilding(f Field, m IMap) bool {
 		return false
 	}
 	if f.NE == f.NW && f.NE == f.SE && f.NE == f.SW {
+		// No need to level, already suitable for buildings
 		return false
 	}
 	avgH := averageHeight(f)
