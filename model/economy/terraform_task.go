@@ -34,6 +34,7 @@ func (t *TerraformTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		case TerraformTaskTypeLevelForRoad:
 			navigation.LevelFieldForRoad(t.F, t.M)
 		}
+		t.F.Construction = false
 		return true
 	}
 }
