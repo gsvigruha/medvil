@@ -80,6 +80,9 @@ func FieldCanBeLeveledForBuilding(f Field, m IMap) bool {
 	if !f.Terrain.T.Buildable {
 		return false
 	}
+	if f.NE == f.NW && f.NE == f.SE && f.NE == f.SW {
+		return false
+	}
 	avgH := averageHeight(f)
 	return (checkCorner(f, 0, avgH, m) &&
 		checkCorner(f, 1, avgH, m) &&
@@ -128,12 +131,14 @@ func checkEdge(f Field, dir uint8, m IMap) bool {
 	e1 := getElevation(f, dir)
 	e2 := getElevation(f, (dir+1)%4)
 	if e1 != e2 {
+		// Cannot level, edge being checked is uneven
 		return false
 	}
 	e3 := getElevation(f, (dir+2)%4)
 	e4 := getElevation(f, (dir+3)%4)
 	if e3 == e4 {
-		return true
+		// Unnecessary to level, the field is already good for road building
+		return false
 	}
 	newH := int(math.Round((float64(e3)+float64(e4))/2.0 - 0.01))
 	return checkCorner(f, (dir+2)%4, newH, m) && checkCorner(f, (dir+3)%4, newH, m)
