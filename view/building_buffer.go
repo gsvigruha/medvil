@@ -11,7 +11,7 @@ import (
 )
 
 var BuildingBufferW = DX * 2
-var BuildingBufferH = DY*2 + DZ*BuildingUnitHeight
+var BuildingBufferH = DY*3 + DZ*BuildingUnitHeight
 var BuildingExtensionBufferH = 200.0
 
 type BuildingImageCache struct {
@@ -28,7 +28,7 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 	c *controller.Controller) (*canvas.Canvas, renderer.RenderedBuildingRoof, float64, float64) {
 
 	t := time.Now().UnixNano()
-	key := roof.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
+	key := roof.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.F.CacheKey()
 	z := float64((numUnits+1)*BuildingUnitHeight) * DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
@@ -56,7 +56,7 @@ func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
 	c *controller.Controller) (*canvas.Canvas, renderer.RenderedBuildingUnit, float64, float64) {
 
 	t := time.Now().UnixNano()
-	key := unit.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
+	key := unit.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.F.CacheKey()
 	z := float64((numUnits+1)*BuildingUnitHeight) * DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
