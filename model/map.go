@@ -149,6 +149,9 @@ func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, bt building.Buildin
 		return (m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+1)%4) ||
 			m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+3)%4))
 	}
+	if bt == building.BuildingTypeWall {
+		return f.RoadCompatible()
+	}
 	return f.Buildable()
 }
 

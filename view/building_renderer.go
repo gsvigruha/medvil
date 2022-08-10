@@ -112,11 +112,13 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 			}
 		}
-		z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 
+		z := float64(k*BuildingUnitHeight) * DZ
 		rw := renderer.RenderedWall{
-			X:    [4]float64{rf.X[rfIdx1], rf.X[rfIdx1], rf.X[rfIdx2], rf.X[rfIdx2]},
-			Y:    [4]float64{rf.Y[rfIdx1] - z, rf.Y[rfIdx1] - z - BuildingUnitHeight*DZ, rf.Y[rfIdx2] - z - BuildingUnitHeight*DZ, rf.Y[rfIdx2] - z},
+			X: [4]float64{rf.X[rfIdx1], rf.X[rfIdx1], rf.X[rfIdx2], rf.X[rfIdx2]},
+			Y: [4]float64{
+				rf.Y[rfIdx1] - rf.Z[rfIdx1] - z, rf.Y[rfIdx1] - rf.Z[rfIdx1] - z - BuildingUnitHeight*DZ,
+				rf.Y[rfIdx2] - rf.Z[rfIdx2] - z - BuildingUnitHeight*DZ, rf.Y[rfIdx2] - rf.Z[rfIdx2] - z},
 			Wall: wall,
 		}
 		rws = append(rws, rw)
@@ -144,6 +146,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			cv.Fill()
 			cv.Stroke()
 
+			z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 			if wall.Windows && !unit.Construction {
 				cv.SetFillStyle("texture/building/glass_2.png")
 				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
@@ -207,8 +210,8 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 	}
 	var roofPolygons []renderer.Polygon
 	startL := 2 + c.Perspective
-	z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 	if roof.Roof.RoofType == building.RoofTypeSplit {
+		z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 		midX := (rf.X[0] + rf.X[2]) / 2
 		midY := (rf.Y[0] + rf.Y[2]) / 2
 
@@ -274,12 +277,13 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			}
 		}
 	} else if roof.Roof.RoofType == building.RoofTypeFlat {
+		z := float64(k*BuildingUnitHeight) * DZ
 		if !roof.Construction {
 			rp1 := renderer.Polygon{Points: []renderer.Point{
-				renderer.Point{X: rf.X[0], Y: rf.Y[0] - z},
-				renderer.Point{X: rf.X[1], Y: rf.Y[1] - z},
-				renderer.Point{X: rf.X[2], Y: rf.Y[2] - z},
-				renderer.Point{X: rf.X[3], Y: rf.Y[3] - z},
+				renderer.Point{X: rf.X[0], Y: rf.Y[0] - rf.Z[0] - z},
+				renderer.Point{X: rf.X[1], Y: rf.Y[1] - rf.Z[1] - z},
+				renderer.Point{X: rf.X[2], Y: rf.Y[2] - rf.Z[2] - z},
+				renderer.Point{X: rf.X[3], Y: rf.Y[3] - rf.Z[3] - z},
 			}}
 			roofPolygons = append(roofPolygons, rp1)
 			if cv != nil {
@@ -288,6 +292,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			}
 		}
 	} else if roof.Roof.RoofType == building.RoofTypeRamp {
+		z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 		for l := uint8(startL); l < 4+startL; l++ {
 			rfIdx1 := (3 - (-c.Perspective + l)) % 4
 			rfIdx2 := (2 - (-c.Perspective + l)) % 4
