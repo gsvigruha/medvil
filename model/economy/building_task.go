@@ -53,7 +53,7 @@ func (t *BuildingTask) Tag() string {
 }
 
 func BuildingTaskTag(f *navigation.Field) string {
-	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.X))
+	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y))
 }
 
 func (t *BuildingTask) Expired(Calendar *time.CalendarType) bool {

@@ -52,7 +52,7 @@ func (t *TerraformTask) Tag() string {
 }
 
 func TerraformTaskTag(f *navigation.Field) string {
-	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.X))
+	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y))
 }
 
 func (t *TerraformTask) Expired(Calendar *time.CalendarType) bool {

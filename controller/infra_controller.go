@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/model/building"
+	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/renderer"
 	"medvil/view/gui"
@@ -113,9 +114,9 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 		} else if ic.it == InfraTypeGateEW {
 			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionE)
 		} else if ic.it == InfraTypeLevelForBuilding {
-			c.Map.LeveledFieldForBuilding(c.ActiveTown, rf.F.X, rf.F.Y)
+			c.Map.AddLevelingTask(c.ActiveTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForBuilding)
 		} else if ic.it == InfraTypeLevelForRoad {
-			c.Map.LeveledFieldForRoad(c.ActiveTown, rf.F.X, rf.F.Y)
+			c.Map.AddLevelingTask(c.ActiveTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
 		}
 	}
 	return true

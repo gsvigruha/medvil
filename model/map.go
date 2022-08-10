@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
-	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/model/terrain"
@@ -110,13 +109,8 @@ func (m *Map) AddInfraConstruction(town *social.Town, x, y uint16, it *building.
 	return true
 }
 
-func (m *Map) LeveledFieldForBuilding(town *social.Town, x, y uint16) bool {
-	town.CreateLevelingTask(m.GetField(x, y), economy.TerraformTaskTypeLevelForBuilding, m)
-	return true
-}
-
-func (m *Map) LeveledFieldForRoad(town *social.Town, x, y uint16) bool {
-	town.CreateLevelingTask(m.GetField(x, y), economy.TerraformTaskTypeLevelForRoad, m)
+func (m *Map) AddLevelingTask(town *social.Town, x, y uint16, taskType uint8) bool {
+	town.CreateLevelingTask(m.GetField(x, y), taskType, m)
 	return true
 }
 
