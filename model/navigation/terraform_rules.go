@@ -4,6 +4,8 @@ import (
 	"math"
 )
 
+const MaxTerraformFieldCornerDiff = 2
+
 func abs(x int) int {
 	if x < 0 {
 		return -x
@@ -40,20 +42,20 @@ func checkCorner(f Field, dir uint8, newH int, m IMap) bool {
 	if c == newH {
 		return true
 	}
-	if abs(newH-getElevation(f, (dir+1)%4)) > MaxFieldCornerDiff || abs(newH-getElevation(f, (dir+3)%4)) > MaxFieldCornerDiff {
+	if abs(newH-getElevation(f, (dir+1)%4)) > MaxTerraformFieldCornerDiff || abs(newH-getElevation(f, (dir+3)%4)) > MaxTerraformFieldCornerDiff {
 		return false
 	}
 	{
 		d1 := DirectionOrthogonalXY[dir]
 		f1 := m.GetField(uint16(int(f.X)+d1[0]), uint16(int(f.Y)+d1[1]))
-		if f1 != nil && (!f1.Empty() || abs(newH-getElevation(*f1, (dir+1)%4)) > MaxFieldCornerDiff) {
+		if f1 != nil && (!f1.Empty() || abs(newH-getElevation(*f1, (dir+1)%4)) > MaxTerraformFieldCornerDiff) {
 			return false
 		}
 	}
 	{
 		d2 := DirectionOrthogonalXY[(dir+1)%4]
 		f2 := m.GetField(uint16(int(f.X)+d2[0]), uint16(int(f.Y)+d2[1]))
-		if f2 != nil && (!f2.Empty() || abs(newH-getElevation(*f2, (dir+3)%4)) > MaxFieldCornerDiff) {
+		if f2 != nil && (!f2.Empty() || abs(newH-getElevation(*f2, (dir+3)%4)) > MaxTerraformFieldCornerDiff) {
 			return false
 		}
 	}
@@ -76,6 +78,10 @@ func FieldCanBeLeveledForBuilding(f Field, m IMap) bool {
 		return false
 	}
 	if !f.Terrain.T.Buildable {
+		return false
+	}
+	if f.NE == f.NW && f.NE == f.SE && f.NE == f.SW {
+		// No need to level, already suitable for buildings
 		return false
 	}
 	avgH := averageHeight(f)
@@ -126,12 +132,14 @@ func checkEdge(f Field, dir uint8, m IMap) bool {
 	e1 := getElevation(f, dir)
 	e2 := getElevation(f, (dir+1)%4)
 	if e1 != e2 {
+		// Cannot level, edge being checked is uneven
 		return false
 	}
 	e3 := getElevation(f, (dir+2)%4)
 	e4 := getElevation(f, (dir+3)%4)
 	if e3 == e4 {
-		return true
+		// Unnecessary to level, the field is already good for road building
+		return false
 	}
 	newH := int(math.Round((float64(e3)+float64(e4))/2.0 - 0.01))
 	return checkCorner(f, (dir+2)%4, newH, m) && checkCorner(f, (dir+3)%4, newH, m)
