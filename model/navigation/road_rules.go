@@ -26,6 +26,10 @@ func RampPossible(m IMap, x, y, x2, y2 uint16) bool {
 	return false
 }
 
+func IsRampPossible(m IMap, x, y uint16) bool {
+	return GetRampDirection(m, x, y) != DirectionNone
+}
+
 func GetRampDirection(m IMap, x, y uint16) uint8 {
 	if RampPossible(m, x, y, x, y-1) {
 		return building.DirectionN
@@ -37,10 +41,6 @@ func GetRampDirection(m IMap, x, y uint16) uint8 {
 		return building.DirectionW
 	}
 	return DirectionNone
-}
-
-func IsRampPossible(m IMap, x, y uint16) bool {
-	return GetRampDirection(m, x, y) != DirectionNone
 }
 
 func SetRoadConnectionsForNeighbors(m IMap, f *Field) {
@@ -117,8 +117,8 @@ func SetWallConnections(m IMap, f *Field) {
 					if unit, ok := f.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
 						unit.Walls[i].Door = true
 					}
-				} else if f.Building.GetBuilding().Plan.BuildingType != building.BuildingTypeWall {
-					if i == f.Building.GetBuilding().Direction {
+				} else if f.Building.GetBuilding().Plan.BuildingType != building.BuildingTypeWall && f.Building.GetBuilding().Plan.BuildingType != building.BuildingTypeGate {
+					if f.Building.GetBuilding().Direction == i {
 						if unit, ok := f.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
 							unit.Walls[i].Door = true
 						}
