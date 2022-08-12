@@ -3,7 +3,9 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
+	"medvil/model/navigation"
 	"medvil/model/social"
+	"medvil/renderer"
 	"medvil/view/gui"
 	"strconv"
 )
@@ -74,6 +76,7 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	}
 
 	cp.SetDynamicPanel(tc)
+	cp.C.ClickHandler = tc
 }
 
 func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *artifacts.Artifact, q uint16, top float64) {
@@ -103,4 +106,25 @@ func (tc *TownhallController) Refresh() {
 	if tc.subPanel != nil {
 		tc.householdPanel.AddPanel(tc.subPanel)
 	}
+}
+
+func (tc *TownhallController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
+	return tc.th.GetFields()
+}
+
+func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+	for i := range tc.th.Household.Town.Roads {
+		r := tc.th.Household.Town.Roads[i]
+		if r.X == rf.F.X && r.Y == rf.F.Y {
+			r.Allocated = false
+			tc.th.Household.Town.Roads = append(tc.th.Household.Town.Roads[:i], tc.th.Household.Town.Roads[i+1:]...)
+			return true
+		}
+	}
+	if !rf.F.Allocated && rf.F.Road != nil {
+		tc.th.Household.Town.Roads = append(tc.th.Household.Town.Roads, rf.F)
+		rf.F.Allocated = true
+		return true
+	}
+	return false
 }

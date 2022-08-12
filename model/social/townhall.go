@@ -51,3 +51,11 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 }
+
+func (t *Townhall) GetFields() []navigation.FieldWithContext {
+	fields := make([]navigation.FieldWithContext, len(t.Household.Town.Roads))
+	for i := range t.Household.Town.Roads {
+		fields[i] = t.Household.Town.Roads[i]
+	}
+	return fields
+}
