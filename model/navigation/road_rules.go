@@ -26,6 +26,10 @@ func RampPossible(m IMap, x, y, x2, y2 uint16) bool {
 	return false
 }
 
+func IsRampPossible(m IMap, x, y uint16) bool {
+	return GetRampDirection(m, x, y) != DirectionNone
+}
+
 func GetRampDirection(m IMap, x, y uint16) uint8 {
 	if RampPossible(m, x, y, x, y-1) {
 		return building.DirectionN
@@ -64,10 +68,11 @@ func SetRoadConnections(m IMap, f *Field) {
 			if !of.Building.Empty() && f.Terrain.T != terrain.Water {
 				f.Road.EdgeConnections[i] = true
 				b := of.Building.GetBuilding()
-				if b.Plan.BuildingType != building.BuildingTypeWall && b.Plan.BuildingType != building.BuildingTypeGate && of.X == b.X && of.Y == b.Y {
+				if b.Plan.BuildingType != building.BuildingTypeWall && b.Plan.BuildingType != building.BuildingTypeGate {
 					if unit, ok := of.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
-						if !unit.HasDoor() {
-							unit.Walls[building.OppDir(i)].Door = true
+						i2 := building.OppDir(i)
+						if (unit.Walls[(i2+1)%4] == nil || !unit.Walls[(i2+1)%4].Door) && (unit.Walls[(i2+3)%4] == nil || !unit.Walls[(i2+3)%4].Door) {
+							unit.Walls[i2].Door = true
 						}
 					}
 				}
@@ -112,6 +117,12 @@ func SetWallConnections(m IMap, f *Field) {
 				if f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeTower {
 					if unit, ok := f.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
 						unit.Walls[i].Door = true
+					}
+				} else if f.Building.GetBuilding().Plan.BuildingType != building.BuildingTypeWall && f.Building.GetBuilding().Plan.BuildingType != building.BuildingTypeGate {
+					if f.Building.GetBuilding().Direction == i {
+						if unit, ok := f.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
+							unit.Walls[i].Door = true
+						}
 					}
 				}
 			} else {
