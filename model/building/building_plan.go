@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/materials"
 	"os"
@@ -17,6 +18,10 @@ const DirectionE uint8 = 1
 const DirectionS uint8 = 2
 const DirectionW uint8 = 3
 const DirectionNone uint8 = 255
+
+func RandomBuildingDir() uint8 {
+	return uint8(rand.Intn(4))
+}
 
 func OppDir(dir uint8) uint8 {
 	return uint8((dir + 2) % 4)
