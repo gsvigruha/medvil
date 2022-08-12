@@ -113,5 +113,18 @@ func (tc *TownhallController) GetActiveFields(c *Controller, rf *renderer.Render
 }
 
 func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+	for i := range tc.th.Household.Town.Roads {
+		r := tc.th.Household.Town.Roads[i]
+		if r.X == rf.F.X && r.Y == rf.F.Y {
+			r.Allocated = false
+			tc.th.Household.Town.Roads = append(tc.th.Household.Town.Roads[:i], tc.th.Household.Town.Roads[i+1:]...)
+			return true
+		}
+	}
+	if !rf.F.Allocated && rf.F.Road != nil {
+		tc.th.Household.Town.Roads = append(tc.th.Household.Town.Roads, rf.F)
+		rf.F.Allocated = true
+		return true
+	}
 	return false
 }
