@@ -69,8 +69,10 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 		return rf.F.Buildable()
 	} else if ic.it == InfraTypeStoneWallRamp {
 		return navigation.IsRampPossible(c.Map, rf.F.X, rf.F.Y)
-	} else if ic.it == InfraTypeGateNS || ic.it == InfraTypeGateEW {
-		return rf.F.Buildable() || c.Map.Shore(rf.F.X, rf.F.Y)
+	} else if ic.it == InfraTypeGateNS {
+		return c.Map.IsBuildingPossible(rf.F.X, rf.F.Y, building.SmallGate, building.DirectionN)
+	} else if ic.it == InfraTypeGateEW {
+		return c.Map.IsBuildingPossible(rf.F.X, rf.F.Y, building.SmallGate, building.DirectionE)
 	} else if ic.it == InfraTypeLevelForBuilding {
 		return navigation.FieldCanBeLeveledForBuilding(*rf.F, c.Map)
 	} else if ic.it == InfraTypeLevelForRoad {
