@@ -46,7 +46,7 @@ func GetRampDirection(m IMap, x, y uint16) uint8 {
 func SetRoadConnectionsForNeighbors(m IMap, f *Field) {
 	for i := 0; i < 8; i++ {
 		d := DirectionAllXY[i]
-		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		of := m.GetNField(f.X, d[0], f.Y, d[1])
 		if of != nil && of.Road != nil {
 			SetRoadConnections(m, of)
 		}
@@ -56,7 +56,7 @@ func SetRoadConnectionsForNeighbors(m IMap, f *Field) {
 func SetRoadConnections(m IMap, f *Field) {
 	for i := uint8(0); i < 4; i++ {
 		d := DirectionOrthogonalXY[i]
-		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		of := m.GetNField(f.X, d[0], f.Y, d[1])
 		if of != nil {
 			if of.Road != nil {
 				f.Road.EdgeConnections[i] = true
@@ -111,7 +111,7 @@ func setWallConnectionsForFields(f *Field, of *Field, dir uint8) {
 func SetWallConnections(m IMap, f *Field) {
 	for i := uint8(0); i < 4; i++ {
 		d := DirectionOrthogonalXY[i]
-		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		of := m.GetNField(f.X, d[0], f.Y, d[1])
 		if of != nil {
 			if of.Building.Empty() {
 				if f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeTower {
@@ -153,7 +153,7 @@ func SetBuildingDeck(m IMap, f *Field, of *Field) {
 func SetBuildingDeckForNeighbors(m IMap, f *Field) {
 	for i := 0; i < 4; i++ {
 		d := DirectionOrthogonalXY[i]
-		of := m.GetField(uint16(int(f.X)+d[0]), uint16(int(f.Y)+d[1]))
+		of := m.GetNField(f.X, d[0], f.Y, d[1])
 		if f != nil && f.Terrain.T == terrain.Water && of != nil && of.Building.GetBuilding() != nil {
 			SetBuildingDeck(m, f, of)
 		}

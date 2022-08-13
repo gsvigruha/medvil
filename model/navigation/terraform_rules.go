@@ -47,21 +47,21 @@ func checkCorner(f Field, dir uint8, newH int, m IMap) bool {
 	}
 	{
 		d1 := DirectionOrthogonalXY[dir]
-		f1 := m.GetField(uint16(int(f.X)+d1[0]), uint16(int(f.Y)+d1[1]))
+		f1 := m.GetNField(f.X, d1[0], f.Y, d1[1])
 		if f1 != nil && (!f1.Empty() || abs(newH-getElevation(*f1, (dir+1)%4)) > MaxTerraformFieldCornerDiff) {
 			return false
 		}
 	}
 	{
 		d2 := DirectionOrthogonalXY[(dir+1)%4]
-		f2 := m.GetField(uint16(int(f.X)+d2[0]), uint16(int(f.Y)+d2[1]))
+		f2 := m.GetNField(f.X, d2[0], f.Y, d2[1])
 		if f2 != nil && (!f2.Empty() || abs(newH-getElevation(*f2, (dir+3)%4)) > MaxTerraformFieldCornerDiff) {
 			return false
 		}
 	}
 	{
 		d3 := DirectionDiagonalXY[dir]
-		f3 := m.GetField(uint16(int(f.X)+d3[0]), uint16(int(f.Y)+d3[1]))
+		f3 := m.GetNField(f.X, d3[0], f.Y, d3[1])
 		if f3 != nil && !f3.Empty() {
 			return false
 		}
@@ -95,21 +95,21 @@ func setElevationForCorner(f *Field, dir uint8, newH uint8, m IMap) {
 	setElevation(f, dir, newH)
 	{
 		d1 := DirectionDiagonalXY[dir]
-		f1 := m.GetField(uint16(int(f.X)+d1[0]), uint16(int(f.Y)+d1[1]))
+		f1 := m.GetNField(f.X, d1[0], f.Y, d1[1])
 		if f1 != nil {
 			setElevation(f1, (dir+2)%4, newH)
 		}
 	}
 	{
 		d2 := DirectionOrthogonalXY[dir]
-		f2 := m.GetField(uint16(int(f.X)+d2[0]), uint16(int(f.Y)+d2[1]))
+		f2 := m.GetNField(f.X, d2[0], f.Y, d2[1])
 		if f2 != nil {
 			setElevation(f2, (dir+1)%4, newH)
 		}
 	}
 	{
 		d3 := DirectionOrthogonalXY[(dir+1)%4]
-		f3 := m.GetField(uint16(int(f.X)+d3[0]), uint16(int(f.Y)+d3[1]))
+		f3 := m.GetNField(f.X, d3[0], f.Y, d3[1])
 		if f3 != nil {
 			setElevation(f3, (dir+3)%4, newH)
 		}

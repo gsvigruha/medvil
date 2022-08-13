@@ -75,6 +75,10 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 	}
 }
 
+func (m *Map) GetNField(x uint16, dx int, y uint16, dy int) *navigation.Field {
+	return m.GetField(uint16(int(x)+dx), uint16(int(y)+dy))
+}
+
 func (m *Map) GetField(x uint16, y uint16) *navigation.Field {
 	if x >= m.SX || y >= m.SY {
 		return nil
@@ -224,7 +228,7 @@ func (m *Map) FindDest(start navigation.Location, dest navigation.Destination, t
 
 func (m *Map) HasNeighborFieldInDirection(x, y uint16, t terrain.TerrainType, direction uint8) bool {
 	d := navigation.DirectionOrthogonalXY[direction]
-	if m.GetField(x+uint16(d[0]), y+uint16(d[1])) != nil && m.GetField(x+uint16(d[0]), y+uint16(d[1])).Terrain.T == t {
+	if m.GetNField(x, d[0], y, d[1]) != nil && m.GetNField(x, d[0], y, d[1]).Terrain.T == t {
 		return true
 	}
 	return false
@@ -232,7 +236,7 @@ func (m *Map) HasNeighborFieldInDirection(x, y uint16, t terrain.TerrainType, di
 
 func (m *Map) HasNeighborBuildingInDirection(x, y uint16, direction uint8) bool {
 	d := navigation.DirectionOrthogonalXY[direction]
-	if m.GetField(x+uint16(d[0]), y+uint16(d[1])) != nil && !m.GetField(x+uint16(d[0]), y+uint16(d[1])).Building.Empty() {
+	if m.GetNField(x, d[0], y, d[1]) != nil && !m.GetNField(x, d[0], y, d[1]).Building.Empty() {
 		return true
 	}
 	return false
