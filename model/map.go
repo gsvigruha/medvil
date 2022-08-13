@@ -202,7 +202,7 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction b
 	if m.GetBuildingBaseFields(x, y, bp, direction) == nil {
 		return nil
 	}
-	b := &building.Building{X: x, Y: y, Plan: *bp, Shape: uint8(rand.Intn(building.NumShapes)), Direction: direction}
+	b := &building.Building{X: x, Y: y, Plan: *bp, Shape: building.GetShape(bp.BuildingType, x, y), Direction: direction}
 	m.SetBuildingUnits(b, construction)
 	return b
 }

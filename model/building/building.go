@@ -5,8 +5,6 @@ import (
 	"math/rand"
 )
 
-const NumShapes = 5
-
 type Building struct {
 	Plan      BuildingPlan
 	X         uint16
