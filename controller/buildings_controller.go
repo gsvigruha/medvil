@@ -22,16 +22,17 @@ const DY = 16
 const DZ = 12
 
 type BuildingsController struct {
-	PlanName   string
-	Plan       *building.BuildingPlan
-	RoofM      *materials.Material
-	UnitM      *materials.Material
-	ExtensionT *building.BuildingExtensionType
-	Direction  uint8
-	bt         building.BuildingType
-	p          *gui.Panel
-	activeTown *social.Town
-	del        bool
+	PlanName    string
+	Plan        *building.BuildingPlan
+	RoofM       *materials.Material
+	UnitM       *materials.Material
+	ExtensionT  *building.BuildingExtensionType
+	Direction   uint8
+	Perspective *uint8
+	bt          building.BuildingType
+	p           *gui.Panel
+	activeTown  *social.Town
+	del         bool
 }
 
 type BuildingBaseButton struct {
@@ -327,14 +328,27 @@ func (bc *BuildingsController) GenerateButtons() {
 	}
 
 	bc.p.AddButton(RotationButton{
-		b:  &gui.ButtonGUI{Icon: "building/dir_0", X: 130, Y: float64(RoofPanelTop), SX: 32, SY: 32},
+		b:  &gui.ButtonGUI{Icon: "building/dir_" + strconv.Itoa(int(bc.Direction)), X: 130, Y: float64(RoofPanelTop), SX: 32, SY: 32},
 		bc: bc,
 	})
 
-	for i := 0; i < building.BuildingBaseMaxSize; i++ {
-		for j := 0; j < building.BuildingBaseMaxSize; j++ {
-			x := float64(120 + i*DX - j*DX + 10)
-			y := float64(j*DY + i*DY + BuildingBasePanelTop)
+	m := building.BuildingBaseMaxSize
+	for i := 0; i < m; i++ {
+		for j := 0; j < m; j++ {
+			var pi, pj int
+			switch *bc.Perspective {
+			case PerspectiveNE:
+				pi, pj = i, m-1-j
+			case PerspectiveSE:
+				pi, pj = j, i
+			case PerspectiveSW:
+				pi, pj = m-1-i, j
+			case PerspectiveNW:
+				pi, pj = m-1-j, m-1-i
+			}
+
+			x := float64(130 - pi*DX + pj*DX + 10)
+			y := float64(pj*DY + pi*DY + BuildingBasePanelTop)
 			bc.p.AddButton(createBuildingBaseButton(bc, i, j, 0, x, y, nil, nil, nil))
 			if bc.Plan.BaseShape[i][j] != nil {
 				var k int
@@ -354,7 +368,7 @@ func (bc *BuildingsController) GenerateButtons() {
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY, SingleClick: true}
-	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p, activeTown: activeTown, Direction: building.DirectionN}
+	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p, activeTown: activeTown, Direction: building.DirectionN, Perspective: &cp.C.Perspective}
 	bc.GenerateButtons()
 	return bc
 }
