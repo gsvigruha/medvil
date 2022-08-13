@@ -479,7 +479,6 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			}
 		}
 		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile"), extension.Construction), rf, 1, c)
-		// Chimey
 		if !extension.Construction {
 			RenderChimey(cv, rf, 1)
 		}
@@ -542,6 +541,6 @@ func RenderChimey(cv *canvas.Canvas, rf renderer.RenderedField, k int) {
 	}}
 	cv.SetFillStyle("texture/building/stone_flat.png")
 	RenderPolygon(cv, rp3, true)
-	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 192})
+	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 224})
 	RenderPolygon(cv, rp3, true)
 }
