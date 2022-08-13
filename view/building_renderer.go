@@ -480,7 +480,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		}
 		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile"), extension.Construction), rf, 1, c)
 		if !extension.Construction {
-			RenderChimey(cv, rf, 1)
+			RenderChimney(cv, rf, 1)
 		}
 	} else if extension.T == building.Deck {
 		if extension.IsConstruction() {
@@ -510,7 +510,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 	}
 }
 
-func RenderChimey(cv *canvas.Canvas, rf renderer.RenderedField, k int) {
+func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int) {
 	z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 	midX := (rf.X[0] + rf.X[2]) / 2
 	midY := (rf.Y[0] + rf.Y[2]) / 2
