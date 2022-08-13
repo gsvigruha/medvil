@@ -9,6 +9,7 @@ import (
 	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/gui"
+	"strconv"
 )
 
 const RoofPanelTop = 150
@@ -26,6 +27,7 @@ type BuildingsController struct {
 	RoofM      *materials.Material
 	UnitM      *materials.Material
 	ExtensionT *building.BuildingExtensionType
+	Direction  uint8
 	bt         building.BuildingType
 	p          *gui.Panel
 	activeTown *social.Town
@@ -248,6 +250,24 @@ func (b ExtensionButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+type RotationButton struct {
+	b  *gui.ButtonGUI
+	bc *BuildingsController
+}
+
+func (b RotationButton) Click() {
+	b.bc.Direction = (b.bc.Direction + 1) % 4
+	b.b.Icon = "building/dir_" + strconv.Itoa(int(b.bc.Direction))
+}
+
+func (b RotationButton) Render(cv *canvas.Canvas) {
+	b.b.Render(cv)
+}
+
+func (b RotationButton) Contains(x float64, y float64) bool {
+	return b.b.Contains(x, y)
+}
+
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
@@ -257,7 +277,7 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 		return false
 	}
 	if bc.Plan.IsComplete() {
-		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, bc.Plan, building.RandomBuildingDir())
+		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, bc.Plan, bc.Direction)
 		return true
 	}
 	return false
@@ -294,6 +314,11 @@ func (bc *BuildingsController) GenerateButtons() {
 		})
 	}
 
+	bc.p.AddButton(RotationButton{
+		b:  &gui.ButtonGUI{Icon: "building/dir_0", X: 130, Y: float64(RoofPanelTop), SX: 32, SY: 32},
+		bc: bc,
+	})
+
 	for i := 0; i < building.BuildingBaseMaxSize; i++ {
 		for j := 0; j < building.BuildingBaseMaxSize; j++ {
 			x := float64(120 + i*DX - j*DX + 10)
@@ -317,7 +342,7 @@ func (bc *BuildingsController) GenerateButtons() {
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY, SingleClick: true}
-	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p, activeTown: activeTown}
+	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p, activeTown: activeTown, Direction: building.DirectionN}
 	bc.GenerateButtons()
 	return bc
 }
