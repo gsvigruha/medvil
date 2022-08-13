@@ -368,7 +368,13 @@ func (bc *BuildingsController) GenerateButtons() {
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY, SingleClick: true}
-	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p, activeTown: activeTown, Direction: building.DirectionN, Perspective: &cp.C.Perspective}
+	bc := &BuildingsController{
+		Plan:        &building.BuildingPlan{BuildingType: bt},
+		bt:          bt,
+		p:           p,
+		activeTown:  activeTown,
+		Direction:   building.DirectionN,
+		Perspective: &cp.C.Perspective}
 	bc.GenerateButtons()
 	return bc
 }
