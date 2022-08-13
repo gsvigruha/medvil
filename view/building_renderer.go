@@ -29,6 +29,15 @@ func WallMaterialName(m *materials.Material, shape uint8) string {
 			return "painted_sand"
 		}
 	}
+	if m == materials.GetMaterial("stone") {
+		if shape == 0 {
+			return "stone_1"
+		} else if shape == 1 {
+			return "stone_2"
+		} else {
+			return "stone"
+		}
+	}
 	return m.Name
 }
 
