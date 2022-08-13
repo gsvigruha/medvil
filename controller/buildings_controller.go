@@ -9,6 +9,7 @@ import (
 	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/gui"
+	"strconv"
 )
 
 const RoofPanelTop = 150
@@ -21,15 +22,17 @@ const DY = 16
 const DZ = 12
 
 type BuildingsController struct {
-	PlanName   string
-	Plan       *building.BuildingPlan
-	RoofM      *materials.Material
-	UnitM      *materials.Material
-	ExtensionT *building.BuildingExtensionType
-	bt         building.BuildingType
-	p          *gui.Panel
-	activeTown *social.Town
-	del        bool
+	PlanName    string
+	Plan        *building.BuildingPlan
+	RoofM       *materials.Material
+	UnitM       *materials.Material
+	ExtensionT  *building.BuildingExtensionType
+	Direction   uint8
+	Perspective *uint8
+	bt          building.BuildingType
+	p           *gui.Panel
+	activeTown  *social.Town
+	del         bool
 }
 
 type BuildingBaseButton struct {
@@ -248,6 +251,36 @@ func (b ExtensionButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+type RotationButton struct {
+	b  *gui.ButtonGUI
+	bc *BuildingsController
+}
+
+func (b RotationButton) Click() {
+	b.bc.Direction = (b.bc.Direction + 1) % 4
+	b.b.Icon = "building/dir_" + strconv.Itoa(int(b.bc.Direction))
+	b.bc.RotatePlan()
+}
+
+func (b RotationButton) Render(cv *canvas.Canvas) {
+	b.b.Render(cv)
+}
+
+func (b RotationButton) Contains(x float64, y float64) bool {
+	return b.b.Contains(x, y)
+}
+
+func (bc *BuildingsController) RotatePlan() {
+	newPlan := &building.BuildingPlan{BuildingType: bc.Plan.BuildingType}
+	for i := 0; i < building.BuildingBaseMaxSize-1; i++ {
+		for j := 0; j < building.BuildingBaseMaxSize-1; j++ {
+			newPlan.BaseShape[i][j] = bc.Plan.BaseShape[j][building.BuildingBaseMaxSize-1-i]
+		}
+	}
+	bc.Plan = newPlan
+	bc.GenerateButtons()
+}
+
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
@@ -257,7 +290,7 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 		return false
 	}
 	if bc.Plan.IsComplete() {
-		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, bc.Plan, building.RandomBuildingDir())
+		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, bc.Plan, bc.Direction)
 		return true
 	}
 	return false
@@ -294,10 +327,28 @@ func (bc *BuildingsController) GenerateButtons() {
 		})
 	}
 
-	for i := 0; i < building.BuildingBaseMaxSize; i++ {
-		for j := 0; j < building.BuildingBaseMaxSize; j++ {
-			x := float64(120 + i*DX - j*DX + 10)
-			y := float64(j*DY + i*DY + BuildingBasePanelTop)
+	bc.p.AddButton(RotationButton{
+		b:  &gui.ButtonGUI{Icon: "building/dir_" + strconv.Itoa(int(bc.Direction)), X: 130, Y: float64(RoofPanelTop), SX: 32, SY: 32},
+		bc: bc,
+	})
+
+	m := building.BuildingBaseMaxSize
+	for i := 0; i < m; i++ {
+		for j := 0; j < m; j++ {
+			var pi, pj int
+			switch *bc.Perspective {
+			case PerspectiveNE:
+				pi, pj = i, m-1-j
+			case PerspectiveSE:
+				pi, pj = j, i
+			case PerspectiveSW:
+				pi, pj = m-1-i, j
+			case PerspectiveNW:
+				pi, pj = m-1-j, m-1-i
+			}
+
+			x := float64(130 - pi*DX + pj*DX + 10)
+			y := float64(pj*DY + pi*DY + BuildingBasePanelTop)
 			bc.p.AddButton(createBuildingBaseButton(bc, i, j, 0, x, y, nil, nil, nil))
 			if bc.Plan.BaseShape[i][j] != nil {
 				var k int
@@ -317,7 +368,13 @@ func (bc *BuildingsController) GenerateButtons() {
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY, SingleClick: true}
-	bc := &BuildingsController{Plan: &building.BuildingPlan{BuildingType: bt}, bt: bt, p: p, activeTown: activeTown}
+	bc := &BuildingsController{
+		Plan:        &building.BuildingPlan{BuildingType: bt},
+		bt:          bt,
+		p:           p,
+		activeTown:  activeTown,
+		Direction:   building.DirectionN,
+		Perspective: &cp.C.Perspective}
 	bc.GenerateButtons()
 	return bc
 }
