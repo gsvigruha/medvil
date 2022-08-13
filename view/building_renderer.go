@@ -478,7 +478,11 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 				RenderWindows(cv, rf, rfIdx3, rfIdx4, 0, false)
 			}
 		}
-		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("stone"), extension.Construction), rf, 1, c)
+		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile"), extension.Construction), rf, 1, c)
+		// Chimey
+		if !extension.Construction {
+			RenderChimey(cv, rf, 1)
+		}
 	} else if extension.T == building.Deck {
 		if extension.IsConstruction() {
 			return
@@ -505,4 +509,39 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		cv.ClosePath()
 		cv.Fill()
 	}
+}
+
+func RenderChimey(cv *canvas.Canvas, rf renderer.RenderedField, k int) {
+	z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
+	midX := (rf.X[0] + rf.X[2]) / 2
+	midY := (rf.Y[0] + rf.Y[2]) / 2
+	h := 8.0
+	rp1 := renderer.Polygon{Points: []renderer.Point{
+		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ + 12},
+		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ - h},
+		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
+		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
+	}}
+	cv.SetFillStyle("texture/building/stone.png")
+	RenderPolygon(cv, rp1, true)
+
+	rp2 := renderer.Polygon{Points: []renderer.Point{
+		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ + 12},
+		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ - h},
+		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
+		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
+	}}
+	cv.SetFillStyle("texture/building/stone_flipped.png")
+	RenderPolygon(cv, rp2, true)
+
+	rp3 := renderer.Polygon{Points: []renderer.Point{
+		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
+		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ - h},
+		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
+		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ - h - 12},
+	}}
+	cv.SetFillStyle("texture/building/stone_flat.png")
+	RenderPolygon(cv, rp3, true)
+	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 192})
+	RenderPolygon(cv, rp3, true)
 }
