@@ -258,6 +258,7 @@ type RotationButton struct {
 func (b RotationButton) Click() {
 	b.bc.Direction = (b.bc.Direction + 1) % 4
 	b.b.Icon = "building/dir_" + strconv.Itoa(int(b.bc.Direction))
+	b.bc.RotatePlan()
 }
 
 func (b RotationButton) Render(cv *canvas.Canvas) {
@@ -266,6 +267,17 @@ func (b RotationButton) Render(cv *canvas.Canvas) {
 
 func (b RotationButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
+}
+
+func (bc *BuildingsController) RotatePlan() {
+	newPlan := &building.BuildingPlan{BuildingType: bc.Plan.BuildingType}
+	for i := 0; i < building.BuildingBaseMaxSize-1; i++ {
+		for j := 0; j < building.BuildingBaseMaxSize-1; j++ {
+			newPlan.BaseShape[i][j] = bc.Plan.BaseShape[j][building.BuildingBaseMaxSize-1-i]
+		}
+	}
+	bc.Plan = newPlan
+	bc.GenerateButtons()
 }
 
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
