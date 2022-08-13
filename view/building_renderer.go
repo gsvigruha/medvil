@@ -15,7 +15,7 @@ const BuildingUnitHeight = 3
 
 const BuildingAnimationMaxPhase = 24
 
-func WallMaterialName(m *materials.Material, shape uint8) string {
+func WallMaterialName(t building.BuildingType, m *materials.Material, shape uint8) string {
 	if m == materials.GetMaterial("brick") {
 		if shape == 0 {
 			return "painted_yellow"
@@ -29,7 +29,7 @@ func WallMaterialName(m *materials.Material, shape uint8) string {
 			return "painted_sand"
 		}
 	}
-	if m == materials.GetMaterial("stone") {
+	if t == building.BuildingTypeWall && m == materials.GetMaterial("stone") {
 		if shape == 0 {
 			return "stone_1"
 		} else if shape == 1 {
@@ -116,7 +116,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		}
 		if cv != nil {
 			if !unit.Construction {
-				cv.SetFillStyle("texture/building/" + WallMaterialName(wall.M, unit.B.Shape) + suffix + ".png")
+				cv.SetFillStyle("texture/building/" + WallMaterialName(unit.B.Plan.BuildingType, wall.M, unit.B.Shape) + suffix + ".png")
 			} else {
 				cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 			}
