@@ -139,9 +139,14 @@ func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, bt building.Buildin
 	if pu.Extension != nil && pu.Extension.T.OnWater {
 		return f.Terrain.T == terrain.Water && f.Road == nil && f.Building.Empty()
 	}
-	if bt == building.BuildingTypeGate && f.Terrain.T == terrain.Water {
-		return (m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+1)%4) ||
-			m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+3)%4))
+	if bt == building.BuildingTypeGate {
+		if f.Terrain.T == terrain.Water {
+			return (m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+1)%4) ||
+				m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+3)%4))
+		} else {
+			return (!m.HasNeighborBuildingInDirection(f.X, f.Y, direction) &&
+				!m.HasNeighborBuildingInDirection(f.X, f.Y, (direction+2)%4))
+		}
 	}
 	if bt == building.BuildingTypeWall {
 		return f.RoadCompatible()
@@ -185,6 +190,10 @@ func (m *Map) SetBuildingUnits(b *building.Building, construction bool) {
 	}
 }
 
+func (m *Map) IsBuildingPossible(x, y uint16, bp *building.BuildingPlan, direction uint8) bool {
+	return m.GetBuildingBaseFields(x, y, bp, direction) != nil
+}
+
 func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction bool, direction uint8) *building.Building {
 	if m.GetBuildingBaseFields(x, y, bp, direction) == nil {
 		return nil
@@ -216,6 +225,14 @@ func (m *Map) FindDest(start navigation.Location, dest navigation.Destination, t
 func (m *Map) HasNeighborFieldInDirection(x, y uint16, t terrain.TerrainType, direction uint8) bool {
 	d := navigation.DirectionOrthogonalXY[direction]
 	if m.GetField(x+uint16(d[0]), y+uint16(d[1])) != nil && m.GetField(x+uint16(d[0]), y+uint16(d[1])).Terrain.T == t {
+		return true
+	}
+	return false
+}
+
+func (m *Map) HasNeighborBuildingInDirection(x, y uint16, direction uint8) bool {
+	d := navigation.DirectionOrthogonalXY[direction]
+	if m.GetField(x+uint16(d[0]), y+uint16(d[1])) != nil && !m.GetField(x+uint16(d[0]), y+uint16(d[1])).Building.Empty() {
 		return true
 	}
 	return false
