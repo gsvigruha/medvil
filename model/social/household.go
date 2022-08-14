@@ -134,6 +134,10 @@ func (h *Household) AddTask(t economy.Task) {
 	h.Tasks = append(h.Tasks, t)
 }
 
+func (h *Household) AddPriorityTask(t economy.Task) {
+	h.Tasks = append([]economy.Task{t}, h.Tasks...)
+}
+
 func (h *Household) IncTargetNumPeople() {
 	if h.TargetNumPeople < h.Building.Plan.Area()*2 {
 		h.TargetNumPeople++
@@ -182,7 +186,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if ok {
 			dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 			if dest != nil {
-				h.AddTask(&economy.TransportTask{
+				h.AddPriorityTask(&economy.TransportTask{
 					PickupF:  dest,
 					DropoffF: m.GetField(hx, hy),
 					PickupR:  &dest.Terrain.Resources,
@@ -210,7 +214,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					maxPrice = mp.Price(needs) * 2
 				}
 				if h.Money >= mp.Price(needs) && mp.HasTraded(a) {
-					h.AddTask(&economy.BuyTask{
+					h.AddPriorityTask(&economy.BuyTask{
 						Exchange:       mp,
 						HouseholdMoney: &h.Money,
 						Goods:          needs,
