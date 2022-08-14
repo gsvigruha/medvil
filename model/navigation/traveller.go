@@ -154,19 +154,21 @@ func (t *Traveller) MoveToDir(d uint8, m IMap) {
 }
 
 func (t *Traveller) Move(m IMap) {
-	if t.path != nil {
-		t.Motion = MotionWalk
-		pe := t.path.P[0]
-		l := pe.GetLocation()
+	t.Motion = MotionWalk
+	var steps = 1
+	{
 		f := m.GetField(t.FX, t.FY)
-		var steps = 1
 		if rand.Float64() < f.GetSpeed()-1.0 {
 			steps = 2
 			if rand.Float64() < RoadBreakdownRate {
 				f.Road.Broken = true
 			}
 		}
-		for i := 0; i < steps; i++ {
+	}
+	for i := 0; i < steps; i++ {
+		if t.path != nil {
+			pe := t.path.P[0]
+			l := pe.GetLocation()
 			var dirToLane uint8 = DirectionNone
 			var dirToNextField uint8 = DirectionNone
 			if t.FX == l.X && t.FY == l.Y {
