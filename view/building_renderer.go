@@ -58,21 +58,12 @@ func RoofMaterialName(m *materials.Material, shape uint8) string {
 	return m.Name
 }
 
-func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door bool) {
+func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door, french bool) {
 	cv.BeginPath()
 	cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 	cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
 	cv.LineTo((5*rf.X[rfIdx1]+2*rf.X[rfIdx2])/7, (5*rf.Y[rfIdx1]+2*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
 	cv.LineTo((5*rf.X[rfIdx1]+2*rf.X[rfIdx2])/7, (5*rf.Y[rfIdx1]+2*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
-	cv.ClosePath()
-	cv.Fill()
-	cv.Stroke()
-
-	cv.BeginPath()
-	cv.LineTo((4*rf.X[rfIdx1]+3*rf.X[rfIdx2])/7, (4*rf.Y[rfIdx1]+3*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
-	cv.LineTo((4*rf.X[rfIdx1]+3*rf.X[rfIdx2])/7, (4*rf.Y[rfIdx1]+3*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
-	cv.LineTo((3*rf.X[rfIdx1]+4*rf.X[rfIdx2])/7, (3*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
-	cv.LineTo((3*rf.X[rfIdx1]+4*rf.X[rfIdx2])/7, (3*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 	cv.ClosePath()
 	cv.Fill()
 	cv.Stroke()
@@ -83,6 +74,70 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 		cv.LineTo((2*rf.X[rfIdx1]+5*rf.X[rfIdx2])/7, (2*rf.Y[rfIdx1]+5*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
 		cv.LineTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
 		cv.LineTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
+		cv.ClosePath()
+		cv.Fill()
+		cv.Stroke()
+	}
+
+	if french {
+		x1 := (4*rf.X[rfIdx1] + 3*rf.X[rfIdx2]) / 7
+		x2 := (3*rf.X[rfIdx1] + 4*rf.X[rfIdx2]) / 7
+		y1 := (4*rf.Y[rfIdx1] + 3*rf.Y[rfIdx2]) / 7
+		y2 := (3*rf.Y[rfIdx1] + 4*rf.Y[rfIdx2]) / 7
+		var dx1, dy1, dx2, dy2 float64
+		if rfIdx1 == 1 || rfIdx1 == 3 {
+			dx1 = (x1 - x2) / 3.0
+			dy1 = (y2 - y1) / 3.0
+			dx2 = -dx1
+			dy2 = dy1
+		} else {
+			dx1 = (x2 - x1) / 3.0
+			dy1 = (y1 - y2) / 3.0
+			dx2 = dx1
+			dy2 = -dy1
+		}
+
+		cv.BeginPath()
+		cv.LineTo(x1-dx2, y1-dy2-z-BuildingUnitHeight*DZ*1/3)
+		cv.LineTo(x1-dx2, y1-dy2-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x1+dx1, y1+dy1-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x1+dx1, y1+dy1-z-BuildingUnitHeight*DZ*1/3)
+		cv.ClosePath()
+		cv.Fill()
+		cv.Stroke()
+
+		cv.BeginPath()
+		cv.LineTo(x1+dx1, y1+dy1-z-BuildingUnitHeight*DZ*1/3)
+		cv.LineTo(x1+dx1, y1+dy1-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x2+dx1, y2+dy1-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x2+dx1, y2+dy1-z-BuildingUnitHeight*DZ*1/3)
+		cv.ClosePath()
+		cv.Fill()
+		cv.Stroke()
+
+		cv.BeginPath()
+		cv.LineTo(x2+dx2, y2+dy2-z-BuildingUnitHeight*DZ*1/3)
+		cv.LineTo(x2+dx2, y2+dy2-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x2+dx1, y2+dy1-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x2+dx1, y2+dy1-z-BuildingUnitHeight*DZ*1/3)
+		cv.ClosePath()
+		cv.Fill()
+		cv.Stroke()
+
+		cv.SetFillStyle(color.RGBA{R: 32, G: 32, B: 32, A: 64})
+		cv.BeginPath()
+		cv.LineTo(x1-dx2, y1-dy2-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x1+dx1, y1+dy1-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x2+dx1, y2+dy1-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo(x2+dx2, y2+dy2-z-BuildingUnitHeight*DZ*2/3)
+		cv.ClosePath()
+		cv.Fill()
+	} else {
+		cv.BeginPath()
+		cv.LineTo((4*rf.X[rfIdx1]+3*rf.X[rfIdx2])/7, (4*rf.Y[rfIdx1]+3*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
+		cv.LineTo((4*rf.X[rfIdx1]+3*rf.X[rfIdx2])/7, (4*rf.Y[rfIdx1]+3*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo((3*rf.X[rfIdx1]+4*rf.X[rfIdx2])/7, (3*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
+		cv.LineTo((3*rf.X[rfIdx1]+4*rf.X[rfIdx2])/7, (3*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 		cv.ClosePath()
 		cv.Fill()
 		cv.Stroke()
@@ -120,7 +175,7 @@ func RenderBalcony(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 	cv.ClosePath()
 	cv.Fill()
 
-	cv.SetStrokeStyle(color.RGBA{R: 16, G: 16, B: 32, A: 160})
+	cv.SetStrokeStyle(color.RGBA{R: 16, G: 16, B: 32, A: 192})
 	cv.SetLineWidth(2)
 	cv.BeginPath()
 	cv.LineTo(x1+dx, y1+dy-z-BuildingUnitHeight*DZ*1/3)
@@ -227,17 +282,27 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			cv.Fill()
 			cv.Stroke()
 
+			/*
+				if !wall.Arch {
+					cv.SetFillStyle("texture/building/ornament" + suffix + ".png")
+					cv.BeginPath()
+					cv.LineTo(rw.X[0], rw.Y[0]*0.2+rw.Y[1]*0.8)
+					cv.LineTo(rw.X[1], rw.Y[1])
+					cv.LineTo(rw.X[2], rw.Y[2])
+					cv.LineTo(rw.X[3], rw.Y[3]*0.2+rw.Y[2]*0.8)
+					cv.ClosePath()
+					cv.Fill()
+				}
+			*/
+
 			z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
-			if !unit.Construction {
-				if wall.Windows == building.WindowTypePlain || wall.Windows == building.WindowTypeBalcony {
-					cv.SetFillStyle("texture/building/glass_2.png")
-					cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
-					cv.SetLineWidth(2)
-					RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
-					if wall.Windows == building.WindowTypeBalcony {
-						RenderBalcony(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
-					}
-				} else if wall.Windows == building.WindowTypeFrench {
+			if !unit.Construction && wall.Windows != building.WindowTypeNone {
+				cv.SetFillStyle("texture/building/glass_2.png")
+				cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
+				cv.SetLineWidth(2)
+				RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench)
+				if wall.Windows == building.WindowTypeBalcony {
+					RenderBalcony(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
 				}
 			}
 
@@ -551,9 +616,9 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		if !extension.Construction {
 			cv.SetFillStyle("texture/building/fire_" + strconv.Itoa(int(phase/3)) + ".png")
 			if rfIdx1 == 2 || rfIdx1 == 3 {
-				RenderWindows(cv, rf, rfIdx1, rfIdx2, 0, false)
+				RenderWindows(cv, rf, rfIdx1, rfIdx2, 0, false, false)
 			} else {
-				RenderWindows(cv, rf, rfIdx3, rfIdx4, 0, false)
+				RenderWindows(cv, rf, rfIdx3, rfIdx4, 0, false, false)
 			}
 		}
 		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile"), extension.Construction), rf, 1, c)
