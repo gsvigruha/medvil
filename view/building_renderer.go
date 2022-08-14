@@ -324,7 +324,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				if unit.NamePlate() && workshop != nil && workshop.Manufacture != nil {
 					dX := float64((int(rfIdx1)%2)*2 - 1)
 					cv.SetStrokeStyle("#320")
-					cv.SetFillStyle("#320")
+					cv.SetFillStyle("#625")
 					cv.SetLineWidth(2)
 					cv.BeginPath()
 					xm, ym := (3*rf.X[rfIdx1]+7*rf.X[rfIdx2])/10, (3*rf.Y[rfIdx1]+7*rf.Y[rfIdx2])/10-BuildingUnitHeight*DZ*4/5

@@ -49,6 +49,14 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 	}
 }
 
+func CacheKeyFromWorkshop(unit *building.BuildingUnit, c *controller.Controller) string {
+	workshop := c.ReverseReferences.BuildingToWorkshop[unit.Building()]
+	if workshop != nil && workshop.Manufacture != nil {
+		return workshop.Manufacture.Name
+	}
+	return ""
+}
+
 func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
 	unit *building.BuildingUnit,
 	rf renderer.RenderedField,
@@ -56,7 +64,7 @@ func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
 	c *controller.Controller) (*canvas.Canvas, renderer.RenderedBuildingUnit, float64, float64) {
 
 	t := time.Now().UnixNano()
-	key := unit.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.F.CacheKey()
+	key := unit.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.F.CacheKey() + "#" + CacheKeyFromWorkshop(unit, c)
 	z := float64((numUnits+1)*BuildingUnitHeight) * DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
