@@ -55,7 +55,7 @@
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
  W W W W W W W W W W W W W W W W W W W W W W W W G G G G G G G G G G G G G G G
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- W W W W W W W W W W W W W G G G G I I G G G G G G G G G G G G G G G G G G G G
+ W W W W W W W W W N W W W G G G G I I G G G G G G G G G G G G G G G G G G G G
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
  W W W W W W W W G G G G G G R R G G G G G G G G G G G G G G G G G G G G G G G
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
