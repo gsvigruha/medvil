@@ -86,10 +86,10 @@ func CheckMineUseType(useType uint8, f *navigation.Field) bool {
 	if useType == economy.MineFieldUseTypeClay && f.Terrain.T == terrain.Mud {
 		return true
 	}
-	if useType == economy.MineFieldUseTypeIron && f.Terrain.T == terrain.Mud {
+	if useType == economy.MineFieldUseTypeIron && f.Terrain.T == terrain.IronBog {
 		return true
 	}
-	if useType == economy.MineFieldUseTypeGold && f.Terrain.T == terrain.Water {
+	if useType == economy.MineFieldUseTypeGold && f.Terrain.T == terrain.Gold {
 		return true
 	}
 	return false

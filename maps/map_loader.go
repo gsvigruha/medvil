@@ -97,6 +97,8 @@ func LoadFields(dir string, m *model.Map) {
 			case "W":
 				m.Fields[i][j].Terrain.T = terrain.Water
 				m.Fields[i][j].Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
+			case "N":
+				m.Fields[i][j].Terrain.T = terrain.Gold
 			}
 			h, err := strconv.Atoi(heights[i*2 : i*2+1])
 			if err != nil {
