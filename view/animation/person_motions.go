@@ -79,4 +79,3 @@ var PersonMotionMine = PersonMotion{
 	RightFoot:     [8][3]float64{{0, 0, 3}, {0, 0, 3}, {0, 0, 3}, {0, 0, 3}, {0, 0, 3}, {0, 0, 3}, {0, 0, 3}, {0, 0, 3}},
 	Tool:          true,
 }
-

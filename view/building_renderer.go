@@ -97,6 +97,78 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 	cv.Stroke()
 }
 
+func RenderBalcony(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door bool) {
+	x1 := (7*rf.X[rfIdx1] + 4*rf.X[rfIdx2]) / 11
+	x2 := (4*rf.X[rfIdx1] + 7*rf.X[rfIdx2]) / 11
+	y1 := (7*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/11 + 1
+	y2 := (4*rf.Y[rfIdx1]+7*rf.Y[rfIdx2])/11 + 1
+	var dx, dy float64
+	if rfIdx1 == 1 || rfIdx1 == 3 {
+		dx = (x1 - x2) / 3.0
+		dy = (y2 - y1) / 3.0
+	} else {
+		dx = (x2 - x1) / 3.0
+		dy = (y1 - y2) / 3.0
+	}
+
+	cv.SetFillStyle("texture/building/gray_marble.png")
+	cv.BeginPath()
+	cv.LineTo(x1, y1-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo(x1+dx, y1+dy-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo(x2+dx, y2+dy-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo(x2, y2-z-BuildingUnitHeight*DZ*1/3)
+	cv.ClosePath()
+	cv.Fill()
+
+	cv.SetStrokeStyle(color.RGBA{R: 16, G: 16, B: 32, A: 160})
+	cv.SetLineWidth(2)
+	cv.BeginPath()
+	cv.LineTo(x1+dx, y1+dy-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo(x1+dx, y1+dy-z-BuildingUnitHeight*DZ*1/2)
+	cv.LineTo(x2+dx, y2+dy-z-BuildingUnitHeight*DZ*1/2)
+	cv.LineTo(x2+dx, y2+dy-z-BuildingUnitHeight*DZ*1/3)
+	cv.ClosePath()
+	cv.Stroke()
+
+	cv.BeginPath()
+	cv.LineTo(x1, y1-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo(x1, y1-z-BuildingUnitHeight*DZ*1/2)
+	cv.LineTo(x1+dx, y1+dy-z-BuildingUnitHeight*DZ*1/2)
+	cv.LineTo(x1+dx, y1+dy-z-BuildingUnitHeight*DZ*1/3)
+	cv.ClosePath()
+	cv.Stroke()
+
+	cv.BeginPath()
+	cv.LineTo(x2, y2-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo(x2, y2-z-BuildingUnitHeight*DZ*1/2)
+	cv.LineTo(x2+dx, y2+dy-z-BuildingUnitHeight*DZ*1/2)
+	cv.LineTo(x2+dx, y2+dy-z-BuildingUnitHeight*DZ*1/3)
+	cv.ClosePath()
+	cv.Stroke()
+
+	cv.BeginPath()
+	cv.LineTo(x2+dx/2, y2+dy/2-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo(x2+dx/2, y2+dy/2-z-BuildingUnitHeight*DZ*1/2)
+	cv.ClosePath()
+	cv.Stroke()
+
+	cv.BeginPath()
+	cv.LineTo(x1+dx/2, y1+dy/2-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo(x1+dx/2, y1+dy/2-z-BuildingUnitHeight*DZ*1/2)
+	cv.ClosePath()
+	cv.Stroke()
+
+	ddx := ((x1 + dx) - (x2 + dx)) / 5
+	ddy := ((y1 + dy) - (y2 + dy)) / 5
+	for i := 0.0; i < 5; i++ {
+		cv.BeginPath()
+		cv.LineTo(x2+dx+ddx*i, y2+dy+ddy*i-z-BuildingUnitHeight*DZ*1/3)
+		cv.LineTo(x2+dx+ddx*i, y2+dy+ddy*i-z-BuildingUnitHeight*DZ*1/2)
+		cv.ClosePath()
+		cv.Stroke()
+	}
+}
+
 func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer.RenderedField, k int, c *controller.Controller) renderer.RenderedBuildingUnit {
 	var rws = []renderer.RenderedWall{}
 	startI := 2 + c.Perspective
@@ -156,11 +228,17 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			cv.Stroke()
 
 			z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
-			if wall.Windows && !unit.Construction {
-				cv.SetFillStyle("texture/building/glass_2.png")
-				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
-				cv.SetLineWidth(2)
-				RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+			if !unit.Construction {
+				if wall.Windows == building.WindowTypePlain || wall.Windows == building.WindowTypeBalcony {
+					cv.SetFillStyle("texture/building/glass_2.png")
+					cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
+					cv.SetLineWidth(2)
+					RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+					if wall.Windows == building.WindowTypeBalcony {
+						RenderBalcony(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+					}
+				} else if wall.Windows == building.WindowTypeFrench {
+				}
 			}
 
 			if wall.Door && !unit.Construction {

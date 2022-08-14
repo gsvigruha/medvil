@@ -101,7 +101,7 @@ func setWallConnectionsForFields(f *Field, of *Field, dir uint8) {
 			if unit, ok := f.Building.BuildingComponents[ofH-1].(*building.BuildingUnit); ok {
 				unit.Walls[dir].Door = true
 				for i := range unit.Walls {
-					unit.Walls[i].Windows = true
+					unit.Walls[i].Windows = building.WindowTypePlain
 				}
 			}
 		}

@@ -185,6 +185,9 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 					case materials.GetMaterial("sandstone"):
 						boards += 1
 						cubes += 2
+					case materials.GetMaterial("marble"):
+						boards += 1
+						cubes += 2
 					case materials.GetMaterial("stone"):
 						boards += 1
 						cubes += 2
