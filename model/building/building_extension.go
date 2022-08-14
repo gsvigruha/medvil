@@ -57,7 +57,7 @@ func GetExtensionDirection(t *BuildingExtensionType, x, y uint8, bp BuildingPlan
 }
 
 func ForgeBuildingUnit(b *Building, m *materials.Material, construction bool) *BuildingUnit {
-	w := &BuildingWall{M: m, Windows: false, Door: false}
+	w := &BuildingWall{M: m, Windows: WindowTypeNone, Door: false}
 	return &BuildingUnit{
 		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
 		Walls:                 []*BuildingWall{w, w, w, w},

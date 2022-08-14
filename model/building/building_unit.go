@@ -55,9 +55,16 @@ func (u *RoofUnit) NamePlate() bool {
 	return false
 }
 
+type WindowType uint8
+
+const WindowTypeNone WindowType = 0
+const WindowTypePlain WindowType = 1
+const WindowTypeBalcony WindowType = 2
+const WindowTypeFrench WindowType = 3
+
 type BuildingWall struct {
 	M       *materials.Material
-	Windows bool
+	Windows WindowType
 	Door    bool
 	Arch    bool
 }
