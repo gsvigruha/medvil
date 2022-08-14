@@ -19,6 +19,7 @@ var Sand = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: fal
 var Dirt = TerrainType{Walkable: true, Arable: true, Pasture: false, Water: false, Buildable: true, Name: "dirt"}
 var Rock = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: true, Name: "rock"}
 var Mud = TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "mud"}
+var IronBog = TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "iron_bog"}
 var Canal = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "canal"}
 
 type Terrain struct {

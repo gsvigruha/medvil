@@ -88,6 +88,8 @@ func LoadFields(dir string, m *model.Map) {
 				m.Fields[i][j].Terrain.T = terrain.Sand
 			case "R":
 				m.Fields[i][j].Terrain.T = terrain.Rock
+			case "I":
+				m.Fields[i][j].Terrain.T = terrain.IronBog
 			case "D":
 				m.Fields[i][j].Terrain.T = terrain.Dirt
 			case "M":
