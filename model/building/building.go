@@ -73,7 +73,10 @@ func (b *Building) hasArch(d uint8) bool {
 	return b.Direction%2 == d%2
 }
 
-func (b *Building) hasDoor(d uint8, floor uint8) bool {
+func (b *Building) hasDoor(d uint8, floor uint8, open bool) bool {
+	if !open {
+		return false
+	}
 	if b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeWall {
 		return false
 	}
@@ -125,19 +128,23 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 	for i := uint8(0); i < numFloors; i++ {
 		var n *BuildingWall
 		if y == 0 || !b.Plan.HasUnit(x, y-1, i) {
-			n = &BuildingWall{M: p.Floors[i].M, Windows: b.getWindowType(!b.Plan.HasUnitOrRoof(x, y-1, i), i), Door: b.hasDoor(0, i), Arch: b.hasArch(0)}
+			open := !b.Plan.HasUnitOrRoof(x, y-1, i)
+			n = &BuildingWall{M: p.Floors[i].M, Windows: b.getWindowType(open, i), Door: b.hasDoor(0, i, open), Arch: b.hasArch(0)}
 		}
 		var e *BuildingWall
 		if x == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x+1, y, i) {
-			e = &BuildingWall{M: p.Floors[i].M, Windows: b.getWindowType(!b.Plan.HasUnitOrRoof(x+1, y, i), i), Door: b.hasDoor(1, i), Arch: b.hasArch(1)}
+			open := !b.Plan.HasUnitOrRoof(x+1, y, i)
+			e = &BuildingWall{M: p.Floors[i].M, Windows: b.getWindowType(open, i), Door: b.hasDoor(1, i, open), Arch: b.hasArch(1)}
 		}
 		var s *BuildingWall
 		if y == BuildingBaseMaxSize-1 || !b.Plan.HasUnit(x, y+1, i) {
-			s = &BuildingWall{M: p.Floors[i].M, Windows: b.getWindowType(!b.Plan.HasUnitOrRoof(x, y+1, i), i), Door: b.hasDoor(2, i), Arch: b.hasArch(2)}
+			open := !b.Plan.HasUnitOrRoof(x, y+1, i)
+			s = &BuildingWall{M: p.Floors[i].M, Windows: b.getWindowType(open, i), Door: b.hasDoor(2, i, open), Arch: b.hasArch(2)}
 		}
 		var w *BuildingWall
 		if x == 0 || !b.Plan.HasUnit(x-1, y, i) {
-			w = &BuildingWall{M: p.Floors[i].M, Windows: b.getWindowType(!b.Plan.HasUnitOrRoof(x-1, y, i), i), Door: b.hasDoor(3, i), Arch: b.hasArch(3)}
+			open := !b.Plan.HasUnitOrRoof(x-1, y, i)
+			w = &BuildingWall{M: p.Floors[i].M, Windows: b.getWindowType(open, i), Door: b.hasDoor(3, i, open), Arch: b.hasArch(3)}
 		}
 		units[i] = &BuildingUnit{
 			BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
