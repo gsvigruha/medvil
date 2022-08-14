@@ -480,7 +480,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		}
 		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile"), extension.Construction), rf, 1, c)
 		if !extension.Construction {
-			RenderChimney(cv, rf, 1)
+			RenderChimney(cv, rf, 1, phase)
 		}
 	} else if extension.T == building.Deck {
 		if extension.IsConstruction() {
@@ -510,7 +510,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 	}
 }
 
-func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int) {
+func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, phase uint8) {
 	z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 	midX := (rf.X[0] + rf.X[2]) / 2
 	midY := (rf.Y[0] + rf.Y[2]) / 2
@@ -543,4 +543,6 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int) {
 	RenderPolygon(cv, rp3, true)
 	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 224})
 	RenderPolygon(cv, rp3, true)
+
+	cv.DrawImage("texture/building/smoke_"+strconv.Itoa(int(phase/3))+".png", midX-16, midY-z-BuildingUnitHeight*DZ-h-52, 32, 48)
 }
