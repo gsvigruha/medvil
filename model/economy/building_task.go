@@ -61,5 +61,5 @@ func (t *BuildingTask) Expired(Calendar *time.CalendarType) bool {
 }
 
 func (t *BuildingTask) Motion() uint8 {
-	return navigation.MotionStand
+	return navigation.MotionBuild
 }
