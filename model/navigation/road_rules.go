@@ -71,9 +71,7 @@ func SetRoadConnections(m IMap, f *Field) {
 				if b.Plan.BuildingType != building.BuildingTypeWall && b.Plan.BuildingType != building.BuildingTypeGate {
 					if unit, ok := of.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
 						i2 := building.OppDir(i)
-						if (unit.Walls[(i2+1)%4] == nil || !unit.Walls[(i2+1)%4].Door) && (unit.Walls[(i2+3)%4] == nil || !unit.Walls[(i2+3)%4].Door) {
-							unit.Walls[i2].Door = true
-						}
+						unit.Walls[i2].Door = true
 					}
 				}
 			}
