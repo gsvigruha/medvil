@@ -75,6 +75,7 @@ func FindShortPathBFS(m *Map, start navigation.Location, dest navigation.Destina
 				AddNextField(pe, e, &toVisit, inQueue)
 			}
 		}
+		visited[e.PE.GetLocation()] = nil
 		iter++
 	}
 	return nil
