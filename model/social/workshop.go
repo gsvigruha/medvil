@@ -36,7 +36,9 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					})
 					numP := uint16(len(w.Household.People))
 					water := artifacts.GetArtifact("water")
-					if w.Manufacture.IsInput(water) && w.Household.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP+WaterTransportQuantity {
+					if w.Manufacture.IsInput(water) &&
+						w.Household.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP+WaterTransportQuantity &&
+						w.Household.NumTasks("transport", "water") == 0 {
 						hx, hy, ok := GetRandomBuildingXY(w.Household.Building, m, navigation.Field.BuildingNonExtension)
 						if ok {
 							dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
