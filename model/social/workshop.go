@@ -43,7 +43,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						if ok {
 							dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 							if dest != nil {
-								w.Household.AddTask(&economy.TransportTask{
+								w.Household.AddPriorityTask(&economy.TransportTask{
 									PickupF:  dest,
 									DropoffF: m.GetField(hx, hy),
 									PickupR:  &dest.Terrain.Resources,

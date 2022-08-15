@@ -42,8 +42,8 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 	tc := &TownhallController{householdPanel: hp, th: th}
 	tc.buttons = []*TownhallControllerButton{
-		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "taxes", X: 10, Y: 550, SX: 32, SY: 32}},
-		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: 50, Y: 550, SX: 32, SY: 32}},
+		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "taxes", X: 10, Y: 560, SX: 32, SY: 32}},
+		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: 50, Y: 560, SX: 32, SY: 32}},
 	}
 
 	HouseholdToControlPanel(hp, &th.Household)
