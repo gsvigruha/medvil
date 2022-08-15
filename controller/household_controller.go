@@ -16,7 +16,7 @@ const IconRowMax = 7
 const PersonGUIY = 110
 const ArtifactsGUIY = 350
 const TaskGUIY = 480
-const MaxNumTasks = 14
+const MaxNumTasks = 20
 const VehicleGUIY = 600
 const HouseholdControllerSY = 550
 const HouseholdControllerGUIBottomY = ControlPanelDynamicPanelTop + HouseholdControllerSY
@@ -59,6 +59,22 @@ func personIconW(h *social.Household) int {
 	return w
 }
 
+func taskIconW(h *social.Household) (int, int) {
+	var numTasks = len(h.Tasks)
+	var w = IconW
+	var n = IconRowMax
+	if numTasks > IconRowMax*2 {
+		if numTasks >= MaxNumTasks {
+			w = IconRowMax * 2 * IconW / MaxNumTasks
+			n = MaxNumTasks / 2
+		} else {
+			w = IconRowMax * 2 * IconW / numTasks
+			n = numTasks / 2
+		}
+	}
+	return w, n
+}
+
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, 80)
 	piw := personIconW(h)
@@ -83,11 +99,12 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 			aI++
 		}
 	}
+	tiw, tirm := taskIconW(h)
 	for i, task := range h.Tasks {
 		if i >= MaxNumTasks {
 			break
 		}
-		TaskToControlPanel(p, i%IconRowMax, float64(TaskGUIY+i/IconRowMax*IconH), task, IconW)
+		TaskToControlPanel(p, i%tirm, float64(TaskGUIY+i/tirm*IconH), task, tiw)
 	}
 	for i, vehicle := range h.Vehicles {
 		VehicleToControlPanel(p, i, VehicleGUIY, vehicle, IconW)
