@@ -69,7 +69,7 @@ func taskIconW(h *social.Household) (int, int) {
 			n = MaxNumTasks / 2
 		} else {
 			w = IconRowMax * 2 * IconW / numTasks
-			n = numTasks / 2
+			n = (numTasks + 1) / 2
 		}
 	}
 	return w, n
