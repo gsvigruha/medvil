@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
+	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
@@ -39,11 +41,13 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	tp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
 	sp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
+	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
 
 	tc := &TownhallController{householdPanel: hp, th: th}
 	tc.buttons = []*TownhallControllerButton{
 		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "taxes", X: 10, Y: 560, SX: 32, SY: 32}},
 		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: 50, Y: 560, SX: 32, SY: 32}},
+		&TownhallControllerButton{tc: tc, subPanel: fp, b: gui.ButtonGUI{Icon: "factory", X: 90, Y: 560, SX: 32, SY: 32}},
 	}
 
 	HouseholdToControlPanel(hp, &th.Household)
@@ -73,6 +77,10 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 			ArtifactStorageToControlPanel(sp, th, aI, a, q, 600)
 			aI++
 		}
+	}
+
+	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
+		fp.AddPanel(CreateOrderPanelForTownhall(10, float64(i*40+600), 60, 20, th, vc))
 	}
 
 	cp.SetDynamicPanel(tc)
@@ -127,4 +135,23 @@ func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedFi
 		return true
 	}
 	return false
+}
+
+func CreateOrderPanelForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *economy.VehicleConstruction) *gui.Panel {
+	p := &gui.Panel{}
+	l := p.AddTextLabel("", x, y+sy*2/3)
+	var factories []*social.Factory
+	for _, factory := range th.Household.Town.Factories {
+		if economy.ConstructionCompatible(vc, factory.Household.Building.Plan.GetExtension()) {
+			factories = append(factories, factory)
+		}
+	}
+	p.AddButton(OrderButton{
+		b:         gui.ButtonGUI{Icon: "plus", X: x + sx, Y: y, SX: sy, SY: sy},
+		factories: factories,
+		vc:        vc,
+		l:         l,
+	})
+	p.AddTextLabel(fmt.Sprintf("$%v", factories[0].Price(vc)), x+sx+sy*2, y+sy*2/3)
+	return p
 }

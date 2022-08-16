@@ -38,10 +38,14 @@ var AllVehicleConstruction = [...]*VehicleConstruction{
 	CartConstruction,
 }
 
+func ConstructionCompatible(m *VehicleConstruction, be *building.BuildingExtension) bool {
+	return m.BuildingExtensionType == nil || (be != nil && be.T == m.BuildingExtensionType)
+}
+
 func GetVehicleConstructions(be *building.BuildingExtension) []*VehicleConstruction {
 	result := make([]*VehicleConstruction, 0, len(AllVehicleConstruction))
 	for _, m := range AllVehicleConstruction {
-		if m.BuildingExtensionType == nil || (be != nil && be.T == m.BuildingExtensionType) {
+		if ConstructionCompatible(m, be) {
 			result = append(result, m)
 		}
 	}

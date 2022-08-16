@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/tfriedel6/canvas"
+	"math/rand"
 	"medvil/model/economy"
 	"medvil/model/social"
 	"medvil/view/gui"
@@ -21,7 +22,7 @@ func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 	fc := &FactoryController{factoryPanel: fp, householdPanel: hp, factory: factory}
 
 	for i, vc := range economy.GetVehicleConstructions(factory.Household.Building.Plan.GetExtension()) {
-		fp.AddPanel(CreateOrderPanel(10, float64(i*40+600), 60, 20, factory, vc))
+		fp.AddPanel(CreateOrderPanelForFactory(10, float64(i*40+600), 60, 20, factory, vc))
 	}
 
 	cp.SetDynamicPanel(fc)
@@ -45,26 +46,44 @@ func (fc *FactoryController) Refresh() {
 }
 
 type OrderButton struct {
-	b       gui.ButtonGUI
-	factory *social.Factory
-	vc      *economy.VehicleConstruction
-	l       *gui.TextLabel
+	b         gui.ButtonGUI
+	factory   *social.Factory
+	factories []*social.Factory
+	vc        *economy.VehicleConstruction
+	l         *gui.TextLabel
 }
 
 func (b OrderButton) Click() {
-	b.factory.CreateOrder(b.vc, &b.factory.Household.Town.Townhall.Household)
+	if b.factory != nil {
+		b.factory.CreateOrder(b.vc, &b.factory.Household.Town.Townhall.Household)
+	} else {
+		factory := b.factories[rand.Intn(len(b.factories))]
+		factory.CreateOrder(b.vc, &factory.Household.Town.Townhall.Household)
+	}
+}
+
+func (b OrderButton) NumOrders() int {
+	if b.factory != nil {
+		return b.factory.NumOrders(b.vc)
+	} else {
+		var o = 0
+		for _, factory := range b.factories {
+			o += factory.NumOrders(b.vc)
+		}
+		return o
+	}
 }
 
 func (b OrderButton) Render(cv *canvas.Canvas) {
 	b.b.Render(cv)
-	b.l.Text = fmt.Sprintf("%v %v", b.vc.Name, b.factory.NumOrders(b.vc))
+	b.l.Text = fmt.Sprintf("%v %v", b.vc.Name, b.NumOrders())
 }
 
 func (b OrderButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
-func CreateOrderPanel(x, y, sx, sy float64, factory *social.Factory, vc *economy.VehicleConstruction) *gui.Panel {
+func CreateOrderPanelForFactory(x, y, sx, sy float64, factory *social.Factory, vc *economy.VehicleConstruction) *gui.Panel {
 	p := &gui.Panel{}
 	l := p.AddTextLabel("", x, y+sy*2/3)
 	p.AddButton(OrderButton{

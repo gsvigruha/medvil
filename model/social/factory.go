@@ -140,3 +140,17 @@ func PickFactory(fs []*Factory) *Factory {
 	}
 	return f
 }
+
+func GetVehicleConstructions(factories []*Factory) []*economy.VehicleConstruction {
+	result := make([]*economy.VehicleConstruction, 0, len(economy.AllVehicleConstruction))
+	for _, m := range economy.AllVehicleConstruction {
+		for _, factory := range factories {
+			be := factory.Household.Building.Plan.GetExtension()
+			if economy.ConstructionCompatible(m, be) {
+				result = append(result, m)
+				break
+			}
+		}
+	}
+	return result
+}
