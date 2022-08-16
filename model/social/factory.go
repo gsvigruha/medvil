@@ -11,6 +11,7 @@ import (
 const OrderStateOrdered = 0
 const OrderStateStarted = 1
 const OrderStateBuilt = 2
+const OrderStateComplete = 3
 
 type VehicleOrder struct {
 	T       *economy.VehicleConstruction
@@ -24,6 +25,7 @@ func (o *VehicleOrder) IsBuilt() bool {
 }
 
 func (o *VehicleOrder) PickupVehicle() *vehicles.Vehicle {
+	o.State = OrderStateComplete
 	return o.Vehicle
 }
 
@@ -89,6 +91,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 
+	var newOrders []*VehicleOrder
 	for _, order := range f.Orders {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
 			_, x, y := f.Household.Building.GetExtensionWithCoords()
@@ -101,7 +104,11 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			})
 			order.State = OrderStateStarted
 		}
+		if order.State != OrderStateComplete {
+			newOrders = append(newOrders, order)
+		}
 	}
+	f.Orders = newOrders
 }
 
 func (f *Factory) Price(vc *economy.VehicleConstruction) uint32 {
