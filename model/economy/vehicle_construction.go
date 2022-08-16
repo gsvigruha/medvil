@@ -38,8 +38,8 @@ var AllVehicleConstruction = [...]*VehicleConstruction{
 	CartConstruction,
 }
 
-func ConstructionCompatible(m *VehicleConstruction, be *building.BuildingExtension) bool {
-	return m.BuildingExtensionType == nil || (be != nil && be.T == m.BuildingExtensionType)
+func ConstructionCompatible(vc *VehicleConstruction, be *building.BuildingExtension) bool {
+	return vc.BuildingExtensionType == nil || (be != nil && be.T == vc.BuildingExtensionType)
 }
 
 func GetVehicleConstructions(be *building.BuildingExtension) []*VehicleConstruction {
