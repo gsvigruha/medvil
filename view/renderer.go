@@ -91,5 +91,5 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 	}
 	c.SwapRenderedObjects()
 	RenderActiveFields(cv, c)
-	c.ControlPanel.Render(cv)
+	c.ControlPanel.Render(cv, c)
 }

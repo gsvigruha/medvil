@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/tfriedel6/canvas"
+	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/model/building"
 	"medvil/view/gui"
 	"strconv"
@@ -26,6 +27,7 @@ type ControlPanel struct {
 	buildingsLabel *gui.TextLabel
 	timeButton     *ControlPanelButton
 	C              *Controller
+	buffer         *canvas.Canvas
 }
 
 type ControlPanelButton struct {
@@ -114,7 +116,7 @@ func (p *ControlPanel) Clear() {
 	}
 }
 
-func (p *ControlPanel) Setup(c *Controller) {
+func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.C = c
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)
@@ -135,6 +137,9 @@ func (p *ControlPanel) Setup(c *Controller) {
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: 250, Y: 30, SX: 32, SY: 32}, c: c, action: CPActionCancel})
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 250, Y: 70, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
+
+	offscreen, _ := goglbackend.NewOffscreen(300, 900, true, ctx)
+	p.buffer = canvas.New(offscreen)
 }
 
 func (p *ControlPanel) SetDynamicPanel(dp Panel) {
@@ -149,9 +154,12 @@ func (p *ControlPanel) CaptureClick(x, y float64) {
 	}
 }
 
-func (p *ControlPanel) Render(cv *canvas.Canvas) {
-	p.topPanel.Render(cv)
-	if p.dynamicPanel != nil {
-		p.dynamicPanel.Render(cv)
+func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
+	if c.RenderCnt == 0 {
+		p.topPanel.Render(p.buffer)
+		if p.dynamicPanel != nil {
+			p.dynamicPanel.Render(p.buffer)
+		}
 	}
+	cv.DrawImage(p.buffer, 0, 0, 300, 900)
 }

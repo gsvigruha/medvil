@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/model"
 	"medvil/model/building"
 	"medvil/model/navigation"
@@ -49,6 +50,7 @@ type Controller struct {
 	Country                   *social.Country
 	ClickHandler              ClickHandler
 	TimeSpeed                 int
+	RenderCnt                 int
 }
 
 func (c *Controller) MoveCenter(dViewX, dViewY int) {
@@ -201,6 +203,14 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			FieldToControlPanel(c.ControlPanel, c.SelectedField)
 			return
 		}
+		c.RenderCnt = 0
+	}
+}
+
+func (c *Controller) RenderTick() {
+	c.RenderCnt++
+	if c.RenderCnt >= 10 {
+		c.RenderCnt = 0
 	}
 }
 
@@ -212,7 +222,7 @@ func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
 func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
 }
 
-func Link(wnd *glfw.Window, Map *model.Map) *Controller {
+func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, Map *model.Map) *Controller {
 	W, H := wnd.GetSize()
 	Calendar := &time.CalendarType{
 		Year:  1000,
@@ -222,7 +232,7 @@ func Link(wnd *glfw.Window, Map *model.Map) *Controller {
 	}
 	controlPanel := &ControlPanel{}
 	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: Map.Countries[0], TimeSpeed: 1, ActiveTown: Map.Countries[0].Towns[0]}
-	controlPanel.Setup(C)
+	controlPanel.Setup(C, ctx)
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
 	wnd.SetCursorPosCallback(C.MouseMoveCallback)
