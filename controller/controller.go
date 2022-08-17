@@ -16,6 +16,8 @@ const PerspectiveSE uint8 = 1
 const PerspectiveSW uint8 = 2
 const PerspectiveNW uint8 = 3
 
+const MaxRenderCnt = 10
+
 type ClickHandler interface {
 	HandleClick(c *Controller, rf *renderer.RenderedField) bool
 	GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext
@@ -203,13 +205,13 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			FieldToControlPanel(c.ControlPanel, c.SelectedField)
 			return
 		}
-		c.RenderCnt = 0
+		c.RenderCnt = MaxRenderCnt - 1
 	}
 }
 
 func (c *Controller) RenderTick() {
 	c.RenderCnt++
-	if c.RenderCnt >= 10 {
+	if c.RenderCnt >= MaxRenderCnt {
 		c.RenderCnt = 0
 	}
 }
