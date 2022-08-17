@@ -138,7 +138,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 250, Y: 70, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 
-	offscreen, _ := goglbackend.NewOffscreen(ControlPanelSX, ControlPanelSY, true, ctx)
+	offscreen, _ := goglbackend.NewOffscreen(ControlPanelSX, ControlPanelSY, false, ctx)
 	p.buffer = canvas.New(offscreen)
 }
 
