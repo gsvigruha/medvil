@@ -27,7 +27,7 @@ func main() {
 
 	m := maps.LoadMap("samples/map/coast_1")
 
-	c := controller.Link(wnd.Window, &m)
+	c := controller.Link(wnd.Window, ctx, &m)
 
 	fmt.Println("Init done")
 
@@ -50,5 +50,6 @@ func main() {
 			c.Calendar.Tick()
 			m.ElapseTime(c.Calendar)
 		}
+		c.RenderTick()
 	})
 }
