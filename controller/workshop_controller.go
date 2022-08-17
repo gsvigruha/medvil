@@ -22,7 +22,7 @@ func toTaskNames(names []string) []string {
 	return taskNames
 }
 
-const ManufactureDropDownTop = 540
+const ManufactureDropDownTop = 560
 
 func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}

@@ -143,6 +143,7 @@ func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 
 func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButton, action glfw.Action, mod glfw.ModifierKey) {
 	if action == glfw.Press && button == glfw.MouseButton1 {
+		c.RenderCnt = MaxRenderCnt
 		c.ControlPanel.CaptureClick(c.X, c.Y)
 		if c.X < ControlPanelSX {
 			return
@@ -205,7 +206,6 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			FieldToControlPanel(c.ControlPanel, c.SelectedField)
 			return
 		}
-		c.RenderCnt = MaxRenderCnt - 1
 	}
 }
 
