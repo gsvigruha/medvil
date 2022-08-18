@@ -301,3 +301,14 @@ func (t *Traveller) SetHome(home bool) {
 		t.Vehicle.SetHome(home)
 	}
 }
+
+func (t *Traveller) GetPathFields(m IMap) []FieldWithContext {
+	var fs []FieldWithContext
+	if t.path != nil {
+		for _, pe := range t.path.P {
+			l := pe.GetLocation()
+			fs = append(fs, m.GetField(l.X, l.Y))
+		}
+	}
+	return fs
+}
