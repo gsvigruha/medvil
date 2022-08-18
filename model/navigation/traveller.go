@@ -304,6 +304,10 @@ func (t *Traveller) SetHome(home bool) {
 
 func (t *Traveller) GetPathFields(m IMap) []FieldWithContext {
 	var fs []FieldWithContext
+	if t.PE != nil {
+		l := t.PE.GetLocation()
+		fs = append(fs, m.GetField(l.X, l.Y))
+	}
 	if t.path != nil {
 		for _, pe := range t.path.P {
 			l := pe.GetLocation()
