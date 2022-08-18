@@ -211,6 +211,8 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			if rt.Contains(c.X, c.Y) {
 				c.Reset()
 				c.SelectedTraveller = rt.Traveller
+				person := c.ReverseReferences.TravellerToPerson[c.SelectedTraveller]
+				PersonToControlPanel(c.ControlPanel, person)
 				return
 			}
 		}
