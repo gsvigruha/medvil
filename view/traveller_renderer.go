@@ -165,6 +165,7 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 	} else if t.T == navigation.TravellerTypeCart {
 		DrawCart(cv, t, x, y, c)
 	}
+	c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y, H: 30, W: 10, Traveller: t})
 }
 
 func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
