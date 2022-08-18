@@ -94,12 +94,17 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	var newOrders []*VehicleOrder
 	for _, order := range f.Orders {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
-			_, x, y := f.Household.Building.GetExtensionWithCoords()
-			deck := m.GetField(x, y)
+			var x, y uint16
+			if order.T.Output.Water {
+				_, x, y = f.Household.Building.GetExtensionWithCoords()
+			} else {
+				x, y, _ = GetRandomBuildingXY(f.Household.Building, m, navigation.Field.BuildingNonExtension)
+			}
+			field := m.GetField(x, y)
 			f.Household.AddTask(&economy.VehicleConstructionTask{
 				T: order.T,
 				O: order,
-				F: deck,
+				F: field,
 				R: &f.Household.Resources,
 			})
 			order.State = OrderStateStarted
