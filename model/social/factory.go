@@ -2,6 +2,7 @@ package social
 
 import (
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -94,12 +95,25 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	var newOrders []*VehicleOrder
 	for _, order := range f.Orders {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
-			_, x, y := f.Household.Building.GetExtensionWithCoords()
-			deck := m.GetField(x, y)
+			var x, y uint16
+			var ok bool
+			var ext *building.BuildingExtension
+			if order.T.Output.Water {
+				ext, x, y = f.Household.Building.GetExtensionWithCoords()
+				if ext == nil || ext.T != building.Deck {
+					continue
+				}
+			} else {
+				x, y, ok = GetRandomBuildingXY(f.Household.Building, m, navigation.Field.BuildingNonExtension)
+				if !ok {
+					continue
+				}
+			}
+			field := m.GetField(x, y)
 			f.Household.AddTask(&economy.VehicleConstructionTask{
 				T: order.T,
 				O: order,
-				F: deck,
+				F: field,
 				R: &f.Household.Resources,
 			})
 			order.State = OrderStateStarted

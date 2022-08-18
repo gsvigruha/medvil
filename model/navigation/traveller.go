@@ -276,6 +276,8 @@ func (t *Traveller) MoveWith(m IMap, ot *Traveller) {
 	t.SyncTo(ot)
 	t.FX = ot.FX
 	t.FY = ot.FY
+	t.FZ = ot.FZ
+	t.PE = ot.PE
 	if oFX != t.FX || oFY != t.FY {
 		m.GetField(oFX, oFY).UnregisterTraveller(t)
 		m.GetField(t.FX, t.FY).RegisterTraveller(t)
