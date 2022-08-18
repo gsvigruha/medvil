@@ -100,7 +100,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			var ext *building.BuildingExtension
 			if order.T.Output.Water {
 				ext, x, y = f.Household.Building.GetExtensionWithCoords()
-				if ext.T != building.Deck {
+				if ext == nil || ext.T != building.Deck {
 					continue
 				}
 			} else {
