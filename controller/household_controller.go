@@ -79,7 +79,7 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, 80)
 	piw := personIconW(h)
 	for i, person := range h.People {
-		PersonToControlPanel(p, i, person, piw)
+		PersonToPanel(p, i, person, piw)
 	}
 	for i := len(h.People); i < int(h.TargetNumPeople); i++ {
 		p.AddImageLabel("person", float64(10+i*piw), PersonGUIY, 32, 32, gui.ImageLabelStyleDisabled)
@@ -111,7 +111,7 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	}
 }
 
-func PersonToControlPanel(p *gui.Panel, i int, person *social.Person, w int) {
+func PersonToPanel(p *gui.Panel, i int, person *social.Person, w int) {
 	p.AddImageLabel("person", float64(10+i*w), PersonGUIY, 32, 32, gui.ImageLabelStyleRegular)
 	if person.Equipment.Weapon() {
 		p.AddImageLabel("tasks/swordsmith", float64(10+i*w)+16, PersonGUIY+16, 24, 24, gui.ImageLabelStyleRegular)

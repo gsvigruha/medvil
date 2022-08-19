@@ -276,6 +276,8 @@ func (t *Traveller) MoveWith(m IMap, ot *Traveller) {
 	t.SyncTo(ot)
 	t.FX = ot.FX
 	t.FY = ot.FY
+	t.FZ = ot.FZ
+	t.PE = ot.PE
 	if oFX != t.FX || oFY != t.FY {
 		m.GetField(oFX, oFY).UnregisterTraveller(t)
 		m.GetField(t.FX, t.FY).RegisterTraveller(t)
@@ -300,4 +302,19 @@ func (t *Traveller) SetHome(home bool) {
 	if t.Vehicle != nil {
 		t.Vehicle.SetHome(home)
 	}
+}
+
+func (t *Traveller) GetPathFields(m IMap) []FieldWithContext {
+	var fs []FieldWithContext
+	if t.PE != nil {
+		l := t.PE.GetLocation()
+		fs = append(fs, m.GetField(l.X, l.Y))
+	}
+	if t.path != nil {
+		for _, pe := range t.path.P {
+			l := pe.GetLocation()
+			fs = append(fs, m.GetField(l.X, l.Y))
+		}
+	}
+	return fs
 }

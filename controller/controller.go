@@ -35,8 +35,10 @@ type Controller struct {
 	Calendar                  *time.CalendarType
 	RenderedFields            []*renderer.RenderedField
 	RenderedBuildingParts     []renderer.RenderedBuildingPart
+	RenderedTravellers        []*renderer.RenderedTraveller
 	TempRenderedFields        []*renderer.RenderedField
 	TempRenderedBuildingParts []renderer.RenderedBuildingPart
+	TempRenderedTravellers    []*renderer.RenderedTraveller
 	SelectedField             *navigation.Field
 	ActiveTown                *social.Town
 	SelectedFarm              *social.Farm
@@ -47,6 +49,7 @@ type Controller struct {
 	SelectedTownhall          *social.Townhall
 	SelectedConstruction      *building.Construction
 	SelectedMarketplace       *social.Marketplace
+	SelectedTraveller         *navigation.Traveller
 	ReverseReferences         *model.ReverseReferences
 	ControlPanel              *ControlPanel
 	Country                   *social.Country
@@ -118,6 +121,7 @@ func (c *Controller) Reset() {
 	c.SelectedFactory = nil
 	c.SelectedTower = nil
 	c.SelectedWorkshop = nil
+	c.SelectedTraveller = nil
 	c.ClickHandler = nil
 }
 
@@ -137,6 +141,8 @@ func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 		if rf != nil {
 			return c.ClickHandler.GetActiveFields(c, rf)
 		}
+	} else if c.SelectedTraveller != nil {
+		return c.SelectedTraveller.GetPathFields(c.Map)
 	}
 	return nil
 }
@@ -200,6 +206,18 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				return
 			}
 		}
+		for i := range c.RenderedTravellers {
+			rt := c.RenderedTravellers[i]
+			if rt.Contains(c.X, c.Y) {
+				c.Reset()
+				c.SelectedTraveller = rt.Traveller
+				person := c.ReverseReferences.TravellerToPerson[c.SelectedTraveller]
+				if person != nil {
+					PersonToControlPanel(c.ControlPanel, person)
+				}
+				return
+			}
+		}
 		if c.ClickHandler == nil && rf != nil {
 			c.Reset()
 			c.SelectedField = rf.F
@@ -245,8 +263,10 @@ func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, Map *model.Map) *Control
 func (c *Controller) SwapRenderedObjects() {
 	c.RenderedFields = c.TempRenderedFields
 	c.RenderedBuildingParts = c.TempRenderedBuildingParts
+	c.RenderedTravellers = c.TempRenderedTravellers
 	c.TempRenderedFields = []*renderer.RenderedField{}
 	c.TempRenderedBuildingParts = []renderer.RenderedBuildingPart{}
+	c.TempRenderedTravellers = []*renderer.RenderedTraveller{}
 }
 
 func (c *Controller) AddRenderedField(rf *renderer.RenderedField) {
@@ -255,4 +275,8 @@ func (c *Controller) AddRenderedField(rf *renderer.RenderedField) {
 
 func (c *Controller) AddRenderedBuildingPart(rbp renderer.RenderedBuildingPart) {
 	c.TempRenderedBuildingParts = append(c.TempRenderedBuildingParts, rbp)
+}
+
+func (c *Controller) AddRenderedTraveller(rt *renderer.RenderedTraveller) {
+	c.TempRenderedTravellers = append(c.TempRenderedTravellers, rt)
 }
