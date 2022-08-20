@@ -57,6 +57,9 @@ func (b *NewTownControllerButton) Click() {
 			dstH.Money += srcH.Money
 			srcH.Money = 0
 		}
+		for a, q := range b.c.resources {
+			b.c.newTown.Townhall.StorageTarget[a] = q
+		}
 		srcH.Town.Country.AddTown(b.c.newTown)
 	} else {
 		if b.state == NewTownControllerStatePickBuildTownhall {
@@ -69,6 +72,12 @@ func (b *NewTownControllerButton) Click() {
 }
 
 func (b *NewTownControllerButton) Render(cv *canvas.Canvas) {
+	if b.state == NewTownControllerStatePickResources && b.c.newTown.Townhall.Household.Building != nil {
+		if b.c.GetResourceVolume() > b.c.newTown.Townhall.Household.Building.Plan.Area()*social.StoragePerArea {
+			cv.SetFillStyle("#822")
+			cv.FillRect(b.b.X, b.b.Y, b.b.SX, b.b.SY)
+		}
+	}
 	b.b.Render(cv)
 }
 
@@ -168,6 +177,14 @@ func ArtifactsPickerToControlPanel(c *NewTownController, i int, a *artifacts.Art
 	c.p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI)*NewTownRowH+IconH+8, 32, 20, 0, int(q), 5, "%v", c.resources[a]).P)
 }
 
+func (ntc *NewTownController) GetResourceVolume() uint16 {
+	var v uint16 = 0
+	for a, q := range ntc.resources {
+		v += a.V * uint16(*q)
+	}
+	return v
+}
+
 func (ntc *NewTownController) CaptureClick(x, y float64) {
 	ntc.p.CaptureClick(x, y)
 }
@@ -205,6 +222,9 @@ func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedFi
 				ntc.newTown.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * social.StoragePerArea
 			}
 			ntc.newTown.CreateBuildingConstruction(b, c.Map)
+			for _, as := range ntc.bc.Plan.ConstructionCost() {
+				*ntc.resources[as.A] = *ntc.resources[as.A] + int(as.Quantity)
+			}
 			return true
 		} else {
 			return false
