@@ -57,6 +57,9 @@ func (b *NewTownControllerButton) Click() {
 			dstH.Money += srcH.Money
 			srcH.Money = 0
 		}
+		for a, q := range b.c.resources {
+			b.c.newTown.Townhall.StorageTarget[a] = q
+		}
 		srcH.Town.Country.AddTown(b.c.newTown)
 	} else {
 		if b.state == NewTownControllerStatePickBuildTownhall {
@@ -205,6 +208,9 @@ func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedFi
 				ntc.newTown.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * social.StoragePerArea
 			}
 			ntc.newTown.CreateBuildingConstruction(b, c.Map)
+			for _, as := range ntc.bc.Plan.ConstructionCost() {
+				*ntc.resources[as.A] = *ntc.resources[as.A] + int(as.Quantity)
+			}
 			return true
 		} else {
 			return false
