@@ -38,7 +38,7 @@ func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 		useType: military.MilitaryLandUseTypeNone,
 	})
 	tp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/shield", X: float64(50), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/shield", X: float64(10 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
 		luc:     tc,
 		useType: military.MilitaryLandUseTypePatrol,
 	})

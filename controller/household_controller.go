@@ -96,7 +96,7 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 		b: gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 40, Y: PersonGUIY*ControlPanelSY + 16, SX: 16, SY: 16},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
 	p.AddScaleLabel("heating", 10, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Heating, false)
-	p.AddScaleLabel("barrel", 50, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false)
+	p.AddScaleLabel("barrel", 10+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false)
 	var aI = 2
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {

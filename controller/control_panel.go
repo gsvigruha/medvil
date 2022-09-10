@@ -118,7 +118,11 @@ func (p *ControlPanel) Clear() {
 
 func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.C = c
+	ControlPanelSX = 450.0
 	ControlPanelSY = float64(c.H)
+	IconS = 48.0
+	IconW = 60
+	IconH = 60
 
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)

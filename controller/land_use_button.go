@@ -25,7 +25,7 @@ func (b LandUseButton) Render(cv *canvas.Canvas) {
 	b.b.Render(cv)
 	if b.luc.GetUseType() != b.useType {
 		cv.SetFillStyle(color.RGBA{R: 64, G: 0, B: 0, A: 128})
-		cv.FillRect(b.b.X, b.b.Y, 32, 32)
+		cv.FillRect(b.b.X, b.b.Y, IconS, IconS)
 	}
 }
 
