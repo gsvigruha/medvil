@@ -44,10 +44,9 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 	}
 
 	// the stencil size setting is required for the canvas to work
-	//glfw.WindowHint(glfw.StencilBits, 8)
-	//glfw.WindowHint(glfw.DepthBits, 0)
-	//glfw.WindowHint(glfw.Samples, 2)
-	//glfw.WindowHint(glfw.ScaleToMonitor, 1)
+	glfw.WindowHint(glfw.StencilBits, 8)
+	glfw.WindowHint(glfw.DepthBits, 0)
+	glfw.WindowHint(glfw.Samples, 2)
 	glfw.WindowHint(glfw.CocoaRetinaFramebuffer, 1)
 
 	// create window

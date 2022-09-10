@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/model"
@@ -247,7 +246,6 @@ func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64)
 
 func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, Map *model.Map) *Controller {
 	W, H := wnd.GetFramebufferSize()
-	fmt.Println(W, H)
 	Calendar := &time.CalendarType{
 		Year:  1000,
 		Month: 1,
