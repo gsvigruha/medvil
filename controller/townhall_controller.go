@@ -45,9 +45,9 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 	tc := &TownhallController{householdPanel: hp, th: th}
 	tc.buttons = []*TownhallControllerButton{
-		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "taxes", X: 10, Y: 560, SX: 32, SY: 32}},
-		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: 50, Y: 560, SX: 32, SY: 32}},
-		&TownhallControllerButton{tc: tc, subPanel: fp, b: gui.ButtonGUI{Icon: "factory", X: 90, Y: 560, SX: 32, SY: 32}},
+		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "taxes", X: 10, Y: 560, SX: IconS, SY: IconS}},
+		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: 50, Y: 560, SX: IconS, SY: IconS}},
+		&TownhallControllerButton{tc: tc, subPanel: fp, b: gui.ButtonGUI{Icon: "factory", X: 90, Y: 560, SX: IconS, SY: IconS}},
 	}
 
 	HouseholdToControlPanel(hp, &th.Household)
@@ -90,9 +90,9 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *artifacts.Artifact, q uint16, top float64) {
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*NewTownRowH), 32, 32, gui.ImageLabelStyleRegular)
+	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*NewTownRowH), IconS, IconS, gui.ImageLabelStyleRegular)
 	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*NewTownRowH+IconH+4))
-	p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*NewTownRowH+IconH+8), 32, 20, 0, 100, 5, "%v", th.StorageTarget[a]).P)
+	p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*NewTownRowH+IconH+8), IconS, 20, 0, 100, 5, "%v", th.StorageTarget[a]).P)
 }
 
 func (tc *TownhallController) CaptureClick(x, y float64) {
