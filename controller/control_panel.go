@@ -8,10 +8,10 @@ import (
 	"strconv"
 )
 
-const ControlPanelSX = 300
-const ControlPanelSY = 800
-const ControlPanelDynamicPanelTop = 100
-const ControlPanelDynamicPanelSY = 600
+var ControlPanelSX = 300.0
+var ControlPanelSY = 800.0
+var ControlPanelDynamicPanelTop = 0.1
+var ControlPanelDynamicPanelSY = 0.6
 
 const CPButtonHighlightNone = 0
 const CPButtonHighlightSmall = 1
@@ -138,7 +138,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: 250, Y: 70, SX: 32, SY: 32}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 
-	offscreen, _ := goglbackend.NewOffscreen(ControlPanelSX, ControlPanelSY, false, ctx)
+	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, ctx)
 	p.buffer = canvas.New(offscreen)
 }
 

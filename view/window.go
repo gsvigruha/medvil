@@ -47,6 +47,7 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 	glfw.WindowHint(glfw.StencilBits, 8)
 	glfw.WindowHint(glfw.DepthBits, 0)
 	glfw.WindowHint(glfw.Samples, 2)
+	glfw.WindowHint(glfw.CocoaRetinaFramebuffer, 1)
 
 	// create window
 	window, err := glfw.CreateWindow(w, h, title, nil, nil)

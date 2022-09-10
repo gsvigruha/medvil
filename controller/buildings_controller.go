@@ -12,10 +12,10 @@ import (
 	"strconv"
 )
 
-const RoofPanelTop = 150
-const FloorsPanelTop = 200
-const ExtensionPanelTop = 250
-const BuildingBasePanelTop = 500
+var RoofPanelTop = 150
+var FloorsPanelTop = 200
+var ExtensionPanelTop = 250
+var BuildingBasePanelTop = 500
 
 const DX = 24
 const DY = 16
@@ -367,7 +367,7 @@ func (bc *BuildingsController) GenerateButtons() {
 }
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
-	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY, SingleClick: true}
+	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop * ControlPanelSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY * ControlPanelSY, SingleClick: true}
 	bc := &BuildingsController{
 		Plan:        &building.BuildingPlan{BuildingType: bt},
 		bt:          bt,
