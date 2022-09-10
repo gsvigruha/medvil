@@ -37,8 +37,8 @@ func ArtifactsToMarketPanel(mp *gui.Panel, i int, a *artifacts.Artifact, q uint1
 	xI := i % IconRowMax
 	yI := i / IconRowMax
 	mp.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH), 32, 32, gui.ImageLabelStyleRegular)
-	mp.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH)+IconH+4)
-	mp.AddTextLabel("$"+strconv.Itoa(int(p)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH)+IconH+16)
+	mp.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH+IconH+4))
+	mp.AddTextLabel("$"+strconv.Itoa(int(p)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH+IconH+16))
 }
 
 func (mc *MarketplaceController) CaptureClick(x, y float64) {

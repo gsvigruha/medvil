@@ -10,8 +10,9 @@ import (
 	"strconv"
 )
 
-const IconH = 40
-const IconW = 40
+var IconH = 40
+var IconW = 40
+
 const IconRowMax = 7
 
 var PersonGUIY = 0.15
@@ -122,20 +123,20 @@ func PersonToPanel(p *gui.Panel, i int, person *social.Person, w int) {
 	} else if person.Equipment.Tool() {
 		p.AddImageLabel("tasks/toolsmith", float64(10+i*w)+16, top+16, 24, 24, gui.ImageLabelStyleRegular)
 	}
-	p.AddScaleLabel("food", float64(10+i*w), top+IconH, 32, 32, 4, float64(person.Food)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("drink", float64(10+i*w), top+IconH*2, 32, 32, 4, float64(person.Water)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("health", float64(10+i*w), top+IconH*3, 32, 32, 4, float64(person.Health)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("happiness", float64(10+i*w), top+IconH*4, 32, 32, 4, float64(person.Happiness)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("food", float64(10+i*w), top+float64(IconH), 32, 32, 4, float64(person.Food)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("drink", float64(10+i*w), top+float64(IconH*2), 32, 32, 4, float64(person.Water)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("health", float64(10+i*w), top+float64(IconH*3), 32, 32, 4, float64(person.Health)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("happiness", float64(10+i*w), top+float64(IconH*4), 32, 32, 4, float64(person.Happiness)/float64(social.MaxPersonState), false)
 	if person.Task != nil {
-		TaskToControlPanel(p, i, top+IconH*5, person.Task, w)
+		TaskToControlPanel(p, i, top+float64(IconH*5), person.Task, w)
 	}
 }
 
 func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI)*IconH, 32, 32, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI)*IconH+IconH+4)
+	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*IconH), 32, 32, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 
 func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task, w int) {

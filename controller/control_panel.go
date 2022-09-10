@@ -118,6 +118,8 @@ func (p *ControlPanel) Clear() {
 
 func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.C = c
+	ControlPanelSY = float64(c.H)
+
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", 10, 20)
 	p.topPanel.AddImageLabel("coin", 80, 8, 16, 16, gui.ImageLabelStyleRegular)
