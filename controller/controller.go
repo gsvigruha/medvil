@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/model"
@@ -235,15 +236,18 @@ func (c *Controller) RenderTick() {
 }
 
 func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
-	c.X = x
-	c.Y = y
+	w, h := wnd.GetSize()
+	fbw, fbh := wnd.GetFramebufferSize()
+	c.X = x * float64(fbw) / float64(w)
+	c.Y = y * float64(fbh) / float64(h)
 }
 
 func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
 }
 
 func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, Map *model.Map) *Controller {
-	W, H := wnd.GetSize()
+	W, H := wnd.GetFramebufferSize()
+	fmt.Println(W, H)
 	Calendar := &time.CalendarType{
 		Year:  1000,
 		Month: 1,

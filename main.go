@@ -19,7 +19,7 @@ const (
 func main() {
 	defer profile.Start(profile.ProfilePath(".")).Stop()
 
-	wnd, cv, ctx, err := view.CreateWindow(1600, 800, "Medvil")
+	wnd, cv, ctx, err := view.CreateWindow(1920, 1080, "Medvil")
 	if err != nil {
 		panic(err)
 	}
