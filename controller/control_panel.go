@@ -125,6 +125,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 		IconW = 40
 		IconH = 40
 		gui.FontSize = 12.0
+		ScaleBuildingControllerElements(1.0)
 	} else {
 		ControlPanelSX = 450.0
 		ControlPanelSY = float64(c.H)
@@ -132,6 +133,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 		IconW = 60
 		IconH = 60
 		gui.FontSize = 18.0
+		ScaleBuildingControllerElements(1.5)
 	}
 
 	iconS2 := IconS / 2.0
