@@ -22,18 +22,17 @@ func toTaskNames(names []string) []string {
 	return taskNames
 }
 
-const ManufactureDropDownTop = 560
-
 func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	wp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
 	HouseholdToControlPanel(hp, &workshop.Household)
 	wc := &WorkshopController{workshopPanel: wp, householdPanel: hp, workshop: workshop}
 
+	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	tasks := economy.GetManufactureNames(workshop.Household.Building.Plan.GetExtension())
 	wc.manufactureDropDown = &gui.DropDown{
 		X:        float64(10),
-		Y:        float64(ManufactureDropDownTop),
+		Y:        hcy,
 		SX:       128,
 		SY:       20,
 		Options:  tasks,

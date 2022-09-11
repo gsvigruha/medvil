@@ -10,8 +10,10 @@ import (
 	"strconv"
 )
 
-const IconH = 40
-const IconW = 40
+var IconH = 40
+var IconW = 40
+var IconS = 32.0
+
 const IconRowMax = 7
 
 var PersonGUIY = 0.15
@@ -79,13 +81,13 @@ func taskIconW(h *social.Household) (int, int) {
 }
 
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
-	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, 80)
+	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, float64(IconH+50))
 	piw := personIconW(h)
 	for i, person := range h.People {
 		PersonToPanel(p, i, person, piw)
 	}
 	for i := len(h.People); i < int(h.TargetNumPeople); i++ {
-		p.AddImageLabel("person", float64(10+i*piw), PersonGUIY*ControlPanelSY, 32, 32, gui.ImageLabelStyleDisabled)
+		p.AddImageLabel("person", float64(10+i*piw), PersonGUIY*ControlPanelSY, IconS, IconS, gui.ImageLabelStyleDisabled)
 	}
 	p.AddButton(HouseholdControllerButton{
 		b: gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 40, Y: PersonGUIY * ControlPanelSY, SX: 16, SY: 16},
@@ -93,8 +95,8 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 	p.AddButton(HouseholdControllerButton{
 		b: gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 40, Y: PersonGUIY*ControlPanelSY + 16, SX: 16, SY: 16},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
-	p.AddScaleLabel("heating", 10, ArtifactsGUIY*ControlPanelSY, 32, 32, 4, h.Heating, false)
-	p.AddScaleLabel("barrel", 50, ArtifactsGUIY*ControlPanelSY, 32, 32, 4, h.Resources.UsedVolumeCapacity(), false)
+	p.AddScaleLabel("heating", 10, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Heating, false)
+	p.AddScaleLabel("barrel", 10+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false)
 	var aI = 2
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {
@@ -116,26 +118,26 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 
 func PersonToPanel(p *gui.Panel, i int, person *social.Person, w int) {
 	top := PersonGUIY * ControlPanelSY
-	p.AddImageLabel("person", float64(10+i*w), top, 32, 32, gui.ImageLabelStyleRegular)
+	p.AddImageLabel("person", float64(10+i*w), top, IconS, IconS, gui.ImageLabelStyleRegular)
 	if person.Equipment.Weapon() {
 		p.AddImageLabel("tasks/swordsmith", float64(10+i*w)+16, top+16, 24, 24, gui.ImageLabelStyleRegular)
 	} else if person.Equipment.Tool() {
 		p.AddImageLabel("tasks/toolsmith", float64(10+i*w)+16, top+16, 24, 24, gui.ImageLabelStyleRegular)
 	}
-	p.AddScaleLabel("food", float64(10+i*w), top+IconH, 32, 32, 4, float64(person.Food)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("drink", float64(10+i*w), top+IconH*2, 32, 32, 4, float64(person.Water)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("health", float64(10+i*w), top+IconH*3, 32, 32, 4, float64(person.Health)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("happiness", float64(10+i*w), top+IconH*4, 32, 32, 4, float64(person.Happiness)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("food", float64(10+i*w), top+float64(IconH), IconS, IconS, 4, float64(person.Food)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("drink", float64(10+i*w), top+float64(IconH*2), IconS, IconS, 4, float64(person.Water)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("health", float64(10+i*w), top+float64(IconH*3), IconS, IconS, 4, float64(person.Health)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("happiness", float64(10+i*w), top+float64(IconH*4), IconS, IconS, 4, float64(person.Happiness)/float64(social.MaxPersonState), false)
 	if person.Task != nil {
-		TaskToControlPanel(p, i, top+IconH*5, person.Task, w)
+		TaskToControlPanel(p, i, top+float64(IconH*5), person.Task, w)
 	}
 }
 
 func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI)*IconH, 32, 32, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI)*IconH+IconH+4)
+	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*IconH), IconS, IconS, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 
 func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task, w int) {
@@ -143,7 +145,7 @@ func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task, w int
 	if task.Blocked() {
 		style = gui.ImageLabelStyleDisabled
 	}
-	p.AddImageLabel("tasks/"+task.Name(), float64(10+i*w), y, 32, 32, style)
+	p.AddImageLabel("tasks/"+task.Name(), float64(10+i*w), y, IconS, IconS, style)
 }
 
 func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Vehicle, w int) {
@@ -151,5 +153,5 @@ func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Veh
 	if !vehicle.InUse {
 		style = gui.ImageLabelStyleDisabled
 	}
-	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(10+i*w), y, 32, 32, style)
+	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(10+i*w), y, IconS, IconS, style)
 }

@@ -12,8 +12,6 @@ import (
 	"strconv"
 )
 
-const NewTownRowH = IconH + 32
-
 const NewTownControllerStatePickBuildTownhall = 1
 const NewTownControllerStatePickBuildMarket = 2
 const NewTownControllerStatePickResources = 3
@@ -133,19 +131,20 @@ func SetupNewTownController(c *NewTownController) {
 	if c.bc != nil {
 		c.p.AddPanel(c.bc.p)
 	}
+	top := 0.15 * ControlPanelSY
 	if c.state == NewTownControllerStatePickResources {
-		c.p.AddImageLabel("person", 10, 140, 32, 32, gui.ImageLabelStyleRegular)
-		c.p.AddTextLabel(strconv.Itoa(len(c.sourceTH.Household.People)), 10, 140+IconH+4)
-		c.p.AddPanel(gui.CreateNumberPanel(10, 140+IconH+8, 32, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
+		c.p.AddImageLabel("person", 10, top, IconS, IconS, gui.ImageLabelStyleRegular)
+		c.p.AddTextLabel(strconv.Itoa(len(c.sourceTH.Household.People)), 10, top+float64(IconH+4))
+		c.p.AddPanel(gui.CreateNumberPanel(10, top+float64(IconH+8), IconS, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
 
-		c.p.AddImageLabel("coin", 50, 140, 32, 32, gui.ImageLabelStyleRegular)
-		c.p.AddTextLabel(strconv.Itoa(int(c.sourceTH.Household.Money)), 50, 140+IconH+4)
-		c.p.AddPanel(gui.CreateNumberPanel(50, 140+IconH+8, 32, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
+		c.p.AddImageLabel("coin", float64(10+IconW), top, IconS, IconS, gui.ImageLabelStyleRegular)
+		c.p.AddTextLabel(strconv.Itoa(int(c.sourceTH.Household.Money)), float64(10+IconW), top+float64(IconH+4))
+		c.p.AddPanel(gui.CreateNumberPanel(float64(10+IconW), top+float64(IconH+8), IconS, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
 
 		var aI = 2
 		for _, a := range artifacts.All {
 			if q, ok := c.sourceTH.Household.Resources.Artifacts[a]; ok {
-				ArtifactsPickerToControlPanel(c, aI, a, q, 140)
+				ArtifactsPickerToControlPanel(c, aI, a, q, top)
 				aI++
 			}
 		}
@@ -153,28 +152,29 @@ func SetupNewTownController(c *NewTownController) {
 
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickBuildTownhall,
-		b: gui.ButtonGUI{Icon: "town", X: float64(10), Y: float64(100), SX: 32, SY: 32},
+		b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*0), Y: float64(100), SX: IconS, SY: IconS},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickBuildMarket,
-		b: gui.ButtonGUI{Icon: "market", X: float64(50), Y: float64(100), SX: 32, SY: 32},
+		b: gui.ButtonGUI{Icon: "market", X: float64(10 + IconW*1), Y: float64(100), SX: IconS, SY: IconS},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickResources,
-		b: gui.ButtonGUI{Icon: "barrel", X: float64(90), Y: float64(100), SX: 32, SY: 32},
+		b: gui.ButtonGUI{Icon: "barrel", X: float64(10 + IconW*2), Y: float64(100), SX: IconS, SY: IconS},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateStart,
-		b: gui.ButtonGUI{Icon: "start", X: float64(130), Y: float64(100), SX: 32, SY: 32},
+		b: gui.ButtonGUI{Icon: "start", X: float64(10 + IconW*3), Y: float64(100), SX: IconS, SY: IconS},
 	})
 }
 
 func ArtifactsPickerToControlPanel(c *NewTownController, i int, a *artifacts.Artifact, q uint16, top float64) {
+	rowH := IconH + int(IconS)
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	c.p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI)*NewTownRowH, 32, 32, gui.ImageLabelStyleRegular)
-	c.p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI)*NewTownRowH+IconH+4)
-	c.p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI)*NewTownRowH+IconH+8, 32, 20, 0, int(q), 5, "%v", c.resources[a]).P)
+	c.p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
+	c.p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*rowH+IconH+4))
+	c.p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*rowH+IconH+8), IconS, 20, 0, int(q), 5, "%v", c.resources[a]).P)
 }
 
 func (ntc *NewTownController) GetResourceVolume() uint16 {

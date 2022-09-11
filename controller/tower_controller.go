@@ -33,12 +33,12 @@ func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	tp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: hcy, SX: 32, SY: 32},
+		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: hcy, SX: IconS, SY: IconS},
 		luc:     tc,
 		useType: military.MilitaryLandUseTypeNone,
 	})
 	tp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/shield", X: float64(50), Y: hcy, SX: 32, SY: 32},
+		b:       gui.ButtonGUI{Icon: "artifacts/shield", X: float64(10 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
 		luc:     tc,
 		useType: military.MilitaryLandUseTypePatrol,
 	})

@@ -5,6 +5,8 @@ import (
 	"image/color"
 )
 
+var FontSize = 12.0
+
 type Label interface {
 	Render(cv *canvas.Canvas)
 }
@@ -19,7 +21,7 @@ type TextLabel struct {
 
 func (l *TextLabel) Render(cv *canvas.Canvas) {
 	cv.SetFillStyle("#FED")
-	cv.SetFont("texture/font/Go-Regular.ttf", 12)
+	cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
 	cv.FillText(l.Text, l.X, l.Y)
 }
 
