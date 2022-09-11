@@ -136,23 +136,25 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 
 	iconS2 := IconS / 2.0
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
-	p.dateLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.03, 20)
+	p.dateLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.03, 8+gui.FontSize)
 	p.topPanel.AddImageLabel("coin", ControlPanelSX*0.25, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.moneyLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.35, 20)
+	p.moneyLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.25+iconS2, 8+gui.FontSize)
 	p.topPanel.AddImageLabel("person", ControlPanelSX*0.5, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.peopleLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.65, 20)
+	p.peopleLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.5+iconS2, 8+gui.FontSize)
 	p.topPanel.AddImageLabel("barrel", ControlPanelSX*0.7, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.artifactsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.8, 20)
+	p.artifactsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.7+iconS2, 8+gui.FontSize)
 	p.topPanel.AddImageLabel("workshop", ControlPanelSX*0.9, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.buildingsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.95, 20)
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: float64(10 + IconW*0), Y: 30, SX: IconS, SY: IconS}, c: c, action: CPActionShowFarmController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "mine", X: float64(10 + IconW*1), Y: 30, SX: IconS, SY: IconS}, c: c, action: CPActionShowMineController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "workshop", X: float64(10 + IconW*2), Y: 30, SX: IconS, SY: IconS}, c: c, action: CPActionShowWorkshopController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "factory", X: float64(10 + IconW*3), Y: 30, SX: IconS, SY: IconS}, c: c, action: CPActionShowFactoryController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "infra", X: float64(10 + IconW*4), Y: 30, SX: IconS, SY: IconS}, c: c, action: CPActionShowInfraController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*5), Y: 30, SX: IconS, SY: IconS}, c: c, action: CPActionShowNewTownController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*6), Y: 30, SX: IconS, SY: IconS}, c: c, action: CPActionCancel})
-	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: float64(10 + IconW*6), Y: float64(30 + IconH), SX: IconS, SY: IconS}, c: c, action: CPActionTimeScaleChange}
+	p.buildingsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.9+iconS2, 8+gui.FontSize)
+
+	iconTop := 15 + iconS2
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: float64(10 + IconW*0), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowFarmController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "mine", X: float64(10 + IconW*1), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowMineController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "workshop", X: float64(10 + IconW*2), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowWorkshopController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "factory", X: float64(10 + IconW*3), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowFactoryController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "infra", X: float64(10 + IconW*4), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowInfraController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*5), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowNewTownController})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*6), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionCancel})
+	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: float64(10 + IconW*6), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 
 	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, ctx)

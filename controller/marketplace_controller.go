@@ -21,7 +21,7 @@ func MarketplaceToControlPanel(cp *ControlPanel, m *social.Marketplace) {
 }
 
 func MarketplaceToMarketPanel(mp *gui.Panel, m *social.Marketplace) {
-	MoneyToControlPanel(mp, m.Town, &m.Money, 100, 10, 80)
+	MoneyToControlPanel(mp, m.Town, &m.Money, 100, 10, float64(IconH+50))
 	var aI = 0
 	for _, a := range artifacts.All {
 		if q, ok := m.Storage.Artifacts[a]; ok {
@@ -37,7 +37,7 @@ func ArtifactsToMarketPanel(mp *gui.Panel, i int, a *artifacts.Artifact, q uint1
 	yI := i / IconRowMax
 	mp.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), ArtifactsGUIY*ControlPanelSY+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
 	mp.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), ArtifactsGUIY*ControlPanelSY+float64(yI*rowH+IconH+4))
-	mp.AddTextLabel("$"+strconv.Itoa(int(p)), float64(10+xI*IconW), ArtifactsGUIY*ControlPanelSY+float64(yI*rowH+IconH+16))
+	mp.AddTextLabel("$"+strconv.Itoa(int(p)), float64(10+xI*IconW), ArtifactsGUIY*ControlPanelSY+float64(yI*rowH+IconH+4)+gui.FontSize)
 }
 
 func (mc *MarketplaceController) CaptureClick(x, y float64) {
