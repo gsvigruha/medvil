@@ -62,6 +62,9 @@ func (t *Townhall) GetFields() []navigation.FieldWithContext {
 	return fields
 }
 
-func (f *Townhall) FieldWithinDistance(field *navigation.Field) bool {
-	return WithinDistance(f.Household.Building, field, TownhallMaxDistance)
+func (t *Townhall) FieldWithinDistance(field *navigation.Field) bool {
+	if t.Household.Building == nil {
+		return true
+	}
+	return WithinDistance(t.Household.Building, field, TownhallMaxDistance)
 }
