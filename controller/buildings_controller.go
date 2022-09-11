@@ -12,7 +12,7 @@ import (
 	"strconv"
 )
 
-var BuildingButtonPanelTop = 0.1
+var BuildingButtonPanelTop = 0.15
 var BuildingBasePanelTop = 0.5
 
 var DX = 24.0
@@ -118,6 +118,10 @@ func (b BuildingBaseButton) Contains(x float64, y float64) bool {
 	return b.p.Contains(x, y)
 }
 
+func (b BuildingBaseButton) Enabled() bool {
+	return true
+}
+
 func createBuildingBaseButton(
 	bc *BuildingsController,
 	i, j, k int,
@@ -203,6 +207,10 @@ func (b FloorButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (b FloorButton) Enabled() bool {
+	return true
+}
+
 type RoofButton struct {
 	b   gui.ButtonGUI
 	m   *materials.Material
@@ -227,6 +235,10 @@ func (b RoofButton) Render(cv *canvas.Canvas) {
 
 func (b RoofButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
+}
+
+func (b RoofButton) Enabled() bool {
+	return true
 }
 
 type ExtensionButton struct {
@@ -255,6 +267,10 @@ func (b ExtensionButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (b ExtensionButton) Enabled() bool {
+	return true
+}
+
 type RotationButton struct {
 	b  *gui.ButtonGUI
 	bc *BuildingsController
@@ -272,6 +288,10 @@ func (b RotationButton) Render(cv *canvas.Canvas) {
 
 func (b RotationButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
+}
+
+func (b RotationButton) Enabled() bool {
+	return true
 }
 
 func (bc *BuildingsController) RotatePlan() {

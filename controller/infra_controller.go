@@ -56,6 +56,10 @@ func (b InfraBuildButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (b InfraBuildButton) Enabled() bool {
+	return true
+}
+
 func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField) bool {
 	if !c.ActiveTown.Townhall.FieldWithinDistance(rf.F) {
 		return false

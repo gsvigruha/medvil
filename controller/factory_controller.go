@@ -75,6 +75,10 @@ func (b OrderButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (b OrderButton) Enabled() bool {
+	return true
+}
+
 func CreateOrderPanelForFactory(x, y, sx, sy float64, factory *social.Factory, vc *economy.VehicleConstruction) *gui.Panel {
 	p := &gui.Panel{}
 	l := p.AddTextLabel("", x, y+sy*2/3)

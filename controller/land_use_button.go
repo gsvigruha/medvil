@@ -32,3 +32,7 @@ func (b LandUseButton) Render(cv *canvas.Canvas) {
 func (b LandUseButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
+
+func (b LandUseButton) Enabled() bool {
+	return true
+}

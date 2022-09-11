@@ -56,6 +56,10 @@ func (b ControlPanelButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (b ControlPanelButton) Enabled() bool {
+	return true
+}
+
 func CPActionShowWorkshopController(c *Controller) {
 	c.ShowBuildingController(building.BuildingTypeWorkshop)
 }

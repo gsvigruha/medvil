@@ -12,6 +12,7 @@ import (
 	"strconv"
 )
 
+const NewTownControllerStateNone = 0
 const NewTownControllerStateBuildTownhall = 1
 const NewTownControllerStateBuildMarket = 2
 const NewTownControllerStatePickTown = 3
@@ -26,17 +27,25 @@ type NewTownControllerButton struct {
 
 func (b *NewTownControllerButton) Click() {
 	b.c.state = b.state
-	if b.state == NewTownControllerStatePickResources {
-		b.c.bc = nil
-	} else if b.state == NewTownControllerStateStart {
-		b.c.cp.C.ClickHandler = nil
-		srcH := &b.c.sourceTH.Household
-		dstH := &b.c.newTown.Townhall.Household
-		for a, q := range b.c.resources {
+	b.c.SetToState()
+}
+
+func (b *NewTownControllerButton) Enabled() bool {
+	return b.b.Enabled()
+}
+
+func (ntc *NewTownController) SetToState() {
+	if ntc.state == NewTownControllerStatePickResources {
+		ntc.bc = nil
+	} else if ntc.state == NewTownControllerStateStart {
+		ntc.cp.C.ClickHandler = nil
+		srcH := &ntc.sourceTH.Household
+		dstH := &ntc.newTown.Townhall.Household
+		for a, q := range ntc.resources {
 			if *q > 0 {
 				srcH.AddTask(&economy.TransportTask{
-					PickupF:  b.c.cp.C.Map.GetField(srcH.Building.X, srcH.Building.Y),
-					DropoffF: b.c.cp.C.Map.GetField(dstH.Building.X, dstH.Building.Y),
+					PickupF:  ntc.cp.C.Map.GetField(srcH.Building.X, srcH.Building.Y),
+					DropoffF: ntc.cp.C.Map.GetField(dstH.Building.X, dstH.Building.Y),
 					PickupR:  &srcH.Resources,
 					DropoffR: &dstH.Resources,
 					A:        a,
@@ -44,11 +53,11 @@ func (b *NewTownControllerButton) Click() {
 				})
 			}
 		}
-		for i := 0; i < *b.c.numPeople; i++ {
-			srcH.ReassignFirstPerson(dstH, b.c.cp.C.Map)
+		for i := 0; i < *ntc.numPeople; i++ {
+			srcH.ReassignFirstPerson(dstH, ntc.cp.C.Map)
 			dstH.TargetNumPeople++
 		}
-		targetMoney := uint32(*b.c.money)
+		targetMoney := uint32(*ntc.money)
 		if srcH.Money > targetMoney {
 			dstH.Money += targetMoney
 			srcH.Money -= targetMoney
@@ -56,20 +65,20 @@ func (b *NewTownControllerButton) Click() {
 			dstH.Money += srcH.Money
 			srcH.Money = 0
 		}
-		for a, q := range b.c.resources {
-			b.c.newTown.Townhall.StorageTarget[a] = q
+		for a, q := range ntc.resources {
+			ntc.newTown.Townhall.StorageTarget[a] = q
 		}
-		srcH.Town.Country.AddTown(b.c.newTown)
-	} else if b.state == NewTownControllerStatePickTown {
-		b.c.cp.C.ClickHandler = b.c
-		b.c.bc = nil
+		srcH.Town.Country.AddTown(ntc.newTown)
+	} else if ntc.state == NewTownControllerStatePickTown {
+		ntc.cp.C.ClickHandler = ntc
+		ntc.bc = nil
 	} else {
-		if b.state == NewTownControllerStateBuildTownhall {
-			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeTownhall, b.c.newTown)
-		} else if b.state == NewTownControllerStateBuildMarket {
-			b.c.bc = CreateBuildingsController(b.c.cp, building.BuildingTypeMarket, b.c.newTown)
+		if ntc.state == NewTownControllerStateBuildTownhall {
+			ntc.bc = CreateBuildingsController(ntc.cp, building.BuildingTypeTownhall, ntc.newTown)
+		} else if ntc.state == NewTownControllerStateBuildMarket {
+			ntc.bc = CreateBuildingsController(ntc.cp, building.BuildingTypeMarket, ntc.newTown)
 		}
-		b.c.cp.C.ClickHandler = b.c
+		ntc.cp.C.ClickHandler = ntc
 	}
 }
 
@@ -124,7 +133,7 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		sourceTH:  th,
 		newTown:   newTown,
 		cp:        cp,
-		state:     NewTownControllerStateBuildTownhall,
+		state:     NewTownControllerStateNone,
 	}
 
 	SetupNewTownController(c)
@@ -135,44 +144,60 @@ func SetupNewTownController(c *NewTownController) {
 	if c.bc != nil {
 		c.p.AddPanel(c.bc.p)
 	}
-	top := 0.15 * ControlPanelSY
+	resTop := 0.15 * ControlPanelSY
 	if c.state == NewTownControllerStatePickResources {
-		c.p.AddImageLabel("person", 10, top, IconS, IconS, gui.ImageLabelStyleRegular)
-		c.p.AddTextLabel(strconv.Itoa(len(c.sourceTH.Household.People)), 10, top+float64(IconH+4))
-		c.p.AddPanel(gui.CreateNumberPanel(10, top+float64(IconH+8), IconS, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
+		c.p.AddImageLabel("person", 10, resTop, IconS, IconS, gui.ImageLabelStyleRegular)
+		c.p.AddTextLabel(strconv.Itoa(len(c.sourceTH.Household.People)), 10, resTop+float64(IconH+4))
+		c.p.AddPanel(gui.CreateNumberPanel(10, resTop+float64(IconH+8), IconS, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
 
-		c.p.AddImageLabel("coin", float64(10+IconW), top, IconS, IconS, gui.ImageLabelStyleRegular)
-		c.p.AddTextLabel(strconv.Itoa(int(c.sourceTH.Household.Money)), float64(10+IconW), top+float64(IconH+4))
-		c.p.AddPanel(gui.CreateNumberPanel(float64(10+IconW), top+float64(IconH+8), IconS, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
+		c.p.AddImageLabel("coin", float64(10+IconW), resTop, IconS, IconS, gui.ImageLabelStyleRegular)
+		c.p.AddTextLabel(strconv.Itoa(int(c.sourceTH.Household.Money)), float64(10+IconW), resTop+float64(IconH+4))
+		c.p.AddPanel(gui.CreateNumberPanel(float64(10+IconW), resTop+float64(IconH+8), IconS, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
 
 		var aI = 2
 		for _, a := range artifacts.All {
 			if q, ok := c.sourceTH.Household.Resources.Artifacts[a]; ok {
-				ArtifactsPickerToControlPanel(c, aI, a, q, top)
+				ArtifactsPickerToControlPanel(c, aI, a, q, resTop)
 				aI++
 			}
 		}
 	}
 
+	top := float64(IconH) + 50
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateBuildTownhall,
-		b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*0), Y: float64(100), SX: IconS, SY: IconS},
+		b: gui.ButtonGUI{Icon: "new_town", X: float64(10 + IconW*0), Y: top, SX: IconS, SY: IconS,
+			Disabled: func() bool {
+				return c.state != NewTownControllerStateNone && c.state != NewTownControllerStateBuildTownhall
+			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateBuildMarket,
-		b: gui.ButtonGUI{Icon: "market", X: float64(10 + IconW*1), Y: float64(100), SX: IconS, SY: IconS},
+		b: gui.ButtonGUI{Icon: "new_market", X: float64(10 + IconW*1), Y: top, SX: IconS, SY: IconS,
+			Disabled: func() bool {
+				return c.state != NewTownControllerStateBuildMarket
+			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickTown,
-		b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*2), Y: float64(100), SX: IconS, SY: IconS},
+		b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*0), Y: top + float64(IconH), SX: IconS, SY: IconS,
+			Disabled: func() bool {
+				return c.state != NewTownControllerStateNone && c.state != NewTownControllerStatePickTown
+			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickResources,
-		b: gui.ButtonGUI{Icon: "barrel", X: float64(10 + IconW*3), Y: float64(100), SX: IconS, SY: IconS},
+		b: gui.ButtonGUI{Icon: "barrel", X: float64(10 + IconW*2), Y: top + float64(IconH/2), SX: IconS, SY: IconS,
+			Disabled: func() bool {
+				return c.state != NewTownControllerStatePickResources
+			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateStart,
-		b: gui.ButtonGUI{Icon: "start", X: float64(10 + IconW*4), Y: float64(100), SX: IconS, SY: IconS},
+		b: gui.ButtonGUI{Icon: "start", X: float64(10 + IconW*3), Y: top + float64(IconH/2), SX: IconS, SY: IconS,
+			Disabled: func() bool {
+				return c.state != NewTownControllerStatePickResources
+			}},
 	})
 }
 
@@ -234,6 +259,8 @@ func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedFi
 			th := c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()]
 			if th != nil {
 				ntc.newTown = th.Household.Town
+				ntc.state = NewTownControllerStatePickResources
+				ntc.SetToState()
 				return true
 			}
 		}
@@ -243,14 +270,17 @@ func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedFi
 			if ntc.state == NewTownControllerStateBuildTownhall {
 				ntc.newTown.Townhall.Household.Building = b
 				ntc.newTown.Townhall.Household.Resources.VolumeCapacity = b.Plan.Area() * social.StoragePerArea
+				ntc.state = NewTownControllerStateBuildMarket
 			} else if ntc.state == NewTownControllerStateBuildMarket {
 				ntc.newTown.Marketplace.Building = b
 				ntc.newTown.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * social.StoragePerArea
+				ntc.state = NewTownControllerStatePickResources
 			}
 			ntc.newTown.CreateBuildingConstruction(b, c.Map)
 			for _, as := range ntc.bc.Plan.ConstructionCost() {
 				*ntc.resources[as.A] = *ntc.resources[as.A] + int(as.Quantity)
 			}
+			ntc.SetToState()
 			return true
 		} else {
 			return false
