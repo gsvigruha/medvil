@@ -12,8 +12,6 @@ import (
 	"strconv"
 )
 
-var NewTownRowH = IconH + int(IconS)
-
 const NewTownControllerStatePickBuildTownhall = 1
 const NewTownControllerStatePickBuildMarket = 2
 const NewTownControllerStatePickResources = 3
@@ -170,11 +168,12 @@ func SetupNewTownController(c *NewTownController) {
 }
 
 func ArtifactsPickerToControlPanel(c *NewTownController, i int, a *artifacts.Artifact, q uint16, top float64) {
+	rowH := IconH + int(IconS)
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	c.p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*NewTownRowH), IconS, IconS, gui.ImageLabelStyleRegular)
-	c.p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*NewTownRowH+IconH+4))
-	c.p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*NewTownRowH+IconH+8), IconS, 20, 0, int(q), 5, "%v", c.resources[a]).P)
+	c.p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
+	c.p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*rowH+IconH+4))
+	c.p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*rowH+IconH+8), IconS, 20, 0, int(q), 5, "%v", c.resources[a]).P)
 }
 
 func (ntc *NewTownController) GetResourceVolume() uint16 {

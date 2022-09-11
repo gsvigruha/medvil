@@ -16,7 +16,6 @@ type DropDown struct {
 }
 
 const IconPadding = 4.0
-const FontSize = 12
 
 func (d *DropDown) GetSelectedValue() string {
 	if d.Selected > -1 {

@@ -81,7 +81,7 @@ func taskIconW(h *social.Household) (int, int) {
 }
 
 func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
-	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, 80)
+	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, float64(IconH+50))
 	piw := personIconW(h)
 	for i, person := range h.People {
 		PersonToPanel(p, i, person, piw)

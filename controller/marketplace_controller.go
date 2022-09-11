@@ -8,8 +8,6 @@ import (
 	"strconv"
 )
 
-const MPIconH = 60
-
 type MarketplaceController struct {
 	mp          *gui.Panel
 	marketplace *social.Marketplace
@@ -34,11 +32,12 @@ func MarketplaceToMarketPanel(mp *gui.Panel, m *social.Marketplace) {
 }
 
 func ArtifactsToMarketPanel(mp *gui.Panel, i int, a *artifacts.Artifact, q uint16, p uint32) {
+	rowH := IconH + int(IconS)
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	mp.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH), IconS, IconS, gui.ImageLabelStyleRegular)
-	mp.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH+IconH+4))
-	mp.AddTextLabel("$"+strconv.Itoa(int(p)), float64(10+xI*IconW), ArtifactsGUIY+float64(yI*MPIconH+IconH+16))
+	mp.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), ArtifactsGUIY*ControlPanelSY+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
+	mp.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), ArtifactsGUIY*ControlPanelSY+float64(yI*rowH+IconH+4))
+	mp.AddTextLabel("$"+strconv.Itoa(int(p)), float64(10+xI*IconW), ArtifactsGUIY*ControlPanelSY+float64(yI*rowH+IconH+16))
 }
 
 func (mc *MarketplaceController) CaptureClick(x, y float64) {
