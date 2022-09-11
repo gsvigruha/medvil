@@ -143,10 +143,10 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.moneyLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.25+iconS2, 8+gui.FontSize)
 	p.topPanel.AddImageLabel("person", ControlPanelSX*0.5, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
 	p.peopleLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.5+iconS2, 8+gui.FontSize)
-	p.topPanel.AddImageLabel("barrel", ControlPanelSX*0.7, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.artifactsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.7+iconS2, 8+gui.FontSize)
-	p.topPanel.AddImageLabel("workshop", ControlPanelSX*0.9, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.buildingsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.9+iconS2, 8+gui.FontSize)
+	p.topPanel.AddImageLabel("barrel", ControlPanelSX*0.65, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
+	p.artifactsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.65+iconS2, 8+gui.FontSize)
+	p.topPanel.AddImageLabel("workshop", ControlPanelSX*0.85, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
+	p.buildingsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.85+iconS2, 8+gui.FontSize)
 
 	iconTop := 15 + iconS2
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: float64(10 + IconW*0), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowFarmController})

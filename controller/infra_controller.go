@@ -57,6 +57,9 @@ func (b InfraBuildButton) Contains(x float64, y float64) bool {
 }
 
 func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField) bool {
+	if !c.ActiveTown.Townhall.FieldWithinDistance(rf.F) {
+		return false
+	}
 	if ic.it == InfraTypeDirtRoad || ic.it == InfraTypeCobbleRoad {
 		return rf.F.RoadCompatible()
 	} else if ic.it == InfraTypeCanal {

@@ -286,11 +286,17 @@ func (bc *BuildingsController) RotatePlan() {
 }
 
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
+	if !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
+		return nil
+	}
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if bc.activeTown == nil {
+		return false
+	}
+	if !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
 		return false
 	}
 	if bc.Plan.IsComplete() {

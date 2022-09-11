@@ -9,6 +9,8 @@ import (
 	"medvil/model/time"
 )
 
+const FarmMaxDistance = 6
+
 type FarmLand struct {
 	X       uint16
 	Y       uint16
@@ -167,4 +169,8 @@ func (f *Farm) FieldUsableFor(m navigation.IMap, field *navigation.Field, useTyp
 		return field.Arable()
 	}
 	return false
+}
+
+func (f *Farm) FieldWithinDistance(field *navigation.Field) bool {
+	return WithinDistance(f.Household.Building, field, FarmMaxDistance)
 }

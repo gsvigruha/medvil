@@ -9,6 +9,8 @@ import (
 	"medvil/model/time"
 )
 
+const MineMaxDistance = 10
+
 type MineLand struct {
 	X       uint16
 	Y       uint16
@@ -132,4 +134,8 @@ func (m *Mine) GetFields() []navigation.FieldWithContext {
 		fields[i] = m.Land[i]
 	}
 	return fields
+}
+
+func (m *Mine) FieldWithinDistance(field *navigation.Field) bool {
+	return WithinDistance(m.Household.Building, field, MineMaxDistance)
 }

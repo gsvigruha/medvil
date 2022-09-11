@@ -15,6 +15,8 @@ type Townhall struct {
 const StorageRefillBudgetPercentage = 0.5
 const ConstructionStorageCapacity = 0.7
 
+const TownhallMaxDistance = 25
+
 func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Household.ElapseTime(Calendar, m)
 	mp := t.Household.Town.Marketplace
@@ -58,4 +60,8 @@ func (t *Townhall) GetFields() []navigation.FieldWithContext {
 		fields[i] = t.Household.Town.Roads[i]
 	}
 	return fields
+}
+
+func (f *Townhall) FieldWithinDistance(field *navigation.Field) bool {
+	return WithinDistance(f.Household.Building, field, TownhallMaxDistance)
 }
