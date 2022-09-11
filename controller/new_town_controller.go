@@ -123,8 +123,8 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	newTown.Marketplace = &social.Marketplace{Town: newTown}
 	newTown.Init()
 	newTown.Marketplace.Init()
-	var money int
-	var numPeople int
+	var money int = 100
+	var numPeople int = 2
 	c := &NewTownController{
 		p:         p,
 		resources: resources,

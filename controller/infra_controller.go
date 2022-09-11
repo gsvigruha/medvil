@@ -57,7 +57,7 @@ func (b InfraBuildButton) Contains(x float64, y float64) bool {
 }
 
 func (b InfraBuildButton) Enabled() bool {
-	return true
+	return b.b.Enabled()
 }
 
 func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField) bool {

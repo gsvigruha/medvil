@@ -76,7 +76,7 @@ func (b OrderButton) Contains(x float64, y float64) bool {
 }
 
 func (b OrderButton) Enabled() bool {
-	return true
+	return b.b.Enabled()
 }
 
 func CreateOrderPanelForFactory(x, y, sx, sy float64, factory *social.Factory, vc *economy.VehicleConstruction) *gui.Panel {

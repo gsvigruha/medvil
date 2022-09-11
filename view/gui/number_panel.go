@@ -38,7 +38,7 @@ func (b NumberPanelButton) Contains(x float64, y float64) bool {
 }
 
 func (b NumberPanelButton) Enabled() bool {
-	return true
+	return b.b.Enabled()
 }
 
 func CreateNumberPanel(x, y, sx, sy float64, min, max, inc int, format string, val *int) *NumberPanel {
