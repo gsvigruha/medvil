@@ -30,6 +30,10 @@ func (b *TownhallControllerButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (b *TownhallControllerButton) Enabled() bool {
+	return b.b.Enabled()
+}
+
 type TownhallController struct {
 	householdPanel *gui.Panel
 	buttons        []*TownhallControllerButton

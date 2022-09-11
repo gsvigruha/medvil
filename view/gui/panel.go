@@ -36,7 +36,7 @@ func (p *Panel) Render(cv *canvas.Canvas) {
 func (p *Panel) CaptureClick(x float64, y float64) {
 	var button Button
 	for i := range p.Buttons {
-		if p.Buttons[i].Contains(x, y) {
+		if p.Buttons[i].Contains(x, y) && p.Buttons[i].Enabled() {
 			if p.SingleClick {
 				button = p.Buttons[i]
 			} else {

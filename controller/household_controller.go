@@ -44,6 +44,10 @@ func (b HouseholdControllerButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
 
+func (b HouseholdControllerButton) Enabled() bool {
+	return b.b.Enabled()
+}
+
 func IncreaseHouseholdTargetNumPeople(h *social.Household) {
 	h.IncTargetNumPeople()
 }
