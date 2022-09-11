@@ -10,6 +10,8 @@ import (
 
 const WeaponBudgetRatio = 0.5
 
+const TowerMaxDistance = 10
+
 type PatrolLand struct {
 	X uint16
 	Y uint16
@@ -112,4 +114,8 @@ func (t *Tower) numUnarmedPeople() uint16 {
 		}
 	}
 	return i
+}
+
+func (t *Tower) FieldWithinDistance(field *navigation.Field) bool {
+	return WithinDistance(t.Household.Building, field, TowerMaxDistance)
 }

@@ -80,7 +80,7 @@ func (tc *TowerController) HandleClick(c *Controller, rf *renderer.RenderedField
 			return true
 		}
 	}
-	if !rf.F.Allocated && tc.UseType == military.MilitaryLandUseTypePatrol {
+	if !rf.F.Allocated && tc.UseType == military.MilitaryLandUseTypePatrol && tc.tower.FieldWithinDistance(rf.F) {
 		tc.tower.Land = append(tc.tower.Land, social.PatrolLand{
 			X: rf.F.X,
 			Y: rf.F.Y,

@@ -132,7 +132,7 @@ func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedFi
 			return true
 		}
 	}
-	if !rf.F.Allocated && rf.F.Road != nil {
+	if !rf.F.Allocated && rf.F.Road != nil && tc.th.FieldWithinDistance(rf.F) {
 		tc.th.Household.Town.Roads = append(tc.th.Household.Town.Roads, rf.F)
 		rf.F.Allocated = true
 		return true

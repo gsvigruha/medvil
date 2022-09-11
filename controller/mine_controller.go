@@ -99,7 +99,7 @@ func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField)
 		}
 	}
 	if social.CheckMineUseType(mc.UseType, rf.F) && !rf.F.Allocated && mc.UseType != economy.MineFieldUseTypeNone {
-		if social.CheckMineUseType(mc.UseType, rf.F) {
+		if social.CheckMineUseType(mc.UseType, rf.F) && mc.mine.FieldWithinDistance(rf.F) {
 			mc.mine.Land = append(mc.mine.Land, social.MineLand{
 				X:       rf.F.X,
 				Y:       rf.F.Y,

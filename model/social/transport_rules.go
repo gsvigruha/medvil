@@ -46,3 +46,7 @@ func GetRandomBuildingXY(b *building.Building, m navigation.IMap, check func(nav
 	idx := rand.Intn(len(filteredFields))
 	return filteredFields[idx][0], filteredFields[idx][1], true
 }
+
+func WithinDistance(b *building.Building, f *navigation.Field, d uint16) bool {
+	return (b.X-f.X)*(b.X-f.X)+(b.Y-f.Y)*(b.Y-f.Y) <= d*d
+}
