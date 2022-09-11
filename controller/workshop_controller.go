@@ -33,8 +33,8 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	wc.manufactureDropDown = &gui.DropDown{
 		X:        float64(10),
 		Y:        hcy,
-		SX:       128,
-		SY:       20,
+		SX:       IconS*0.66 + gui.FontSize*12,
+		SY:       IconS * 0.66,
 		Options:  tasks,
 		Icons:    toTaskNames(tasks),
 		Selected: -1,

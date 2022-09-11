@@ -12,14 +12,18 @@ import (
 	"strconv"
 )
 
-var RoofPanelTop = 150
-var FloorsPanelTop = 200
-var ExtensionPanelTop = 250
-var BuildingBasePanelTop = 500
+var BuildingButtonPanelTop = 0.1
+var BuildingBasePanelTop = 0.5
 
-const DX = 24
-const DY = 16
-const DZ = 12
+var DX = 24.0
+var DY = 16.0
+var DZ = 12.0
+
+func ScaleBuildingControllerElements(scale float64) {
+	DX = scale * 24
+	DY = scale * 16
+	DZ = scale * 12
+}
 
 type BuildingsController struct {
 	PlanName    string
@@ -191,7 +195,7 @@ func (b FloorButton) Render(cv *canvas.Canvas) {
 	b.b.Render(cv)
 	if b.bc.UnitM != b.m || (!b.bc.del && b.del) {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 128})
-		cv.FillRect(b.b.X, b.b.Y, 32, 32)
+		cv.FillRect(b.b.X, b.b.Y, IconS, IconS)
 	}
 }
 
@@ -217,7 +221,7 @@ func (b RoofButton) Render(cv *canvas.Canvas) {
 	b.b.Render(cv)
 	if b.bc.RoofM != b.m || (!b.bc.del && b.del) {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 128})
-		cv.FillRect(b.b.X, b.b.Y, 32, 32)
+		cv.FillRect(b.b.X, b.b.Y, IconS, IconS)
 	}
 }
 
@@ -243,7 +247,7 @@ func (b ExtensionButton) Render(cv *canvas.Canvas) {
 	b.b.Render(cv)
 	if b.bc.ExtensionT == nil || b.bc.ExtensionT != b.t || (!b.bc.del && b.del) {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 128})
-		cv.FillRect(b.b.X, b.b.Y, 32, 32)
+		cv.FillRect(b.b.X, b.b.Y, IconS, IconS)
 	}
 }
 
@@ -298,37 +302,40 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 
 func (bc *BuildingsController) GenerateButtons() {
 	bc.p.Buttons = nil
+	roofPanelTop := BuildingButtonPanelTop * ControlPanelSY
 	bc.p.AddButton(RoofButton{
-		b:   gui.ButtonGUI{Icon: "cancel", X: 10, Y: float64(RoofPanelTop), SX: 32, SY: 32},
+		b:   gui.ButtonGUI{Icon: "cancel", X: float64(IconW*4 + 10), Y: roofPanelTop, SX: IconS, SY: IconS},
 		del: true,
 		bc:  bc,
 	})
 	for i, m := range building.RoofMaterials(bc.bt) {
 		bc.p.AddButton(RoofButton{
-			b:  gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*40 + 50), Y: float64(RoofPanelTop), SX: 32, SY: 32},
+			b:  gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*IconW + 10), Y: roofPanelTop, SX: IconS, SY: IconS},
 			m:  m,
 			bc: bc,
 		})
 	}
 
+	floorsPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(IconH)
 	for i, m := range building.FloorMaterials(bc.bt) {
 		bc.p.AddButton(FloorButton{
-			b:  gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*40 + 10), Y: float64(FloorsPanelTop), SX: 32, SY: 32},
+			b:  gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i*IconW + 10), Y: floorsPanelTop, SX: IconS, SY: IconS},
 			m:  m,
 			bc: bc,
 		})
 	}
 
+	extensionPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(IconH*2)
 	for i, e := range building.ExtensionTypes(bc.bt) {
 		bc.p.AddButton(ExtensionButton{
-			b:  gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i*40 + 10), Y: float64(ExtensionPanelTop), SX: 32, SY: 32},
+			b:  gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i*IconW + 10), Y: extensionPanelTop, SX: IconS, SY: IconS},
 			t:  e,
 			bc: bc,
 		})
 	}
 
 	bc.p.AddButton(RotationButton{
-		b:  &gui.ButtonGUI{Icon: "building/dir_" + strconv.Itoa(int(bc.Direction)), X: 130, Y: float64(RoofPanelTop), SX: 32, SY: 32},
+		b:  &gui.ButtonGUI{Icon: "building/dir_" + strconv.Itoa(int(bc.Direction)), X: float64(IconW*5 + 10), Y: roofPanelTop, SX: IconS, SY: IconS},
 		bc: bc,
 	})
 
@@ -347,8 +354,8 @@ func (bc *BuildingsController) GenerateButtons() {
 				pi, pj = m-1-j, m-1-i
 			}
 
-			x := float64(130 - pi*DX + pj*DX + 10)
-			y := float64(pj*DY + pi*DY + BuildingBasePanelTop)
+			x := (ControlPanelSX-20)/2 - float64(pi)*DX + float64(pj)*DX + 10
+			y := float64(pj)*DY + float64(pi)*DY + BuildingBasePanelTop*ControlPanelSY
 			bc.p.AddButton(createBuildingBaseButton(bc, i, j, 0, x, y, nil, nil, nil))
 			if bc.Plan.BaseShape[i][j] != nil {
 				var k int
