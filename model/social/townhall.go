@@ -10,6 +10,7 @@ import (
 type Townhall struct {
 	Household     Household
 	StorageTarget map[*artifacts.Artifact]*int
+	Traders       []*Trader
 }
 
 const StorageRefillBudgetPercentage = 0.5
@@ -51,6 +52,10 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				}
 			}
 		}
+	}
+
+	for _, trader := range t.Traders {
+		trader.ElapseTime(Calendar, m)
 	}
 }
 
