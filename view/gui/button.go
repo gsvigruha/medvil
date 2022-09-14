@@ -43,3 +43,12 @@ func (b ButtonGUI) Contains(x float64, y float64) bool {
 func (b ButtonGUI) Enabled() bool {
 	return b.Disabled == nil || !b.Disabled()
 }
+
+type SimpleButton struct {
+	ButtonGUI
+	ClickImpl func()
+}
+
+func (b SimpleButton) Click() {
+	b.ClickImpl()
+}

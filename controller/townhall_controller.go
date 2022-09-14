@@ -87,6 +87,7 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
 		fp.AddPanel(CreateOrderPanelForTownhall(10, float64(i*IconH)+top+50, 60, 20, th, vc, cp.C.Map))
+		fp.AddButton(CreateTraderButtonForTownhall(10+tpw, float64(i*IconH)+top+50, 60, 20, th))
 	}
 
 	cp.SetDynamicPanel(tc)
@@ -162,4 +163,13 @@ func CreateOrderPanelForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *
 	})
 	p.AddTextLabel(fmt.Sprintf("$%v", factories[0].Price(vc)), x+sx+sy*2, y+sy*2/3)
 	return p
+}
+
+func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall) gui.Button {
+	return &gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + sx, Y: y, SX: sy, SY: sy},
+		ClickImpl: func() {
+			th.CreateTrader()
+		},
+	}
 }
