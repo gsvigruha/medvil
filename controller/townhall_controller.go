@@ -86,7 +86,7 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	}
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
-		fp.AddPanel(CreateOrderPanelForTownhall(10, float64(i*IconH)+top+50, 60, 20, th, vc))
+		fp.AddPanel(CreateOrderPanelForTownhall(10, float64(i*IconH)+top+50, 60, 20, th, vc, cp.C.Map))
 	}
 
 	cp.SetDynamicPanel(tc)
@@ -144,7 +144,7 @@ func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedFi
 	return false
 }
 
-func CreateOrderPanelForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *economy.VehicleConstruction) *gui.Panel {
+func CreateOrderPanelForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
 	l := p.AddTextLabel("", x, y+sy*2/3)
 	var factories []*social.Factory
@@ -158,6 +158,7 @@ func CreateOrderPanelForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *
 		factories: factories,
 		vc:        vc,
 		l:         l,
+		m:         m,
 	})
 	p.AddTextLabel(fmt.Sprintf("$%v", factories[0].Price(vc)), x+sx+sy*2, y+sy*2/3)
 	return p
