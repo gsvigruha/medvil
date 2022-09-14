@@ -4,6 +4,7 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/time"
 	"medvil/model/vehicles"
 	"medvil/util"
 )
@@ -21,7 +22,7 @@ type Trader struct {
 
 func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if t.Task == nil {
-		trader.Task = trader.GetTradeTask(m)
+		t.Task = t.GetTradeTask(m)
 	}
 }
 
