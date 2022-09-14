@@ -5,6 +5,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"math/rand"
 	"medvil/model/economy"
+	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/view/gui"
 )
@@ -23,7 +24,7 @@ func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	for i, vc := range economy.GetVehicleConstructions(factory.Household.Building.Plan.GetExtension()) {
-		fp.AddPanel(CreateOrderPanelForFactory(10, float64(i*40)+hcy, 60, 20, factory, vc))
+		fp.AddPanel(CreateOrderPanelForFactory(10, float64(i*40)+hcy, 60, 20, factory, vc, cp.C.Map))
 	}
 
 	cp.SetDynamicPanel(fc)
@@ -51,11 +52,21 @@ type OrderButton struct {
 	factories []*social.Factory
 	vc        *economy.VehicleConstruction
 	l         *gui.TextLabel
+	m         navigation.IMap
 }
 
 func (b OrderButton) Click() {
 	factory := b.factories[rand.Intn(len(b.factories))]
-	factory.CreateOrder(b.vc, &factory.Household.Town.Townhall.Household)
+	h := &factory.Household.Town.Townhall.Household
+	order := factory.CreateOrder(b.vc, h)
+	hx, hy, _ := social.GetRandomBuildingXY(h.Building, b.m, navigation.Field.BuildingNonExtension)
+	fx, fy, _ := social.GetRandomBuildingXY(factory.Household.Building, b.m, navigation.Field.BuildingNonExtension)
+	h.AddTask(&economy.FactoryPickupTask{
+		PickupF:  b.m.GetField(fx, fy),
+		DropoffF: b.m.GetField(hx, hy),
+		Order:    order,
+		TaskBase: economy.TaskBase{FieldCenter: true},
+	})
 }
 
 func (b OrderButton) NumOrders() int {
@@ -79,7 +90,7 @@ func (b OrderButton) Enabled() bool {
 	return b.b.Enabled()
 }
 
-func CreateOrderPanelForFactory(x, y, sx, sy float64, factory *social.Factory, vc *economy.VehicleConstruction) *gui.Panel {
+func CreateOrderPanelForFactory(x, y, sx, sy float64, factory *social.Factory, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
 	l := p.AddTextLabel("", x, y+sy*2/3)
 	p.AddButton(OrderButton{
@@ -87,6 +98,7 @@ func CreateOrderPanelForFactory(x, y, sx, sy float64, factory *social.Factory, v
 		factories: []*social.Factory{factory},
 		vc:        vc,
 		l:         l,
+		m:         m,
 	})
 	p.AddTextLabel(fmt.Sprintf("$%v", factory.Price(vc)), x+sx+sy*2, y+sy*2/3)
 	return p
