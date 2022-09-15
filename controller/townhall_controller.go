@@ -92,7 +92,7 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	}
 
 	for i, t := range th.Traders {
-		fp.AddButton(CreateTraderButton(float64(10+i*IconW), top+IconH*2, tc, t))
+		fp.AddButton(CreateTraderButton(float64(10+i*IconW), top+float64(IconH*2), tc, t))
 	}
 
 	cp.SetDynamicPanel(tc)
@@ -204,6 +204,9 @@ func CreateTraderButton(x, y float64, th *TownhallController, t *social.Trader) 
 		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: x, Y: y, SX: IconS, SY: IconS},
 		ClickImpl: func() {
 			th.activeTrader = t
+		},
+		Highlight: func() bool {
+			return t == th.activeTrader
 		},
 	}
 }

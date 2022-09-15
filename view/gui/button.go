@@ -46,7 +46,16 @@ func (b ButtonGUI) Enabled() bool {
 
 type SimpleButton struct {
 	ButtonGUI
+	Highlight func() bool
 	ClickImpl func()
+}
+
+func (b SimpleButton) Render(cv *canvas.Canvas) {
+	if b.Highlight != nil && b.Highlight() {
+		cv.SetFillStyle(color.RGBA{R: 224, G: 240, B: 255, A: 240})
+		cv.FillRect(b.X, b.Y, b.SX, b.SY)
+	}
+	b.ButtonGUI.Render(cv)
 }
 
 func (b SimpleButton) Click() {
