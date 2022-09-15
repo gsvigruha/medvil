@@ -23,6 +23,14 @@ type Trader struct {
 func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if t.Task == nil {
 		t.Task = t.GetTradeTask(m)
+	} else if t.Vehicle.Traveller.FX == t.Task.Field().X && t.Vehicle.Traveller.FY == t.Task.Field().Y {
+		if t.Task.Complete(Calendar, false) {
+			t.Task = nil
+		}
+	} else {
+		if t.Vehicle.Traveller.EnsurePath(t.Task.Field(), m) {
+			t.Vehicle.Traveller.Move(m)
+		}
 	}
 }
 
