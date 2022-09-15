@@ -39,6 +39,7 @@ type TownhallController struct {
 	buttons        []*TownhallControllerButton
 	subPanel       *gui.Panel
 	th             *social.Townhall
+	activeTrader   *social.Trader
 }
 
 func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
@@ -90,6 +91,10 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		fp.AddButton(CreateTraderButtonForTownhall(10+tpw, float64(i*IconH)+top+50, 60, 20, th))
 	}
 
+	for i, t := range th.Traders {
+		fp.AddButton(CreateTraderButton(float64(10+i*IconW), top+IconH*2, tc, t))
+	}
+
 	cp.SetDynamicPanel(tc)
 	cp.C.ClickHandler = tc
 }
@@ -125,10 +130,30 @@ func (tc *TownhallController) Refresh() {
 }
 
 func (tc *TownhallController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
+	if tc.activeTrader != nil && tc.activeTrader.TargetExchange != nil {
+		var fs []navigation.FieldWithContext
+		for _, coords := range tc.activeTrader.TargetExchange.Building.GetBuildingXYs(true) {
+			fs = append(fs, c.Map.GetField(coords[0], coords[1]))
+		}
+		return fs
+	}
 	return tc.th.GetFields()
 }
 
 func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
+	if tc.activeTrader != nil {
+		th := c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()]
+		if th != nil && th != tc.th {
+			tc.activeTrader.TargetExchange = th.Household.Town.Marketplace
+			return true
+		}
+		mp := c.ReverseReferences.BuildingToMarketplace[rf.F.Building.GetBuilding()]
+		if mp != nil && mp != tc.th.Household.Town.Marketplace {
+			tc.activeTrader.TargetExchange = mp
+			return true
+		}
+		return true
+	}
 	for i := range tc.th.Household.Town.Roads {
 		r := tc.th.Household.Town.Roads[i]
 		if r.X == rf.F.X && r.Y == rf.F.Y {
@@ -170,6 +195,15 @@ func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall) gu
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + sx, Y: y, SX: sy, SY: sy},
 		ClickImpl: func() {
 			th.CreateTrader()
+		},
+	}
+}
+
+func CreateTraderButton(x, y float64, th *TownhallController, t *social.Trader) gui.Button {
+	return &gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: x, Y: y, SX: IconS, SY: IconS},
+		ClickImpl: func() {
+			th.activeTrader = t
 		},
 	}
 }
