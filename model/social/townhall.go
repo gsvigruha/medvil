@@ -73,3 +73,19 @@ func (t *Townhall) FieldWithinDistance(field *navigation.Field) bool {
 	}
 	return WithinDistance(t.Household.Building, field, TownhallMaxDistance)
 }
+
+func (t *Townhall) CreateTrader() {
+	for i, v := range t.Household.Vehicles {
+		if !v.InUse {
+			var r artifacts.Resources
+			t.Traders = append(t.Traders, &Trader{
+				Money:          0,
+				Vehicle:        v,
+				Resources:      r,
+				SourceExchange: t.Household.Town.Marketplace,
+			})
+			t.Household.Vehicles = append(t.Household.Vehicles[:i], t.Household.Vehicles[i+1:]...)
+			return
+		}
+	}
+}

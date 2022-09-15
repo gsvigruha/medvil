@@ -43,3 +43,21 @@ func (b ButtonGUI) Contains(x float64, y float64) bool {
 func (b ButtonGUI) Enabled() bool {
 	return b.Disabled == nil || !b.Disabled()
 }
+
+type SimpleButton struct {
+	ButtonGUI
+	Highlight func() bool
+	ClickImpl func()
+}
+
+func (b SimpleButton) Render(cv *canvas.Canvas) {
+	if b.Highlight != nil && b.Highlight() {
+		cv.SetFillStyle(color.RGBA{R: 224, G: 240, B: 255, A: 240})
+		cv.FillRect(b.X, b.Y, b.SX, b.SY)
+	}
+	b.ButtonGUI.Render(cv)
+}
+
+func (b SimpleButton) Click() {
+	b.ClickImpl()
+}

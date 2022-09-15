@@ -27,6 +27,9 @@ func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (t *Trader) GetTradeTask(m navigation.IMap) *economy.TradeTask {
+	if t.TargetExchange == nil {
+		return nil
+	}
 	var weights []float64
 	var as []*artifacts.Artifact
 	for _, a := range artifacts.All {
