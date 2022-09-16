@@ -49,10 +49,8 @@ func (t *Trader) GetTradeTask(m navigation.IMap) *economy.TradeTask {
 			}
 		}
 	}
-	fmt.Println(as, weights)
 	if len(weights) > 0 {
 		artifactToTrade := as[util.RandomIndexWeighted(weights)]
-		fmt.Println(artifactToTrade)
 		smx, smy, smok := GetRandomBuildingXY(t.SourceExchange.Building, m, navigation.Field.BuildingNonExtension)
 		tmx, tmy, tmok := GetRandomBuildingXY(t.TargetExchange.Building, m, navigation.Field.BuildingNonExtension)
 		if smok && tmok {
