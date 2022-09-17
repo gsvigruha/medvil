@@ -7,6 +7,6 @@ import (
 
 func PersonToControlPanel(cp *ControlPanel, person *social.Person) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
-	PersonToPanel(p, 0, person, IconW)
+	PersonToPanel(p, 0, person, IconW, PersonGUIY*ControlPanelSY)
 	cp.SetDynamicPanel(p)
 }
