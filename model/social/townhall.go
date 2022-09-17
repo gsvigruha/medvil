@@ -81,7 +81,6 @@ func (t *Townhall) CreateTrader() {
 				if p.Task == nil {
 					var r artifacts.Resources
 					r.Init(v.T.MaxVolume)
-					p.Traveller.Vehicle = v
 					trader := &Trader{
 						Money:          0,
 						Person:         p,
@@ -90,6 +89,7 @@ func (t *Townhall) CreateTrader() {
 					}
 					t.Traders = append(t.Traders, trader)
 					p.Home = trader
+					p.Traveller.UseVehicle(v)
 					t.Household.Vehicles = append(t.Household.Vehicles[:i], t.Household.Vehicles[i+1:]...)
 					t.Household.People = append(t.Household.People[:j], t.Household.People[j+1:]...)
 					return

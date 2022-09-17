@@ -112,6 +112,9 @@ func RefreshSubPanels(tc *TownhallController) {
 	}
 	if tc.activeTrader != nil {
 		MoneyToControlPanel(fp, th.Household.Town, &tc.activeTrader.Money, 10, 10, top+float64(IconH*3)+IconS)
+		for i, task := range tc.activeTrader.Tasks {
+			TaskToControlPanel(fp, i, top+float64(IconH*4)+IconS, task, IconW)
+		}
 	}
 }
 

@@ -27,10 +27,21 @@ type Home interface {
 	NumTasks(name string, tag string) int
 }
 
-func FindWaterTask(h Home, numP uint16, m navigation.IMap) {
-	water := artifacts.GetArtifact("water")
+var water = artifacts.GetArtifact("water")
+
+func needsWater(h Home, numP uint16) bool {
 	if h.GetResources().Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
 		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", "water") {
+		return true
+	}
+	if h.GetResources().Get(water) == 0 && h.NumTasks("transport", "water") == 0 {
+		return true
+	}
+	return false
+}
+
+func FindWaterTask(h Home, numP uint16, m navigation.IMap) {
+	if needsWater(h, numP) {
 		hf := h.RandomField(m)
 		if hf != nil {
 			dest := m.FindDest(navigation.Location{X: hf.X, Y: hf.Y, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
