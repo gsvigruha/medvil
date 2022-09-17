@@ -26,7 +26,6 @@ type TradeTask struct {
 	TaskTag           string
 	goods             []artifacts.Artifacts
 	state             uint8
-	waittime          uint16
 }
 
 func (t *TradeTask) Field() *navigation.Field {
@@ -48,31 +47,19 @@ func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	case TradeTaskStatePickupAtSource:
 		t.goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderMoney)
 		t.state = TradeTaskStateDropoffAtDest
-		t.waittime = 0
 	case TradeTaskStateDropoffAtDest:
 		if t.TargetExchange.CanSell(t.goods) {
 			t.TargetExchange.Sell(t.goods, t.TraderMoney)
-			t.state = TradeTaskStatePickupAtDest
-		} else {
-			t.waittime++
 		}
-		if t.waittime > MaxWaitTime {
-			t.state = TradeTaskStatePickupAtDest
-		}
+		t.state = TradeTaskStatePickupAtDest
 	case TradeTaskStatePickupAtDest:
 		t.goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderMoney)
 		t.state = TradeTaskStateDropoffAtSource
-		t.waittime = 0
 	case TradeTaskStateDropoffAtSource:
 		if t.SourceExchange.CanSell(t.goods) {
 			t.SourceExchange.Sell(t.goods, t.TraderMoney)
-			return true
-		} else {
-			t.waittime++
 		}
-		if t.waittime > MaxWaitTime {
-			return true
-		}
+		return true
 	}
 	return false
 }

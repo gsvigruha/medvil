@@ -36,18 +36,18 @@ func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 func (t *Trader) GetArtifactToTrade(pickupMP, dropoffMP *Marketplace) *artifacts.Artifact {
 	var weights []float64
-	var as []*artifacts.Artifact
+	var tradableArtifacts []*artifacts.Artifact
 	for _, a := range artifacts.All {
 		if pickupMP.HasTraded(a) && dropoffMP.HasTraded(a) {
 			if pickupMP.Prices[a]*TradeProfitThreshold <= dropoffMP.Prices[a] {
 				profit := float64(dropoffMP.Prices[a]) / float64(pickupMP.Prices[a])
 				weights = append(weights, profit)
-				as = append(as, a)
+				tradableArtifacts = append(tradableArtifacts, a)
 			}
 		}
 	}
 	if len(weights) > 0 {
-		return as[util.RandomIndexWeighted(weights)]
+		return tradableArtifacts[util.RandomIndexWeighted(weights)]
 	}
 	return nil
 }
@@ -65,7 +65,7 @@ func (t *Trader) GetTradeTask(m navigation.IMap) *economy.TradeTask {
 		return nil
 	}
 	artifactSourceToDest := t.GetArtifactToTrade(t.SourceExchange, t.TargetExchange)
-	artifactDestToSource := t.GetArtifactToTrade(t.SourceExchange, t.TargetExchange)
+	artifactDestToSource := t.GetArtifactToTrade(t.TargetExchange, t.SourceExchange)
 	if artifactSourceToDest != nil || artifactDestToSource != nil {
 		smx, smy, smok := GetRandomBuildingXY(t.SourceExchange.Building, m, navigation.Field.BuildingNonExtension)
 		tmx, tmy, tmok := GetRandomBuildingXY(t.TargetExchange.Building, m, navigation.Field.BuildingNonExtension)
