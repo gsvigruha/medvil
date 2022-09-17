@@ -182,33 +182,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	numP := uint16(len(h.People))
 	FindWaterTask(h, numP, m)
 	mp := h.Town.Marketplace
-	var numFoodBatchesNeeded = 0
-	for _, a := range economy.Foods {
-		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
-			numFoodBatchesNeeded += NumBatchesSimple(economy.BuyFoodOrDrinkPerPerson()*numP, FoodTransportQuantity)
-		}
-	}
-	for _, a := range economy.Foods {
-		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
-			tag := "food_shopping#" + a.Name
-			if NumBatchesSimple(economy.BuyFoodOrDrinkPerPerson()*numP, FoodTransportQuantity) > h.NumTasks("exchange", tag) {
-				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
-				var maxPrice = h.Money / uint32(numFoodBatchesNeeded)
-				if maxPrice > mp.Price(needs)*2 {
-					maxPrice = mp.Price(needs) * 2
-				}
-				if h.Money >= mp.Price(needs) && mp.HasTraded(a) {
-					h.AddPriorityTask(&economy.BuyTask{
-						Exchange:       mp,
-						HouseholdMoney: &h.Money,
-						Goods:          needs,
-						MaxPrice:       maxPrice,
-						TaskTag:        tag,
-					})
-				}
-			}
-		}
-	}
+	GetFoodTasks(h, numP, mp)
 	numTools := h.Resources.Get(Tools) + h.PeopleWithTools()
 	if numP > numTools && h.NumTasks("exchange", "tools_purchase") == 0 {
 		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Tools, Quantity: 1}}
@@ -564,4 +538,8 @@ func (h *Household) GetBuilding() *building.Building {
 
 func (h *Household) GetHeating() float64 {
 	return h.Heating
+}
+
+func (h *Household) GetMoney() *uint32 {
+	return &h.Money
 }

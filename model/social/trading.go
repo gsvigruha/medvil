@@ -25,6 +25,7 @@ type Trader struct {
 func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Person.ElapseTime(Calendar, m)
 	FindWaterTask(t, 1, m)
+	GetFoodTasks(t, 1, t.SourceExchange)
 	if t.NumTasks("trading", "") == 0 {
 		task := t.GetTradeTask(m)
 		if task != nil {
@@ -156,4 +157,8 @@ func (t *Trader) NumTasks(name string, tag string) int {
 		i += CountTags(t, name, tag)
 	}
 	return i
+}
+
+func (t *Trader) GetMoney() *uint32 {
+	return &t.Money
 }
