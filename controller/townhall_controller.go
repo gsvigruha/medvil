@@ -53,7 +53,7 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	sp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
 	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
 
-	tc := &TownhallController{cp: cp, householdPanel: hp, th: th, taxPanel: tp, storagePanel: sp, factoryPanel: fp}
+	tc := &TownhallController{cp: cp, th: th, householdPanel: hp, taxPanel: tp, storagePanel: sp, factoryPanel: fp}
 	tc.buttons = []*TownhallControllerButton{
 		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "taxes", X: float64(10 + IconW*0), Y: top, SX: IconS, SY: IconS}},
 		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(10 + IconW*1), Y: top, SX: IconS, SY: IconS}},
@@ -61,13 +61,14 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	}
 
 	HouseholdToControlPanel(hp, &th.Household)
-	RefreshSubPanels(cp, tc, th)
+	RefreshSubPanels(tc)
 
 	cp.SetDynamicPanel(tc)
 	cp.C.ClickHandler = tc
 }
 
-func RefreshSubPanels(cp *ControlPanel, tc *TownhallController, th *social.Townhall) {
+func RefreshSubPanels(tc *TownhallController) {
+	th := tc.th
 	tp := tc.taxPanel
 	sp := tc.storagePanel
 	fp := tc.factoryPanel
@@ -102,7 +103,7 @@ func RefreshSubPanels(cp *ControlPanel, tc *TownhallController, th *social.Townh
 	}
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
-		fp.AddPanel(CreateOrderPanelForTownhall(10, float64(i*IconH)+top+50, 60, 20, th, vc, cp.C.Map))
+		fp.AddPanel(CreateOrderPanelForTownhall(10, float64(i*IconH)+top+50, 60, 20, th, vc, tc.cp.C.Map))
 		fp.AddButton(CreateTraderButtonForTownhall(10+tpw, float64(i*IconH)+top+50, 60, 20, th))
 	}
 
@@ -135,11 +136,11 @@ func (tc *TownhallController) Clear() {}
 
 func (tc *TownhallController) Refresh() {
 	tc.householdPanel.Clear()
+	tc.taxPanel.Clear()
 	tc.storagePanel.Clear()
 	tc.factoryPanel.Clear()
-	tc.taxPanel.Clear()
 	HouseholdToControlPanel(tc.householdPanel, &tc.th.Household)
-	RefreshSubPanels(tc.cp, tc, tc.th)
+	RefreshSubPanels(tc)
 	for _, button := range tc.buttons {
 		tc.householdPanel.AddButton(button)
 	}
