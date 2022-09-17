@@ -10,6 +10,7 @@ import (
 )
 
 const TradeProfitThreshold = 2.0
+const TradingCapitalRatio = 0.5
 
 type Trader struct {
 	Money          uint32
@@ -54,7 +55,7 @@ func (t *Trader) GetArtifactToTrade(pickupMP, dropoffMP *Marketplace) *artifacts
 
 func (t *Trader) GetGoodsToTrade(a *artifacts.Artifact, mp *Marketplace) []artifacts.Artifacts {
 	if a != nil {
-		quantity := uint16(t.Money / mp.Prices[a])
+		quantity := uint16(float64(t.Money) * TradingCapitalRatio / float64(mp.Prices[a]))
 		return []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: quantity}}
 	}
 	return []artifacts.Artifacts{}

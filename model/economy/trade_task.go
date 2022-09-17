@@ -45,7 +45,9 @@ func (t *TradeTask) Field() *navigation.Field {
 func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	switch t.state {
 	case TradeTaskStatePickupAtSource:
-		t.goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderMoney)
+		if t.SourceExchange.Price(t.GoodsSourceToDest) <= *t.TraderMoney {
+			t.goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderMoney)
+		}
 		t.state = TradeTaskStateDropoffAtDest
 	case TradeTaskStateDropoffAtDest:
 		if t.TargetExchange.CanSell(t.goods) {
@@ -53,7 +55,9 @@ func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		}
 		t.state = TradeTaskStatePickupAtDest
 	case TradeTaskStatePickupAtDest:
-		t.goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderMoney)
+		if t.TargetExchange.Price(t.GoodsDestToSource) <= *t.TraderMoney {
+			t.goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderMoney)
+		}
 		t.state = TradeTaskStateDropoffAtSource
 	case TradeTaskStateDropoffAtSource:
 		if t.SourceExchange.CanSell(t.goods) {
