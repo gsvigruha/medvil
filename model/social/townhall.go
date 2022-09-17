@@ -77,15 +77,24 @@ func (t *Townhall) FieldWithinDistance(field *navigation.Field) bool {
 func (t *Townhall) CreateTrader() {
 	for i, v := range t.Household.Vehicles {
 		if !v.InUse {
-			var r artifacts.Resources
-			t.Traders = append(t.Traders, &Trader{
-				Money:          0,
-				Vehicle:        v,
-				Resources:      r,
-				SourceExchange: t.Household.Town.Marketplace,
-			})
-			t.Household.Vehicles = append(t.Household.Vehicles[:i], t.Household.Vehicles[i+1:]...)
-			return
+			for j, p := range t.Household.People {
+				if p.Task == nil {
+					var r artifacts.Resources
+					r.Init(v.T.MaxVolume)
+					trader := &Trader{
+						Money:          0,
+						Person:         p,
+						Resources:      r,
+						SourceExchange: t.Household.Town.Marketplace,
+					}
+					t.Traders = append(t.Traders, trader)
+					p.Home = trader
+					p.Traveller.UseVehicle(v)
+					t.Household.Vehicles = append(t.Household.Vehicles[:i], t.Household.Vehicles[i+1:]...)
+					t.Household.People = append(t.Household.People[:j], t.Household.People[j+1:]...)
+					return
+				}
+			}
 		}
 	}
 }

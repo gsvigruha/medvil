@@ -11,8 +11,6 @@ const WaterTransportQuantity = 10
 const FoodTransportQuantity = 6
 const ProductTransportMaxVolume = 6
 const ExchangeTaskMaxVolumePedestrian = 25
-const ExchangeTaskMaxVolumeBoat = 75
-const ExchangeTaskMaxVolumeCart = 50
 
 func ProductTransportQuantity(a *artifacts.Artifact) uint16 {
 	return ProductTransportMaxVolume / a.V
