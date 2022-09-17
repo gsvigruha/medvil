@@ -2,6 +2,7 @@ package social
 
 import (
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -14,26 +15,14 @@ const TradingCapitalRatio = 0.5
 
 type Trader struct {
 	Money          uint32
-	Vehicle        *vehicles.Vehicle
 	Person         *Person
 	Resources      artifacts.Resources
 	SourceExchange *Marketplace
 	TargetExchange *Marketplace
-	Task           *economy.TradeTask
 }
 
 func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	if t.Task == nil {
-		t.Task = t.GetTradeTask(m)
-	} else if t.Vehicle.Traveller.FX == t.Task.Field().X && t.Vehicle.Traveller.FY == t.Task.Field().Y {
-		if t.Task.Complete(Calendar, false) {
-			t.Task = nil
-		}
-	} else {
-		if t.Vehicle.Traveller.EnsurePath(t.Task.Field(), m) {
-			t.Vehicle.Traveller.Move(m)
-		}
-	}
+	t.Person.ElapseTime(Calendar, m)
 }
 
 func (t *Trader) GetArtifactToTrade(pickupMP, dropoffMP *Marketplace) *artifacts.Artifact {
@@ -86,5 +75,56 @@ func (t *Trader) GetTradeTask(m navigation.IMap) *economy.TradeTask {
 			}
 		}
 	}
+	return nil
+}
+
+func (t *Trader) AddTask(economy.Task) {
+
+}
+
+func (t *Trader) HasFood() bool {
+	return economy.HasFood(t.Resources)
+}
+
+func (t *Trader) HasDrink() bool {
+	return economy.HasDrink(t.Resources)
+}
+
+func (t *Trader) HasMedicine() bool {
+	return economy.HasMedicine(t.Resources)
+}
+
+func (t *Trader) HasBeer() bool {
+	return economy.HasBeer(t.Resources)
+}
+
+func (t *Trader) Field(m navigation.IMap) *navigation.Field {
+	return m.GetField(t.Person.Traveller.FX, t.Person.Traveller.FY)
+}
+
+func (t *Trader) NextTask(m navigation.IMap, e economy.Equipment) economy.Task {
+	return t.GetTradeTask(m)
+}
+
+func (t *Trader) GetResources() *artifacts.Resources {
+	return &t.Resources
+}
+
+func (t *Trader) GetBuilding() *building.Building {
+	return nil
+}
+
+func (t *Trader) GetHeating() float64 {
+	return 0
+}
+
+func (t *Trader) HasEnoughTextile() bool {
+	return false
+}
+
+func (t *Trader) AddVehicle(v *vehicles.Vehicle) {
+}
+
+func (t *Trader) GetVehicle() *vehicles.Vehicle {
 	return nil
 }

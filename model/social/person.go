@@ -19,7 +19,7 @@ type Person struct {
 	Water     uint8
 	Happiness uint8
 	Health    uint8
-	Household *Household
+	Home      Home
 	Task      economy.Task
 	IsHome    bool
 	Traveller *navigation.Traveller
@@ -30,7 +30,7 @@ func (p *Person) releaseTask() {
 	p.Task = nil
 	if p.Equipment.Tool() {
 		p.Equipment = &economy.NoEquipment{}
-		p.Household.Resources.Add(Tools, 1)
+		p.Home.GetResources().Add(Tools, 1)
 	}
 	p.Traveller.ExitVehicle()
 }
@@ -61,32 +61,32 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			} else {
 				if !economy.IsPersonalTask(p.Task.Name()) {
 					p.Task.Pause(true)
-					p.Household.AddTask(p.Task)
+					p.Home.AddTask(p.Task)
 				}
 				p.releaseTask()
 			}
 		}
 	} else {
 		// no task
-		home := m.GetField(p.Household.Building.X, p.Household.Building.Y)
-		if p.Water < WaterThreshold && p.Household.HasDrink() {
+		home := p.Home.Field(m)
+		if p.Water < WaterThreshold && p.Home.HasDrink() {
 			p.Task = &economy.DrinkTask{F: home, P: p}
-		} else if p.Food < FoodThreshold && p.Household.HasFood() {
+		} else if p.Food < FoodThreshold && p.Home.HasFood() {
 			p.Task = &economy.EatTask{F: home, P: p}
-		} else if p.Health < HealthThreshold && p.Household.HasMedicine() {
+		} else if p.Health < HealthThreshold && p.Home.HasMedicine() {
 			p.Task = &economy.HealTask{F: home, P: p}
-		} else if p.Happiness < HappinessThreshold && p.Household.HasBeer() {
+		} else if p.Happiness < HappinessThreshold && p.Home.HasBeer() {
 			p.Task = &economy.DrinkTask{F: home, P: p}
-		} else if p.Task = p.Household.getNextTaskCombineExchange(m, p.Equipment); p.Task != nil {
-			if !p.Equipment.Tool() && p.Household.Resources.Remove(Tools, 1) == 1 {
+		} else if p.Task = p.Home.NextTask(m, p.Equipment); p.Task != nil {
+			if !p.Equipment.Tool() && p.Home.GetResources().Remove(Tools, 1) == 1 {
 				p.Equipment = &economy.Tool{}
 			}
-			p.Task.SetUp(p.Traveller, p.Household)
+			p.Task.SetUp(p.Traveller, p.Home)
 		} else if !p.IsHome {
 			p.Task = &economy.GoHomeTask{F: home, P: p}
 		}
 	}
-	p.Traveller.SetHome(p.Household.Building == m.GetField(p.Traveller.FX, p.Traveller.FY).Building.GetBuilding())
+	p.Traveller.SetHome(p.Home.GetBuilding() == m.GetField(p.Traveller.FX, p.Traveller.FY).Building.GetBuilding())
 	if Calendar.Hour == 0 {
 		if p.Food > 0 {
 			p.Food--
@@ -103,10 +103,10 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if p.Water == 0 && p.Health > 0 {
 			p.Health--
 		}
-		if p.Household.Heating < rand.Float64() && p.Health > 0 {
+		if p.Home.GetHeating() < rand.Float64() && p.Health > 0 {
 			p.Health--
 		}
-		if !p.Household.HasEnoughTextile() && p.Happiness > 0 {
+		if !p.Home.HasEnoughTextile() && p.Happiness > 0 {
 			p.Happiness--
 		}
 	}
@@ -137,33 +137,33 @@ func (p *Person) changePersonState(a *artifacts.Artifact) {
 }
 
 func (p *Person) Eat() {
-	if p.Household.HasFood() {
-		available := economy.AvailableFood(p.Household.Resources)
+	if p.Home.HasFood() {
+		available := economy.AvailableFood(*p.Home.GetResources())
 		a := available[rand.Intn(len(available))]
-		p.Household.Resources.Remove(a, 1)
+		p.Home.GetResources().Remove(a, 1)
 		p.changePersonState(a)
 	}
 }
 
 func (p *Person) Drink() {
-	if p.Household.HasDrink() {
-		available := economy.AvailableDrink(p.Household.Resources)
+	if p.Home.HasDrink() {
+		available := economy.AvailableDrink(*p.Home.GetResources())
 		a := available[rand.Intn(len(available))]
-		p.Household.Resources.Remove(a, 1)
+		p.Home.GetResources().Remove(a, 1)
 		p.changePersonState(a)
 	}
 }
 
 func (p *Person) Heal() {
-	if p.Household.HasMedicine() {
-		p.Household.Resources.Remove(economy.Medicine, 1)
+	if p.Home.HasMedicine() {
+		p.Home.GetResources().Remove(economy.Medicine, 1)
 		p.changePersonState(economy.Medicine)
 	}
 }
 
 func (p *Person) DrinkBeer() {
-	if p.Household.HasBeer() {
-		p.Household.Resources.Remove(economy.Beer, 1)
+	if p.Home.HasBeer() {
+		p.Home.GetResources().Remove(economy.Beer, 1)
 		p.changePersonState(economy.Beer)
 	}
 }
@@ -173,17 +173,17 @@ func (p *Person) SetHome() {
 }
 
 func (p *Person) HasFood() bool {
-	return p.Household.HasFood()
+	return p.Home.HasFood()
 }
 
 func (p *Person) HasDrink() bool {
-	return p.Household.HasDrink()
+	return p.Home.HasDrink()
 }
 
 func (p *Person) HasMedicine() bool {
-	return p.Household.HasMedicine()
+	return p.Home.HasMedicine()
 }
 
 func (p *Person) HasBeer() bool {
-	return p.Household.HasBeer()
+	return p.Home.HasBeer()
 }

@@ -116,6 +116,10 @@ func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle
 	return nil
 }
 
+func (h *Household) NextTask(m navigation.IMap, e economy.Equipment) economy.Task {
+	return h.getNextTaskCombineExchange(m, e)
+}
+
 func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e economy.Equipment) economy.Task {
 	vehicle := h.GetVehicle()
 	et := h.getExchangeTask(m, vehicle)
@@ -493,7 +497,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 		Water:     MaxPersonState,
 		Happiness: MaxPersonState,
 		Health:    MaxPersonState,
-		Household: h,
+		Home:      h,
 		Task:      nil,
 		IsHome:    true,
 		Traveller: &navigation.Traveller{
@@ -559,10 +563,26 @@ func (srcH *Household) ReassignFirstPerson(dstH *Household, m navigation.IMap) {
 	for pi, person := range srcH.People {
 		if person.Task == nil {
 			srcH.People = append(srcH.People[:pi], srcH.People[pi+1:]...)
-			person.Household = dstH
+			person.Home = dstH
 			dstH.People = append(dstH.People, person)
 			person.Task = &economy.GoHomeTask{F: m.GetField(dstH.Building.X, dstH.Building.Y), P: person}
 			break
 		}
 	}
+}
+
+func (h *Household) Field(m navigation.IMap) *navigation.Field {
+	return m.GetField(h.Building.X, h.Building.Y)
+}
+
+func (h *Household) GetResources() *artifacts.Resources {
+	return &h.Resources
+}
+
+func (h *Household) GetBuilding() *building.Building {
+	return h.Building
+}
+
+func (h *Household) GetHeating() float64 {
+	return h.Heating
 }
