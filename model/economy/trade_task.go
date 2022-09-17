@@ -7,61 +7,70 @@ import (
 	"medvil/model/vehicles"
 )
 
-const TradeTaskStatePickup uint8 = 0
-const TradeTaskStateDrop uint8 = 1
+const TradeTaskStatePickupAtSource uint8 = 0
+const TradeTaskStateDropoffAtDest uint8 = 1
+const TradeTaskStatePickupAtDest uint8 = 2
+const TradeTaskStateDropoffAtSource uint8 = 3
 
 type TradeTask struct {
 	TaskBase
-	SourceMarketF  *navigation.Field
-	TargetMarketF  *navigation.Field
-	SourceExchange Exchange
-	TargetExchange Exchange
-	TraderR        *artifacts.Resources
-	TraderMoney    *uint32
-	Vehicle        *vehicles.Vehicle
-	GoodsToTrade   []artifacts.Artifacts
-	TaskTag        string
-	goods          []artifacts.Artifacts
-	state          uint8
-	waittime       uint16
+	SourceMarketF     *navigation.Field
+	TargetMarketF     *navigation.Field
+	SourceExchange    Exchange
+	TargetExchange    Exchange
+	TraderR           *artifacts.Resources
+	TraderMoney       *uint32
+	Vehicle           *vehicles.Vehicle
+	GoodsSourceToDest []artifacts.Artifacts
+	GoodsDestToSource []artifacts.Artifacts
+	TaskTag           string
+	goods             []artifacts.Artifacts
+	state             uint8
 }
 
 func (t *TradeTask) Field() *navigation.Field {
 	switch t.state {
-	case TradeTaskStatePickup:
+	case TradeTaskStatePickupAtSource:
 		return t.SourceMarketF
-	case TradeTaskStateDrop:
+	case TradeTaskStateDropoffAtDest:
 		return t.TargetMarketF
+	case TradeTaskStatePickupAtDest:
+		return t.TargetMarketF
+	case TradeTaskStateDropoffAtSource:
+		return t.SourceMarketF
 	}
 	return nil
 }
 
 func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	switch t.state {
-	case TradeTaskStatePickup:
-		t.goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsToTrade, t.TraderMoney)
-		t.state = TradeTaskStateDrop
-	case TradeTaskStateDrop:
+	case TradeTaskStatePickupAtSource:
+		t.goods = []artifacts.Artifacts{}
+		if t.SourceExchange.Price(t.GoodsSourceToDest) <= *t.TraderMoney {
+			t.goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderMoney)
+		}
+		t.state = TradeTaskStateDropoffAtDest
+	case TradeTaskStateDropoffAtDest:
 		if t.TargetExchange.CanSell(t.goods) {
 			t.TargetExchange.Sell(t.goods, t.TraderMoney)
-			return true
-		} else {
-			t.waittime++
 		}
-		if t.waittime > MaxWaitTime {
-			return true
+		t.state = TradeTaskStatePickupAtDest
+	case TradeTaskStatePickupAtDest:
+		t.goods = []artifacts.Artifacts{}
+		if t.TargetExchange.Price(t.GoodsDestToSource) <= *t.TraderMoney {
+			t.goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderMoney)
 		}
+		t.state = TradeTaskStateDropoffAtSource
+	case TradeTaskStateDropoffAtSource:
+		if t.SourceExchange.CanSell(t.goods) {
+			t.SourceExchange.Sell(t.goods, t.TraderMoney)
+		}
+		return true
 	}
 	return false
 }
 
 func (t *TradeTask) Blocked() bool {
-	switch t.state {
-	case TradeTaskStatePickup:
-		return !t.SourceExchange.CanSell(t.GoodsToTrade) || t.SourceExchange.Price(t.GoodsToTrade) > *t.TraderMoney
-	case TradeTaskStateDrop:
-		return false
-	}
 	return false
 }
 
