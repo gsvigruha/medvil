@@ -19,10 +19,18 @@ type Trader struct {
 	Resources      artifacts.Resources
 	SourceExchange *Marketplace
 	TargetExchange *Marketplace
+	Tasks          []economy.Task
 }
 
 func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Person.ElapseTime(Calendar, m)
+	FindWaterTask(t, 1, m)
+	if t.NumTasks("trading", "") == 0 {
+		task := t.GetTradeTask(m)
+		if task != nil {
+			t.AddTask(task)
+		}
+	}
 }
 
 func (t *Trader) GetArtifactToTrade(pickupMP, dropoffMP *Marketplace) *artifacts.Artifact {
@@ -51,7 +59,7 @@ func (t *Trader) GetGoodsToTrade(a *artifacts.Artifact, mp *Marketplace) []artif
 	return []artifacts.Artifacts{}
 }
 
-func (t *Trader) GetTradeTask(m navigation.IMap) *economy.TradeTask {
+func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 	if t.TargetExchange == nil {
 		return nil
 	}
@@ -78,8 +86,12 @@ func (t *Trader) GetTradeTask(m navigation.IMap) *economy.TradeTask {
 	return nil
 }
 
-func (t *Trader) AddTask(economy.Task) {
+func (t *Trader) AddTask(task economy.Task) {
+	t.Tasks = append(t.Tasks, task)
+}
 
+func (t *Trader) AddPriorityTask(task economy.Task) {
+	t.Tasks = append([]economy.Task{task}, t.Tasks...)
 }
 
 func (t *Trader) HasFood() bool {
@@ -102,8 +114,17 @@ func (t *Trader) Field(m navigation.IMap) *navigation.Field {
 	return m.GetField(t.Person.Traveller.FX, t.Person.Traveller.FY)
 }
 
+func (t *Trader) RandomField(m navigation.IMap) *navigation.Field {
+	return t.Field(m)
+}
+
 func (t *Trader) NextTask(m navigation.IMap, e economy.Equipment) economy.Task {
-	return t.GetTradeTask(m)
+	if len(t.Tasks) == 0 {
+		return nil
+	}
+	task := t.Tasks[0]
+	t.Tasks = t.Tasks[1:]
+	return task
 }
 
 func (t *Trader) GetResources() *artifacts.Resources {
@@ -127,4 +148,12 @@ func (t *Trader) AddVehicle(v *vehicles.Vehicle) {
 
 func (t *Trader) GetVehicle() *vehicles.Vehicle {
 	return nil
+}
+
+func (t *Trader) NumTasks(name string, tag string) int {
+	var i = 0
+	for _, t := range t.Tasks {
+		i += CountTags(t, name, tag)
+	}
+	return i
 }

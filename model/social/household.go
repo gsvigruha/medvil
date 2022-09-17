@@ -10,7 +10,6 @@ import (
 	"medvil/model/stats"
 	"medvil/model/time"
 	"medvil/model/vehicles"
-	"strings"
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
@@ -181,24 +180,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	numP := uint16(len(h.People))
-	water := artifacts.GetArtifact("water")
-	if h.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
-		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", "water") {
-		hx, hy, ok := GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
-		if ok {
-			dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
-			if dest != nil {
-				h.AddPriorityTask(&economy.TransportTask{
-					PickupF:  dest,
-					DropoffF: m.GetField(hx, hy),
-					PickupR:  &dest.Terrain.Resources,
-					DropoffR: &h.Resources,
-					A:        water,
-					Quantity: WaterTransportQuantity,
-				})
-			}
-		}
-	}
+	FindWaterTask(h, numP, m)
 	mp := h.Town.Marketplace
 	var numFoodBatchesNeeded = 0
 	for _, a := range economy.Foods {
@@ -466,25 +448,14 @@ func (h *Household) HasBeer() bool {
 	return economy.HasBeer(h.Resources)
 }
 
-func countTags(task economy.Task, name, tag string) int {
-	var i = 0
-	taskTags := strings.Split(task.Tag(), ";")
-	for _, taskTag := range taskTags {
-		if task.Name() == name && strings.Contains(taskTag, tag) {
-			i++
-		}
-	}
-	return i
-}
-
 func (h *Household) NumTasks(name string, tag string) int {
 	var i = 0
 	for _, t := range h.Tasks {
-		i += countTags(t, name, tag)
+		i += CountTags(t, name, tag)
 	}
 	for _, p := range h.People {
 		if p.Task != nil {
-			i += countTags(p.Task, name, tag)
+			i += CountTags(p.Task, name, tag)
 		}
 	}
 	return i
@@ -573,6 +544,14 @@ func (srcH *Household) ReassignFirstPerson(dstH *Household, m navigation.IMap) {
 
 func (h *Household) Field(m navigation.IMap) *navigation.Field {
 	return m.GetField(h.Building.X, h.Building.Y)
+}
+
+func (h *Household) RandomField(m navigation.IMap) *navigation.Field {
+	x, y, ok := GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
+	if ok {
+		return m.GetField(x, y)
+	}
+	return nil
 }
 
 func (h *Household) GetResources() *artifacts.Resources {
