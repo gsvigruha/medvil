@@ -15,6 +15,7 @@ const TradingCapitalRatio = 0.5
 type Trader struct {
 	Money          uint32
 	Vehicle        *vehicles.Vehicle
+	Person         *Person
 	Resources      artifacts.Resources
 	SourceExchange *Marketplace
 	TargetExchange *Marketplace

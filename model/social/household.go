@@ -68,11 +68,9 @@ func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle
 	_, _, sailableH := GetRandomBuildingXY(h.Building, m, navigation.Field.Sailable)
 	if vehicle != nil {
 		if vehicle.T.Water && sailableMP && sailableH {
-			maxVolume = ExchangeTaskMaxVolumeBoat
 			buildingCheckFn = navigation.Field.Sailable
-		} else if vehicle.T.Land {
-			maxVolume = ExchangeTaskMaxVolumeBoat
 		}
+		maxVolume = vehicle.T.MaxVolume
 	}
 
 	mx, my, mok := GetRandomBuildingXY(mp.Building, m, buildingCheckFn)

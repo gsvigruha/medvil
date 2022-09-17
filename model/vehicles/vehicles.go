@@ -9,10 +9,11 @@ type VehicleType struct {
 	Water         bool
 	Land          bool
 	IndoorStorage bool
+	MaxVolume     uint16
 }
 
-var Boat = &VehicleType{Name: "boat", Water: true, Land: false, IndoorStorage: false}
-var Cart = &VehicleType{Name: "cart", Water: false, Land: true, IndoorStorage: true}
+var Boat = &VehicleType{Name: "boat", Water: true, Land: false, IndoorStorage: false, MaxVolume: 75}
+var Cart = &VehicleType{Name: "cart", Water: false, Land: true, IndoorStorage: true, MaxVolume: 50}
 
 type Vehicle struct {
 	T         *VehicleType
