@@ -68,7 +68,7 @@ func (ntc *NewTownController) SetToState() {
 		for a, q := range ntc.resources {
 			ntc.newTown.Townhall.StorageTarget[a] = q
 		}
-		srcH.Town.Country.AddTown(ntc.newTown)
+		srcH.Town.Country.AddTownIfDoesNotExist(ntc.newTown)
 	} else if ntc.state == NewTownControllerStatePickTown {
 		ntc.cp.C.ClickHandler = ntc
 		ntc.bc = nil

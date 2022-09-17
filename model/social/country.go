@@ -16,6 +16,11 @@ func (c *Country) Stats() *stats.Stats {
 	return s
 }
 
-func (c *Country) AddTown(town *Town) {
+func (c *Country) AddTownIfDoesNotExist(town *Town) {
+	for _, t := range c.Towns {
+		if t == town {
+			return
+		}
+	}
 	c.Towns = append(c.Towns, town)
 }

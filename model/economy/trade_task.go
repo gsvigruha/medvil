@@ -49,9 +49,6 @@ func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 			t.waittime++
 		}
 		if t.waittime > MaxWaitTime {
-			if t.TargetExchange.CanSell(t.goods) {
-				t.TargetExchange.Sell(t.goods, t.TraderMoney)
-			}
 			return true
 		}
 	}
