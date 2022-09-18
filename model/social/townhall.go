@@ -74,7 +74,21 @@ func (t *Townhall) FieldWithinDistance(field *navigation.Field) bool {
 	return WithinDistance(t.Household.Building, field, TownhallMaxDistance)
 }
 
-func (t *Townhall) CreateTrader() {
+func (t *Townhall) getTraderDestField(trader *Trader, m navigation.IMap) *navigation.Field {
+	hf := t.Household.RandomField(m, trader.Vehicle.T.BuildingCheckFn)
+	mx, my, mok := GetRandomBuildingXY(t.Household.Town.Marketplace.Building, m, trader.Vehicle.T.BuildingCheckFn)
+	if hf != nil && mok {
+		mf := m.GetField(mx, my)
+		path := m.ShortPath(hf.GetLocation(), mf.GetLocation(), trader.Person.Traveller.TravellerType())
+		if path != nil && len(path.P) > 2 {
+			pe := path.P[len(path.P)-2]
+			return m.GetField(pe.GetLocation().X, pe.GetLocation().Y)
+		}
+	}
+	return nil
+}
+
+func (t *Townhall) CreateTrader(m navigation.IMap) {
 	for i, v := range t.Household.Vehicles {
 		if !v.InUse {
 			for j, p := range t.Household.People {
@@ -93,9 +107,25 @@ func (t *Townhall) CreateTrader() {
 					p.Traveller.UseVehicle(v)
 					t.Household.Vehicles = append(t.Household.Vehicles[:i], t.Household.Vehicles[i+1:]...)
 					t.Household.People = append(t.Household.People[:j], t.Household.People[j+1:]...)
+					homeField := t.getTraderDestField(trader, m)
+					p.Task = &economy.GoHomeTask{F: homeField, P: p}
 					return
 				}
 			}
 		}
 	}
+}
+
+func (t *Townhall) Filter(Calendar *time.CalendarType, m navigation.IMap) {
+	var newTraders = make([]*Trader, 0, len(t.Traders))
+	for _, trader := range t.Traders {
+		if trader.Person.Health == 0 {
+			field := m.GetField(trader.Person.Traveller.FX, trader.Person.Traveller.FY)
+			field.UnregisterTraveller(trader.Person.Traveller)
+			field.UnregisterTraveller(trader.Vehicle.Traveller)
+		} else {
+			newTraders = append(newTraders, trader)
+		}
+	}
+	t.Traders = newTraders
 }

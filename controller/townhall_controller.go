@@ -106,7 +106,7 @@ func RefreshSubPanels(tc *TownhallController) {
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
 		fp.AddPanel(CreateOrderPanelForTownhall(10, float64((i+1)*IconH)+top, float64(IconH), s, th, vc, tc.cp.C.Map))
-		fp.AddButton(CreateTraderButtonForTownhall(10+tpw, float64((i+1)*IconH)+top, float64(IconH), s, th))
+		fp.AddButton(CreateTraderButtonForTownhall(10+tpw, float64((i+1)*IconH)+top, float64(IconH), s, th, tc.cp.C.Map))
 	}
 
 	for i, t := range th.Traders {
@@ -167,17 +167,7 @@ func (tc *TownhallController) GetActiveFields(c *Controller, rf *renderer.Render
 
 func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if tc.activeTrader != nil {
-		th := c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()]
-		if th != nil && th != tc.th {
-			tc.activeTrader.TargetExchange = th.Household.Town.Marketplace
-			return true
-		}
-		mp := c.ReverseReferences.BuildingToMarketplace[rf.F.Building.GetBuilding()]
-		if mp != nil && mp != tc.th.Household.Town.Marketplace {
-			tc.activeTrader.TargetExchange = mp
-			return true
-		}
-		return true
+		return HandleClickForTrader(tc.activeTrader, c, rf)
 	}
 	for i := range tc.th.Household.Town.Roads {
 		r := tc.th.Household.Town.Roads[i]
@@ -215,11 +205,11 @@ func CreateOrderPanelForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *
 	return p
 }
 
-func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall) gui.Button {
+func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall, m navigation.IMap) gui.Button {
 	return &gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + sx, Y: y, SX: sy, SY: sy},
 		ClickImpl: func() {
-			th.CreateTrader()
+			th.CreateTrader(m)
 		},
 	}
 }
