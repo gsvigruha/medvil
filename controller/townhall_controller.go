@@ -167,17 +167,7 @@ func (tc *TownhallController) GetActiveFields(c *Controller, rf *renderer.Render
 
 func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if tc.activeTrader != nil {
-		th := c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()]
-		if th != nil && th != tc.th {
-			tc.activeTrader.TargetExchange = th.Household.Town.Marketplace
-			return true
-		}
-		mp := c.ReverseReferences.BuildingToMarketplace[rf.F.Building.GetBuilding()]
-		if mp != nil && mp != tc.th.Household.Town.Marketplace {
-			tc.activeTrader.TargetExchange = mp
-			return true
-		}
-		return true
+		return HandleClickForTrader(tc.activeTrader, c, rf)
 	}
 	for i := range tc.th.Household.Town.Roads {
 		r := tc.th.Household.Town.Roads[i]

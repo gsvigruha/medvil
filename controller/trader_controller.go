@@ -60,6 +60,20 @@ func (tc *TraderController) GetActiveFields(c *Controller, rf *renderer.Rendered
 	return nil
 }
 
+func HandleClickForTrader(trader *social.Trader, c *Controller, rf *renderer.RenderedField) bool {
+	th := c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()]
+	if th != nil && th != trader.SourceExchange.Town.Townhall {
+		trader.TargetExchange = th.Household.Town.Marketplace
+		return true
+	}
+	mp := c.ReverseReferences.BuildingToMarketplace[rf.F.Building.GetBuilding()]
+	if mp != nil && mp != trader.SourceExchange.Town.Marketplace {
+		trader.TargetExchange = mp
+		return true
+	}
+	return true
+}
+
 func (tc *TraderController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	return false
+	return HandleClickForTrader(tc.trader, c, rf)
 }
