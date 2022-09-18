@@ -18,13 +18,13 @@ const IconRowMax = 7
 
 var PersonGUIY = 0.15
 var ArtifactsGUIY = 0.45
-var TaskGUIY = 0.55
+var TaskGUIY = 0.6
 
 const MaxNumTasks = 20
 
-var VehicleGUIY = 0.65
+var VehicleGUIY = 0.7
 var HouseholdControllerSY = 0.7
-var HouseholdControllerGUIBottomY = ControlPanelDynamicPanelTop + HouseholdControllerSY
+var HouseholdControllerGUIBottomY = 0.75
 
 type HouseholdControllerButton struct {
 	b      gui.ButtonGUI
