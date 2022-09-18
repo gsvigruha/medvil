@@ -37,98 +37,20 @@ type Household struct {
 	Heating         float64
 }
 
-func (h *Household) getNextTask(e economy.Equipment) economy.Task {
-	if len(h.Tasks) == 0 {
-		return nil
-	}
-	var i = 0
-	for i < len(h.Tasks) {
-		t := h.Tasks[i]
-		_, sok := t.(*economy.SellTask)
-		_, bok := t.(*economy.BuyTask)
-		if !sok && !bok && !t.Blocked() && !t.IsPaused() && t.Equipped(e) {
-			break
-		}
-		i++
-	}
-	if i == len(h.Tasks) {
-		return nil
-	}
-	t := h.Tasks[i]
-	h.Tasks = append(h.Tasks[0:i], h.Tasks[i+1:]...)
-	return t
-}
-
-func (h *Household) getExchangeTask(m navigation.IMap, vehicle *vehicles.Vehicle) *economy.ExchangeTask {
-	mp := h.Town.Marketplace
-	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
-	var buildingCheckFn = navigation.Field.BuildingNonExtension
-	_, _, sailableMP := GetRandomBuildingXY(mp.Building, m, navigation.Field.Sailable)
-	_, _, sailableH := GetRandomBuildingXY(h.Building, m, navigation.Field.Sailable)
-	if vehicle != nil {
-		if vehicle.T.Water && sailableMP && sailableH {
-			buildingCheckFn = navigation.Field.Sailable
-		}
-		maxVolume = vehicle.T.MaxVolume
-	}
-
-	mx, my, mok := GetRandomBuildingXY(mp.Building, m, buildingCheckFn)
-	hx, hy, hok := GetRandomBuildingXY(h.Building, m, buildingCheckFn)
-	if !hok || !mok {
-		return nil
-	}
-	et := &economy.ExchangeTask{
-		HomeF:          m.GetField(hx, hy),
-		MarketF:        m.GetField(mx, my),
-		Exchange:       mp,
-		HouseholdR:     &h.Resources,
-		HouseholdMoney: &h.Money,
-		Vehicle:        vehicle,
-		GoodsToBuy:     nil,
-		GoodsToSell:    nil,
-		TaskTag:        "",
-	}
-	var empty = true
-	var tasks []economy.Task
-	for _, ot := range h.Tasks {
-		var combined = false
-		bt, bok := ot.(*economy.BuyTask)
-		if bok && !bt.Blocked() && !bt.IsPaused() && artifacts.GetVolume(et.GoodsToBuy) < maxVolume {
-			et.AddBuyTask(bt)
-			combined = true
-		}
-		st, sok := ot.(*economy.SellTask)
-		if sok && !st.Blocked() && !st.IsPaused() && artifacts.GetVolume(et.GoodsToSell) < maxVolume {
-			et.AddSellTask(st)
-			combined = true
-		}
-		if !combined {
-			tasks = append(tasks, ot)
-		} else {
-			empty = false
-		}
-	}
-	if !empty {
-		h.Tasks = tasks
-		return et
-	}
-	return nil
-}
-
 func (h *Household) NextTask(m navigation.IMap, e economy.Equipment) economy.Task {
 	return h.getNextTaskCombineExchange(m, e)
 }
 
 func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e economy.Equipment) economy.Task {
 	vehicle := h.GetVehicle()
-	et := h.getExchangeTask(m, vehicle)
+	et := GetExchangeTask(h, h.Town.Marketplace, m, vehicle)
 	if et == nil && vehicle != nil {
 		vehicle.SetInUse(false)
 	}
 	if et != nil {
 		return et
 	}
-	return h.getNextTask(e)
+	return GetNextTask(h, e)
 }
 
 func (h *Household) AddTask(t economy.Task) {
@@ -137,6 +59,14 @@ func (h *Household) AddTask(t economy.Task) {
 
 func (h *Household) AddPriorityTask(t economy.Task) {
 	h.Tasks = append([]economy.Task{t}, h.Tasks...)
+}
+
+func (h *Household) GetTasks() []economy.Task {
+	return h.Tasks
+}
+
+func (h *Household) SetTasks(tasks []economy.Task) {
+	h.Tasks = tasks
 }
 
 func (h *Household) IncTargetNumPeople() {
@@ -182,33 +112,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	numP := uint16(len(h.People))
 	FindWaterTask(h, numP, m)
 	mp := h.Town.Marketplace
-	var numFoodBatchesNeeded = 0
-	for _, a := range economy.Foods {
-		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
-			numFoodBatchesNeeded += NumBatchesSimple(economy.BuyFoodOrDrinkPerPerson()*numP, FoodTransportQuantity)
-		}
-	}
-	for _, a := range economy.Foods {
-		if h.Resources.Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
-			tag := "food_shopping#" + a.Name
-			if NumBatchesSimple(economy.BuyFoodOrDrinkPerPerson()*numP, FoodTransportQuantity) > h.NumTasks("exchange", tag) {
-				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
-				var maxPrice = h.Money / uint32(numFoodBatchesNeeded)
-				if maxPrice > mp.Price(needs)*2 {
-					maxPrice = mp.Price(needs) * 2
-				}
-				if h.Money >= mp.Price(needs) && mp.HasTraded(a) {
-					h.AddPriorityTask(&economy.BuyTask{
-						Exchange:       mp,
-						HouseholdMoney: &h.Money,
-						Goods:          needs,
-						MaxPrice:       maxPrice,
-						TaskTag:        tag,
-					})
-				}
-			}
-		}
-	}
+	GetFoodTasks(h, numP, mp)
 	numTools := h.Resources.Get(Tools) + h.PeopleWithTools()
 	if numP > numTools && h.NumTasks("exchange", "tools_purchase") == 0 {
 		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Tools, Quantity: 1}}
@@ -546,8 +450,8 @@ func (h *Household) Field(m navigation.IMap) *navigation.Field {
 	return m.GetField(h.Building.X, h.Building.Y)
 }
 
-func (h *Household) RandomField(m navigation.IMap) *navigation.Field {
-	x, y, ok := GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
+func (h *Household) RandomField(m navigation.IMap, check func(navigation.Field) bool) *navigation.Field {
+	x, y, ok := GetRandomBuildingXY(h.Building, m, check)
 	if ok {
 		return m.GetField(x, y)
 	}
@@ -564,4 +468,8 @@ func (h *Household) GetBuilding() *building.Building {
 
 func (h *Household) GetHeating() float64 {
 	return h.Heating
+}
+
+func (h *Household) GetMoney() *uint32 {
+	return &h.Money
 }
