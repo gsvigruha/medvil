@@ -24,7 +24,7 @@ type TradeTask struct {
 	GoodsSourceToDest []artifacts.Artifacts
 	GoodsDestToSource []artifacts.Artifacts
 	TaskTag           string
-	goods             []artifacts.Artifacts
+	Goods             []artifacts.Artifacts
 	state             uint8
 }
 
@@ -45,25 +45,25 @@ func (t *TradeTask) Field() *navigation.Field {
 func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	switch t.state {
 	case TradeTaskStatePickupAtSource:
-		t.goods = []artifacts.Artifacts{}
+		t.Goods = []artifacts.Artifacts{}
 		if t.SourceExchange.Price(t.GoodsSourceToDest) <= *t.TraderMoney {
-			t.goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderMoney)
+			t.Goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderMoney)
 		}
 		t.state = TradeTaskStateDropoffAtDest
 	case TradeTaskStateDropoffAtDest:
-		if t.TargetExchange.CanSell(t.goods) {
-			t.TargetExchange.Sell(t.goods, t.TraderMoney)
+		if t.TargetExchange.CanSell(t.Goods) {
+			t.TargetExchange.Sell(t.Goods, t.TraderMoney)
 		}
 		t.state = TradeTaskStatePickupAtDest
 	case TradeTaskStatePickupAtDest:
-		t.goods = []artifacts.Artifacts{}
+		t.Goods = []artifacts.Artifacts{}
 		if t.TargetExchange.Price(t.GoodsDestToSource) <= *t.TraderMoney {
-			t.goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderMoney)
+			t.Goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderMoney)
 		}
 		t.state = TradeTaskStateDropoffAtSource
 	case TradeTaskStateDropoffAtSource:
-		if t.SourceExchange.CanSell(t.goods) {
-			t.SourceExchange.Sell(t.goods, t.TraderMoney)
+		if t.SourceExchange.CanSell(t.Goods) {
+			t.SourceExchange.Sell(t.Goods, t.TraderMoney)
 		}
 		return true
 	}
@@ -71,6 +71,12 @@ func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 }
 
 func (t *TradeTask) Blocked() bool {
+	switch t.state {
+	case TradeTaskStatePickupAtSource:
+		return !t.SourceExchange.HasAny(t.GoodsSourceToDest)
+	case TradeTaskStatePickupAtDest:
+		return !t.TargetExchange.HasAny(t.GoodsDestToSource)
+	}
 	return false
 }
 

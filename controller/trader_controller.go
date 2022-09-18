@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
+	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
@@ -39,6 +40,13 @@ func TraderToPanel(p *gui.Panel, trader *social.Trader) {
 			break
 		}
 		TaskToControlPanel(p, i%IconRowMax, TaskGUIY*ControlPanelSY+float64(i/IconRowMax*IconH), task, IconW)
+	}
+	if trader.Person.Task != nil {
+		if tradeTask, ok := trader.Person.Task.(*economy.TradeTask); ok {
+			for i, as := range tradeTask.Goods {
+				ArtifactsToControlPanel(p, i, as.A, as.Quantity, VehicleGUIY*ControlPanelSY)
+			}
+		}
 	}
 }
 
