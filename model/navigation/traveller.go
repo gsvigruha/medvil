@@ -258,7 +258,6 @@ func (t *Traveller) UseVehicle(v Vehicle) {
 	t.Vehicle = v
 	t.SyncTo(v.GetTraveller())
 	v.SetInUse(true)
-	t.Visible = false
 }
 
 func (t *Traveller) ExitVehicle() {
@@ -267,7 +266,6 @@ func (t *Traveller) ExitVehicle() {
 		t.Vehicle.GetTraveller().PY = 50
 		t.Vehicle.SetInUse(false)
 		t.Vehicle = nil
-		t.Visible = true
 	}
 }
 

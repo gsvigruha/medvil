@@ -26,7 +26,6 @@ type Trader struct {
 func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Person.ElapseTime(Calendar, m)
 	t.Person.Traveller.UseVehicle(t.Vehicle)
-	t.Person.Traveller.Visible = true
 	FindWaterTask(t, 1, m)
 	GetFoodTasks(t, 1, t.SourceExchange)
 	if t.NumTasks("trade", "trade") == 0 {
