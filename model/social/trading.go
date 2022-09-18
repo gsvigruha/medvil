@@ -27,7 +27,7 @@ func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Person.ElapseTime(Calendar, m)
 	FindWaterTask(t, 1, m)
 	GetFoodTasks(t, 1, t.SourceExchange)
-	if t.NumTasks("trading", "") == 0 {
+	if t.NumTasks("trade", "trade") == 0 {
 		task := t.GetTradeTask(m)
 		if task != nil {
 			t.AddTask(task)
@@ -81,7 +81,7 @@ func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 				Vehicle:           nil,
 				GoodsSourceToDest: t.GetGoodsToTrade(artifactSourceToDest, t.SourceExchange),
 				GoodsDestToSource: t.GetGoodsToTrade(artifactDestToSource, t.TargetExchange),
-				TaskTag:           "",
+				TaskTag:           "trade",
 			}
 		}
 	}
