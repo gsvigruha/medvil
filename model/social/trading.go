@@ -16,6 +16,7 @@ const TradingCapitalRatio = 0.5
 type Trader struct {
 	Money          uint32
 	Person         *Person
+	Vehicle        *vehicles.Vehicle
 	Resources      artifacts.Resources
 	SourceExchange *Marketplace
 	TargetExchange *Marketplace
@@ -95,6 +96,14 @@ func (t *Trader) AddPriorityTask(task economy.Task) {
 	t.Tasks = append([]economy.Task{task}, t.Tasks...)
 }
 
+func (t *Trader) GetTasks() []economy.Task {
+	return t.Tasks
+}
+
+func (t *Trader) SetTasks(tasks []economy.Task) {
+	t.Tasks = tasks
+}
+
 func (t *Trader) HasFood() bool {
 	return economy.HasFood(t.Resources)
 }
@@ -115,7 +124,7 @@ func (t *Trader) Field(m navigation.IMap) *navigation.Field {
 	return m.GetField(t.Person.Traveller.FX, t.Person.Traveller.FY)
 }
 
-func (t *Trader) RandomField(m navigation.IMap) *navigation.Field {
+func (t *Trader) RandomField(m navigation.IMap, check func(navigation.Field) bool) *navigation.Field {
 	return t.Field(m)
 }
 
@@ -123,9 +132,11 @@ func (t *Trader) NextTask(m navigation.IMap, e economy.Equipment) economy.Task {
 	if len(t.Tasks) == 0 {
 		return nil
 	}
-	task := t.Tasks[0]
-	t.Tasks = t.Tasks[1:]
-	return task
+	et := GetExchangeTask(t, t.SourceExchange, m, t.Vehicle)
+	if et != nil {
+		return et
+	}
+	return GetNextTask(t, e)
 }
 
 func (t *Trader) GetResources() *artifacts.Resources {

@@ -11,12 +11,14 @@ import (
 type Home interface {
 	AddTask(economy.Task)
 	AddPriorityTask(economy.Task)
+	GetTasks() []economy.Task
+	SetTasks([]economy.Task)
 	HasBeer() bool
 	HasDrink() bool
 	HasFood() bool
 	HasMedicine() bool
 	Field(navigation.IMap) *navigation.Field
-	RandomField(navigation.IMap) *navigation.Field
+	RandomField(navigation.IMap, func(navigation.Field) bool) *navigation.Field
 	NextTask(navigation.IMap, economy.Equipment) economy.Task
 	GetResources() *artifacts.Resources
 	GetBuilding() *building.Building
@@ -43,7 +45,7 @@ func needsWater(h Home, numP uint16) bool {
 
 func FindWaterTask(h Home, numP uint16, m navigation.IMap) {
 	if needsWater(h, numP) {
-		hf := h.RandomField(m)
+		hf := h.RandomField(m, navigation.Field.BuildingNonExtension)
 		if hf != nil {
 			dest := m.FindDest(navigation.Location{X: hf.X, Y: hf.Y, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
 			if dest != nil {

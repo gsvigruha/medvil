@@ -84,6 +84,7 @@ func (t *Townhall) CreateTrader() {
 					trader := &Trader{
 						Money:          0,
 						Person:         p,
+						Vehicle:        v,
 						Resources:      r,
 						SourceExchange: t.Household.Town.Marketplace,
 					}
