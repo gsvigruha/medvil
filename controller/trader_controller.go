@@ -19,6 +19,7 @@ func TraderToControlPanel(cp *ControlPanel, trader *social.Trader) {
 	tc := &TraderController{traderPanel: p, trader: trader}
 	TraderToPanel(p, trader)
 	cp.SetDynamicPanel(tc)
+	cp.C.ClickHandler = tc
 }
 
 func TraderToPanel(p *gui.Panel, trader *social.Trader) {
