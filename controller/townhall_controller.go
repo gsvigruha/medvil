@@ -106,7 +106,7 @@ func RefreshSubPanels(tc *TownhallController) {
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
 		fp.AddPanel(CreateOrderPanelForTownhall(10, float64((i+1)*IconH)+top, float64(IconH), s, th, vc, tc.cp.C.Map))
-		fp.AddButton(CreateTraderButtonForTownhall(10+tpw, float64((i+1)*IconH)+top, float64(IconH), s, th))
+		fp.AddButton(CreateTraderButtonForTownhall(10+tpw, float64((i+1)*IconH)+top, float64(IconH), s, th, tc.cp.C.Map))
 	}
 
 	for i, t := range th.Traders {
@@ -215,11 +215,11 @@ func CreateOrderPanelForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *
 	return p
 }
 
-func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall) gui.Button {
+func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall, m navigation.IMap) gui.Button {
 	return &gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + sx, Y: y, SX: sy, SY: sy},
 		ClickImpl: func() {
-			th.CreateTrader()
+			th.CreateTrader(m)
 		},
 	}
 }

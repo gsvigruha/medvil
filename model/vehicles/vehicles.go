@@ -5,15 +5,16 @@ import (
 )
 
 type VehicleType struct {
-	Name          string
-	Water         bool
-	Land          bool
-	IndoorStorage bool
-	MaxVolume     uint16
+	Name            string
+	Water           bool
+	Land            bool
+	IndoorStorage   bool
+	MaxVolume       uint16
+	BuildingCheckFn func(navigation.Field) bool
 }
 
-var Boat = &VehicleType{Name: "boat", Water: true, Land: false, IndoorStorage: false, MaxVolume: 75}
-var Cart = &VehicleType{Name: "cart", Water: false, Land: true, IndoorStorage: true, MaxVolume: 50}
+var Boat = &VehicleType{Name: "boat", Water: true, Land: false, IndoorStorage: false, MaxVolume: 75, BuildingCheckFn: navigation.Field.Sailable}
+var Cart = &VehicleType{Name: "cart", Water: false, Land: true, IndoorStorage: true, MaxVolume: 50, BuildingCheckFn: navigation.Field.BuildingNonExtension}
 
 type Vehicle struct {
 	T         *VehicleType

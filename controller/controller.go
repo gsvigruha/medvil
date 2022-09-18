@@ -50,6 +50,7 @@ type Controller struct {
 	SelectedConstruction      *building.Construction
 	SelectedMarketplace       *social.Marketplace
 	SelectedTraveller         *navigation.Traveller
+	SelectedTrader            *social.Trader
 	ReverseReferences         *model.ReverseReferences
 	ControlPanel              *ControlPanel
 	Country                   *social.Country
@@ -122,6 +123,7 @@ func (c *Controller) Reset() {
 	c.SelectedTower = nil
 	c.SelectedWorkshop = nil
 	c.SelectedTraveller = nil
+	c.SelectedTrader = nil
 	c.ClickHandler = nil
 }
 
@@ -214,6 +216,10 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				person := c.ReverseReferences.TravellerToPerson[c.SelectedTraveller]
 				if person != nil {
 					PersonToControlPanel(c.ControlPanel, person)
+				}
+				trader := c.ReverseReferences.TravellerToTrader[c.SelectedTraveller]
+				if trader != nil {
+					TraderToControlPanel(c.ControlPanel, trader)
 				}
 				return
 			}

@@ -149,11 +149,11 @@ func (t *Trader) GetBuilding() *building.Building {
 }
 
 func (t *Trader) GetHeating() float64 {
-	return 0
+	return 1.0
 }
 
 func (t *Trader) HasEnoughTextile() bool {
-	return false
+	return true
 }
 
 func (t *Trader) AddVehicle(v *vehicles.Vehicle) {
