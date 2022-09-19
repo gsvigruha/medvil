@@ -66,7 +66,7 @@ func (tc *TraderController) Refresh() {
 }
 
 func (tc *TraderController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return nil
+	return tc.trader.Person.Traveller.GetPathFields(c.Map)
 }
 
 func HandleClickForTrader(trader *social.Trader, c *Controller, rf *renderer.RenderedField) bool {
