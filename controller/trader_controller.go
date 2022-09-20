@@ -66,7 +66,19 @@ func (tc *TraderController) Refresh() {
 }
 
 func (tc *TraderController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return tc.trader.Person.Traveller.GetPathFields(c.Map)
+	var fs []navigation.FieldWithContext
+	for _, coords := range tc.trader.SourceExchange.Building.GetBuildingXYs(true) {
+		fs = append(fs, c.Map.GetField(coords[0], coords[1]))
+	}
+	if tc.trader.TargetExchange != nil {
+		for _, coords := range tc.trader.TargetExchange.Building.GetBuildingXYs(true) {
+			fs = append(fs, c.Map.GetField(coords[0], coords[1]))
+		}
+	}
+	for _, f := range tc.trader.Person.Traveller.GetPathFields(c.Map) {
+		fs = append(fs, f)
+	}
+	return fs
 }
 
 func HandleClickForTrader(trader *social.Trader, c *Controller, rf *renderer.RenderedField) bool {
