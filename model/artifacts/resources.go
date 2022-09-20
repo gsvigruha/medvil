@@ -202,6 +202,20 @@ func (r *Resources) Has(as []Artifacts) bool {
 	return true
 }
 
+func (r *Resources) HasAny(as []Artifacts) bool {
+	if len(as) == 0 {
+		return true
+	}
+	for _, a := range as {
+		if v, ok := r.Artifacts[a.A]; ok {
+			if v > 0 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (r *Resources) IsEmpty() bool {
 	if r.Artifacts == nil {
 		r.Artifacts = make(map[*Artifact]uint16)

@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
+	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
@@ -40,6 +41,13 @@ func TraderToPanel(p *gui.Panel, trader *social.Trader) {
 		}
 		TaskToControlPanel(p, i%IconRowMax, TaskGUIY*ControlPanelSY+float64(i/IconRowMax*IconH), task, IconW)
 	}
+	if trader.Person.Task != nil {
+		if tradeTask, ok := trader.Person.Task.(*economy.TradeTask); ok {
+			for i, as := range tradeTask.Goods {
+				ArtifactsToControlPanel(p, i, as.A, as.Quantity, VehicleGUIY*ControlPanelSY)
+			}
+		}
+	}
 }
 
 func (tc *TraderController) CaptureClick(x, y float64) {
@@ -58,7 +66,19 @@ func (tc *TraderController) Refresh() {
 }
 
 func (tc *TraderController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return nil
+	var fs []navigation.FieldWithContext
+	for _, coords := range tc.trader.SourceExchange.Building.GetBuildingXYs(true) {
+		fs = append(fs, c.Map.GetField(coords[0], coords[1]))
+	}
+	if tc.trader.TargetExchange != nil {
+		for _, coords := range tc.trader.TargetExchange.Building.GetBuildingXYs(true) {
+			fs = append(fs, c.Map.GetField(coords[0], coords[1]))
+		}
+	}
+	for _, f := range tc.trader.Person.Traveller.GetPathFields(c.Map) {
+		fs = append(fs, f)
+	}
+	return fs
 }
 
 func HandleClickForTrader(trader *social.Trader, c *Controller, rf *renderer.RenderedField) bool {

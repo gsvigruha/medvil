@@ -163,6 +163,10 @@ func (mp *Marketplace) CanSell(as []artifacts.Artifacts) bool {
 	return mp.Price(as) <= mp.Money
 }
 
+func (mp *Marketplace) HasAny(as []artifacts.Artifacts) bool {
+	return mp.Storage.HasAny(as)
+}
+
 func (mp *Marketplace) Price(as []artifacts.Artifacts) uint32 {
 	var price uint32 = 0
 	for _, a := range as {
