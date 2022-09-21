@@ -26,12 +26,14 @@ type Trader struct {
 func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Person.ElapseTime(Calendar, m)
 	t.Person.Traveller.UseVehicle(t.Vehicle)
-	FindWaterTask(t, 1, m)
-	GetFoodTasks(t, 1, t.SourceExchange)
-	if t.NumTasks("trade", "trade") == 0 {
-		task := t.GetTradeTask(m)
-		if task != nil {
-			t.AddTask(task)
+	if t.Person.IsHome {
+		FindWaterTask(t, 1, m)
+		GetFoodTasks(t, 1, t.SourceExchange)
+		if t.NumTasks("trade", "trade") == 0 {
+			task := t.GetTradeTask(m)
+			if task != nil {
+				t.AddTask(task)
+			}
 		}
 	}
 }
@@ -171,6 +173,9 @@ func (t *Trader) NumTasks(name string, tag string) int {
 	var i = 0
 	for _, t := range t.Tasks {
 		i += CountTags(t, name, tag)
+	}
+	if t.Person.Task != nil {
+		i += CountTags(t.Person.Task, name, tag)
 	}
 	return i
 }
