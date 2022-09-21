@@ -55,7 +55,9 @@ func (ntc *NewTownController) SetToState() {
 		}
 		for i := 0; i < *ntc.numPeople; i++ {
 			srcH.ReassignFirstPerson(dstH, ntc.cp.C.Map)
-			dstH.TargetNumPeople++
+			if len(dstH.People) > int(dstH.TargetNumPeople) {
+				dstH.TargetNumPeople++
+			}
 		}
 		targetMoney := uint32(*ntc.money)
 		if srcH.Money > targetMoney {
@@ -66,7 +68,9 @@ func (ntc *NewTownController) SetToState() {
 			srcH.Money = 0
 		}
 		for a, q := range ntc.resources {
-			ntc.newTown.Townhall.StorageTarget[a] = q
+			if q2, ok := ntc.newTown.Townhall.StorageTarget[a]; ok && *q2 < *q {
+				*ntc.newTown.Townhall.StorageTarget[a] = *q
+			}
 		}
 		srcH.Town.Country.AddTownIfDoesNotExist(ntc.newTown)
 	} else if ntc.state == NewTownControllerStatePickTown {
