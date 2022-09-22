@@ -33,9 +33,29 @@ var CartConstruction = &VehicleConstruction{
 	Output:                vehicles.Cart,
 }
 
+var TradingBoatConstruction = &VehicleConstruction{
+	Name:                  "trading_boat",
+	Time:                  30 * 24,
+	Power:                 1000,
+	BuildingExtensionType: building.Deck,
+	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
+	Output:                vehicles.TradingBoat,
+}
+
+var TradingCartConstruction = &VehicleConstruction{
+	Name:                  "trading_cart",
+	Time:                  30 * 24,
+	Power:                 1000,
+	BuildingExtensionType: nil,
+	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
+	Output:                vehicles.TradingCart,
+}
+
 var AllVehicleConstruction = [...]*VehicleConstruction{
 	BoatConstruction,
 	CartConstruction,
+	TradingBoatConstruction,
+	TradingCartConstruction,
 }
 
 func ConstructionCompatible(vc *VehicleConstruction, be *building.BuildingExtension) bool {
