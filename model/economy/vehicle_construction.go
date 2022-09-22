@@ -34,7 +34,7 @@ var CartConstruction = &VehicleConstruction{
 }
 
 var TradingBoatConstruction = &VehicleConstruction{
-	Name:                  "trading boat",
+	Name:                  "trading_boat",
 	Time:                  30 * 24,
 	Power:                 1000,
 	BuildingExtensionType: building.Deck,
@@ -43,7 +43,7 @@ var TradingBoatConstruction = &VehicleConstruction{
 }
 
 var TradingCartConstruction = &VehicleConstruction{
-	Name:                  "trading cart",
+	Name:                  "trading_cart",
 	Time:                  30 * 24,
 	Power:                 1000,
 	BuildingExtensionType: nil,
