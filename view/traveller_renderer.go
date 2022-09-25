@@ -9,6 +9,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/renderer"
 	"medvil/view/animation"
+	"medvil/view/buildings"
 	"medvil/view/vehicles"
 )
 
@@ -17,9 +18,9 @@ const MaxPY = navigation.MaxPY
 
 func getZByDir(bpe *navigation.BuildingPathElement, dir uint8) float64 {
 	if bpe.BC.Connection(dir) == building.ConnectionTypeUpperLevel {
-		return float64(bpe.GetLocation().Z) * DZ * BuildingUnitHeight
+		return float64(bpe.GetLocation().Z) * buildings.DZ * buildings.BuildingUnitHeight
 	} else if bpe.BC.Connection(dir) == building.ConnectionTypeLowerLevel {
-		return float64(bpe.GetLocation().Z-1) * DZ * BuildingUnitHeight
+		return float64(bpe.GetLocation().Z-1) * buildings.DZ * buildings.BuildingUnitHeight
 	}
 	return 0
 }

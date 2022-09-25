@@ -12,7 +12,7 @@ import (
 )
 
 var BuildingBufferW = DX * 2
-var BuildingBufferH = DY*3 + DZ*BuildingUnitHeight
+var BuildingBufferH = DY*3 + buildings.DZ*buildings.BuildingUnitHeight
 var BuildingExtensionBufferH = 200.0
 
 type BuildingImageCache struct {
@@ -30,7 +30,7 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 
 	t := time.Now().UnixNano()
 	key := roof.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.F.CacheKey()
-	z := float64((numUnits+1)*BuildingUnitHeight) * DZ
+	z := float64((numUnits+1)*buildings.BuildingUnitHeight) * buildings.DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
 
@@ -66,17 +66,17 @@ func (ic *BuildingImageCache) RenderBuildingUnitOnBuffer(
 
 	t := time.Now().UnixNano()
 	key := unit.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.F.CacheKey() + "#" + CacheKeyFromWorkshop(unit, c)
-	z := float64((numUnits+1)*BuildingUnitHeight) * DZ
+	z := float64((numUnits+1)*buildings.BuildingUnitHeight) * buildings.DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
 
 	if ce, ok := ic.unitEntries[key]; ok {
-		return ce.cv, RenderBuildingUnit(nil, unit, bufferedRF, numUnits, c).Move(xMin, yMin-z), xMin, yMin - z
+		return ce.cv, buildings.RenderBuildingUnit(nil, unit, bufferedRF, numUnits, c).Move(xMin, yMin-z), xMin, yMin - z
 	} else {
 		offscreen, _ := goglbackend.NewOffscreen(int(BuildingBufferW), int(BuildingBufferH), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, BuildingBufferW, BuildingBufferH)
-		rbu := RenderBuildingUnit(cv, unit, bufferedRF, numUnits, c)
+		rbu := buildings.RenderBuildingUnit(cv, unit, bufferedRF, numUnits, c)
 		ic.unitEntries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
@@ -93,7 +93,7 @@ func (ic *BuildingImageCache) RenderBuildingExtensionOnBuffer(
 	c *controller.Controller) (*canvas.Canvas, float64, float64) {
 
 	t := time.Now().UnixNano()
-	phase := c.Calendar.Hour % BuildingAnimationMaxPhase
+	phase := c.Calendar.Hour % buildings.BuildingAnimationMaxPhase
 	key := extension.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(phase))
 	z := BuildingExtensionBufferH / 2
 	xMin, yMin, _, _ := rf.BoundingBox()
@@ -105,7 +105,7 @@ func (ic *BuildingImageCache) RenderBuildingExtensionOnBuffer(
 		offscreen, _ := goglbackend.NewOffscreen(int(BuildingBufferW), int(BuildingExtensionBufferH), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, BuildingBufferW, BuildingExtensionBufferH)
-		RenderBuildingExtension(cv, extension, bufferedRF, numUnits, phase, c)
+		buildings.RenderBuildingExtension(cv, extension, bufferedRF, numUnits, phase, c)
 		ic.extensionEntries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
