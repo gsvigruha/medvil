@@ -9,7 +9,7 @@ import (
 )
 
 func DrawTradingBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
-	f, s, _, h, _ := DrawBoat(cv, t, x, y, c)
+	f1, f2, s, _, h, _ := DrawBoat(cv, t, x, y, c)
 
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
@@ -20,16 +20,16 @@ func DrawTradingBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y fl
 		cv.SetFillStyle("texture/vehicle/textile_flipped.png")
 	}
 	cv.BeginPath()
-	cv.LineTo(x+f*pm.XX-h*pm.XY+0*pm.XZ, y+f*pm.YX-h*pm.YY+0*pm.YZ)
-	cv.LineTo(x+0*pm.XX-h*pm.XY-s*pm.XZ, y+0*pm.YX-h*pm.YY-s*pm.YZ)
-	cv.LineTo(x+0*pm.XX-h*pm.XY+s*pm.XZ, y+0*pm.YX-h*pm.YY+s*pm.YZ)
+	cv.LineTo(x+f1*pm.XX-h*pm.XY+0*pm.XZ, y+f1*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.LineTo(x+f2*pm.XX-h*pm.XY-s*pm.XZ, y+f2*pm.YX-h*pm.YY-s*pm.YZ)
+	cv.LineTo(x+f2*pm.XX-h*pm.XY+s*pm.XZ, y+f2*pm.YX-h*pm.YY+s*pm.YZ)
 	cv.ClosePath()
 	cv.Fill()
 }
 
-func DrawBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) (float64, float64, float64, float64, float64) {
+func DrawBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) (float64, float64, float64, float64, float64, float64) {
 	if !t.Visible {
-		return 0, 0, 0, 0, 0
+		return 0, 0, 0, 0, 0, 0
 	}
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
@@ -38,7 +38,8 @@ func DrawBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 		r = -r
 	}
 
-	f := 18.0
+	f1 := 20.0
+	f2 := 6.0
 	s := 8.0
 	z := 6.0
 	h := 6.0
@@ -46,32 +47,38 @@ func DrawBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 
 	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
 	cv.BeginPath()
-	cv.LineTo(x-f*pm.XX+0*pm.XY+0*pm.XZ, y-f*pm.YX+0*pm.YY+0*pm.YZ)
-	cv.LineTo(x+0*pm.XX+0*pm.XY-z*pm.XZ, y+0*pm.YX+0*pm.YY-z*pm.YZ)
-	cv.LineTo(x+f*pm.XX+0*pm.XY+0*pm.XZ, y+f*pm.YX+0*pm.YY+0*pm.YZ)
-	cv.LineTo(x+0*pm.XX+0*pm.XY+z*pm.XZ, y+0*pm.YX+0*pm.YY+z*pm.YZ)
+	cv.LineTo(x-f1*pm.XX+0*pm.XY+0*pm.XZ, y-f1*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x-f2*pm.XX+0*pm.XY-z*pm.XZ, y-f2*pm.YX+0*pm.YY-z*pm.YZ)
+	cv.LineTo(x+f2*pm.XX+0*pm.XY-z*pm.XZ, y+f2*pm.YX+0*pm.YY-z*pm.YZ)
+	cv.LineTo(x+f1*pm.XX+0*pm.XY+0*pm.XZ, y+f1*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+f2*pm.XX+0*pm.XY+z*pm.XZ, y+f2*pm.YX+0*pm.YY+z*pm.YZ)
+	cv.LineTo(x-f2*pm.XX+0*pm.XY+z*pm.XZ, y-f2*pm.YX+0*pm.YY+z*pm.YZ)
 	cv.ClosePath()
 	cv.Fill()
 
 	cv.SetFillStyle("texture/vehicle/boat_side.png")
 	cv.BeginPath()
-	cv.LineTo(x-f*pm.XX+0*pm.XY+0*pm.XZ, y-f*pm.YX+0*pm.YY+0*pm.YZ)
-	cv.LineTo(x+0*pm.XX+0*pm.XY-z*pm.XZ, y+0*pm.YX+0*pm.YY-z*pm.YZ)
-	cv.LineTo(x+f*pm.XX+0*pm.XY+0*pm.XZ, y+f*pm.YX+0*pm.YY+0*pm.YZ)
-	cv.LineTo(x+f*pm.XX-h*pm.XY+0*pm.XZ, y+f*pm.YX-h*pm.YY+0*pm.YZ)
-	cv.LineTo(x+0*pm.XX-h*pm.XY-s*pm.XZ, y+0*pm.YX-h*pm.YY-s*pm.YZ)
-	cv.LineTo(x-f*pm.XX-h*pm.XY+0*pm.XZ, y-f*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.LineTo(x-f1*pm.XX+0*pm.XY+0*pm.XZ, y-f1*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x-f2*pm.XX+0*pm.XY-z*pm.XZ, y-f2*pm.YX+0*pm.YY-z*pm.YZ)
+	cv.LineTo(x+f2*pm.XX+0*pm.XY-z*pm.XZ, y+f2*pm.YX+0*pm.YY-z*pm.YZ)
+	cv.LineTo(x+f1*pm.XX+0*pm.XY+0*pm.XZ, y+f1*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+f1*pm.XX-h*pm.XY+0*pm.XZ, y+f1*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.LineTo(x+f2*pm.XX-h*pm.XY-s*pm.XZ, y+f2*pm.YX-h*pm.YY-s*pm.YZ)
+	cv.LineTo(x-f2*pm.XX-h*pm.XY-s*pm.XZ, y-f2*pm.YX-h*pm.YY-s*pm.YZ)
+	cv.LineTo(x-f1*pm.XX-h*pm.XY+0*pm.XZ, y-f1*pm.YX-h*pm.YY+0*pm.YZ)
 	cv.ClosePath()
 	cv.Fill()
 
 	cv.SetFillStyle("texture/vehicle/boat_side.png")
 	cv.BeginPath()
-	cv.LineTo(x-f*pm.XX+0*pm.XY+0*pm.XZ, y-f*pm.YX+0*pm.YY+0*pm.YZ)
-	cv.LineTo(x+0*pm.XX+0*pm.XY+z*pm.XZ, y+0*pm.YX+0*pm.YY+z*pm.YZ)
-	cv.LineTo(x+f*pm.XX+0*pm.XY+0*pm.XZ, y+f*pm.YX+0*pm.YY+0*pm.YZ)
-	cv.LineTo(x+f*pm.XX-h*pm.XY+0*pm.XZ, y+f*pm.YX-h*pm.YY+0*pm.YZ)
-	cv.LineTo(x+0*pm.XX-h*pm.XY+s*pm.XZ, y+0*pm.YX-h*pm.YY+s*pm.YZ)
-	cv.LineTo(x-f*pm.XX-h*pm.XY+0*pm.XZ, y-f*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.LineTo(x-f1*pm.XX+0*pm.XY+0*pm.XZ, y-f1*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x-f2*pm.XX+0*pm.XY+z*pm.XZ, y-f2*pm.YX+0*pm.YY+z*pm.YZ)
+	cv.LineTo(x+f2*pm.XX+0*pm.XY+z*pm.XZ, y+f2*pm.YX+0*pm.YY+z*pm.YZ)
+	cv.LineTo(x+f1*pm.XX+0*pm.XY+0*pm.XZ, y+f1*pm.YX+0*pm.YY+0*pm.YZ)
+	cv.LineTo(x+f1*pm.XX-h*pm.XY+0*pm.XZ, y+f1*pm.YX-h*pm.YY+0*pm.YZ)
+	cv.LineTo(x+f2*pm.XX-h*pm.XY+s*pm.XZ, y+f2*pm.YX-h*pm.YY+s*pm.YZ)
+	cv.LineTo(x-f2*pm.XX-h*pm.XY+s*pm.XZ, y-f2*pm.YX-h*pm.YY+s*pm.YZ)
+	cv.LineTo(x-f1*pm.XX-h*pm.XY+0*pm.XZ, y-f1*pm.YX-h*pm.YY+0*pm.YZ)
 	cv.ClosePath()
 	cv.Fill()
 
@@ -88,5 +95,5 @@ func DrawBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	cv.ClosePath()
 	cv.Stroke()
 
-	return f, s, z, h, p
+	return f1, f2, s, z, h, p
 }
