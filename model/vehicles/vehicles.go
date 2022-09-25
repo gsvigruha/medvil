@@ -9,14 +9,47 @@ type VehicleType struct {
 	Water           bool
 	Land            bool
 	IndoorStorage   bool
+	Trader          bool
 	MaxVolume       uint16
 	BuildingCheckFn func(navigation.Field) bool
 }
 
-var Boat = &VehicleType{Name: "boat", Water: true, Land: false, IndoorStorage: false, MaxVolume: 75, BuildingCheckFn: navigation.Field.Sailable}
-var Cart = &VehicleType{Name: "cart", Water: false, Land: true, IndoorStorage: true, MaxVolume: 50, BuildingCheckFn: navigation.Field.BuildingNonExtension}
-var TradingBoat = &VehicleType{Name: "trading_boat", Water: true, Land: false, IndoorStorage: false, MaxVolume: 75, BuildingCheckFn: navigation.Field.Sailable}
-var TradingCart = &VehicleType{Name: "trading_cart", Water: false, Land: true, IndoorStorage: true, MaxVolume: 50, BuildingCheckFn: navigation.Field.BuildingNonExtension}
+var Boat = &VehicleType{
+	Name:            "boat",
+	Water:           true,
+	Land:            false,
+	IndoorStorage:   false,
+	Trader:          false,
+	MaxVolume:       75,
+	BuildingCheckFn: navigation.Field.Sailable,
+}
+var Cart = &VehicleType{
+	Name:            "cart",
+	Water:           false,
+	Land:            true,
+	IndoorStorage:   true,
+	Trader:          false,
+	MaxVolume:       50,
+	BuildingCheckFn: navigation.Field.BuildingNonExtension,
+}
+var TradingBoat = &VehicleType{
+	Name:            "trading_boat",
+	Water:           true,
+	Land:            false,
+	IndoorStorage:   false,
+	Trader:          true,
+	MaxVolume:       75,
+	BuildingCheckFn: navigation.Field.Sailable,
+}
+var TradingCart = &VehicleType{
+	Name:            "trading_cart",
+	Water:           false,
+	Land:            true,
+	IndoorStorage:   true,
+	Trader:          true,
+	MaxVolume:       50,
+	BuildingCheckFn: navigation.Field.BuildingNonExtension,
+}
 
 type Vehicle struct {
 	T         *VehicleType
