@@ -6,6 +6,7 @@ import (
 	"medvil/controller"
 	"medvil/model/building"
 	"medvil/renderer"
+	"medvil/view/buildings"
 	"strconv"
 	"time"
 )
@@ -34,12 +35,12 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 	bufferedRF := rf.Move(-xMin, -yMin+z)
 
 	if ce, ok := ic.roofEntries[key]; ok {
-		return ce.cv, RenderBuildingRoof(nil, roof, bufferedRF, numUnits, c).Move(xMin, yMin-z), xMin, yMin - z
+		return ce.cv, buildings.RenderBuildingRoof(nil, roof, bufferedRF, numUnits, c).Move(xMin, yMin-z), xMin, yMin - z
 	} else {
 		offscreen, _ := goglbackend.NewOffscreen(int(BuildingBufferW), int(BuildingBufferH), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, BuildingBufferW, BuildingBufferH)
-		rbr := RenderBuildingRoof(cv, roof, bufferedRF, numUnits, c)
+		rbr := buildings.RenderBuildingRoof(cv, roof, bufferedRF, numUnits, c)
 		ic.roofEntries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
