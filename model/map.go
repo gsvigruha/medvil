@@ -148,8 +148,8 @@ func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, bt building.Buildin
 			return (m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+1)%4) ||
 				m.HasNeighborFieldInDirection(f.X, f.Y, terrain.Grass, (direction+3)%4))
 		} else {
-			return (!m.HasNeighborBuildingInDirection(f.X, f.Y, direction) &&
-				!m.HasNeighborBuildingInDirection(f.X, f.Y, (direction+2)%4))
+			return (!m.HasNonGateNeighborBuildingInDirection(f.X, f.Y, direction) &&
+				!m.HasNonGateNeighborBuildingInDirection(f.X, f.Y, (direction+2)%4))
 		}
 	}
 	if bt == building.BuildingTypeWall {
@@ -234,9 +234,10 @@ func (m *Map) HasNeighborFieldInDirection(x, y uint16, t terrain.TerrainType, di
 	return false
 }
 
-func (m *Map) HasNeighborBuildingInDirection(x, y uint16, direction uint8) bool {
+func (m *Map) HasNonGateNeighborBuildingInDirection(x, y uint16, direction uint8) bool {
 	d := navigation.DirectionOrthogonalXY[direction]
-	if m.GetNField(x, d[0], y, d[1]) != nil && !m.GetNField(x, d[0], y, d[1]).Building.Empty() {
+	f := m.GetNField(x, d[0], y, d[1])
+	if f != nil && !f.Building.Empty() && f.Building.GetBuilding().Plan.BuildingType != building.BuildingTypeGate {
 		return true
 	}
 	return false
