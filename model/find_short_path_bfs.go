@@ -23,16 +23,16 @@ func AddNextField(pe navigation.PathElement, prevE *BFSElement, toVisit *[]*BFSE
 	}
 }
 
-func CheckField(pe navigation.PathElement, travellerType uint8) bool {
-	if travellerType == navigation.TravellerTypePedestrian {
+func CheckField(pe navigation.PathElement, pathType navigation.PathType) bool {
+	if pathType == navigation.PathTypePedestrian {
 		return pe.Walkable()
-	} else if travellerType == navigation.TravellerTypeBoat {
+	} else if pathType == navigation.PathTypeBoat {
 		return pe.Sailable()
 	}
 	return false
 }
 
-func FindShortPathBFS(m *Map, start navigation.Location, dest navigation.Destination, travellerType uint8) []navigation.PathElement {
+func FindShortPathBFS(m *Map, start navigation.Location, dest navigation.Destination, pathType navigation.PathType) []navigation.PathElement {
 	var iter = 0
 	visited := make(map[navigation.Location]*[]navigation.PathElement, capacity)
 	se := &BFSElement{PE: m.GetField(start.X, start.Y).GetPathElement(start.Z), prev: nil, d: 1}
@@ -56,7 +56,7 @@ func FindShortPathBFS(m *Map, start navigation.Location, dest navigation.Destina
 			continue
 		}
 
-		if e.d > ShortPathMaxLength || (e != se && !CheckField(e.PE, travellerType)) {
+		if e.d > ShortPathMaxLength || (e != se && !CheckField(e.PE, pathType)) {
 			visited[e.PE.GetLocation()] = nil
 			continue
 		}

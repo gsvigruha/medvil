@@ -207,19 +207,19 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction b
 	return b
 }
 
-func (m *Map) ShortPath(start, dest navigation.Location, travellerType uint8) *navigation.Path {
+func (m *Map) ShortPath(start, dest navigation.Location, pathType navigation.PathType) *navigation.Path {
 	if start == dest {
 		return nil
 	}
-	p := FindShortPathBFS(m, start, dest, travellerType)
+	p := FindShortPathBFS(m, start, dest, pathType)
 	if p != nil {
 		return &navigation.Path{P: p[1:]}
 	}
 	return nil
 }
 
-func (m *Map) FindDest(start navigation.Location, dest navigation.Destination, travellerType uint8) *navigation.Field {
-	p := FindShortPathBFS(m, start, dest, travellerType)
+func (m *Map) FindDest(start navigation.Location, dest navigation.Destination, pathType navigation.PathType) *navigation.Field {
+	p := FindShortPathBFS(m, start, dest, pathType)
 	if p != nil {
 		return p[len(p)-1].(*navigation.Field)
 	}

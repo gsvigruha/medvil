@@ -14,8 +14,15 @@ const MaxStuckCntr = 5
 const TravellerTypePedestrian uint8 = 0
 const TravellerTypeBoat uint8 = 1
 const TravellerTypeCart uint8 = 2
+const TravellerTypeTradingBoat uint8 = 3
+const TravellerTypeTradingCart uint8 = 4
 
 const RoadBreakdownRate = 0.0001
+
+type PathType uint8
+
+const PathTypePedestrian PathType = 0
+const PathTypeBoat PathType = 1
 
 type Traveller struct {
 	FX        uint16
@@ -240,18 +247,18 @@ func (t *Traveller) IncPhase() {
 func (t *Traveller) EnsurePath(f *Field, m IMap) bool {
 	dest := Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
 	if t.path == nil || t.path.LastElement().GetLocation() != dest {
-		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, dest, t.TravellerType())
+		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, dest, t.PathType())
 		t.lane = uint8(rand.Intn(3) + 1)
 		t.stuckCntr = 0
 	}
 	return t.path != nil
 }
 
-func (t *Traveller) TravellerType() uint8 {
+func (t *Traveller) PathType() PathType {
 	if t.Vehicle != nil {
-		return t.Vehicle.TravellerType()
+		return t.Vehicle.PathType()
 	}
-	return TravellerTypePedestrian
+	return PathTypePedestrian
 }
 
 func (t *Traveller) UseVehicle(v Vehicle) {

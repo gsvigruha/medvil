@@ -41,6 +41,10 @@ func (o *VehicleOrder) CompleteBuild(f *navigation.Field) {
 		travellerType = navigation.TravellerTypeBoat
 	} else if o.T.Output == vehicles.Cart {
 		travellerType = navigation.TravellerTypeCart
+	} else if o.T.Output == vehicles.TradingBoat {
+		travellerType = navigation.TravellerTypeTradingBoat
+	} else if o.T.Output == vehicles.TradingCart {
+		travellerType = navigation.TravellerTypeTradingCart
 	}
 	vehicle := &vehicles.Vehicle{T: o.T.Output, Traveller: &navigation.Traveller{
 		FX:      f.X,
