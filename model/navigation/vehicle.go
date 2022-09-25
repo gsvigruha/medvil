@@ -1,8 +1,9 @@
 package navigation
 
 type Vehicle interface {
-	TravellerType() uint8
+	PathType() PathType
 	GetTraveller() *Traveller
 	SetInUse(bool)
 	SetHome(bool)
+	Water() bool
 }

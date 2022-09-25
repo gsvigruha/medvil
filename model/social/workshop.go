@@ -41,7 +41,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						w.Household.NumTasks("transport", "water") == 0 {
 						hx, hy, ok := GetRandomBuildingXY(w.Household.Building, m, navigation.Field.BuildingNonExtension)
 						if ok {
-							dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.TravellerTypePedestrian)
+							dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.PathTypePedestrian)
 							if dest != nil {
 								w.Household.AddPriorityTask(&economy.TransportTask{
 									PickupF:  dest,

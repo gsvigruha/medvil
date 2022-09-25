@@ -24,11 +24,11 @@ type Vehicle struct {
 	InUse     bool
 }
 
-func (v *Vehicle) TravellerType() uint8 {
-	if v.T == Boat {
-		return navigation.TravellerTypeBoat
+func (v *Vehicle) PathType() navigation.PathType {
+	if v.T.Water {
+		return navigation.PathTypeBoat
 	}
-	return navigation.TravellerTypePedestrian
+	return navigation.PathTypePedestrian
 }
 
 func (v *Vehicle) GetTraveller() *navigation.Traveller {
@@ -46,4 +46,8 @@ func (v *Vehicle) SetHome(home bool) {
 	if v.Traveller != nil && v.T.IndoorStorage {
 		v.Traveller.Visible = !home
 	}
+}
+
+func (v *Vehicle) Water() bool {
+	return v.T.Water
 }
