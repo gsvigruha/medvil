@@ -109,6 +109,9 @@ func (bpe *BuildingPathElement) Walkable() bool {
 }
 
 func (bpe *BuildingPathElement) Sailable() bool {
+	if bpe.BC.Building().Plan.BuildingType == building.BuildingTypeGate {
+		return true
+	}
 	return false
 }
 
