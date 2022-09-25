@@ -29,7 +29,7 @@ var CartConstruction = &VehicleConstruction{
 	Time:                  30 * 24,
 	Power:                 1000,
 	BuildingExtensionType: nil,
-	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
+	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 2}},
 	Output:                vehicles.Cart,
 }
 
@@ -38,8 +38,10 @@ var TradingBoatConstruction = &VehicleConstruction{
 	Time:                  30 * 24,
 	Power:                 1000,
 	BuildingExtensionType: building.Deck,
-	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
-	Output:                vehicles.TradingBoat,
+	Inputs: []artifacts.Artifacts{
+		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3},
+		artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 2}},
+	Output: vehicles.TradingBoat,
 }
 
 var TradingCartConstruction = &VehicleConstruction{
@@ -47,8 +49,10 @@ var TradingCartConstruction = &VehicleConstruction{
 	Time:                  30 * 24,
 	Power:                 1000,
 	BuildingExtensionType: nil,
-	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
-	Output:                vehicles.TradingCart,
+	Inputs: []artifacts.Artifacts{
+		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 2},
+		artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 2}},
+	Output: vehicles.TradingCart,
 }
 
 var AllVehicleConstruction = [...]*VehicleConstruction{
