@@ -93,9 +93,11 @@ func (b BuildingBaseButton) Click() {
 }
 
 func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
-	if b.ET == nil {
+	if b.ET == nil || b.ET == building.Forge {
 		if b.M != nil {
 			cv.SetFillStyle("texture/building/" + b.M.Name + ".png")
+		} else if b.ET == building.Forge {
+			cv.SetFillStyle("texture/building/stone.png")
 		}
 		cv.SetStrokeStyle("#666")
 		cv.SetLineWidth(2)
@@ -104,13 +106,15 @@ func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
 			cv.LineTo(p.X, p.Y)
 		}
 		cv.ClosePath()
-		if b.M != nil {
+		if b.M != nil || b.ET == building.Forge {
 			cv.Fill()
 		}
 		cv.Stroke()
 	} else {
-		img := "icon/gui/building/" + b.ET.Name + ".png"
-		cv.DrawImage(img, b.p.Points[0].X-16, b.p.Points[0].Y+4, 32, 32)
+		if b.ET == building.WaterMillWheel {
+			img := "icon/gui/building/" + b.ET.Name + ".png"
+			cv.DrawImage(img, b.p.Points[0].X-IconS/2, b.p.Points[0].Y+4, IconS, IconS)
+		}
 	}
 }
 
