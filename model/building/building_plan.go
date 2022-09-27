@@ -309,8 +309,8 @@ func (b *BuildingPlan) GetExtension() *BuildingExtension {
 }
 
 func (b *BuildingPlan) GetExtensionWithCoords() (*BuildingExtension, uint16, uint16) {
-	for i := uint16(0); i < 5; i++ {
-		for j := uint16(0); j < 5; j++ {
+	for i := uint16(0); i < BuildingBaseMaxSize; i++ {
+		for j := uint16(0); j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil && b.BaseShape[i][j].Extension != nil {
 				return b.BaseShape[i][j].Extension, i, j
 			}
@@ -321,8 +321,8 @@ func (b *BuildingPlan) GetExtensionWithCoords() (*BuildingExtension, uint16, uin
 
 func (b *BuildingPlan) GetExtensions() []*BuildingExtension {
 	var es []*BuildingExtension
-	for i := uint16(0); i < 5; i++ {
-		for j := uint16(0); j < 5; j++ {
+	for i := uint16(0); i < BuildingBaseMaxSize; i++ {
+		for j := uint16(0); j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil && b.BaseShape[i][j].Extension != nil {
 				es = append(es, b.BaseShape[i][j].Extension)
 			}
