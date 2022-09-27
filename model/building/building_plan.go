@@ -303,15 +303,15 @@ func (b *BuildingPlan) Copy() *BuildingPlan {
 	}
 }
 
-func (b *BuildingPlan) GetExtension() *BuildingExtension {
-	e, _, _ := b.GetExtensionWithCoords()
+func (b *BuildingPlan) GetExtension(et *BuildingExtensionType) *BuildingExtension {
+	e, _, _ := b.GetExtensionWithCoords(et)
 	return e
 }
 
-func (b *BuildingPlan) GetExtensionWithCoords() (*BuildingExtension, uint16, uint16) {
+func (b *BuildingPlan) GetExtensionWithCoords(et *BuildingExtensionType) (*BuildingExtension, uint16, uint16) {
 	for i := uint16(0); i < BuildingBaseMaxSize; i++ {
 		for j := uint16(0); j < BuildingBaseMaxSize; j++ {
-			if b.BaseShape[i][j] != nil && b.BaseShape[i][j].Extension != nil {
+			if b.BaseShape[i][j] != nil && b.BaseShape[i][j].Extension != nil && b.BaseShape[i][j].Extension.T == et {
 				return b.BaseShape[i][j].Extension, i, j
 			}
 		}

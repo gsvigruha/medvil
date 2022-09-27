@@ -62,14 +62,23 @@ var AllVehicleConstruction = [...]*VehicleConstruction{
 	TradingCartConstruction,
 }
 
-func ConstructionCompatible(vc *VehicleConstruction, be *building.BuildingExtension) bool {
-	return vc.BuildingExtensionType == nil || (be != nil && be.T == vc.BuildingExtensionType)
+func ConstructionCompatible(vc *VehicleConstruction, extensions []*building.BuildingExtension) bool {
+	if vc.BuildingExtensionType == nil {
+		return true
+	} else {
+		for _, e := range extensions {
+			if e != nil && e.T == vc.BuildingExtensionType {
+				return true
+			}
+		}
+	}
+	return false
 }
 
-func GetVehicleConstructions(be *building.BuildingExtension) []*VehicleConstruction {
+func GetVehicleConstructions(extensions []*building.BuildingExtension) []*VehicleConstruction {
 	result := make([]*VehicleConstruction, 0, len(AllVehicleConstruction))
 	for _, m := range AllVehicleConstruction {
-		if ConstructionCompatible(m, be) {
+		if ConstructionCompatible(m, extensions) {
 			result = append(result, m)
 		}
 	}

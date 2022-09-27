@@ -103,8 +103,8 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			var ok bool
 			var ext *building.BuildingExtension
 			if order.T.Output.Water {
-				ext, x, y = f.Household.Building.GetExtensionWithCoords()
-				if ext == nil || ext.T != building.Deck {
+				ext, x, y = f.Household.Building.GetExtensionWithCoords(building.Deck)
+				if ext == nil {
 					continue
 				}
 			} else {
@@ -170,8 +170,8 @@ func GetVehicleConstructions(factories []*Factory) []*economy.VehicleConstructio
 	result := make([]*economy.VehicleConstruction, 0, len(economy.AllVehicleConstruction))
 	for _, vc := range economy.AllVehicleConstruction {
 		for _, factory := range factories {
-			be := factory.Household.Building.Plan.GetExtension()
-			if economy.ConstructionCompatible(vc, be) {
+			extensions := factory.Household.Building.Plan.GetExtensions()
+			if economy.ConstructionCompatible(vc, extensions) {
 				result = append(result, vc)
 				break
 			}

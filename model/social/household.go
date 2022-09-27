@@ -218,7 +218,7 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 	if h.numVehicles(vehicles.Boat) == 0 && h.Building.HasExtension(building.Deck) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
-			ext, hx, hy := h.Building.GetExtensionWithCoords()
+			ext, hx, hy := h.Building.GetExtensionWithCoords(building.Deck)
 			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
 			if ext != nil && ext.T == building.Deck && fok {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
