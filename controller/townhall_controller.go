@@ -192,7 +192,7 @@ func CreateOrderPanelForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *
 	l := p.AddTextLabel("", x, y+sy*2/3)
 	var factories []*social.Factory
 	for _, factory := range th.Household.Town.Factories {
-		if economy.ConstructionCompatible(vc, factory.Household.Building.Plan.GetExtension()) {
+		if economy.ConstructionCompatible(vc, factory.Household.Building.Plan.GetExtensions()) {
 			factories = append(factories, factory)
 		}
 	}

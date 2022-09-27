@@ -65,7 +65,7 @@ func (b BuildingBaseButton) Click() {
 		if !b.bc.del && b.bc.Plan.BaseShape[b.i][b.j] != nil && len(b.bc.Plan.BaseShape[b.i][b.j].Floors) > 0 {
 			b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{RoofType: building.RoofTypeSplit, M: b.bc.RoofM}
 		}
-	} else if b.bc.ExtensionT != nil && b.bc.Plan.HasNeighborUnit(uint8(b.i), uint8(b.j), 0) && b.bc.Plan.GetExtension() == nil {
+	} else if b.bc.ExtensionT != nil && b.bc.Plan.HasNeighborUnit(uint8(b.i), uint8(b.j), 0) && len(b.bc.Plan.GetExtensions()) == 0 {
 		if !b.bc.del && b.bc.Plan.BaseShape[b.i][b.j] == nil {
 			b.bc.Plan.BaseShape[b.i][b.j] = &building.PlanUnits{}
 			b.bc.Plan.BaseShape[b.i][b.j].Extension = &building.BuildingExtension{T: b.bc.ExtensionT}
