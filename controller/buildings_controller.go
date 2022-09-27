@@ -93,9 +93,11 @@ func (b BuildingBaseButton) Click() {
 }
 
 func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
-	if b.ET == nil {
+	if b.ET == nil || b.ET == building.Forge {
 		if b.M != nil {
 			cv.SetFillStyle("texture/building/" + b.M.Name + ".png")
+		} else if b.ET == building.Forge {
+			cv.SetFillStyle("texture/building/stone.png")
 		}
 		cv.SetStrokeStyle("#666")
 		cv.SetLineWidth(2)
@@ -104,13 +106,15 @@ func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
 			cv.LineTo(p.X, p.Y)
 		}
 		cv.ClosePath()
-		if b.M != nil {
+		if b.M != nil || b.ET == building.Forge {
 			cv.Fill()
 		}
 		cv.Stroke()
 	} else {
-		img := "icon/gui/building/" + b.ET.Name + ".png"
-		cv.DrawImage(img, b.p.Points[0].X-16, b.p.Points[0].Y+4, 32, 32)
+		if b.ET == building.WaterMillWheel {
+			img := "icon/gui/building/" + b.ET.Name + ".png"
+			cv.DrawImage(img, b.p.Points[0].X-IconS/2, b.p.Points[0].Y+4, IconS, IconS)
+		}
 	}
 }
 
@@ -380,19 +384,19 @@ func (bc *BuildingsController) GenerateButtons() {
 				pi, pj = m-1-j, m-1-i
 			}
 
-			x := (ControlPanelSX-20)/2 - float64(pi)*DX + float64(pj)*DX + 10
-			y := float64(pj)*DY + float64(pi)*DY + BuildingBasePanelTop*ControlPanelSY
-			bc.p.AddButton(createBuildingBaseButton(bc, i, j, 0, x, y, nil, nil, nil))
-			if bc.Plan.BaseShape[i][j] != nil {
+			x := (ControlPanelSX-20)/2 - float64(i)*DX + float64(j)*DX + 10
+			y := float64(j)*DY + float64(i)*DY + BuildingBasePanelTop*ControlPanelSY
+			bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, 0, x, y, nil, nil, nil))
+			if bc.Plan.BaseShape[pi][pj] != nil {
 				var k int
-				for k = range bc.Plan.BaseShape[i][j].Floors {
-					bc.p.AddButton(createBuildingBaseButton(bc, i, j, k+1, x, y-DZ*float64(k+1), bc.Plan.BaseShape[i][j].Floors[k].M, nil, nil))
+				for k = range bc.Plan.BaseShape[pi][pj].Floors {
+					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), bc.Plan.BaseShape[pi][pj].Floors[k].M, nil, nil))
 				}
-				if bc.Plan.BaseShape[i][j].Roof != nil && !bc.Plan.BaseShape[i][j].Roof.Flat() {
-					bc.p.AddButton(createBuildingBaseButton(bc, i, j, k+1, x, y-DZ*float64(k+1), nil, bc.Plan.BaseShape[i][j].Roof.M, nil))
+				if bc.Plan.BaseShape[pi][pj].Roof != nil && !bc.Plan.BaseShape[pi][pj].Roof.Flat() {
+					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), nil, bc.Plan.BaseShape[pi][pj].Roof.M, nil))
 				}
-				if bc.Plan.BaseShape[i][j].Extension != nil {
-					bc.p.AddButton(createBuildingBaseButton(bc, i, j, k+1, x, y-DZ*float64(k+1), nil, nil, bc.Plan.BaseShape[i][j].Extension.T))
+				if bc.Plan.BaseShape[pi][pj].Extension != nil {
+					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), nil, nil, bc.Plan.BaseShape[pi][pj].Extension.T))
 				}
 			}
 		}

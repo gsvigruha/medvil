@@ -29,7 +29,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	wc := &WorkshopController{workshopPanel: wp, householdPanel: hp, workshop: workshop}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
-	tasks := economy.GetManufactureNames(workshop.Household.Building.Plan.GetExtension())
+	tasks := economy.GetManufactureNames(workshop.Household.Building.Plan.GetExtensions())
 	wc.manufactureDropDown = &gui.DropDown{
 		X:        float64(10),
 		Y:        hcy,
