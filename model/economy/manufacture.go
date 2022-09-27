@@ -161,12 +161,18 @@ func GetAllManufactureNames() []string {
 }
 
 func GetManufactureNames(extensions []*building.BuildingExtension) []string {
+	var filteredExtensions []*building.BuildingExtension
+	for _, extension := range extensions {
+		if extension.T != building.Deck {
+			filteredExtensions = append(filteredExtensions, extension)
+		}
+	}
 	result := make([]string, 0, len(AllManufacture))
 	for _, m := range AllManufacture {
-		if len(extensions) == 0 && m.BuildingExtensionType == nil {
+		if m.BuildingExtensionType == nil && len(filteredExtensions) == 0 {
 			result = append(result, m.Name)
 		} else {
-			for _, extension := range extensions {
+			for _, extension := range filteredExtensions {
 				if extension != nil && extension.T == m.BuildingExtensionType {
 					result = append(result, m.Name)
 					break
