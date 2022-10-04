@@ -34,11 +34,11 @@ func CountTags(task economy.Task, name, tag string) int {
 func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicles.Vehicle) *economy.ExchangeTask {
 	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
 	var buildingCheckFn = navigation.Field.BuildingNonExtension
-	_, _, sailableMP := GetRandomBuildingXY(mp.Building, m, navigation.Field.Sailable)
-	sailableH := h.RandomField(m, navigation.Field.Sailable) != nil
+	_, _, sailableMP := GetRandomBuildingXY(mp.Building, m, navigation.Field.BoatDestination)
+	sailableH := h.RandomField(m, navigation.Field.BoatDestination) != nil
 	if vehicle != nil {
 		if vehicle.T.Water && sailableMP && sailableH {
-			buildingCheckFn = navigation.Field.Sailable
+			buildingCheckFn = navigation.Field.BoatDestination
 		}
 		maxVolume = vehicle.T.MaxVolume
 	}
