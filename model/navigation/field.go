@@ -148,6 +148,17 @@ func (f Field) Sailable() bool {
 	return f.Terrain.T == terrain.Water
 }
 
+func (f Field) BoatDestination() bool {
+	if f.Building.Empty() {
+		return false
+	}
+	unit, ok := f.Building.BuildingComponents[0].(*building.ExtensionUnit)
+	if !ok {
+		return false
+	}
+	return f.Terrain.T == terrain.Water && unit.T == building.Deck
+}
+
 func (f Field) Buildable() bool {
 	if !f.Empty() {
 		return false
