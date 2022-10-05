@@ -13,6 +13,7 @@ type Workshop struct {
 }
 
 const ProfitCostRatio = 2.0
+const MaxManufactureInputRatio = 0.7
 
 func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.ElapseTime(Calendar, m)
@@ -25,7 +26,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			transportQ := MinProductTransportQuantity(purchasableInputs)
 			needs := w.Household.Resources.Needs(artifacts.Multiply(purchasableInputs, transportQ))
 			tag := "manufacture_input"
-			if needs != nil && w.Household.NumTasks("exchange", tag) == 0 {
+			if needs != nil && w.Household.NumTasks("exchange", tag) < 2 {
 				if w.Household.Money >= mp.Price(needs) {
 					w.Household.AddTask(&economy.BuyTask{
 						Exchange:       mp,
