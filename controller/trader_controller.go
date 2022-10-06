@@ -13,19 +13,20 @@ import (
 type TraderController struct {
 	traderPanel *gui.Panel
 	trader      *social.Trader
+	cp          *ControlPanel
 }
 
 func TraderToControlPanel(cp *ControlPanel, trader *social.Trader) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
-	tc := &TraderController{traderPanel: p, trader: trader}
-	TraderToPanel(p, trader)
+	tc := &TraderController{traderPanel: p, trader: trader, cp: cp}
+	TraderToPanel(cp, p, trader)
 	cp.SetDynamicPanel(tc)
 	cp.C.ClickHandler = tc
 }
 
-func TraderToPanel(p *gui.Panel, trader *social.Trader) {
+func TraderToPanel(cp *ControlPanel, p *gui.Panel, trader *social.Trader) {
 	MoneyToControlPanel(p, trader.SourceExchange.Town, &trader.Money, 100, 10, float64(IconH+50))
-	PersonToPanel(p, 0, trader.Person, IconW, PersonGUIY*ControlPanelSY)
+	PersonToPanel(cp, p, 0, trader.Person, IconW, PersonGUIY*ControlPanelSY)
 	p.AddScaleLabel("heating", 10, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, trader.GetHeating(), false)
 	p.AddScaleLabel("barrel", 10+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, trader.Resources.UsedVolumeCapacity(), false)
 	var aI = 2
@@ -39,7 +40,7 @@ func TraderToPanel(p *gui.Panel, trader *social.Trader) {
 		if i >= MaxNumTasks {
 			break
 		}
-		TaskToControlPanel(p, i%IconRowMax, TaskGUIY*ControlPanelSY+float64(i/IconRowMax*IconH), task, IconW)
+		TaskToControlPanel(cp, p, i%IconRowMax, TaskGUIY*ControlPanelSY+float64(i/IconRowMax*IconH), task, IconW)
 	}
 	if trader.Person.Task != nil {
 		if tradeTask, ok := trader.Person.Task.(*economy.TradeTask); ok {
@@ -62,7 +63,7 @@ func (tc *TraderController) Clear() {}
 
 func (tc *TraderController) Refresh() {
 	tc.traderPanel.Clear()
-	TraderToPanel(tc.traderPanel, tc.trader)
+	TraderToPanel(tc.cp, tc.traderPanel, tc.trader)
 }
 
 func (tc *TraderController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {

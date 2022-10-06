@@ -14,6 +14,7 @@ type TowerController struct {
 	towerPanel     *gui.Panel
 	tower          *social.Tower
 	UseType        uint8
+	cp             *ControlPanel
 }
 
 func (tc *TowerController) GetUseType() uint8 {
@@ -27,8 +28,8 @@ func (tc *TowerController) SetUseType(ut uint8) {
 func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	tp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(hp, &tower.Household)
-	tc := &TowerController{towerPanel: tp, householdPanel: hp, tower: tower}
+	HouseholdToControlPanel(cp, hp, &tower.Household)
+	tc := &TowerController{towerPanel: tp, householdPanel: hp, tower: tower, cp: cp}
 	tc.UseType = military.MilitaryLandUseTypeNone
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
@@ -61,7 +62,7 @@ func (tc *TowerController) Clear() {}
 
 func (tc *TowerController) Refresh() {
 	tc.householdPanel.Clear()
-	HouseholdToControlPanel(tc.householdPanel, &tc.tower.Household)
+	HouseholdToControlPanel(tc.cp, tc.householdPanel, &tc.tower.Household)
 }
 
 func (tc *TowerController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {

@@ -20,6 +20,7 @@ const CPButtonHighlightLarge = 2
 type ControlPanel struct {
 	topPanel       *gui.Panel
 	dynamicPanel   Panel
+	helperPanel    *gui.Panel
 	dateLabel      *gui.TextLabel
 	moneyLabel     *gui.TextLabel
 	peopleLabel    *gui.TextLabel
@@ -120,6 +121,11 @@ func (p *ControlPanel) Clear() {
 	}
 }
 
+func (p *ControlPanel) GetHelperPanel() *gui.Panel {
+	p.helperPanel.Clear()
+	return p.helperPanel
+}
+
 func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.C = c
 	if c.W < 2000 {
@@ -163,6 +169,8 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: float64(10 + IconW*6), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 
+	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
+
 	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, ctx)
 	p.buffer = canvas.New(offscreen)
 }
@@ -185,6 +193,7 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 		if p.dynamicPanel != nil {
 			p.dynamicPanel.Render(p.buffer)
 		}
+		p.helperPanel.Render(p.buffer)
 	}
 	cv.DrawImage(p.buffer, 0, 0, ControlPanelSX, ControlPanelSY)
 }

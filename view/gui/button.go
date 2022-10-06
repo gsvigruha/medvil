@@ -61,3 +61,25 @@ func (b SimpleButton) Render(cv *canvas.Canvas) {
 func (b SimpleButton) Click() {
 	b.ClickImpl()
 }
+
+type ImageButton struct {
+	ButtonGUI
+	Style     uint8
+	ClickImpl func()
+}
+
+func (b *ImageButton) Render(cv *canvas.Canvas) {
+	if b.Style == ImageLabelStyleHighlight {
+		cv.SetFillStyle(color.RGBA{R: 224, G: 240, B: 255, A: 240})
+		cv.FillRect(b.X, b.Y, b.SX, b.SY)
+	}
+	b.ButtonGUI.Render(cv)
+	if b.Style == ImageLabelStyleDisabled {
+		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 64})
+		cv.FillRect(b.X, b.Y, b.SX, b.SY)
+	}
+}
+
+func (b ImageButton) Click() {
+	b.ClickImpl()
+}

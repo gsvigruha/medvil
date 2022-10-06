@@ -14,13 +14,14 @@ type FactoryController struct {
 	householdPanel *gui.Panel
 	factoryPanel   *gui.Panel
 	factory        *social.Factory
+	cp             *ControlPanel
 }
 
 func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(hp, &factory.Household)
-	fc := &FactoryController{factoryPanel: fp, householdPanel: hp, factory: factory}
+	HouseholdToControlPanel(cp, hp, &factory.Household)
+	fc := &FactoryController{factoryPanel: fp, householdPanel: hp, factory: factory, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	for i, vc := range economy.GetVehicleConstructions(factory.Household.Building.Plan.GetExtensions()) {
@@ -44,7 +45,7 @@ func (fc *FactoryController) Clear() {}
 
 func (fc *FactoryController) Refresh() {
 	fc.householdPanel.Clear()
-	HouseholdToControlPanel(fc.householdPanel, &fc.factory.Household)
+	HouseholdToControlPanel(fc.cp, fc.householdPanel, &fc.factory.Household)
 }
 
 type OrderButton struct {

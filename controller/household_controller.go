@@ -84,11 +84,11 @@ func taskIconW(h *social.Household) (int, int) {
 	return w, n
 }
 
-func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
+func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household) {
 	MoneyToControlPanel(p, h.Town, &h.Money, 100, 10, float64(IconH+50))
 	piw := personIconW(h)
 	for i, person := range h.People {
-		PersonToPanel(p, i, person, piw, PersonGUIY*ControlPanelSY)
+		PersonToPanel(cp, p, i, person, piw, PersonGUIY*ControlPanelSY)
 	}
 	for i := len(h.People); i < int(h.TargetNumPeople); i++ {
 		p.AddImageLabel("person", float64(10+i*piw), PersonGUIY*ControlPanelSY, IconS, IconS, gui.ImageLabelStyleDisabled)
@@ -113,14 +113,14 @@ func HouseholdToControlPanel(p *gui.Panel, h *social.Household) {
 		if i >= MaxNumTasks {
 			break
 		}
-		TaskToControlPanel(p, i%tirm, TaskGUIY*ControlPanelSY+float64(i/tirm*IconH), task, tiw)
+		TaskToControlPanel(cp, p, i%tirm, TaskGUIY*ControlPanelSY+float64(i/tirm*IconH), task, tiw)
 	}
 	for i, vehicle := range h.Vehicles {
 		VehicleToControlPanel(p, i, VehicleGUIY*ControlPanelSY, vehicle, IconW)
 	}
 }
 
-func PersonToPanel(p *gui.Panel, i int, person *social.Person, w int, top float64) {
+func PersonToPanel(cp *ControlPanel, p *gui.Panel, i int, person *social.Person, w int, top float64) {
 	p.AddImageLabel("person", float64(10+i*w), top, IconS, IconS, gui.ImageLabelStyleRegular)
 	if person.Equipment.Weapon() {
 		p.AddImageLabel("tasks/swordsmith", float64(10+i*w)+16, top+16, 24, 24, gui.ImageLabelStyleRegular)
@@ -132,7 +132,7 @@ func PersonToPanel(p *gui.Panel, i int, person *social.Person, w int, top float6
 	p.AddScaleLabel("health", float64(10+i*w), top+float64(IconH*3), IconS, IconS, 4, float64(person.Health)/float64(social.MaxPersonState), false)
 	p.AddScaleLabel("happiness", float64(10+i*w), top+float64(IconH*4), IconS, IconS, 4, float64(person.Happiness)/float64(social.MaxPersonState), false)
 	if person.Task != nil {
-		TaskToControlPanel(p, i, top+float64(IconH*5), person.Task, w)
+		TaskToControlPanel(cp, p, i, top+float64(IconH*5), person.Task, w)
 	}
 }
 
@@ -143,12 +143,18 @@ func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint1
 	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 
-func TaskToControlPanel(p *gui.Panel, i int, y float64, task economy.Task, w int) {
+func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task economy.Task, w int) {
 	var style uint8 = gui.ImageLabelStyleHighlight
 	if task.Blocked() {
 		style = gui.ImageLabelStyleDisabled
 	}
-	p.AddImageLabel("tasks/"+task.Name(), float64(10+i*w), y, IconS, IconS, style)
+	p.AddButton(&gui.ImageButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/" + task.Name(), X: float64(10 + i*w), Y: y, SX: IconS, SY: IconS},
+		Style:     style,
+		ClickImpl: func() {
+			TaskToHelperPanel(cp.GetHelperPanel(), task)
+		},
+	})
 }
 
 func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Vehicle, w int) {
@@ -157,4 +163,34 @@ func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Veh
 		style = gui.ImageLabelStyleDisabled
 	}
 	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(10+i*w), y, IconS, IconS, style)
+}
+
+func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
+	var style uint8 = gui.ImageLabelStyleHighlight
+	if task.Blocked() {
+		style = gui.ImageLabelStyleDisabled
+	}
+	y := ControlPanelSY * 0.95
+	p.AddImageLabel("tasks/"+task.Name(), 10, y, IconS, IconS, style)
+	switch v := task.(type) {
+	case *economy.BuyTask:
+		for i, as := range v.Goods {
+			x := float64(10 + IconW + i*IconW)
+			p.AddImageLabel("artifacts/"+as.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
+			p.AddTextLabel(strconv.Itoa(int(as.Quantity)), x+IconS*0.75, y+IconS)
+		}
+		x := float64(10 + IconW + len(v.Goods)*IconW)
+		p.AddImageLabel("coin", x, y, IconS, IconS, gui.ImageLabelStyleRegular)
+		p.AddTextLabel(strconv.Itoa(int(v.MaxPrice)), x+IconS*0.75, y+IconS)
+	case *economy.SellTask:
+		for i, as := range v.Goods {
+			x := float64(10 + IconW + i*IconW)
+			p.AddImageLabel("artifacts/"+as.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
+			p.AddTextLabel(strconv.Itoa(int(as.Quantity)), x+IconS*0.75, y+IconS)
+		}
+	case *economy.TransportTask:
+		x := float64(10 + IconW)
+		p.AddImageLabel("artifacts/"+v.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
+		p.AddTextLabel(strconv.Itoa(int(v.Quantity)), x+IconS*0.75, y+IconS)
+	}
 }

@@ -60,7 +60,7 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		&TownhallControllerButton{tc: tc, subPanel: fp, b: gui.ButtonGUI{Icon: "factory", X: float64(10 + IconW*2), Y: top, SX: IconS, SY: IconS}},
 	}
 
-	HouseholdToControlPanel(hp, &th.Household)
+	HouseholdToControlPanel(cp, hp, &th.Household)
 	RefreshSubPanels(tc)
 
 	cp.SetDynamicPanel(tc)
@@ -117,7 +117,7 @@ func RefreshSubPanels(tc *TownhallController) {
 	if tc.activeTrader != nil {
 		MoneyToControlPanel(fp, th.Household.Town, &tc.activeTrader.Money, 10, 10, top+float64(IconH*3)+IconS)
 		for i, task := range tc.activeTrader.Tasks {
-			TaskToControlPanel(fp, i, top+float64(IconH*4)+IconS, task, IconW)
+			TaskToControlPanel(tc.cp, fp, i, top+float64(IconH*4)+IconS, task, IconW)
 		}
 	}
 }
@@ -146,7 +146,7 @@ func (tc *TownhallController) Refresh() {
 	tc.taxPanel.Clear()
 	tc.storagePanel.Clear()
 	tc.factoryPanel.Clear()
-	HouseholdToControlPanel(tc.householdPanel, &tc.th.Household)
+	HouseholdToControlPanel(tc.cp, tc.householdPanel, &tc.th.Household)
 	RefreshSubPanels(tc)
 	for _, button := range tc.buttons {
 		tc.householdPanel.AddButton(button)
