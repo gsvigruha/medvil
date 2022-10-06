@@ -28,13 +28,14 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	HouseholdToControlPanel(hp, &workshop.Household)
 	wc := &WorkshopController{workshopPanel: wp, householdPanel: hp, workshop: workshop}
 
+	iconS2 := IconS * 0.66
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	tasks := economy.GetManufactureNames(workshop.Household.Building.Plan.GetExtensions())
 	wc.manufactureDropDown = &gui.DropDown{
 		X:        float64(10),
 		Y:        hcy,
-		SX:       IconS*0.66 + gui.FontSize*12,
-		SY:       IconS * 0.66,
+		SX:       iconS2 + gui.FontSize*12,
+		SY:       iconS2,
 		Options:  tasks,
 		Icons:    toTaskNames(tasks),
 		Selected: -1,
@@ -43,6 +44,20 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 		wc.manufactureDropDown.SetSelectedValue(workshop.Manufacture.Name)
 	}
 	wp.AddDropDown(wc.manufactureDropDown)
+
+	wp.AddLabel(&gui.DynamicImageLabel{
+		X:  IconS*1.2 + gui.FontSize*12,
+		Y:  hcy,
+		SX: iconS2,
+		SY: iconS2,
+		Icon: func() string {
+			if workshop.IsManufactureProfitable() {
+				return "profitable"
+			} else {
+				return "not_profitable"
+			}
+		},
+	})
 
 	cp.SetDynamicPanel(wc)
 }

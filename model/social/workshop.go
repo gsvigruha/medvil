@@ -14,6 +14,14 @@ type Workshop struct {
 
 const ProfitCostRatio = 2.0
 
+func (w *Workshop) IsManufactureProfitable() bool {
+	if w.Manufacture != nil {
+		mp := w.Household.Town.Marketplace
+		return float64(mp.Price(w.Manufacture.Outputs)) >= float64(mp.Price(artifacts.Purchasable(w.Manufacture.Inputs)))*ProfitCostRatio
+	}
+	return false
+}
+
 func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.ElapseTime(Calendar, m)
 	home := m.GetField(w.Household.Building.X, w.Household.Building.Y)
@@ -23,14 +31,14 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		maxUnitCost := float64(mp.Price(w.Manufacture.Outputs)) / ProfitCostRatio
 		if float64(mp.Price(purchasableInputs)) < maxUnitCost {
 			transportQ := MinProductTransportQuantity(purchasableInputs)
-			needs := w.Household.Resources.Needs(artifacts.Multiply(purchasableInputs, transportQ))
+			batch := artifacts.Multiply(purchasableInputs, transportQ)
 			tag := "manufacture_input"
-			if needs != nil && w.Household.NumTasks("exchange", tag) == 0 {
-				if w.Household.Money >= mp.Price(needs) {
+			if w.Household.Resources.Needs(batch) != nil && w.Household.NumTasks("exchange", tag) == 0 {
+				if w.Household.Money >= mp.Price(batch) {
 					w.Household.AddTask(&economy.BuyTask{
 						Exchange:       mp,
 						HouseholdMoney: &w.Household.Money,
-						Goods:          needs,
+						Goods:          batch,
 						MaxPrice:       uint32(maxUnitCost * float64(transportQ)),
 						TaskTag:        tag,
 					})

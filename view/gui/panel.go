@@ -68,6 +68,10 @@ func (p *Panel) AddPanel(panel *Panel) {
 	p.Panels = append(p.Panels, panel)
 }
 
+func (p *Panel) AddLabel(l Label) {
+	p.Labels = append(p.Labels, l)
+}
+
 func (p *Panel) AddTextLabel(text string, x float64, y float64) *TextLabel {
 	l := &TextLabel{Text: text, X: x, Y: y}
 	p.Labels = append(p.Labels, l)
