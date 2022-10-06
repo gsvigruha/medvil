@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
 	"medvil/model/economy"
@@ -153,7 +152,7 @@ func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task e
 		ButtonGUI: gui.ButtonGUI{Icon: "tasks/" + task.Name(), X: float64(10 + i*w), Y: y, SX: IconS, SY: IconS},
 		Style:     style,
 		ClickImpl: func() {
-			cp.GetHelperPanel().AddLabel(&gui.TextLabel{Text: fmt.Sprintf("%v", task), X: 0, Y: ControlPanelSY * 0.95})
+			TaskToHelperPanel(cp.GetHelperPanel(), task)
 		},
 	})
 }
@@ -164,4 +163,34 @@ func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Veh
 		style = gui.ImageLabelStyleDisabled
 	}
 	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(10+i*w), y, IconS, IconS, style)
+}
+
+func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
+	var style uint8 = gui.ImageLabelStyleHighlight
+	if task.Blocked() {
+		style = gui.ImageLabelStyleDisabled
+	}
+	y := ControlPanelSY * 0.95
+	p.AddImageLabel("tasks/"+task.Name(), 10, y, IconS, IconS, style)
+	switch v := task.(type) {
+	case *economy.BuyTask:
+		for i, as := range v.Goods {
+			x := float64(10 + IconW + i*IconW)
+			p.AddImageLabel("artifacts/"+as.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
+			p.AddTextLabel(strconv.Itoa(int(as.Quantity)), x+IconS*0.75, y+IconS)
+		}
+		x := float64(10 + IconW + len(v.Goods)*IconW)
+		p.AddImageLabel("coin", x, y, IconS, IconS, gui.ImageLabelStyleRegular)
+		p.AddTextLabel(strconv.Itoa(int(v.MaxPrice)), x+IconS*0.75, y+IconS)
+	case *economy.SellTask:
+		for i, as := range v.Goods {
+			x := float64(10 + IconW + i*IconW)
+			p.AddImageLabel("artifacts/"+as.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
+			p.AddTextLabel(strconv.Itoa(int(as.Quantity)), x+IconS*0.75, y+IconS)
+		}
+	case *economy.TransportTask:
+		x := float64(10 + IconW)
+		p.AddImageLabel("artifacts/"+v.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
+		p.AddTextLabel(strconv.Itoa(int(v.Quantity)), x+IconS*0.75, y+IconS)
+	}
 }
