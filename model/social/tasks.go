@@ -31,6 +31,12 @@ func CountTags(task economy.Task, name, tag string) int {
 	return i
 }
 
+func IsExchangeBaseTask(t economy.Task) bool {
+	_, sok := t.(*economy.SellTask)
+	_, bok := t.(*economy.BuyTask)
+	return sok || bok
+}
+
 func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicles.Vehicle) *economy.ExchangeTask {
 	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
 	var buildingCheckFn = navigation.Field.BuildingNonExtension
