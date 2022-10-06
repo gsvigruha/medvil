@@ -12,6 +12,7 @@ type WorkshopController struct {
 	workshopPanel       *gui.Panel
 	workshop            *social.Workshop
 	manufactureDropDown *gui.DropDown
+	cp                  *ControlPanel
 }
 
 func toTaskNames(names []string) []string {
@@ -25,8 +26,8 @@ func toTaskNames(names []string) []string {
 func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	wp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(hp, &workshop.Household)
-	wc := &WorkshopController{workshopPanel: wp, householdPanel: hp, workshop: workshop}
+	HouseholdToControlPanel(cp, hp, &workshop.Household)
+	wc := &WorkshopController{workshopPanel: wp, householdPanel: hp, workshop: workshop, cp: cp}
 
 	iconS2 := IconS * 0.66
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
@@ -77,5 +78,5 @@ func (wc *WorkshopController) Clear() {}
 
 func (wc *WorkshopController) Refresh() {
 	wc.householdPanel.Clear()
-	HouseholdToControlPanel(wc.householdPanel, &wc.workshop.Household)
+	HouseholdToControlPanel(wc.cp, wc.householdPanel, &wc.workshop.Household)
 }

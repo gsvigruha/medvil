@@ -125,6 +125,7 @@ func (c *Controller) Reset() {
 	c.SelectedTraveller = nil
 	c.SelectedTrader = nil
 	c.ClickHandler = nil
+	c.ControlPanel.GetHelperPanel()
 }
 
 func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
