@@ -72,6 +72,24 @@ func (mp *Marketplace) pendingSupplyAndDemand() map[*artifacts.Artifact]*SupplyA
 	return sd
 }
 
+func (mp *Marketplace) incPrice(a *artifacts.Artifact) {
+	var delta = float64(mp.Prices[a]) * 0.1
+	if delta < 1.0 {
+		delta = 1.0
+	}
+	mp.Prices[a] += uint32(delta)
+}
+
+func (mp *Marketplace) decPrice(a *artifacts.Artifact) {
+	var delta = float64(mp.Prices[a]) * 0.1
+	if delta < 1.0 {
+		delta = 1.0
+	}
+	if mp.Prices[a] > 1 {
+		mp.Prices[a] -= uint32(delta)
+	}
+}
+
 func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if Calendar.Hour == 0 && Calendar.Day == 1 {
 		allGold := []artifacts.Artifacts{artifacts.Artifacts{A: gold, Quantity: mp.Storage.Get(gold)}}
@@ -84,23 +102,23 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		for _, a := range artifacts.All {
 			storage := uint32(mp.Storage.Artifacts[a]) / StorageToSoldRatio
 			if mp.Sold[a]+storage == 0 && mp.Bought[a] > 0 {
-				mp.Prices[a]++
-			} else if mp.Bought[a] == 0 && mp.Sold[a]+storage > 0 && mp.Prices[a] > 1 {
-				mp.Prices[a]--
+				mp.incPrice(a)
+			} else if mp.Bought[a] == 0 && mp.Sold[a]+storage > 0 {
+				mp.decPrice(a)
 			} else if mp.Bought[a] > 0 && mp.Sold[a]+storage > 0 {
 				r := float64(mp.Sold[a]+storage) / float64(mp.Bought[a])
-				if r >= 1.1 && mp.Prices[a] > 1 {
-					mp.Prices[a]--
+				if r >= 1.1 {
+					mp.decPrice(a)
 				} else if r <= 0.9 {
-					mp.Prices[a]++
+					mp.incPrice(a)
 				}
 			} else {
 				if sd[a].Supply < sd[a].Demand {
-					mp.Prices[a]++
-				} else if sd[a].Supply > sd[a].Demand && mp.Prices[a] > 1 {
-					mp.Prices[a]--
-				} else if mp.Storage.Artifacts[a] >= ProductTransportQuantity(a) && sd[a].Demand == 0 && mp.Prices[a] > 1 {
-					mp.Prices[a]--
+					mp.incPrice(a)
+				} else if sd[a].Supply > sd[a].Demand {
+					mp.decPrice(a)
+				} else if mp.Storage.Artifacts[a] >= ProductTransportQuantity(a) && sd[a].Demand == 0 {
+					mp.decPrice(a)
 				}
 			}
 			mp.Reset(a)

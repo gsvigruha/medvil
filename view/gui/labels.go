@@ -117,3 +117,15 @@ func (l *TextureLabel) Render(cv *canvas.Canvas) {
 	cv.SetFillStyle("texture/" + l.Texture + ".png")
 	cv.FillRect(l.X, l.Y, l.SX, l.SY)
 }
+
+type DynamicImageLabel struct {
+	X    float64
+	Y    float64
+	SX   float64
+	SY   float64
+	Icon func() string
+}
+
+func (l *DynamicImageLabel) Render(cv *canvas.Canvas) {
+	cv.DrawImage("icon/gui/"+l.Icon()+".png", l.X, l.Y, l.SX, l.SY)
+}
