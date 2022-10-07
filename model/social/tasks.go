@@ -92,6 +92,24 @@ func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicl
 	return nil
 }
 
+func FirstUnblockedTask(h Home) economy.Task {
+	if len(h.GetTasks()) == 0 {
+		return nil
+	}
+	var i = 0
+	for i < len(h.GetTasks()) {
+		t := h.GetTasks()[i]
+		if !t.Blocked() && !t.IsPaused() {
+			break
+		}
+		i++
+	}
+	if i == len(h.GetTasks()) {
+		return nil
+	}
+	return h.GetTasks()[i]
+}
+
 func GetNextTask(h Home, e economy.Equipment) economy.Task {
 	if len(h.GetTasks()) == 0 {
 		return nil

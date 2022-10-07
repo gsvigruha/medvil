@@ -42,7 +42,8 @@ func (h *Household) NextTask(m navigation.IMap, e economy.Equipment) economy.Tas
 }
 
 func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e economy.Equipment) economy.Task {
-	if len(h.Tasks) > 0 && IsExchangeBaseTask(h.Tasks[0]) {
+	firstTask := FirstUnblockedTask(h)
+	if firstTask != nil && IsExchangeBaseTask(firstTask) {
 		vehicle := h.GetVehicle()
 		et := GetExchangeTask(h, h.Town.Marketplace, m, vehicle)
 		if et == nil && vehicle != nil {
