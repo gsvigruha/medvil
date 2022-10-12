@@ -253,14 +253,15 @@ func (t *Traveller) IncPhase() {
 func (t *Traveller) EnsurePath(f *Field, m IMap) bool {
 	dest := Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
 	if t.pc.path == nil || t.pc.path.LastElement().GetLocation() != dest {
+		if t.pc.pc == nil {
+			t.pc.pc = make(chan *Path)
+		}
 		if !t.pc.computing {
 			t.pc.computing = true
-			if t.pc.pc == nil {
-				t.pc.pc = make(chan *Path)
-			}
 			go func(c chan *Path) {
 				c <- m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, dest, t.PathType())
 			}(t.pc.pc)
+		} else {
 			select {
 			case t.pc.path = <-t.pc.pc:
 				t.pc.computing = false
