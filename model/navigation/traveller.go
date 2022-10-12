@@ -24,6 +24,13 @@ type PathType uint8
 const PathTypePedestrian PathType = 0
 const PathTypeBoat PathType = 1
 
+type PathComp struct {
+	path      *Path
+	pe        PathElement
+	computing bool
+	pc        chan *Path
+}
+
 type Traveller struct {
 	FX        uint16
 	FY        uint16
@@ -36,20 +43,19 @@ type Traveller struct {
 	Visible   bool
 	T         uint8
 	Vehicle   Vehicle
-	path      *Path
-	PE        PathElement
+	pc        PathComp
 	lane      uint8
 	stuckCntr uint8
 }
 
 func (t *Traveller) consumePathElement() {
-	if t.path != nil {
-		path, removed := t.path.ConsumeElement()
-		t.path = path
-		t.PE = removed
-		if t.PE != nil {
-			t.FZ = t.PE.GetLocation().Z
-			t.Visible = t.PE.TravellerVisible()
+	if t.pc.path != nil {
+		path, removed := t.pc.path.ConsumeElement()
+		t.pc.path = path
+		t.pc.pe = removed
+		if t.pc.pe != nil {
+			t.FZ = t.pc.pe.GetLocation().Z
+			t.Visible = t.pc.pe.TravellerVisible()
 		}
 	}
 }
@@ -173,8 +179,8 @@ func (t *Traveller) Move(m IMap) {
 		}
 	}
 	for i := 0; i < steps; i++ {
-		if t.path != nil {
-			pe := t.path.P[0]
+		if t.pc.path != nil {
+			pe := t.pc.path.P[0]
 			l := pe.GetLocation()
 			var dirToLane uint8 = DirectionNone
 			var dirToNextField uint8 = DirectionNone
@@ -246,12 +252,12 @@ func (t *Traveller) IncPhase() {
 
 func (t *Traveller) EnsurePath(f *Field, m IMap) bool {
 	dest := Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
-	if t.path == nil || t.path.LastElement().GetLocation() != dest {
-		t.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, dest, t.PathType())
+	if t.pc.path == nil || t.pc.path.LastElement().GetLocation() != dest {
+		t.pc.path = m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, dest, t.PathType())
 		t.lane = uint8(rand.Intn(3) + 1)
 		t.stuckCntr = 0
 	}
-	return t.path != nil
+	return t.pc.path != nil
 }
 
 func (t *Traveller) PathType() PathType {
@@ -282,7 +288,7 @@ func (t *Traveller) MoveWith(m IMap, ot *Traveller) {
 	t.FX = ot.FX
 	t.FY = ot.FY
 	t.FZ = ot.FZ
-	t.PE = ot.PE
+	t.pc.pe = ot.pc.pe
 	if oFX != t.FX || oFY != t.FY {
 		m.GetField(oFX, oFY).UnregisterTraveller(t)
 		m.GetField(t.FX, t.FY).RegisterTraveller(t)
@@ -311,15 +317,19 @@ func (t *Traveller) SetHome(home bool) {
 
 func (t *Traveller) GetPathFields(m IMap) []FieldWithContext {
 	var fs []FieldWithContext
-	if t.PE != nil {
-		l := t.PE.GetLocation()
+	if t.pc.pe != nil {
+		l := t.pc.pe.GetLocation()
 		fs = append(fs, m.GetField(l.X, l.Y))
 	}
-	if t.path != nil {
-		for _, pe := range t.path.P {
+	if t.pc.path != nil {
+		for _, pe := range t.pc.path.P {
 			l := pe.GetLocation()
 			fs = append(fs, m.GetField(l.X, l.Y))
 		}
 	}
 	return fs
+}
+
+func (t *Traveller) GetPathElement() PathElement {
+	return t.pc.pe
 }

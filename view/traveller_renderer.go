@@ -46,8 +46,8 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf 
 			SWPY*(MaxPX-px)*py +
 			NEPY*px*(MaxPY-py) +
 			SEPY*px*py) / (MaxPX * MaxPY)
-		if t.PE != nil && t.PE.GetLocation().Z > 0 {
-			if bpe, ok := t.PE.(*navigation.BuildingPathElement); ok {
+		if t.GetPathElement() != nil && t.GetPathElement().GetLocation().Z > 0 {
+			if bpe, ok := t.GetPathElement().(*navigation.BuildingPathElement); ok {
 				z1 := getZByDir(bpe, t.Direction)
 				z2 := getZByDir(bpe, building.OppDir(t.Direction))
 				var z = 0.0
