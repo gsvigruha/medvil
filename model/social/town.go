@@ -308,6 +308,9 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 	}
 }
 
+func (town *Town) CreateDemolishTask(b *building.Building) {
+}
+
 func (town *Town) GetHouseholds() []*Household {
 	var households []*Household
 	for _, f := range town.Farms {
