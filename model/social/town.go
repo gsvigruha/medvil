@@ -307,3 +307,26 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 		})
 	}
 }
+
+func (town *Town) CreateDemolishTask(b *building.Building) {
+}
+
+func (town *Town) GetHouseholds() []*Household {
+	var households []*Household
+	for _, f := range town.Farms {
+		households = append(households, &f.Household)
+	}
+	for _, w := range town.Workshops {
+		households = append(households, &w.Household)
+	}
+	for _, m := range town.Mines {
+		households = append(households, &m.Household)
+	}
+	for _, f := range town.Factories {
+		households = append(households, &f.Household)
+	}
+	for _, t := range town.Towers {
+		households = append(households, &t.Household)
+	}
+	return households
+}

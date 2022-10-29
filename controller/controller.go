@@ -110,6 +110,11 @@ func (c *Controller) ShowNewTownController() {
 	NewTownToControlPanel(c.ControlPanel, c.SelectedTownhall)
 }
 
+func (c *Controller) ShowDemolishController() {
+	c.Reset()
+	DemolishToControlPanel(c.ControlPanel, c.SelectedTownhall)
+}
+
 func (c *Controller) Refresh() {
 	c.ReverseReferences = c.Map.ReverseReferences()
 	c.ControlPanel.Refresh()
