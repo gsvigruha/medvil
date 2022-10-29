@@ -8,6 +8,7 @@ import (
 	"medvil/maps"
 	"medvil/view"
 	"os"
+	"runtime"
 	"time"
 )
 
@@ -30,6 +31,7 @@ func main() {
 	c := controller.Link(wnd.Window, ctx, &m)
 
 	fmt.Println("Init done")
+	fmt.Println(runtime.NumCPU())
 
 	wnd.MainLoop(func() {
 		start := time.Now()

@@ -85,6 +85,10 @@ func CPActionShowNewTownController(c *Controller) {
 	c.ShowNewTownController()
 }
 
+func CPActionDemolish(c *Controller) {
+	c.ShowDemolishController()
+}
+
 func CPActionCancel(c *Controller) {
 	c.Reset()
 	c.ControlPanel.dynamicPanel = nil
@@ -166,6 +170,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "infra", X: float64(10 + IconW*4), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowInfraController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*5), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowNewTownController})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*6), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionCancel})
+	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "demolish", X: float64(10 + IconW*5), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionDemolish})
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: float64(10 + IconW*6), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 
