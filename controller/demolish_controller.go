@@ -23,7 +23,7 @@ type DemolishController struct {
 
 func (dc *DemolishController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if rf.F.Building.GetBuilding() != nil {
-		dc.th.Household.Town.CreateDemolishTask(rf.F.Building.GetBuilding())
+		dc.th.Household.Town.CreateDemolishTask(rf.F.Building.GetBuilding(), c.Map)
 		return true
 	}
 	return false
