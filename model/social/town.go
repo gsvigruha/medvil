@@ -1,7 +1,6 @@
 package social
 
 import (
-	"fmt"
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
@@ -346,12 +345,12 @@ func DestroyBuilding(building *building.Building, m navigation.IMap) {
 
 func (town *Town) DestroyFarm(building *building.Building, m navigation.IMap) {
 	var farms []*Farm
-	for _, f := range town.Farms {
-		if f.Household.Building == building {
-			f.Household.Destroy()
+	for _, farm := range town.Farms {
+		if farm.Household.Building == building {
+			farm.Household.Destroy()
 			DestroyBuilding(building, m)
 		} else {
-			farms = append(farms, f)
+			farms = append(farms, farm)
 		}
 	}
 	town.Farms = farms

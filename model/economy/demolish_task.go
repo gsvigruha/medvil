@@ -1,7 +1,6 @@
 package economy
 
 import (
-	"fmt"
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/time"
