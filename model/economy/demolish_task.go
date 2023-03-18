@@ -1,6 +1,7 @@
 package economy
 
 import (
+	"fmt"
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -12,6 +13,8 @@ type DemolishTask struct {
 	TaskBase
 	Building *building.Building
 	F        *navigation.Field
+	Town     ITown
+	M        navigation.IMap
 	progress uint16
 }
 
@@ -20,9 +23,15 @@ func (t *DemolishTask) Field() *navigation.Field {
 }
 
 func (t *DemolishTask) Complete(Calendar *time.CalendarType, tool bool) bool {
-	if t.progress < BuildingTaskMaxProgress {
+	if t.progress < DemolishTaskMaxProgress {
 		t.progress++
 	} else {
+		switch t.Building.Plan.BuildingType {
+		case building.BuildingTypeFarm:
+			t.Town.DestroyFarm(t.Building, t.M)
+		case building.BuildingTypeMine:
+			t.Town.DestroyMine(t.Building, t.M)
+		}
 		return true
 	}
 	return false

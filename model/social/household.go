@@ -476,3 +476,7 @@ func (h *Household) GetHeating() float64 {
 func (h *Household) GetMoney() *uint32 {
 	return &h.Money
 }
+
+func (h *Household) Destroy() {
+
+}

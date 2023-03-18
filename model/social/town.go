@@ -1,6 +1,7 @@
 package social
 
 import (
+	"fmt"
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
@@ -312,6 +313,8 @@ func (town *Town) CreateDemolishTask(b *building.Building, m navigation.IMap) {
 	town.Townhall.Household.AddTask(&economy.DemolishTask{
 		Building: b,
 		F:        m.GetField(b.X, b.Y),
+		Town:     town,
+		M:        m,
 	})
 }
 
@@ -333,4 +336,36 @@ func (town *Town) GetHouseholds() []*Household {
 		households = append(households, &t.Household)
 	}
 	return households
+}
+
+func DestroyBuilding(building *building.Building, m navigation.IMap) {
+	for _, coords := range building.GetBuildingXYs(true) {
+		m.GetField(coords[0], coords[1]).Building = navigation.FieldBuildingObjects{}
+	}
+}
+
+func (town *Town) DestroyFarm(building *building.Building, m navigation.IMap) {
+	var farms []*Farm
+	for _, f := range town.Farms {
+		if f.Household.Building == building {
+			f.Household.Destroy()
+			DestroyBuilding(building, m)
+		} else {
+			farms = append(farms, f)
+		}
+	}
+	town.Farms = farms
+}
+
+func (town *Town) DestroyMine(building *building.Building, m navigation.IMap) {
+	var mines []*Mine
+	for _, mine := range town.Mines {
+		if mine.Household.Building == building {
+			mine.Household.Destroy()
+			DestroyBuilding(building, m)
+		} else {
+			mines = append(mines, mine)
+		}
+	}
+	town.Mines = mines
 }
