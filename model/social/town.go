@@ -341,9 +341,11 @@ func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMa
 	var newHouses []H
 	for _, house := range houses {
 		if house.GetHousehold().Building == b {
+			// Remove the building elements from the field
 			for _, coords := range b.GetBuildingXYs(true) {
 				m.GetField(coords[0], coords[1]).Building = navigation.FieldBuildingObjects{}
 			}
+			// Land used by the house to be destroyed should be unallocated
 			for _, field := range house.GetFields() {
 				field.Field().Allocated = false
 			}
