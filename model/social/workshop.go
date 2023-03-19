@@ -94,3 +94,11 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.MaybeBuyBoat(Calendar, m)
 	w.Household.MaybeBuyCart(Calendar, m)
 }
+
+func (w *Workshop) GetFields() []navigation.FieldWithContext {
+	return []navigation.FieldWithContext{}
+}
+
+func (w *Workshop) GetHousehold() *Household {
+	return &w.Household
+}

@@ -25,12 +25,7 @@ func (t *DemolishTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.progress < DemolishTaskMaxProgress {
 		t.progress++
 	} else {
-		switch t.Building.Plan.BuildingType {
-		case building.BuildingTypeFarm:
-			t.Town.DestroyFarm(t.Building, t.M)
-		case building.BuildingTypeMine:
-			t.Town.DestroyMine(t.Building, t.M)
-		}
+		t.Town.DestroyBuilding(t.Building, t.M)
 		return true
 	}
 	return false
