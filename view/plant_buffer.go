@@ -7,11 +7,23 @@ import (
 	"medvil/controller"
 	"medvil/model/terrain"
 	"medvil/renderer"
+	"os"
+	"strconv"
 	"time"
 )
 
 const PlantBufferW = 200
 const PlantBufferH = 300
+
+var PlantRenderBufferTimeMs = 1000
+
+func init() {
+	if val, exists := os.LookupEnv("MEDVIL_PLANT_RENDER_BUFFER_TIME_MS"); exists {
+		if time, err := strconv.Atoi(val); err == nil {
+			PlantRenderBufferTimeMs = time
+		}
+	}
+}
 
 type PlantImageCache struct {
 	entries map[*terrain.Plant]*CacheEntry
@@ -21,10 +33,10 @@ type PlantImageCache struct {
 func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[p]; ok {
-		if t-ce.createdTime > 1000*1000*1000 {
+		if t-ce.createdTime > int64(PlantRenderBufferTimeMs)*1000*1000 {
 			ce.cv.ClearRect(0, 0, PlantBufferW, PlantBufferH)
 			RenderPlant(ce.cv, p, rf, c)
-			ce.createdTime = t - int64(rand.Intn(500)*1000*1000) + int64(250*1000*1000)
+			ce.createdTime = t - int64(rand.Intn(PlantRenderBufferTimeMs/2)*1000*1000) + int64(PlantRenderBufferTimeMs/4*1000*1000)
 		}
 		return ce.cv
 	} else {
@@ -35,7 +47,7 @@ func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.Ren
 		ic.entries[p] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
-			createdTime: t - int64(rand.Intn(500)*1000*1000) + int64(250*1000*1000),
+			createdTime: t - int64(rand.Intn(PlantRenderBufferTimeMs/2)*1000*1000) + int64(PlantRenderBufferTimeMs/4*1000*1000),
 		}
 		return cv
 	}

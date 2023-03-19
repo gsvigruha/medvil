@@ -41,7 +41,7 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 func (ic *ImageCache) Clean() {
 	t := time.Now().UnixNano()
 	for k, v := range ic.Pic.entries {
-		if t-v.createdTime > 1000*1000*1000 {
+		if t-v.createdTime > int64(PlantRenderBufferTimeMs)*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Pic.entries, k)
 		}
