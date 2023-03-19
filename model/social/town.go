@@ -308,7 +308,13 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 	}
 }
 
-func (town *Town) CreateDemolishTask(b *building.Building) {
+func (town *Town) CreateDemolishTask(b *building.Building, m navigation.IMap) {
+	town.Townhall.Household.AddTask(&economy.DemolishTask{
+		Building: b,
+		F:        m.GetField(b.X, b.Y),
+		Town:     town,
+		M:        m,
+	})
 }
 
 func (town *Town) GetHouseholds() []*Household {
@@ -329,4 +335,36 @@ func (town *Town) GetHouseholds() []*Household {
 		households = append(households, &t.Household)
 	}
 	return households
+}
+
+func DestroyBuilding(building *building.Building, m navigation.IMap) {
+	for _, coords := range building.GetBuildingXYs(true) {
+		m.GetField(coords[0], coords[1]).Building = navigation.FieldBuildingObjects{}
+	}
+}
+
+func (town *Town) DestroyFarm(building *building.Building, m navigation.IMap) {
+	var farms []*Farm
+	for _, farm := range town.Farms {
+		if farm.Household.Building == building {
+			farm.Household.Destroy(m)
+			DestroyBuilding(building, m)
+		} else {
+			farms = append(farms, farm)
+		}
+	}
+	town.Farms = farms
+}
+
+func (town *Town) DestroyMine(building *building.Building, m navigation.IMap) {
+	var mines []*Mine
+	for _, mine := range town.Mines {
+		if mine.Household.Building == building {
+			mine.Household.Destroy(m)
+			DestroyBuilding(building, m)
+		} else {
+			mines = append(mines, mine)
+		}
+	}
+	town.Mines = mines
 }

@@ -441,12 +441,16 @@ func (srcH *Household) ReassignFirstPerson(dstH *Household, m navigation.IMap) {
 	for pi, person := range srcH.People {
 		if person.Task == nil {
 			srcH.People = append(srcH.People[:pi], srcH.People[pi+1:]...)
-			person.Home = dstH
-			dstH.People = append(dstH.People, person)
+			dstH.AssignPerson(person, m)
 			person.Task = &economy.GoHomeTask{F: m.GetField(dstH.Building.X, dstH.Building.Y), P: person}
 			break
 		}
 	}
+}
+
+func (h *Household) AssignPerson(person *Person, m navigation.IMap) {
+	person.Home = h
+	h.People = append(h.People, person)
 }
 
 func (h *Household) Field(m navigation.IMap) *navigation.Field {
@@ -475,4 +479,13 @@ func (h *Household) GetHeating() float64 {
 
 func (h *Household) GetMoney() *uint32 {
 	return &h.Money
+}
+
+func (h *Household) Destroy(m navigation.IMap) {
+	dstH := &h.Town.Townhall.Household
+	for _, person := range h.People {
+		dstH.AssignPerson(person, m)
+	}
+	dstH.Money += h.Money
+	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(h.Resources)
 }

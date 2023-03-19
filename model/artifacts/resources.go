@@ -85,6 +85,12 @@ func (r *Resources) AddAll(as []Artifacts) {
 	}
 }
 
+func (r *Resources) AddResources(or Resources) {
+	for a, q := range or.Artifacts {
+		r.Add(a, q)
+	}
+}
+
 func (r *Resources) Add(a *Artifact, q uint16) {
 	if r.Artifacts == nil {
 		r.Artifacts = make(map[*Artifact]uint16)
