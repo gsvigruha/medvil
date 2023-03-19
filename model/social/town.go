@@ -337,34 +337,37 @@ func (town *Town) GetHouseholds() []*Household {
 	return households
 }
 
-func DestroyBuilding(building *building.Building, m navigation.IMap) {
-	for _, coords := range building.GetBuildingXYs(true) {
-		m.GetField(coords[0], coords[1]).Building = navigation.FieldBuildingObjects{}
-	}
-}
-
-func (town *Town) DestroyFarm(building *building.Building, m navigation.IMap) {
-	var farms []*Farm
-	for _, farm := range town.Farms {
-		if farm.Household.Building == building {
-			farm.Household.Destroy(m)
-			DestroyBuilding(building, m)
+func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMap) []H {
+	var newHouses []H
+	for _, house := range houses {
+		if house.GetHousehold().Building == b {
+			// Remove the building elements from the field
+			for _, coords := range b.GetBuildingXYs(true) {
+				m.GetField(coords[0], coords[1]).Building = navigation.FieldBuildingObjects{}
+			}
+			// Land used by the house to be destroyed should be unallocated
+			for _, field := range house.GetFields() {
+				field.Field().Allocated = false
+			}
+			house.GetHousehold().Destroy(m)
 		} else {
-			farms = append(farms, farm)
+			newHouses = append(newHouses, house)
 		}
 	}
-	town.Farms = farms
+	return newHouses
 }
 
-func (town *Town) DestroyMine(building *building.Building, m navigation.IMap) {
-	var mines []*Mine
-	for _, mine := range town.Mines {
-		if mine.Household.Building == building {
-			mine.Household.Destroy(m)
-			DestroyBuilding(building, m)
-		} else {
-			mines = append(mines, mine)
-		}
+func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
+	switch b.Plan.BuildingType {
+	case building.BuildingTypeFarm:
+		town.Farms = DestroyBuilding(town.Farms, b, m)
+	case building.BuildingTypeMine:
+		town.Mines = DestroyBuilding(town.Mines, b, m)
+	case building.BuildingTypeWorkshop:
+		town.Workshops = DestroyBuilding(town.Workshops, b, m)
+	case building.BuildingTypeFactory:
+		town.Factories = DestroyBuilding(town.Factories, b, m)
+	case building.BuildingTypeTower:
+		town.Towers = DestroyBuilding(town.Towers, b, m)
 	}
-	town.Mines = mines
 }

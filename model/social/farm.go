@@ -174,3 +174,7 @@ func (f *Farm) FieldUsableFor(m navigation.IMap, field *navigation.Field, useTyp
 func (f *Farm) FieldWithinDistance(field *navigation.Field) bool {
 	return WithinDistance(f.Household.Building, field, FarmMaxDistance)
 }
+
+func (f *Farm) GetHousehold() *Household {
+	return &f.Household
+}

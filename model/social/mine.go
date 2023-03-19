@@ -139,3 +139,7 @@ func (m *Mine) GetFields() []navigation.FieldWithContext {
 func (m *Mine) FieldWithinDistance(field *navigation.Field) bool {
 	return WithinDistance(m.Household.Building, field, MineMaxDistance)
 }
+
+func (m *Mine) GetHousehold() *Household {
+	return &m.Household
+}

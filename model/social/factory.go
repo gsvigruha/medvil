@@ -179,3 +179,11 @@ func GetVehicleConstructions(factories []*Factory) []*economy.VehicleConstructio
 	}
 	return result
 }
+
+func (f *Factory) GetFields() []navigation.FieldWithContext {
+	return []navigation.FieldWithContext{}
+}
+
+func (f *Factory) GetHousehold() *Household {
+	return &f.Household
+}
