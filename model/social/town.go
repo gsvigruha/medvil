@@ -347,7 +347,7 @@ func (town *Town) DestroyFarm(building *building.Building, m navigation.IMap) {
 	var farms []*Farm
 	for _, farm := range town.Farms {
 		if farm.Household.Building == building {
-			farm.Household.Destroy()
+			farm.Household.Destroy(m)
 			DestroyBuilding(building, m)
 		} else {
 			farms = append(farms, farm)
@@ -360,7 +360,7 @@ func (town *Town) DestroyMine(building *building.Building, m navigation.IMap) {
 	var mines []*Mine
 	for _, mine := range town.Mines {
 		if mine.Household.Building == building {
-			mine.Household.Destroy()
+			mine.Household.Destroy(m)
 			DestroyBuilding(building, m)
 		} else {
 			mines = append(mines, mine)
