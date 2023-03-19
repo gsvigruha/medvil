@@ -33,9 +33,11 @@ type PlantImageCache struct {
 func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[p]; ok {
-		ce.cv.ClearRect(0, 0, PlantBufferW, PlantBufferH)
-		RenderPlant(ce.cv, p, rf, c)
-		ce.createdTime = t - int64(rand.Intn(PlantRenderBufferTimeMs/2)*1000*1000) + int64(PlantRenderBufferTimeMs/4*1000*1000)
+		if t-ce.createdTime > int64(PlantRenderBufferTimeMs)*1000*1000 {
+			ce.cv.ClearRect(0, 0, PlantBufferW, PlantBufferH)
+			RenderPlant(ce.cv, p, rf, c)
+			ce.createdTime = t - int64(rand.Intn(PlantRenderBufferTimeMs/2)*1000*1000) + int64(PlantRenderBufferTimeMs/4*1000*1000)
+		}
 		return ce.cv
 	} else {
 		offscreen, _ := goglbackend.NewOffscreen(PlantBufferW, PlantBufferH, true, ic.ctx)
