@@ -5,6 +5,7 @@ import (
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/model/building"
 	"medvil/view/gui"
+	"reflect"
 	"strconv"
 )
 
@@ -59,34 +60,6 @@ func (b ControlPanelButton) Contains(x float64, y float64) bool {
 
 func (b ControlPanelButton) Enabled() bool {
 	return b.b.Enabled()
-}
-
-func CPActionShowWorkshopController(c *Controller) {
-	c.ShowBuildingController(building.BuildingTypeWorkshop)
-}
-
-func CPActionShowFarmController(c *Controller) {
-	c.ShowBuildingController(building.BuildingTypeFarm)
-}
-
-func CPActionShowMineController(c *Controller) {
-	c.ShowBuildingController(building.BuildingTypeMine)
-}
-
-func CPActionShowFactoryController(c *Controller) {
-	c.ShowBuildingController(building.BuildingTypeFactory)
-}
-
-func CPActionShowInfraController(c *Controller) {
-	c.ShowInfraController()
-}
-
-func CPActionShowNewTownController(c *Controller) {
-	c.ShowNewTownController()
-}
-
-func CPActionDemolish(c *Controller) {
-	c.ShowDemolishController()
 }
 
 func CPActionCancel(c *Controller) {
@@ -163,14 +136,35 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.buildingsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.85+iconS2, 8+gui.FontSize)
 
 	iconTop := 15 + iconS2
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "farm", X: float64(10 + IconW*0), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowFarmController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "mine", X: float64(10 + IconW*1), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowMineController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "workshop", X: float64(10 + IconW*2), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowWorkshopController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "factory", X: float64(10 + IconW*3), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowFactoryController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "infra", X: float64(10 + IconW*4), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowInfraController})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*5), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionShowNewTownController})
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "farm", X: float64(10 + IconW*0), Y: iconTop, SX: IconS, SY: IconS},
+		Highlight: func() bool { return p.IsBuildingType(building.BuildingTypeFarm) },
+		ClickImpl: func() { c.ShowBuildingController(building.BuildingTypeFarm) }})
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "mine", X: float64(10 + IconW*1), Y: iconTop, SX: IconS, SY: IconS},
+		Highlight: func() bool { return p.IsBuildingType(building.BuildingTypeMine) },
+		ClickImpl: func() { c.ShowBuildingController(building.BuildingTypeMine) }})
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "workshop", X: float64(10 + IconW*2), Y: iconTop, SX: IconS, SY: IconS},
+		Highlight: func() bool { return p.IsBuildingType(building.BuildingTypeWorkshop) },
+		ClickImpl: func() { c.ShowBuildingController(building.BuildingTypeWorkshop) }})
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(10 + IconW*3), Y: iconTop, SX: IconS, SY: IconS},
+		Highlight: func() bool { return p.IsBuildingType(building.BuildingTypeFactory) },
+		ClickImpl: func() { c.ShowBuildingController(building.BuildingTypeFactory) }})
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "infra", X: float64(10 + IconW*4), Y: iconTop, SX: IconS, SY: IconS},
+		Highlight: func() bool { return p.IsInfraType() },
+		ClickImpl: func() { c.ShowInfraController() }})
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*5), Y: iconTop, SX: IconS, SY: IconS},
+		Highlight: func() bool { return p.IsDynamicPanelType("NewTownController") },
+		ClickImpl: func() { c.ShowNewTownController() }})
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(10 + IconW*5), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS},
+		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },
+		ClickImpl: func() { c.ShowDemolishController() }})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*6), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionCancel})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "demolish", X: float64(10 + IconW*5), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionDemolish})
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: float64(10 + IconW*6), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 
@@ -201,4 +195,29 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 		p.helperPanel.Render(p.buffer)
 	}
 	cv.DrawImage(p.buffer, 0, 0, ControlPanelSX, ControlPanelSY)
+}
+
+func (p *ControlPanel) IsDynamicPanelType(typeName string) bool {
+	if p.dynamicPanel == nil {
+		return false
+	}
+	return reflect.TypeOf(p.dynamicPanel).String() == ("*controller." + typeName)
+}
+
+func (p *ControlPanel) IsBuildingType(bt building.BuildingType) bool {
+	if p.C.ClickHandler == nil {
+		return false
+	}
+	if bc, ok := p.C.ClickHandler.(*BuildingsController); ok {
+		return bc.Plan.BuildingType == bt
+	}
+	return false
+}
+
+func (p *ControlPanel) IsInfraType() bool {
+	if p.C.ClickHandler == nil {
+		return false
+	}
+	_, ok := p.C.ClickHandler.(*InfraController)
+	return ok
 }
