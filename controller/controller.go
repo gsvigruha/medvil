@@ -107,12 +107,22 @@ func (c *Controller) ShowInfraController() {
 
 func (c *Controller) ShowNewTownController() {
 	c.Reset()
-	NewTownToControlPanel(c.ControlPanel, c.SelectedTownhall)
+	NewTownToControlPanel(c.ControlPanel, c.GetActiveTownhall())
 }
 
 func (c *Controller) ShowDemolishController() {
 	c.Reset()
-	DemolishToControlPanel(c.ControlPanel, c.SelectedTownhall)
+	DemolishToControlPanel(c.ControlPanel, c.GetActiveTownhall())
+}
+
+func (c *Controller) GetActiveTownhall() *social.Townhall {
+	if c.SelectedTownhall != nil {
+		return c.SelectedTownhall
+	}
+	if c.ActiveTown != nil {
+		return c.ActiveTown.Townhall
+	}
+	return nil
 }
 
 func (c *Controller) Refresh() {
