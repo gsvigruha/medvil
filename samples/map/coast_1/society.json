@@ -45,7 +45,11 @@
                   "x": 22,
                   "y": 22
                 },
-                "money": 0
+                "money": 0,
+                "resources": {
+                  "textile": 10,
+                  "vegetable": 10
+                }
               }
             }
           ]

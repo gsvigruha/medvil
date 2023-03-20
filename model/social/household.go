@@ -13,7 +13,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const TextileConsumptionRate = 1.0 / (24 * 30 * 12 * 3)
+const TextileConsumptionRate = 1.0 / (24 * 30 * 12 * 10)
 const StoragePerArea = 50
 const HeatingBudgetRatio = 0.3
 const ExtrasBudgetRatio = 0.2
@@ -326,7 +326,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isProduct bo
 		}
 	}
 	if a == Textile {
-		textile := h.textileNeeded()
+		textile := h.textileNeeded() + ProductTransportQuantity(Textile)
 		if q > textile {
 			result = q - textile
 		} else {
