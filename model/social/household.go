@@ -13,7 +13,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const TextileConsumptionRate = 1.0 / (24 * 30 * 12 * 10)
+const TextileConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 50
 const HeatingBudgetRatio = 0.3
 const ExtrasBudgetRatio = 0.2
