@@ -127,10 +127,10 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("paper"), Quantity: 1}}},
 	&Manufacture{
-		Name:    "textile",
+		Name:    "sewing",
 		Time:    30 * 24,
 		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 3}},
+		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 2}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 1}}},
 	&Manufacture{
 		Name:    "medicine",
