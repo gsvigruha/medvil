@@ -71,7 +71,7 @@ func (f *Farm) UnmarshalJSON(data []byte) error {
 func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 	home := m.GetField(f.Household.Building.X, f.Household.Building.Y)
 	for a, q := range l.F.Terrain.Resources.Artifacts {
-		if l.F.Terrain.Resources.IsRealArtifact(a) {
+		if l.F.Terrain.Resources.IsRealArtifact(a) && q > 0 {
 			tag := economy.TransportTaskTag(l.F, a)
 			if f.Household.NumTasks("transport", tag) == 0 {
 				f.Household.AddTask(&economy.TransportTask{
