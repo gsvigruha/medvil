@@ -23,6 +23,7 @@ var Tools = artifacts.GetArtifact("tools")
 var Textile = artifacts.GetArtifact("textile")
 
 const LogToFirewood = 5
+const MinLog = 1
 
 type Household struct {
 	People          []*Person
@@ -129,7 +130,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 
-	h.MaybeBuyExtras(Log, 1, "heating_fuel_shopping")
+	h.MaybeBuyExtras(Log, MinLog, "heating_fuel_shopping")
 	h.MaybeBuyExtras(economy.Medicine, numP, "medicine_shopping")
 	h.MaybeBuyExtras(economy.Beer, numP, "beer_shopping")
 	h.MaybeBuyExtras(Textile, h.textileNeeded(), "textile_shopping")
@@ -305,7 +306,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 		result = q
 	}
 	if a == Log {
-		if q > 0 {
+		if q >= MinLog {
 			result = q - 1
 		} else {
 			return 0
