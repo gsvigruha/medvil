@@ -9,13 +9,15 @@ import (
 
 type TransportTask struct {
 	TaskBase
-	PickupF  *navigation.Field
-	DropoffF *navigation.Field
-	PickupR  *artifacts.Resources
-	DropoffR *artifacts.Resources
-	A        *artifacts.Artifact
-	Quantity uint16
-	dropoff  bool
+	PickupF          *navigation.Field
+	DropoffF         *navigation.Field
+	PickupR          *artifacts.Resources
+	DropoffR         *artifacts.Resources
+	A                *artifacts.Artifact
+	Quantity         uint16
+	CompleteQuantity bool
+	q                uint16
+	dropoff          bool
 }
 
 func (t *TransportTask) Field() *navigation.Field {
@@ -28,10 +30,11 @@ func (t *TransportTask) Field() *navigation.Field {
 
 func (t *TransportTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.dropoff {
-		t.DropoffR.Add(t.A, t.Quantity)
-		return true
+		t.DropoffR.Add(t.A, t.q)
+		return t.Quantity == 0 || !t.CompleteQuantity
 	} else {
-		t.Quantity = t.PickupR.Remove(t.A, t.Quantity)
+		t.q = t.PickupR.Remove(t.A, t.Quantity)
+		t.Quantity -= t.q
 		t.dropoff = true
 	}
 	return false
