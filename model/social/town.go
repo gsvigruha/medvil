@@ -287,12 +287,13 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 			}
 			totalQ -= q
 			town.Townhall.Household.AddTask(&economy.TransportTask{
-				PickupF:  m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
-				DropoffF: buildingF,
-				PickupR:  &town.Townhall.Household.Resources,
-				DropoffR: c.Storage,
-				A:        a.A,
-				Quantity: q,
+				PickupF:          m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
+				DropoffF:         buildingF,
+				PickupR:          &town.Townhall.Household.Resources,
+				DropoffR:         c.Storage,
+				A:                a.A,
+				Quantity:         q,
+				CompleteQuantity: true,
 			})
 		}
 	}
