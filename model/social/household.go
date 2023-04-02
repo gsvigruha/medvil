@@ -129,66 +129,12 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			})
 		}
 	}
-	if h.Resources.Get(Firewood) < h.heatingFuelNeeded() && h.Resources.Get(Log)*LogToFirewood < h.heatingFuelNeeded() {
-		tag := "heating_fuel_shopping"
-		if NumBatchesSimple(ProductTransportQuantity(Log), ProductTransportQuantity(Log)) > h.NumTasks("exchange", tag) {
-			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Log, Quantity: ProductTransportQuantity(Log)}}
-			if h.Money >= mp.Price(needs) && mp.HasTraded(Log) {
-				h.AddTask(&economy.BuyTask{
-					Exchange:       mp,
-					HouseholdMoney: &h.Money,
-					Goods:          needs,
-					MaxPrice:       uint32(float64(h.Money) * HeatingBudgetRatio),
-					TaskTag:        tag,
-				})
-			}
-		}
-	}
-	if h.Resources.Get(economy.Medicine) < numP {
-		tag := "medicine_shopping"
-		if NumBatchesSimple(ProductTransportQuantity(economy.Medicine), ProductTransportQuantity(economy.Medicine)) > h.NumTasks("exchange", tag) {
-			needs := []artifacts.Artifacts{artifacts.Artifacts{A: economy.Medicine, Quantity: ProductTransportQuantity(economy.Medicine)}}
-			if h.Money >= mp.Price(needs) && mp.HasTraded(economy.Medicine) {
-				h.AddTask(&economy.BuyTask{
-					Exchange:       mp,
-					HouseholdMoney: &h.Money,
-					Goods:          needs,
-					MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
-					TaskTag:        tag,
-				})
-			}
-		}
-	}
-	if h.Resources.Get(economy.Beer) < numP {
-		tag := "beer_shopping"
-		if NumBatchesSimple(ProductTransportQuantity(economy.Beer), ProductTransportQuantity(economy.Beer)) > h.NumTasks("exchange", tag) {
-			needs := []artifacts.Artifacts{artifacts.Artifacts{A: economy.Beer, Quantity: ProductTransportQuantity(economy.Beer)}}
-			if h.Money >= mp.Price(needs) && mp.HasTraded(economy.Beer) {
-				h.AddTask(&economy.BuyTask{
-					Exchange:       mp,
-					HouseholdMoney: &h.Money,
-					Goods:          needs,
-					MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
-					TaskTag:        tag,
-				})
-			}
-		}
-	}
-	if h.Resources.Get(Textile) < h.textileNeeded() {
-		tag := "textile_shopping"
-		if NumBatchesSimple(ProductTransportQuantity(Textile), ProductTransportQuantity(Textile)) > h.NumTasks("exchange", tag) {
-			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Textile, Quantity: ProductTransportQuantity(Textile)}}
-			if h.Money >= mp.Price(needs) && mp.HasTraded(Textile) {
-				h.AddTask(&economy.BuyTask{
-					Exchange:       mp,
-					HouseholdMoney: &h.Money,
-					Goods:          needs,
-					MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
-					TaskTag:        tag,
-				})
-			}
-		}
-	}
+
+	h.MaybeBuyExtras(Firewood, h.heatingFuelNeeded(), "heating_fuel_shopping")
+	h.MaybeBuyExtras(economy.Medicine, numP, "medicine_shopping")
+	h.MaybeBuyExtras(economy.Beer, numP, "beer_shopping")
+	h.MaybeBuyExtras(Textile, h.textileNeeded(), "textile_shopping")
+
 	if Calendar.Hour == 0 {
 		for i := 0; i < len(h.Tasks); i++ {
 			if h.Tasks[i].IsPaused() {
@@ -213,6 +159,24 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		} else {
 			h.Heating = 1.0
+		}
+	}
+}
+
+func (h *Household) MaybeBuyExtras(a *artifacts.Artifact, threshold uint16, tag string) {
+	mp := h.Town.Marketplace
+	if h.Resources.Get(a) < threshold {
+		if NumBatchesSimple(ProductTransportQuantity(a), ProductTransportQuantity(a)) > h.NumTasks("exchange", tag) {
+			needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity(a)}}
+			if h.Money >= mp.Price(needs) && mp.HasTraded(a) {
+				h.AddTask(&economy.BuyTask{
+					Exchange:       mp,
+					HouseholdMoney: &h.Money,
+					Goods:          needs,
+					MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
+					TaskTag:        tag,
+				})
+			}
 		}
 	}
 }
