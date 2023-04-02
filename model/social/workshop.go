@@ -74,22 +74,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 
-		for a, q := range w.Household.Resources.Artifacts {
-			if !w.Manufacture.IsInput(a) {
-				qToSell := w.Household.ArtifactToSell(a, q, w.Manufacture.IsOutput(a))
-				if qToSell > 0 {
-					tag := "sell_artifacts#" + a.Name
-					goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity(a)}}
-					if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > w.Household.NumTasks("exchange", tag) {
-						w.Household.AddTask(&economy.SellTask{
-							Exchange: mp,
-							Goods:    goods,
-							TaskTag:  tag,
-						})
-					}
-				}
-			}
-		}
+		w.Household.SellArtifacts(w.Manufacture.IsInput, w.Manufacture.IsOutput)
 	}
 	w.Household.MaybeBuyBoat(Calendar, m)
 	w.Household.MaybeBuyCart(Calendar, m)

@@ -12,6 +12,14 @@ const FoodTransportQuantity = 6
 const ProductTransportMaxVolume = 6
 const ExchangeTaskMaxVolumePedestrian = 25
 
+func ProductTransportQuantityWithLimit(a *artifacts.Artifact, maxQ uint16) uint16 {
+	var q = ProductTransportQuantity(a)
+	if q > maxQ {
+		return maxQ
+	}
+	return q
+}
+
 func ProductTransportQuantity(a *artifacts.Artifact) uint16 {
 	return ProductTransportMaxVolume / a.V
 }
