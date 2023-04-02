@@ -2,7 +2,6 @@ package social
 
 import (
 	"encoding/json"
-	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/terrain"
@@ -110,20 +109,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 			}
 		}
 	}
-	for a, q := range m.Household.Resources.Artifacts {
-		qToSell := m.Household.ArtifactToSell(a, q, false)
-		if qToSell > 0 {
-			tag := "sell_artifacts#" + a.Name
-			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity(a)}}
-			if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > m.Household.NumTasks("exchange", tag) {
-				m.Household.AddTask(&economy.SellTask{
-					Exchange: m.Household.Town.Marketplace,
-					Goods:    goods,
-					TaskTag:  tag,
-				})
-			}
-		}
-	}
+	m.Household.SellArtifacts(NotInputOrProduct, NotInputOrProduct)
 	m.Household.MaybeBuyBoat(Calendar, imap)
 	m.Household.MaybeBuyCart(Calendar, imap)
 }

@@ -71,7 +71,7 @@ func (f *Farm) UnmarshalJSON(data []byte) error {
 func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 	home := m.GetField(f.Household.Building.X, f.Household.Building.Y)
 	for a, q := range l.F.Terrain.Resources.Artifacts {
-		if l.F.Terrain.Resources.IsRealArtifact(a) {
+		if l.F.Terrain.Resources.IsRealArtifact(a) && q > 0 {
 			tag := economy.TransportTaskTag(l.F, a)
 			if f.Household.NumTasks("transport", tag) == 0 {
 				f.Household.AddTask(&economy.TransportTask{
@@ -131,20 +131,7 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			f.AddTransportTask(land, m)
 		}
 	}
-	for a, q := range f.Household.Resources.Artifacts {
-		qToSell := f.Household.ArtifactToSell(a, q, f.IsOutput(a))
-		if qToSell > 0 {
-			tag := "sell_artifacts#" + a.Name
-			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity(a)}}
-			if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > f.Household.NumTasks("exchange", tag) {
-				f.Household.AddTask(&economy.SellTask{
-					Exchange: f.Household.Town.Marketplace,
-					Goods:    goods,
-					TaskTag:  tag,
-				})
-			}
-		}
-	}
+	f.Household.SellArtifacts(NotInputOrProduct, f.IsOutput)
 }
 
 var fruit = artifacts.GetArtifact("fruit")
