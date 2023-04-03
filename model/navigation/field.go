@@ -39,7 +39,7 @@ type Field struct {
 	Plant        *terrain.Plant
 	Animal       *terrain.Animal
 	Road         *building.Road
-	Travellers   []*Traveller
+	Travellers   []*Traveller `json:"-"`
 	Allocated    bool
 	Construction bool
 }

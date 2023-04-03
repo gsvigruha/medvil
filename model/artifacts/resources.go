@@ -79,6 +79,14 @@ func (r *Resources) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (r *Resources) MarshalJSON() ([]byte, error) {
+	var content map[string]interface{} = make(map[string]interface{})
+	for a, q := range r.Artifacts {
+		content[a.Name] = q
+	}
+	return json.Marshal(content)
+}
+
 func (r *Resources) AddAll(as []Artifacts) {
 	for _, a := range as {
 		r.Add(a.A, a.Quantity)

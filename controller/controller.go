@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
+	"medvil/maps"
 	"medvil/model"
 	"medvil/model/building"
 	"medvil/model/navigation"
@@ -91,6 +92,9 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		}
 		if key == glfw.KeyRight {
 			c.MoveCenter(2, 0)
+		}
+		if key == glfw.KeyS {
+			c.Save()
 		}
 	}
 }
@@ -303,4 +307,8 @@ func (c *Controller) AddRenderedBuildingPart(rbp renderer.RenderedBuildingPart) 
 
 func (c *Controller) AddRenderedTraveller(rt *renderer.RenderedTraveller) {
 	c.TempRenderedTravellers = append(c.TempRenderedTravellers, rt)
+}
+
+func (c *Controller) Save() {
+	maps.SaveMap(c.Map, "samples/map/coast_2")
 }

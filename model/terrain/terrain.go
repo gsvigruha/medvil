@@ -1,6 +1,8 @@
 package terrain
 
 import (
+	"bytes"
+	"encoding/json"
 	"medvil/model/artifacts"
 )
 
@@ -26,4 +28,46 @@ var Canal = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: fa
 type Terrain struct {
 	T         TerrainType
 	Resources artifacts.Resources
+}
+
+func (t *Terrain) UnmarshalJSON(data []byte) error {
+	var j map[string]json.RawMessage
+	if err := json.Unmarshal(data, &j); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(j["Resources"], &t.Resources); err != nil {
+		return err
+	}
+	s := bytes.NewBuffer(j["T"]).String()
+	switch s {
+	case "Water":
+		t.T = Water
+	case "Grass":
+		t.T = Grass
+	case "Sand":
+		t.T = Sand
+	case "Dirt":
+		t.T = Dirt
+	case "Rock":
+		t.T = Rock
+	case "Mud":
+		t.T = Mud
+	case "IronBog":
+		t.T = IronBog
+	case "Gold":
+		t.T = Gold
+	case "Canal":
+		t.T = Canal
+	}
+	return nil
+}
+
+func (t *Terrain) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		T         string
+		Resources artifacts.Resources
+	}{
+		T:         t.T.Name,
+		Resources: (artifacts.Resources)(t.Resources),
+	})
 }
