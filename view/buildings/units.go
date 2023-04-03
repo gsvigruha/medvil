@@ -10,19 +10,24 @@ import (
 	"medvil/renderer"
 )
 
+func BrickMaterialName(shape uint8) string {
+	if shape == 0 {
+		return "painted_yellow"
+	} else if shape == 1 {
+		return "painted_red"
+	} else if shape == 2 {
+		return "painted_brown"
+	} else if shape == 3 {
+		return "painted_beige"
+	} else if shape == 4 {
+		return "painted_sand"
+	}
+	return "painted"
+}
+
 func WallMaterialName(t building.BuildingType, m *materials.Material, shape uint8) string {
 	if m == materials.GetMaterial("brick") {
-		if shape == 0 {
-			return "painted_yellow"
-		} else if shape == 1 {
-			return "painted_red"
-		} else if shape == 2 {
-			return "painted_brown"
-		} else if shape == 3 {
-			return "painted_beige"
-		} else if shape == 4 {
-			return "painted_sand"
-		}
+		return BrickMaterialName(shape)
 	}
 	if t == building.BuildingTypeWall && m == materials.GetMaterial("stone") {
 		if shape == 0 {

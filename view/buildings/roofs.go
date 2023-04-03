@@ -26,6 +26,9 @@ func RoofMaterialName(m *materials.Material, shape uint8) string {
 			return "tile_darkred"
 		}
 	}
+	if m == materials.GetMaterial("brick") {
+		return BrickMaterialName(shape)
+	}
 	return m.Name
 }
 

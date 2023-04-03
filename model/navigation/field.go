@@ -166,7 +166,11 @@ func (f Field) Buildable() bool {
 	if f.Allocated {
 		return false
 	}
-	return f.Terrain.T.Buildable && f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
+	return f.Terrain.T.Buildable && f.Flat()
+}
+
+func (f Field) Flat() bool {
+	return f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
 }
 
 func (f Field) RoadCompatible() bool {
