@@ -12,7 +12,7 @@ import (
 const StorageToSoldRatio = 6
 
 type Marketplace struct {
-	Town      *Town
+	Town      *Town `json:"-"`
 	Building  *building.Building
 	Money     uint32
 	Storage   artifacts.Resources

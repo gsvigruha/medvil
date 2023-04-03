@@ -35,11 +35,11 @@ type Field struct {
 	NW uint8
 
 	Terrain      terrain.Terrain
-	Building     FieldBuildingObjects
+	Building     FieldBuildingObjects `json:"-"`
 	Plant        *terrain.Plant
 	Animal       *terrain.Animal
 	Road         *building.Road
-	Travellers   []*Traveller
+	Travellers   []*Traveller `json:"-"`
 	Allocated    bool
 	Construction bool
 }

@@ -1,6 +1,8 @@
 package terrain
 
 import (
+	"bytes"
+	"encoding/json"
 	"math"
 	"medvil/model/artifacts"
 	"medvil/model/time"
@@ -11,6 +13,29 @@ type PlantType struct {
 	MaturityAgeYears uint8
 	TreeT            *TreeType
 	Yield            artifacts.Artifacts
+}
+
+func (pt *PlantType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(pt.Name)
+}
+
+func (pt *PlantType) UnmarshalJSON(data []byte) error {
+	s := bytes.NewBuffer(data).String()
+	switch s {
+	case "grain":
+		*pt = AllCropTypes[0]
+	case "vegetables":
+		*pt = AllCropTypes[1]
+	case "reed":
+		*pt = AllCropTypes[2]
+	case "herb":
+		*pt = AllCropTypes[3]
+	case "oak tree":
+		*pt = AllTreeTypes[0]
+	case "apple tree":
+		*pt = AllTreeTypes[1]
+	}
+	return nil
 }
 
 type Plant struct {

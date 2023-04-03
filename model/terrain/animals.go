@@ -1,6 +1,8 @@
 package terrain
 
 import (
+	"bytes"
+	"encoding/json"
 	"medvil/model/artifacts"
 	"medvil/model/time"
 )
@@ -10,6 +12,19 @@ type AnimalType struct {
 	MaturityAgeYears uint8
 	EndOfYearYield   artifacts.Artifacts
 	EndOfLifeYield   artifacts.Artifacts
+}
+
+func (at *AnimalType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(at.Name)
+}
+
+func (at *AnimalType) UnmarshalJSON(data []byte) error {
+	s := bytes.NewBuffer(data).String()
+	switch s {
+	case "sheep":
+		*at = *Sheep
+	}
+	return nil
 }
 
 type Animal struct {
