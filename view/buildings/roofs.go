@@ -26,6 +26,19 @@ func RoofMaterialName(m *materials.Material, shape uint8) string {
 			return "tile_darkred"
 		}
 	}
+	if m == materials.GetMaterial("brick") {
+		if shape == 0 {
+			return "painted_yellow"
+		} else if shape == 1 {
+			return "painted_red"
+		} else if shape == 2 {
+			return "painted_brown"
+		} else if shape == 3 {
+			return "painted_beige"
+		} else if shape == 4 {
+			return "painted_sand"
+		}
+	}
 	return m.Name
 }
 
