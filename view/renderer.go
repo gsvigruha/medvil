@@ -83,9 +83,6 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 				F: f,
 			}
 			RenderField(ic, cv, rf, f, c)
-			if f.Travellers != nil {
-				RenderTravellers(cv, f.Travellers, rf, c)
-			}
 			c.AddRenderedField(&rf)
 		}
 	}
