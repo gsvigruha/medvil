@@ -30,7 +30,7 @@ type Household struct {
 	TargetNumPeople uint16
 	Money           uint32
 	Building        *building.Building
-	Town            *Town
+	Town            *Town `json:"-"`
 	Tasks           []economy.Task
 	Vehicles        []*vehicles.Vehicle
 	Resources       artifacts.Resources

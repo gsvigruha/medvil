@@ -226,7 +226,7 @@ func (m *Map) FindDest(start navigation.Location, dest navigation.Destination, p
 	return nil
 }
 
-func (m *Map) HasNeighborFieldInDirection(x, y uint16, t terrain.TerrainType, direction uint8) bool {
+func (m *Map) HasNeighborFieldInDirection(x, y uint16, t *terrain.TerrainType, direction uint8) bool {
 	d := navigation.DirectionOrthogonalXY[direction]
 	if m.GetNField(x, d[0], y, d[1]) != nil && m.GetNField(x, d[0], y, d[1]).Terrain.T == t {
 		return true
@@ -243,7 +243,7 @@ func (m *Map) HasNonGateNeighborBuildingInDirection(x, y uint16, direction uint8
 	return false
 }
 
-func (m *Map) HasNeighborField(x, y uint16, t terrain.TerrainType) bool {
+func (m *Map) HasNeighborField(x, y uint16, t *terrain.TerrainType) bool {
 	return (m.HasNeighborFieldInDirection(x, y, t, 0) ||
 		m.HasNeighborFieldInDirection(x, y, t, 1) ||
 		m.HasNeighborFieldInDirection(x, y, t, 2) ||

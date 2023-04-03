@@ -12,15 +12,15 @@ import (
 const StorageToSoldRatio = 6
 
 type Marketplace struct {
-	Town      *Town
+	Town      *Town `json:"-"`
 	Building  *building.Building
 	Money     uint32
 	Storage   artifacts.Resources
-	Prices    map[*artifacts.Artifact]uint32
-	Sold      map[*artifacts.Artifact]uint32
-	Bought    map[*artifacts.Artifact]uint32
-	BuyTasks  map[*economy.BuyTask]bool
-	SellTasks map[*economy.SellTask]bool
+	Prices    map[*artifacts.Artifact]uint32 `json:"-"`
+	Sold      map[*artifacts.Artifact]uint32 `json:"-"`
+	Bought    map[*artifacts.Artifact]uint32 `json:"-"`
+	BuyTasks  map[*economy.BuyTask]bool      `json:"-"`
+	SellTasks map[*economy.SellTask]bool     `json:"-"`
 }
 
 func (mp *Marketplace) Init() {

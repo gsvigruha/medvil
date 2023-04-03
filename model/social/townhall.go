@@ -9,7 +9,7 @@ import (
 
 type Townhall struct {
 	Household     Household
-	StorageTarget map[*artifacts.Artifact]*int
+	StorageTarget map[*artifacts.Artifact]*int `json:"-"`
 	Traders       []*Trader
 }
 

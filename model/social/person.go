@@ -19,7 +19,7 @@ type Person struct {
 	Water     uint8
 	Happiness uint8
 	Health    uint8
-	Home      Home
+	Home      Home `json:"-"`
 	Task      economy.Task
 	IsHome    bool
 	Traveller *navigation.Traveller

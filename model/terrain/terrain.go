@@ -15,18 +15,22 @@ type TerrainType struct {
 	Name      string
 }
 
-var Water = TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "water"}
-var Grass = TerrainType{Walkable: true, Arable: true, Pasture: true, Water: false, Buildable: true, Name: "grass"}
-var Sand = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "sand"}
-var Dirt = TerrainType{Walkable: true, Arable: true, Pasture: false, Water: false, Buildable: true, Name: "dirt"}
-var Rock = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: true, Name: "rock"}
-var Mud = TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "mud"}
-var IronBog = TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "iron_bog"}
-var Gold = TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "gold"}
-var Canal = TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "canal"}
+func (tt *TerrainType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(tt.Name)
+}
+
+var Water = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "water"}
+var Grass = &TerrainType{Walkable: true, Arable: true, Pasture: true, Water: false, Buildable: true, Name: "grass"}
+var Sand = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "sand"}
+var Dirt = &TerrainType{Walkable: true, Arable: true, Pasture: false, Water: false, Buildable: true, Name: "dirt"}
+var Rock = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: true, Name: "rock"}
+var Mud = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "mud"}
+var IronBog = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "iron_bog"}
+var Gold = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "gold"}
+var Canal = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "canal"}
 
 type Terrain struct {
-	T         TerrainType
+	T         *TerrainType
 	Resources artifacts.Resources
 }
 
@@ -60,14 +64,4 @@ func (t *Terrain) UnmarshalJSON(data []byte) error {
 		t.T = Canal
 	}
 	return nil
-}
-
-func (t *Terrain) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		T         string
-		Resources artifacts.Resources
-	}{
-		T:         t.T.Name,
-		Resources: (artifacts.Resources)(t.Resources),
-	})
 }

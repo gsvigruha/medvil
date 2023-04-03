@@ -26,12 +26,12 @@ const MaxWaitTime = 24 * 10
 
 type ExchangeTask struct {
 	TaskBase
-	HomeF          *navigation.Field
-	MarketF        *navigation.Field
-	Exchange       Exchange
-	HouseholdR     *artifacts.Resources
-	HouseholdMoney *uint32
-	Vehicle        *vehicles.Vehicle
+	HomeF          *navigation.Field    `json:"-"`
+	MarketF        *navigation.Field    `json:"-"`
+	Exchange       Exchange             `json:"-"`
+	HouseholdR     *artifacts.Resources `json:"-"`
+	HouseholdMoney *uint32              `json:"-"`
+	Vehicle        *vehicles.Vehicle    `json:"-"`
 	GoodsToBuy     []artifacts.Artifacts
 	GoodsToSell    []artifacts.Artifacts
 	TaskTag        string

@@ -26,7 +26,7 @@ type JSONFarm struct {
 }
 
 type Town struct {
-	Country       *Country
+	Country       *Country `json:"-"`
 	Townhall      *Townhall
 	Marketplace   *Marketplace
 	Farms         []*Farm
