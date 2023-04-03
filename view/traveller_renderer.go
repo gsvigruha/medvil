@@ -25,9 +25,12 @@ func getZByDir(bpe *navigation.BuildingPathElement, dir uint8) float64 {
 	return 0
 }
 
-func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) {
-	for i := range travellers {
-		t := travellers[i]
+func GetScreenY(t *navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) float64 {
+	_, y := GetScreenXY(t, rf, c)
+	return y
+}
+
+func GetScreenXY(t *navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) (float64, float64) {
 		px := float64(t.PX)
 		py := float64(t.PY)
 		NEPX := rf.X[(2+c.Perspective)%4]
@@ -46,6 +49,18 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf 
 			SWPY*(MaxPX-px)*py +
 			NEPY*px*(MaxPY-py) +
 			SEPY*px*py) / (MaxPX * MaxPY)
+		return x, y
+}
+
+func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, minY, maxY float64, rf renderer.RenderedField, c *controller.Controller) {
+	for i := range travellers {
+		t := travellers[i]
+		px := float64(t.PX)
+		py := float64(t.PY)
+		x, y := GetScreenXY(t, rf, c)
+		if y > maxY || y <= minY {
+			continue
+		}
 		if t.GetPathElement() != nil && t.GetPathElement().GetLocation().Z > 0 {
 			if bpe, ok := t.GetPathElement().(*navigation.BuildingPathElement); ok {
 				z1 := getZByDir(bpe, t.Direction)

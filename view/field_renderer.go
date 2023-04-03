@@ -6,12 +6,23 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/renderer"
+	"sort"
 )
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	xMin, yMin, xMax, yMax := rf.BoundingBox()
 	fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
 	cv.DrawImage(fieldImg, xMin, yMin, xMax-xMin, yMax-yMin)
+
+	if f.Construction || f.Road != nil {
+		RenderRoad(cv, rf, f, c)
+	}
+
+	_, midY := rf.MidPoint()
+	if f.Travellers != nil {
+		sort.Slice(f.Travellers, func(i, j int) bool { return GetScreenY(f.Travellers[i], rf, c) < GetScreenY(f.Travellers[j], rf, c) })
+		RenderTravellers(cv, f.Travellers, 0, midY, rf, c)
+	}
 
 	components := f.Building.BuildingComponents
 	if len(components) > 0 {
@@ -31,9 +42,6 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		}
 	}
 
-	if f.Construction || f.Road != nil {
-		RenderRoad(cv, rf, f, c)
-	}
 	if f.Plant != nil {
 		tx := rf.X[0] - PlantBufferW/2
 		ty := rf.Y[2] - PlantBufferH
@@ -45,5 +53,8 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 	}
 	if f.Terrain.Resources.HasRealArtifacts() {
 		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+44, rf.Y[2]-64, 32, 32)
+	}
+	if f.Travellers != nil {
+		RenderTravellers(cv, f.Travellers, midY, float64(c.H), rf, c)
 	}
 }
