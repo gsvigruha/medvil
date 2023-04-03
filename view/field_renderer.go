@@ -9,6 +9,13 @@ import (
 	"sort"
 )
 
+func renderPlant(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
+	tx := rf.X[0] - PlantBufferW/2
+	ty := rf.Y[2] - PlantBufferH
+	img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
+	cv.DrawImage(img, tx, ty, PlantBufferW, PlantBufferH)
+}
+
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	xMin, yMin, xMax, yMax := rf.BoundingBox()
 	fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
@@ -16,6 +23,10 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 
 	if f.Construction || f.Road != nil {
 		RenderRoad(cv, rf, f, c)
+	}
+
+	if f.Plant != nil && !f.Plant.IsTree() {
+		renderPlant(ic, cv, rf, f, c)
 	}
 
 	_, midY := rf.MidPoint()
@@ -42,11 +53,8 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		}
 	}
 
-	if f.Plant != nil {
-		tx := rf.X[0] - PlantBufferW/2
-		ty := rf.Y[2] - PlantBufferH
-		img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
-		cv.DrawImage(img, tx, ty, PlantBufferW, PlantBufferH)
+	if f.Plant != nil && f.Plant.IsTree() {
+		renderPlant(ic, cv, rf, f, c)
 	}
 	if f.Animal != nil && !f.Animal.Corralled {
 		cv.DrawImage("texture/terrain/"+f.Animal.T.Name+".png", rf.X[0]-32, rf.Y[2]-64, 64, 64)
