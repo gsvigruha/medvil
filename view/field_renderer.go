@@ -18,8 +18,12 @@ func renderPlant(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	xMin, yMin, xMax, yMax := rf.BoundingBox()
-	fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
-	cv.DrawImage(fieldImg, xMin, yMin, xMax-xMin, yMax-yMin)
+	if f.Flat() {
+		DrawField(cv, f, rf)
+	} else {
+		fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
+		cv.DrawImage(fieldImg, xMin, yMin, xMax-xMin, yMax-yMin)
+	}
 
 	if f.Construction || f.Road != nil {
 		RenderRoad(cv, rf, f, c)

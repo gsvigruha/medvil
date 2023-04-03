@@ -16,7 +16,7 @@ type FieldImageCache struct {
 	ctx     *goglbackend.GLContext
 }
 
-func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedField) {
+func DrawField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedField) {
 	cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
 
 	rf.Draw(cv)
@@ -49,7 +49,7 @@ func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.
 		offscreen, _ := goglbackend.NewOffscreen(int(w), int(h), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, w, h)
-		renderField(cv, f, bufferedRF)
+		DrawField(cv, f, bufferedRF)
 		ic.entries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
