@@ -22,9 +22,9 @@ type Task interface {
 
 type TaskBase struct {
 	Paused      bool
-	Traveller   *navigation.Traveller `json:"-"`
+	Traveller   *navigation.Traveller
 	FieldCenter bool
-	Household   Household `json:"-"`
+	Household   Household
 }
 
 func (t *TaskBase) Pause(paused bool) {
