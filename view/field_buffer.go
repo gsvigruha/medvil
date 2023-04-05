@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"medvil/controller"
 	"medvil/model/navigation"
+	"medvil/model/terrain"
 	"medvil/renderer"
 	"strconv"
 	"time"
@@ -17,7 +18,11 @@ type FieldImageCache struct {
 }
 
 func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedField) {
-	cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
+	if f.Terrain.T == terrain.Grass {
+		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+	} else {
+		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
+	}
 
 	rf.Draw(cv)
 	cv.Fill()
