@@ -17,9 +17,15 @@ type FieldImageCache struct {
 	ctx     *goglbackend.GLContext
 }
 
-func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedField) {
+func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField) {
 	if f.Terrain.T == terrain.Grass {
-		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+		if c.Calendar.Season() == 3 {
+			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+		} else if c.Calendar.Season() == 2 {
+			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+		} else {
+			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+		}
 	} else {
 		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
 	}
@@ -41,7 +47,7 @@ func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedFie
 }
 
 func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
-	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
+	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(c.Calendar.Season()))
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[key]; ok {
 		return ce.cv
@@ -54,7 +60,7 @@ func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.
 		offscreen, _ := goglbackend.NewOffscreen(int(w), int(h), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, w, h)
-		renderField(cv, f, bufferedRF)
+		renderField(cv, c, f, bufferedRF)
 		ic.entries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
