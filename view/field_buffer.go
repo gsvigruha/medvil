@@ -21,8 +21,6 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 	if f.Terrain.T == terrain.Grass {
 		if c.Calendar.Season() == 3 {
 			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
-		} else if c.Calendar.Season() == 2 {
-			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		} else {
 			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		}
