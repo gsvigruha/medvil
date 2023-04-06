@@ -307,7 +307,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 	}
 	if a == Log {
 		if q >= MinLog {
-			result = q - 1
+			result = q - MinLog
 		} else {
 			return 0
 		}
@@ -316,6 +316,13 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 		textile := h.textileNeeded() + ProductTransportQuantity(Textile)
 		if q > textile {
 			result = q - textile
+		} else {
+			return 0
+		}
+	}
+	if a == economy.Beer || a == economy.Medicine {
+		if q >= p {
+			result = q - p
 		} else {
 			return 0
 		}
