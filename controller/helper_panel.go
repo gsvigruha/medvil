@@ -13,7 +13,7 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 		style = gui.ImageLabelStyleDisabled
 	}
 	y := ControlPanelSY * 0.95
-	p.AddImageLabel("tasks/"+task.Name(), 10, y, IconS, IconS, style)
+	p.AddImageLabel("tasks/"+economy.IconName(task), 10, y, IconS, IconS, style)
 	switch v := task.(type) {
 	case *economy.BuyTask:
 		ArtifactsToHelperPanel(p, v.Goods, 0)
@@ -23,8 +23,11 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 	case *economy.SellTask:
 		ArtifactsToHelperPanel(p, v.Goods, 0)
 	case *economy.ExchangeTask:
+		p.AddImageLabel("tasks/buy", 10, y, IconS, IconS, style)
 		ArtifactsToHelperPanel(p, v.GoodsToBuy, 0)
-		ArtifactsToHelperPanel(p, v.GoodsToSell, float64(len(v.GoodsToBuy)*IconW+10))
+		sellSX := float64((len(v.GoodsToBuy)+1)*IconW + 10)
+		p.AddImageLabel("tasks/sell", sellSX, y, IconS, IconS, style)
+		ArtifactsToHelperPanel(p, v.GoodsToSell, sellSX)
 	case *economy.TransportTask:
 		x := float64(10 + IconW)
 		p.AddImageLabel("artifacts/"+v.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
