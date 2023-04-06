@@ -100,7 +100,9 @@ func LoadFields(dir string, m *model.Map) {
 			case "N":
 				m.Fields[i][j].Terrain.T = terrain.Gold
 			}
-			m.Fields[i][j].Terrain.Shape = uint8(rand.Intn(4))
+			if m.Fields[i][j].Terrain.T == terrain.Grass {
+				m.Fields[i][j].Terrain.Shape = uint8(rand.Intn(4))
+			}
 			h, err := strconv.Atoi(heights[i*2 : i*2+1])
 			if err != nil {
 				fmt.Println(err)
