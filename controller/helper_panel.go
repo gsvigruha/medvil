@@ -25,8 +25,9 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 	case *economy.ExchangeTask:
 		p.AddImageLabel("tasks/buy", 10, y, IconS, IconS, style)
 		ArtifactsToHelperPanel(p, v.GoodsToBuy, 0)
-		p.AddImageLabel("tasks/sell", float64((len(v.GoodsToBuy)+1)*IconW+10), y, IconS, IconS, style)
-		ArtifactsToHelperPanel(p, v.GoodsToSell, float64((len(v.GoodsToBuy)+1)*IconW))
+		sellSX := float64((len(v.GoodsToBuy)+1)*IconW + 10)
+		p.AddImageLabel("tasks/sell", sellSX, y, IconS, IconS, style)
+		ArtifactsToHelperPanel(p, v.GoodsToSell, sellSX)
 	case *economy.TransportTask:
 		x := float64(10 + IconW)
 		p.AddImageLabel("artifacts/"+v.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
