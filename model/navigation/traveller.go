@@ -250,7 +250,7 @@ func (t *Traveller) IncPhase() {
 	}
 }
 
-func (t *Traveller) EnsurePath(f *Field, m IMap) bool {
+func (t *Traveller) EnsurePath(f *Field, m IMap) (bool, bool) {
 	dest := Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
 	if t.pc.path == nil || t.pc.path.LastElement().GetLocation() != dest {
 		if t.pc.pc == nil {
@@ -270,7 +270,7 @@ func (t *Traveller) EnsurePath(f *Field, m IMap) bool {
 			}
 		}
 	}
-	return t.pc.path != nil
+	return t.pc.path != nil, t.pc.computing
 }
 
 func (t *Traveller) PathType() PathType {

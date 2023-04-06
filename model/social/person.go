@@ -49,7 +49,8 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.releaseTask()
 			}
 		} else {
-			if p.Traveller.EnsurePath(p.Task.Field(), m) {
+			hasPath, computing := p.Traveller.EnsurePath(p.Task.Field(), m)
+			if hasPath {
 				if p.IsHome {
 					// Start on path
 					p.IsHome = false
@@ -58,10 +59,11 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					// Move on path
 					p.Traveller.Move(m)
 				}
-			} else {
+			} else if !computing {
 				if !economy.IsPersonalTask(p.Task.Name()) {
 					p.Task.Pause(true)
 					p.Home.AddTask(p.Task)
+
 				}
 				p.releaseTask()
 			}

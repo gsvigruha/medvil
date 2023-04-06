@@ -41,3 +41,7 @@ func (t *SellTask) Expired(Calendar *time.CalendarType) bool {
 func (t *SellTask) Motion() uint8 {
 	return navigation.MotionStand
 }
+
+func (t *SellTask) IconName() string {
+	return "sell"
+}
