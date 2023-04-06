@@ -221,7 +221,8 @@ func (f *Field) CacheKey() string {
 		strconv.Itoa(int(f.SE)) + "#" +
 		strconv.Itoa(int(f.SW)) + "#" +
 		strconv.Itoa(int(f.NW)) + "#" +
-		f.Terrain.T.Name)
+		f.Terrain.T.Name + "#" +
+		strconv.Itoa(int(f.Terrain.Shape)))
 }
 
 func (f *Field) TravellerVisible() bool {

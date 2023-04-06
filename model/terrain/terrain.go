@@ -32,6 +32,7 @@ var Canal = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: f
 type Terrain struct {
 	T         *TerrainType
 	Resources artifacts.Resources
+	Shape     uint8
 }
 
 func (t *Terrain) UnmarshalJSON(data []byte) error {
