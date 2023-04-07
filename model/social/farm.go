@@ -152,12 +152,8 @@ func (f *Farm) GetFields() []navigation.FieldWithContext {
 func (f *Farm) FieldUsableFor(m navigation.IMap, field *navigation.Field, useType uint8) bool {
 	if useType == economy.FarmFieldUseTypeReed {
 		return m.Shore(field.X, field.Y)
-	} else if useType != economy.FarmFieldUseTypeBarren {
-		return field.Arable()
-	} else if useType == economy.FarmFieldUseTypeBarren {
-		return true
 	}
-	return false
+	return field.Arable()
 }
 
 func (f *Farm) FieldWithinDistance(field *navigation.Field) bool {
