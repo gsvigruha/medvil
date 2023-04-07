@@ -9,6 +9,8 @@ import (
 	"medvil/view/gui"
 )
 
+const FarmFieldUseTypeDisallocate uint8 = 255
+
 type FarmController struct {
 	householdPanel *gui.Panel
 	farmPanel      *gui.Panel
@@ -72,6 +74,11 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeHerb,
 	})
+	fp.AddButton(LandUseButton{
+		b:       gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*0), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
+		luc:     fc,
+		useType: FarmFieldUseTypeDisallocate,
+	})
 
 	cp.SetDynamicPanel(fc)
 	cp.C.ClickHandler = fc
@@ -102,7 +109,7 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 	for i := range fc.farm.Land {
 		l := &fc.farm.Land[i]
 		if l.F.X == rf.F.X && l.F.Y == rf.F.Y {
-			if fc.UseType == economy.FarmFieldUseTypeBarren {
+			if fc.UseType == FarmFieldUseTypeDisallocate {
 				// Disallocate land
 				fc.farm.Land = append(fc.farm.Land[:i], fc.farm.Land[i+1:]...)
 				rf.F.Allocated = false
@@ -112,7 +119,7 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 			return true
 		}
 	}
-	if !rf.F.Allocated && fc.farm.FieldUsableFor(c.Map, rf.F, fc.UseType) && fc.farm.FieldWithinDistance(rf.F) {
+	if fc.UseType != FarmFieldUseTypeDisallocate && !rf.F.Allocated && fc.farm.FieldUsableFor(c.Map, rf.F, fc.UseType) && fc.farm.FieldWithinDistance(rf.F) {
 		fc.farm.Land = append(fc.farm.Land, social.FarmLand{
 			X:       rf.F.X,
 			Y:       rf.F.Y,
