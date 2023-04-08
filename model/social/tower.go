@@ -101,7 +101,7 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 func (t *Tower) getPatrolDestinations() []navigation.Destination {
 	var d []navigation.Destination
 	for _, l := range t.Land {
-		d = append(d, navigation.Location{X: l.F.X, Y: l.F.Y, Z: navigation.GetZForField(l.F)})
+		d = append(d, l.F.TopLocation())
 	}
 	return d
 }
