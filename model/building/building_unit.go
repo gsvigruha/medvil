@@ -61,6 +61,7 @@ const WindowTypeNone WindowType = 0
 const WindowTypePlain WindowType = 1
 const WindowTypeBalcony WindowType = 2
 const WindowTypeFrench WindowType = 3
+const WindowTypeFactory WindowType = 4
 
 type BuildingWall struct {
 	M       *materials.Material

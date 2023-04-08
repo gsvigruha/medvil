@@ -99,6 +99,17 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			cv.Fill()
 			cv.Stroke()
 
+			if !wall.Arch && !unit.Construction {
+				cv.SetFillStyle("texture/building/ornament.png")
+				cv.BeginPath()
+				cv.LineTo(rw.X[1], rw.Y[1])
+				cv.LineTo(rw.X[2], rw.Y[2])
+				cv.LineTo(rw.X[2], rw.Y[2]+5)
+				cv.LineTo(rw.X[1], rw.Y[1]+5)
+				cv.ClosePath()
+				cv.Fill()
+			}
+
 			/*
 				if !wall.Arch {
 					cv.SetFillStyle("texture/building/ornament" + suffix + ".png")
@@ -114,12 +125,18 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 
 			z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 			if !unit.Construction && wall.Windows != building.WindowTypeNone {
-				cv.SetFillStyle("texture/building/glass_2.png")
-				cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
 				cv.SetLineWidth(2)
-				RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench)
-				if wall.Windows == building.WindowTypeBalcony {
-					RenderBalcony(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+				if wall.Windows == building.WindowTypeFactory {
+					cv.SetFillStyle("texture/building/glass_3.png")
+					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 192})
+					RenderFactoryWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+				} else {
+					cv.SetFillStyle("texture/building/glass_2.png")
+					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
+					RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench)
+					if wall.Windows == building.WindowTypeBalcony {
+						RenderBalcony(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+					}
 				}
 			}
 
