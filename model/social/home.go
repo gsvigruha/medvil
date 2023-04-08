@@ -50,8 +50,8 @@ func FindWaterTask(h Home, numP uint16, m navigation.IMap) {
 			dest := m.FindDest(navigation.Location{X: hf.X, Y: hf.Y, Z: 0}, economy.WaterDestination{}, navigation.PathTypePedestrian)
 			if dest != nil {
 				h.AddPriorityTask(&economy.TransportTask{
-					PickupF:  dest,
-					DropoffF: hf,
+					PickupD:  dest,
+					DropoffD: hf,
 					PickupR:  &dest.Terrain.Resources,
 					DropoffR: h.GetResources(),
 					A:        water,

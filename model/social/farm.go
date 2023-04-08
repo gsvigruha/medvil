@@ -75,8 +75,8 @@ func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 			tag := economy.TransportTaskTag(l.F, a)
 			if f.Household.NumTasks("transport", tag) == 0 {
 				f.Household.AddTask(&economy.TransportTask{
-					PickupF:  l.F,
-					DropoffF: home,
+					PickupD:  l.F,
+					DropoffD: home,
 					PickupR:  &l.F.Terrain.Resources,
 					DropoffR: &f.Household.Resources,
 					A:        a,
