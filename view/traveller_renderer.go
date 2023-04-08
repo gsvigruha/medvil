@@ -76,12 +76,12 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, min
 				case navigation.DirectionE:
 					z = (z1*px + z2*(MaxPX-px)) / MaxPX
 				}
-				DrawTraveller(cv, t, x, y-5-z, c)
+				DrawTraveller(cv, t, x, y-5-z, rf.F, c)
 			} else {
-				DrawTraveller(cv, t, x, y-5, c)
+				DrawTraveller(cv, t, x, y-5, rf.F, c)
 			}
 		} else {
-			DrawTraveller(cv, t, x, y-5, c)
+			DrawTraveller(cv, t, x, y-5, rf.F, c)
 		}
 	}
 }
@@ -173,10 +173,17 @@ func DrawTool(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.Pers
 	cv.Fill()
 }
 
-func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
+func tallPlant(f *navigation.Field) bool {
+	return f.Plant != nil && f.Plant.T.Tall
+}
+
+func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, f *navigation.Field, c *controller.Controller) {
 	if t.T == navigation.TravellerTypePedestrian {
 		inBoat := t.Vehicle != nil && t.Vehicle.Water()
-		DrawPerson(cv, t, x, y, inBoat, c)
+		if inBoat {
+			y += 5
+		}
+		DrawPerson(cv, t, x, y, !inBoat && !tallPlant(f), c)
 	} else if t.T == navigation.TravellerTypeBoat {
 		vehicles.DrawBoat(cv, t, x, y, c)
 	} else if t.T == navigation.TravellerTypeTradingBoat {
@@ -189,12 +196,9 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 	c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y, H: 32, W: 8, Traveller: t})
 }
 
-func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, InVehicle bool, c *controller.Controller) {
+func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, drawLeg bool, c *controller.Controller) {
 	if !t.Visible {
 		return
-	}
-	if InVehicle {
-		y += 5
 	}
 	var m animation.PersonMotion
 	switch t.Motion {
@@ -213,12 +217,12 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 
 	if dirIdx >= 2 {
 		DrawLeftArm(cv, pm, m, x, y, p)
-		if !InVehicle {
+		if drawLeg {
 			DrawLeftLeg(cv, pm, m, x, y, p)
 		}
 	} else {
 		DrawRightArm(cv, pm, m, x, y, p)
-		if !InVehicle {
+		if drawLeg {
 			DrawRightLeg(cv, pm, m, x, y, p)
 		}
 	}
@@ -240,12 +244,12 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	cv.Fill()
 
 	if dirIdx >= 2 {
-		if !InVehicle {
+		if drawLeg {
 			DrawRightLeg(cv, pm, m, x, y, p)
 		}
 		DrawRightArm(cv, pm, m, x, y, p)
 	} else {
-		if !InVehicle {
+		if drawLeg {
 			DrawLeftLeg(cv, pm, m, x, y, p)
 		}
 		DrawLeftArm(cv, pm, m, x, y, p)
