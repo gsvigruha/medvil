@@ -8,17 +8,17 @@ import (
 
 type PatrolTask struct {
 	economy.TaskBase
-	Fields []*navigation.Field
-	Start  time.CalendarType
-	state  int
+	Destinations []navigation.Destination
+	Start        time.CalendarType
+	state        int
 }
 
 func (t *PatrolTask) Destination() navigation.Destination {
-	return t.Fields[t.state]
+	return t.Destinations[t.state]
 }
 
 func (t *PatrolTask) Complete(Calendar *time.CalendarType, tool bool) bool {
-	if t.state < len(t.Fields)-1 {
+	if t.state < len(t.Destinations)-1 {
 		t.state++
 		return false
 	} else {
