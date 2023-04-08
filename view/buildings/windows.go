@@ -171,3 +171,52 @@ func RenderBalcony(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 		cv.Stroke()
 	}
 }
+
+func renderFactoryWindow(cv *canvas.Canvas, x1, y1, z1, x2, y2, z2 float64) {
+	cv.BeginPath()
+	cv.LineTo(x1, y1-z1)
+	cv.LineTo(x1, y1-z2)
+	cv.LineTo(x2, y2-z2)
+	cv.LineTo(x2, y2-z1)
+	cv.ClosePath()
+	cv.Fill()
+	cv.Stroke()
+
+	dx := (x2 - x1) / 3.0
+	dy := (y2 - y1) / 3.0
+	dz := (z2 - z1) / 3.0
+	for i := 0.0; i < 3.0; i++ {
+		cv.BeginPath()
+		cv.MoveTo(x1+dx*i, y1+dy*i-z1)
+		cv.LineTo(x1+dx*i, y1+dy*i-z2)
+		cv.ClosePath()
+		cv.Stroke()
+		cv.BeginPath()
+		cv.MoveTo(x1, y1-z1-dz*i)
+		cv.LineTo(x2, y2-z1-dz*i)
+		cv.ClosePath()
+		cv.Stroke()
+	}
+}
+
+func RenderFactoryWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door bool) {
+	renderFactoryWindow(cv,
+		(6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7,
+		(6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7,
+		z+BuildingUnitHeight*DZ*1/3,
+		(4*rf.X[rfIdx1]+3*rf.X[rfIdx2])/7,
+		(4*rf.Y[rfIdx1]+3*rf.Y[rfIdx2])/7,
+		z+BuildingUnitHeight*DZ*2/3,
+	)
+
+	if !door {
+		renderFactoryWindow(cv,
+			(3*rf.X[rfIdx1]+4*rf.X[rfIdx2])/7,
+			(3*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/7,
+			z+BuildingUnitHeight*DZ*1/3,
+			(1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7,
+			(1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7,
+			z+BuildingUnitHeight*DZ*2/3,
+		)
+	}
+}
