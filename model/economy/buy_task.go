@@ -15,7 +15,7 @@ type BuyTask struct {
 	TaskTag        string
 }
 
-func (t *BuyTask) Field() *navigation.Field {
+func (t *BuyTask) Destination() navigation.Destination {
 	return nil
 }
 

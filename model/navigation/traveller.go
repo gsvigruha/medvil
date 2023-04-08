@@ -250,9 +250,18 @@ func (t *Traveller) IncPhase() {
 	}
 }
 
-func (t *Traveller) EnsurePath(f *Field, m IMap) (bool, bool) {
-	dest := Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
-	if t.pc.path == nil || t.pc.path.LastElement().GetLocation() != dest {
+func (t *Traveller) IsAtDestination(dest Destination) bool {
+	if t.pc.path != nil && len(t.pc.path.P) == 0 {
+		return true
+	}
+	if t.pc.pe == nil {
+		return false
+	}
+	return dest.Check(t.pc.pe)
+}
+
+func (t *Traveller) EnsurePath(dest Destination, m IMap) (bool, bool) {
+	if t.pc.path == nil || !dest.Check(t.pc.path.LastElement()) {
 		if t.pc.pc == nil {
 			t.pc.pc = make(chan *Path)
 		}

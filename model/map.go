@@ -207,7 +207,7 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction b
 	return b
 }
 
-func (m *Map) ShortPath(start, dest navigation.Location, pathType navigation.PathType) *navigation.Path {
+func (m *Map) ShortPath(start navigation.Location, dest navigation.Destination, pathType navigation.PathType) *navigation.Path {
 	if start == dest {
 		return nil
 	}

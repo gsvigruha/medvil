@@ -13,7 +13,7 @@ type PatrolTask struct {
 	state  int
 }
 
-func (t *PatrolTask) Field() *navigation.Field {
+func (t *PatrolTask) Destination() navigation.Destination {
 	return t.Fields[t.state]
 }
 

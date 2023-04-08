@@ -17,7 +17,7 @@ type BuildingTask struct {
 	progress uint16
 }
 
-func (t *BuildingTask) Field() *navigation.Field {
+func (t *BuildingTask) Destination() navigation.Destination {
 	return t.F
 }
 

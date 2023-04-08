@@ -19,7 +19,7 @@ type FactoryPickupTask struct {
 	dropoff  bool
 }
 
-func (t *FactoryPickupTask) Field() *navigation.Field {
+func (t *FactoryPickupTask) Destination() navigation.Destination {
 	if t.dropoff {
 		return t.DropoffF
 	} else {

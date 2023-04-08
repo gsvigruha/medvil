@@ -20,7 +20,7 @@ type TransportTask struct {
 	dropoff          bool
 }
 
-func (t *TransportTask) Field() *navigation.Field {
+func (t *TransportTask) Destination() navigation.Destination {
 	if t.dropoff {
 		return t.DropoffF
 	} else {

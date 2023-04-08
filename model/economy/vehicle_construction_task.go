@@ -23,7 +23,7 @@ type VehicleConstructionTask struct {
 	Progress uint16
 }
 
-func (t *VehicleConstructionTask) Field() *navigation.Field {
+func (t *VehicleConstructionTask) Destination() navigation.Destination {
 	return t.F
 }
 

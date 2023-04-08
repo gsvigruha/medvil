@@ -14,7 +14,7 @@ type ManufactureTask struct {
 	Progress uint16
 }
 
-func (t *ManufactureTask) Field() *navigation.Field {
+func (t *ManufactureTask) Destination() navigation.Destination {
 	return t.F
 }
 
