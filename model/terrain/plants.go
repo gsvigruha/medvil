@@ -13,6 +13,7 @@ type PlantType struct {
 	MaturityAgeYears uint8
 	TreeT            *TreeType
 	Yield            artifacts.Artifacts
+	Tall             bool
 }
 
 func (pt *PlantType) MarshalJSON() ([]byte, error) {
