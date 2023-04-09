@@ -47,7 +47,7 @@ type AgriculturalTask struct {
 	Start    time.CalendarType
 }
 
-func (t *AgriculturalTask) Field() *navigation.Field {
+func (t *AgriculturalTask) Destination() navigation.Destination {
 	return t.F
 }
 

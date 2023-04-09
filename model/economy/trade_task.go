@@ -28,7 +28,7 @@ type TradeTask struct {
 	state             uint8
 }
 
-func (t *TradeTask) Field() *navigation.Field {
+func (t *TradeTask) Destination() navigation.Destination {
 	switch t.state {
 	case TradeTaskStatePickupAtSource:
 		return t.SourceMarketF

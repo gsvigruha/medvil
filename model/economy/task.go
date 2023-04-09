@@ -7,7 +7,7 @@ import (
 
 type Task interface {
 	Complete(Calendar *time.CalendarType, tool bool) bool
-	Field() *navigation.Field
+	Destination() navigation.Destination
 	Blocked() bool
 	Name() string
 	IconName() string

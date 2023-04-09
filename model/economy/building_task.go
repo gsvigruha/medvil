@@ -11,14 +11,14 @@ const BuildingTaskMaxProgress = 30 * 24
 
 type BuildingTask struct {
 	TaskBase
-	F        *navigation.Field
+	D        navigation.Destination
 	C        *building.Construction
 	started  bool
 	progress uint16
 }
 
-func (t *BuildingTask) Field() *navigation.Field {
-	return t.F
+func (t *BuildingTask) Destination() navigation.Destination {
+	return t.D
 }
 
 func (t *BuildingTask) Complete(Calendar *time.CalendarType, tool bool) bool {
@@ -49,11 +49,17 @@ func (t *BuildingTask) Name() string {
 }
 
 func (t *BuildingTask) Tag() string {
-	return BuildingTaskTag(t.F)
+	return BuildingTaskTag(t.D)
 }
 
-func BuildingTaskTag(f *navigation.Field) string {
-	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y))
+func BuildingTaskTag(dest navigation.Destination) string {
+	if f, ok := dest.(*navigation.Field); ok {
+		return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y))
+	}
+	if l, ok := dest.(navigation.Location); ok {
+		return strconv.Itoa(int(l.X)) + "#" + strconv.Itoa(int(l.Y)) + "#" + strconv.Itoa(int(l.Z))
+	}
+	return ""
 }
 
 func (t *BuildingTask) Expired(Calendar *time.CalendarType) bool {

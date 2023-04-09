@@ -228,3 +228,7 @@ func (f *Field) CacheKey() string {
 func (f *Field) TravellerVisible() bool {
 	return true
 }
+
+func (f *Field) TopLocation() Location {
+	return Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
+}

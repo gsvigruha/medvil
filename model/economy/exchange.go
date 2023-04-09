@@ -40,7 +40,7 @@ type ExchangeTask struct {
 	waittime       uint16
 }
 
-func (t *ExchangeTask) Field() *navigation.Field {
+func (t *ExchangeTask) Destination() navigation.Destination {
 	switch t.state {
 	case ExchangeTaskStatePickupAtHome:
 		return t.HomeF

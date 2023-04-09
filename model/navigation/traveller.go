@@ -250,9 +250,12 @@ func (t *Traveller) IncPhase() {
 	}
 }
 
-func (t *Traveller) EnsurePath(f *Field, m IMap) (bool, bool) {
-	dest := Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
-	if t.pc.path == nil || t.pc.path.LastElement().GetLocation() != dest {
+func (t *Traveller) IsAtDestination(dest Destination) bool {
+	return dest.Check(t.pc.pe)
+}
+
+func (t *Traveller) EnsurePath(dest Destination, m IMap) (bool, bool) {
+	if t.pc.path == nil || !dest.Check(t.pc.path.LastElement()) {
 		if t.pc.pc == nil {
 			t.pc.pc = make(chan *Path)
 		}
@@ -345,4 +348,8 @@ func (t *Traveller) GetPathFields(m IMap) []FieldWithContext {
 
 func (t *Traveller) GetPathElement() PathElement {
 	return t.pc.pe
+}
+
+func (t *Traveller) InitPathElement(pe PathElement) {
+	t.pc.pe = pe
 }

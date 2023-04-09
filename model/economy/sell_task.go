@@ -13,7 +13,7 @@ type SellTask struct {
 	TaskTag  string
 }
 
-func (t *SellTask) Field() *navigation.Field {
+func (t *SellTask) Destination() navigation.Destination {
 	return nil
 }
 

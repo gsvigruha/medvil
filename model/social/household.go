@@ -364,6 +364,15 @@ func (h *Household) NumTasks(name string, tag string) int {
 
 func (h *Household) NewPerson(m navigation.IMap) *Person {
 	hx, hy, _ := GetRandomBuildingXY(h.Building, m, func(navigation.Field) bool { return true })
+	traveller := &navigation.Traveller{
+		FX: hx,
+		FY: hy,
+		FZ: 0,
+		PX: 0,
+		PY: 0,
+		T:  navigation.TravellerTypePedestrian,
+	}
+	traveller.InitPathElement(m.GetField(hx, hy))
 	return &Person{
 		Food:      MaxPersonState,
 		Water:     MaxPersonState,
@@ -372,14 +381,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 		Home:      h,
 		Task:      nil,
 		IsHome:    true,
-		Traveller: &navigation.Traveller{
-			FX: hx,
-			FY: hy,
-			FZ: 0,
-			PX: 0,
-			PY: 0,
-			T:  navigation.TravellerTypePedestrian,
-		},
+		Traveller: traveller,
 		Equipment: &economy.NoEquipment{},
 	}
 }
