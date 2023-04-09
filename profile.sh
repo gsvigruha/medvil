@@ -1,1 +1,1 @@
-go tool pprof --pdf main cpu.pprof > file.pdf
+go tool pprof --pdf medvil cpu.pprof > file.pdf

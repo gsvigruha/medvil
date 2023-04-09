@@ -208,7 +208,7 @@ func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction b
 }
 
 func (m *Map) ShortPath(start navigation.Location, dest navigation.Destination, pathType navigation.PathType) *navigation.Path {
-	if start == dest {
+	if dest.Check(m.GetField(start.X, start.Y).GetPathElement(start.Z)) {
 		return nil
 	}
 	p := FindShortPathBFS(m, start, dest, pathType)
