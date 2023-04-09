@@ -18,11 +18,7 @@ type BuildingTask struct {
 }
 
 func (t *BuildingTask) Destination() navigation.Destination {
-<<<<<<< HEAD
-	return t.F
-=======
 	return t.D
->>>>>>> 74c77bd9cc4c12c693c54958e4b7ce9e2c5a5a54
 }
 
 func (t *BuildingTask) Complete(Calendar *time.CalendarType, tool bool) bool {
