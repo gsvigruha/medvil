@@ -97,10 +97,10 @@ func (t *Traveller) HasRoom(m IMap, dir uint8) bool {
 	return true
 }
 
-func (t *Traveller) MoveLeft(m IMap) {
+func (t *Traveller) MoveLeft(stayInField bool, m IMap) {
 	if t.PX > 0 {
 		t.PX--
-	} else if t.FX > 0 {
+	} else if t.FX > 0 && !stayInField {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PX = MaxPX
 		t.FX--
@@ -110,10 +110,10 @@ func (t *Traveller) MoveLeft(m IMap) {
 	t.Direction = DirectionW
 }
 
-func (t *Traveller) MoveRight(m IMap) {
+func (t *Traveller) MoveRight(stayInField bool, m IMap) {
 	if t.PX < MaxPX {
 		t.PX++
-	} else {
+	} else if !stayInField {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PX = 0
 		t.FX++
@@ -123,10 +123,10 @@ func (t *Traveller) MoveRight(m IMap) {
 	t.Direction = DirectionE
 }
 
-func (t *Traveller) MoveUp(m IMap) {
+func (t *Traveller) MoveUp(stayInField bool, m IMap) {
 	if t.PY > 0 {
 		t.PY--
-	} else if t.FY > 0 {
+	} else if t.FY > 0 && !stayInField {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PY = MaxPY
 		t.FY--
@@ -136,10 +136,10 @@ func (t *Traveller) MoveUp(m IMap) {
 	t.Direction = DirectionN
 }
 
-func (t *Traveller) MoveDown(m IMap) {
+func (t *Traveller) MoveDown(stayInField bool, m IMap) {
 	if t.PY < MaxPY {
 		t.PY++
-	} else {
+	} else if !stayInField {
 		m.GetField(t.FX, t.FY).UnregisterTraveller(t)
 		t.PY = 0
 		t.FY++
@@ -153,16 +153,16 @@ func (t *Traveller) Jump(m IMap) {
 	t.consumePathElement()
 }
 
-func (t *Traveller) MoveToDir(d uint8, m IMap) {
+func (t *Traveller) MoveToDir(d uint8, stayInField bool, m IMap) {
 	switch d {
 	case DirectionN:
-		t.MoveUp(m)
+		t.MoveUp(stayInField, m)
 	case DirectionS:
-		t.MoveDown(m)
+		t.MoveDown(stayInField, m)
 	case DirectionW:
-		t.MoveLeft(m)
+		t.MoveLeft(stayInField, m)
 	case DirectionE:
-		t.MoveRight(m)
+		t.MoveRight(stayInField, m)
 	}
 }
 
@@ -211,11 +211,11 @@ func (t *Traveller) Move(m IMap) {
 			}
 			if dirToLane != DirectionNone && t.HasRoom(m, dirToLane) {
 				// Move towards the lane if possible
-				t.MoveToDir(dirToLane, m)
+				t.MoveToDir(dirToLane, true, m)
 				t.stuckCntr = 0
 			} else if dirToNextField != DirectionNone && t.HasRoom(m, dirToNextField) {
 				// Move towards the next field if in correct lane and possible
-				t.MoveToDir(dirToNextField, m)
+				t.MoveToDir(dirToNextField, false, m)
 				t.stuckCntr = 0
 			} else if t.stuckCntr < MaxStuckCntr {
 				// Try to pick a different lane a few times
@@ -226,7 +226,7 @@ func (t *Traveller) Move(m IMap) {
 				for i := uint8(0); i < 4; i++ {
 					d := (dirToNextField + i) % 4
 					if t.HasRoom(m, d) {
-						t.MoveToDir(d, m)
+						t.MoveToDir(d, true, m)
 						break
 					}
 				}
