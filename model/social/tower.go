@@ -88,22 +88,22 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 
 	if Calendar.Hour == 0 && Calendar.Day == 1 && len(t.Household.People) > 0 {
-		patrolFields := t.getPatrolFields()
-		if h.NumTasks("patrol", "") == 0 && len(patrolFields) > 0 {
+		patrolDestinations := t.getPatrolDestinations()
+		if h.NumTasks("patrol", "") == 0 && len(patrolDestinations) > 0 {
 			h.AddTask(&military.PatrolTask{
-				Fields: patrolFields,
-				Start:  *Calendar,
+				Destinations: patrolDestinations,
+				Start:        *Calendar,
 			})
 		}
 	}
 }
 
-func (t *Tower) getPatrolFields() []*navigation.Field {
-	var f []*navigation.Field
+func (t *Tower) getPatrolDestinations() []navigation.Destination {
+	var d []navigation.Destination
 	for _, l := range t.Land {
-		f = append(f, l.F)
+		d = append(d, l.F.TopLocation())
 	}
-	return f
+	return d
 }
 
 func (t *Tower) numUnarmedPeople() uint16 {

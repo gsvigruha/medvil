@@ -44,8 +44,8 @@ func (ntc *NewTownController) SetToState() {
 		for a, q := range ntc.resources {
 			if *q > 0 {
 				srcH.AddTask(&economy.TransportTask{
-					PickupF:  ntc.cp.C.Map.GetField(srcH.Building.X, srcH.Building.Y),
-					DropoffF: ntc.cp.C.Map.GetField(dstH.Building.X, dstH.Building.Y),
+					PickupD:  ntc.cp.C.Map.GetField(srcH.Building.X, srcH.Building.Y),
+					DropoffD: ntc.cp.C.Map.GetField(dstH.Building.X, dstH.Building.Y),
 					PickupR:  &srcH.Resources,
 					DropoffR: &dstH.Resources,
 					A:        a,

@@ -251,12 +251,15 @@ func (t *Traveller) IncPhase() {
 }
 
 func (t *Traveller) IsAtDestination(dest Destination) bool {
+<<<<<<< HEAD
 	if t.pc.path != nil && len(t.pc.path.P) == 0 {
 		return true
 	}
 	if t.pc.pe == nil {
 		return false
 	}
+=======
+>>>>>>> 74c77bd9cc4c12c693c54958e4b7ce9e2c5a5a54
 	return dest.Check(t.pc.pe)
 }
 
@@ -354,4 +357,8 @@ func (t *Traveller) GetPathFields(m IMap) []FieldWithContext {
 
 func (t *Traveller) GetPathElement() PathElement {
 	return t.pc.pe
+}
+
+func (t *Traveller) InitPathElement(pe PathElement) {
+	t.pc.pe = pe
 }
