@@ -165,6 +165,7 @@ func LoadSociety(dir string, m *model.Map) {
 			town.Townhall.Household.TargetNumPeople = 5
 			town.Townhall.Household.Town = town
 			town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
+			town.Townhall.Household.Building.Plan.BuildingType = building.BuildingTypeTownhall
 			for i := range town.Townhall.Household.People {
 				town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
 			}
@@ -185,6 +186,7 @@ func LoadSociety(dir string, m *model.Map) {
 				}
 				farm.Household.People = []*social.Person{farm.Household.NewPerson(m), farm.Household.NewPerson(m)}
 				farm.Household.TargetNumPeople = 2
+				farm.Household.Building.Plan.BuildingType = building.BuildingTypeFarm
 				for _, p := range farm.Household.People {
 					m.GetField(p.Traveller.FX, p.Traveller.FY).RegisterTraveller(p.Traveller)
 				}
