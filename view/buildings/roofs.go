@@ -122,6 +122,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			if cv != nil {
 				cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + "_flat.png")
 				util.RenderPolygon(cv, rp1, false)
+				RenderRoofFence(cv, roof, rp1, c)
 			}
 		}
 	} else if roof.Roof.RoofType == building.RoofTypeRamp {
