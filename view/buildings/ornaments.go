@@ -56,29 +56,31 @@ func RenderOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer
 }
 
 func RenderRoofFence(cv *canvas.Canvas, roof *building.RoofUnit, rp1 renderer.Polygon, c *controller.Controller) {
-	cv.SetFillStyle("texture/building/ornament_2.png")
-	for i := uint8(0); i < 4; i++ {
-		if !roof.Elevated[i] {
-			rfIdx1 := (2 - (-c.Perspective + i)) % 4
-			rfIdx2 := (3 - (-c.Perspective + i)) % 4
-			dx := (rp1.Points[rfIdx2].X - rp1.Points[rfIdx1].X) / 5.0
-			dy := (rp1.Points[rfIdx2].Y - rp1.Points[rfIdx1].Y) / 5.0
-			for j := float64(0); j < 5; j++ {
+	if roof.B.Plan.BuildingType == building.BuildingTypeWorkshop {
+		cv.SetFillStyle("texture/building/ornament_2.png")
+		for i := uint8(0); i < 4; i++ {
+			if !roof.Elevated[i] {
+				rfIdx1 := (2 - (-c.Perspective + i)) % 4
+				rfIdx2 := (3 - (-c.Perspective + i)) % 4
+				dx := (rp1.Points[rfIdx2].X - rp1.Points[rfIdx1].X) / 5.0
+				dy := (rp1.Points[rfIdx2].Y - rp1.Points[rfIdx1].Y) / 5.0
+				for j := float64(0); j <= 5; j++ {
+					cv.BeginPath()
+					cv.LineTo(rp1.Points[rfIdx1].X+dx*j-3, rp1.Points[rfIdx1].Y+dy*j)
+					cv.LineTo(rp1.Points[rfIdx1].X+dx*j+3, rp1.Points[rfIdx1].Y+dy*j)
+					cv.LineTo(rp1.Points[rfIdx1].X+dx*j+3, rp1.Points[rfIdx1].Y+dy*j-15)
+					cv.LineTo(rp1.Points[rfIdx1].X+dx*j-3, rp1.Points[rfIdx1].Y+dy*j-15)
+					cv.ClosePath()
+					cv.Fill()
+				}
 				cv.BeginPath()
-				cv.LineTo(rp1.Points[rfIdx1].X+dx*j-3, rp1.Points[rfIdx1].Y+dy*j)
-				cv.LineTo(rp1.Points[rfIdx1].X+dx*j+3, rp1.Points[rfIdx1].Y+dy*j)
-				cv.LineTo(rp1.Points[rfIdx1].X+dx*j+3, rp1.Points[rfIdx1].Y+dy*j-15)
-				cv.LineTo(rp1.Points[rfIdx1].X+dx*j-3, rp1.Points[rfIdx1].Y+dy*j-15)
+				cv.LineTo(rp1.Points[rfIdx1].X, rp1.Points[rfIdx1].Y-13)
+				cv.LineTo(rp1.Points[rfIdx1].X, rp1.Points[rfIdx1].Y-17)
+				cv.LineTo(rp1.Points[rfIdx2].X, rp1.Points[rfIdx2].Y-17)
+				cv.LineTo(rp1.Points[rfIdx2].X, rp1.Points[rfIdx2].Y-13)
 				cv.ClosePath()
 				cv.Fill()
 			}
-			cv.BeginPath()
-			cv.LineTo(rp1.Points[rfIdx1].X, rp1.Points[rfIdx1].Y-12)
-			cv.LineTo(rp1.Points[rfIdx1].X, rp1.Points[rfIdx1].Y-15)
-			cv.LineTo(rp1.Points[rfIdx2].X, rp1.Points[rfIdx2].Y-15)
-			cv.LineTo(rp1.Points[rfIdx2].X, rp1.Points[rfIdx2].Y-12)
-			cv.ClosePath()
-			cv.Fill()
 		}
 	}
 }
