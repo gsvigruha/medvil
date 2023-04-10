@@ -234,6 +234,22 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 
 	// Body
 	cv.SetFillStyle("#BA6")
+	person := c.ReverseReferences.TravellerToPerson[t]
+	if person != nil {
+		switch person.Home.GetBuilding().Plan.BuildingType {
+		case building.BuildingTypeFarm:
+			cv.SetFillStyle("#BA6")
+		case building.BuildingTypeMine:
+			cv.SetFillStyle("#B42")
+		case building.BuildingTypeWorkshop:
+			cv.SetFillStyle("#B6D")
+		case building.BuildingTypeFactory:
+			cv.SetFillStyle("#B6D")
+		case building.BuildingTypeTownhall:
+			cv.SetFillStyle("#2AE")
+		}
+	}
+
 	cv.FillRect(x-2, y-28, 4, 3)
 	cv.FillRect(x-4, y-25, 8, 10)
 	cv.SetFillStyle("#840")
