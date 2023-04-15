@@ -74,7 +74,12 @@ func (b *BuildingPlan) UnmarshalJSON(data []byte) error {
 					if k < len(shape[i][j])-1 {
 						b.BaseShape[i][j].Floors = append(b.BaseShape[i][j].Floors, Floor{M: materials.GetMaterial(shape[i][j][k])})
 					} else {
-						b.BaseShape[i][j].Roof = &Roof{M: materials.GetMaterial(shape[i][j][k]), RoofType: RoofTypeSplit}
+						m := materials.GetMaterial(shape[i][j][k])
+						var rt RoofType = RoofTypeSplit
+						if m.Name == "textile" {
+							rt = RoofTypeFlat
+						}
+						b.BaseShape[i][j].Roof = &Roof{M: m, RoofType: rt}
 					}
 				}
 			}
@@ -168,6 +173,7 @@ var board = artifacts.GetArtifact("board")
 var brick = artifacts.GetArtifact("brick")
 var thatch = artifacts.GetArtifact("thatch")
 var tile = artifacts.GetArtifact("tile")
+var textile = artifacts.GetArtifact("textile")
 
 func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 	var cubes uint16 = 0
@@ -175,6 +181,7 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 	var bricks uint16 = 0
 	var thatches uint16 = 0
 	var tiles uint16 = 0
+	var textiles uint16 = 0
 	for i := 0; i < BuildingBaseMaxSize; i++ {
 		for j := 0; j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil {
@@ -209,6 +216,8 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 						boards += 1
 					case materials.GetMaterial("stone"):
 						cubes += 1
+					case materials.GetMaterial("textile"):
+						textiles += 1
 					}
 				}
 				if b.BaseShape[i][j].Extension != nil {
@@ -229,6 +238,7 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 		artifacts.Artifacts{A: brick, Quantity: bricks},
 		artifacts.Artifacts{A: thatch, Quantity: thatches},
 		artifacts.Artifacts{A: tile, Quantity: tiles},
+		artifacts.Artifacts{A: textile, Quantity: textiles},
 	}
 }
 
