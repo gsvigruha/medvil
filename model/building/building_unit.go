@@ -30,8 +30,8 @@ func (b *BuildingComponentBase) IsConstruction() bool {
 
 type RoofUnit struct {
 	BuildingComponentBase
-	Roof     Roof
-	Elevated [4]bool
+	Roof      Roof
+	Connected [4]bool
 }
 
 func (u *RoofUnit) Connection(dir uint8) ConnectionType {
@@ -131,7 +131,7 @@ func (b BuildingUnit) LiftS() int8    { return 0 }
 func (b BuildingUnit) LiftW() int8    { return 0 }
 
 func (r *RoofUnit) CacheKey() string {
-	return fmt.Sprintf("%v#%v#%v#%v#%v#%v", r.Roof.M.Name, r.Elevated, r.Roof.RoofType, r.Construction, r.B.Shape, r.B.Plan.BuildingType)
+	return fmt.Sprintf("%v#%v#%v#%v#%v#%v", r.Roof.M.Name, r.Connected, r.Roof.RoofType, r.Construction, r.B.Shape, r.B.Plan.BuildingType)
 }
 
 func (e *ExtensionUnit) CacheKey() string {

@@ -59,7 +59,7 @@ func RenderRoofFence(cv *canvas.Canvas, roof *building.RoofUnit, rp1 renderer.Po
 	if roof.B.Plan.BuildingType == building.BuildingTypeWorkshop {
 		cv.SetFillStyle("texture/building/ornament_2.png")
 		for i := uint8(0); i < 4; i++ {
-			if !roof.Elevated[i] {
+			if !roof.Connected[i] {
 				rfIdx1 := (2 - (-c.Perspective + i)) % 4
 				rfIdx2 := (3 - (-c.Perspective + i)) % 4
 				dx := (rp1.Points[rfIdx2].X - rp1.Points[rfIdx1].X) / 5.0
