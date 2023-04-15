@@ -41,12 +41,18 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 	z := uint8(len(p.BaseShape[x][y].Floors))
 	roof := p.BaseShape[x][y].Roof
 	var connected [4]bool
-	if roof.RoofType == RoofTypeSplit || roof.RoofType == RoofTypeFlat {
+	if roof.RoofType == RoofTypeSplit {
 		connected = [4]bool{
 			y > 0 && p.HasUnitOrRoof(x, y-1, z),
 			x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z),
 			y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z),
 			x > 0 && p.HasUnitOrRoof(x-1, y, z)}
+	} else if roof.RoofType == RoofTypeFlat {
+		connected = [4]bool{
+			y > 0 && p.HasUnit(x, y-1, z-1),
+			x < BuildingBaseMaxSize-1 && p.HasUnit(x+1, y, z-1),
+			y < BuildingBaseMaxSize-1 && p.HasUnit(x, y+1, z-1),
+			x > 0 && p.HasUnit(x-1, y, z-1)}
 	} else if roof.RoofType == RoofTypeRamp {
 		if roof.RampD == DirectionN {
 			connected = [4]bool{true, false, false, false}
