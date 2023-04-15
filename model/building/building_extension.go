@@ -68,6 +68,6 @@ func ForgeBuildingRoof(b *Building, m *materials.Material, construction bool) *R
 	return &RoofUnit{
 		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
 		Roof:                  Roof{M: m, RoofType: RoofTypeSplit},
-		Elevated:              [4]bool{false, false, false, false},
+		Connected:             [4]bool{false, false, false, false},
 	}
 }

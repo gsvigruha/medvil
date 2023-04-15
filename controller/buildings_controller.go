@@ -57,7 +57,7 @@ func (b BuildingBaseButton) Click() {
 				b.bc.Plan.BaseShape[b.i][b.j] = &building.PlanUnits{}
 				b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{RoofType: building.RoofTypeFlat, M: b.bc.UnitM}
 			}
-			if b.bc.Plan.BaseShape[b.i][b.j].Extension == nil {
+			if b.bc.Plan.BaseShape[b.i][b.j].Extension == nil && len(b.bc.Plan.BaseShape[b.i][b.j].Floors) < building.MaxNumFloors(b.bc.bt) {
 				b.bc.Plan.BaseShape[b.i][b.j].Floors = append(b.bc.Plan.BaseShape[b.i][b.j].Floors, building.Floor{M: b.bc.UnitM})
 			}
 		}

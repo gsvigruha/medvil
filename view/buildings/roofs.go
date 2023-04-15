@@ -51,7 +51,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 		for l := uint8(startL); l < 4+startL; l++ {
 			rfIdx1 := (3 - (-c.Perspective + l)) % 4
 			rfIdx2 := (2 - (-c.Perspective + l)) % 4
-			if roof.Elevated[l%4] {
+			if roof.Connected[l%4] {
 				var suffix = ""
 				if rfIdx1%2 == 0 {
 					suffix = "_flipped"
@@ -132,7 +132,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			rfIdx2 := (2 - (-c.Perspective + l)) % 4
 			rfIdx3 := (1 - (-c.Perspective + l)) % 4
 			rfIdx4 := (0 - (-c.Perspective + l)) % 4
-			if roof.Elevated[l%4] {
+			if roof.Connected[l%4] {
 				var suffix = ""
 				if rfIdx1%2 == 0 {
 					suffix = "_flipped"

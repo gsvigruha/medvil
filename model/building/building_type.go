@@ -97,3 +97,16 @@ func ExtensionTypes(bt BuildingType) []*BuildingExtensionType {
 	}
 	return nil
 }
+
+func MaxNumFloors(bt BuildingType) int {
+	switch bt {
+	case BuildingTypeFarm, BuildingTypeMine:
+		return 2
+	case BuildingTypeWorkshop, BuildingTypeFactory, BuildingTypeTownhall:
+		return 3
+	case BuildingTypeMarket:
+		return 1
+	default:
+		return 2
+	}
+}

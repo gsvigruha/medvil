@@ -40,28 +40,34 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 	}
 	z := uint8(len(p.BaseShape[x][y].Floors))
 	roof := p.BaseShape[x][y].Roof
-	var elevated [4]bool
-	if roof.RoofType == RoofTypeSplit || roof.RoofType == RoofTypeFlat {
-		elevated = [4]bool{
+	var connected [4]bool
+	if roof.RoofType == RoofTypeSplit {
+		connected = [4]bool{
 			y > 0 && p.HasUnitOrRoof(x, y-1, z),
 			x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z),
 			y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z),
 			x > 0 && p.HasUnitOrRoof(x-1, y, z)}
+	} else if roof.RoofType == RoofTypeFlat {
+		connected = [4]bool{
+			y > 0 && p.HasUnit(x, y-1, z-1),
+			x < BuildingBaseMaxSize-1 && p.HasUnit(x+1, y, z-1),
+			y < BuildingBaseMaxSize-1 && p.HasUnit(x, y+1, z-1),
+			x > 0 && p.HasUnit(x-1, y, z-1)}
 	} else if roof.RoofType == RoofTypeRamp {
 		if roof.RampD == DirectionN {
-			elevated = [4]bool{true, false, false, false}
+			connected = [4]bool{true, false, false, false}
 		} else if roof.RampD == DirectionE {
-			elevated = [4]bool{false, true, false, false}
+			connected = [4]bool{false, true, false, false}
 		} else if roof.RampD == DirectionS {
-			elevated = [4]bool{false, false, true, false}
+			connected = [4]bool{false, false, true, false}
 		} else if roof.RampD == DirectionW {
-			elevated = [4]bool{false, false, false, true}
+			connected = [4]bool{false, false, false, true}
 		}
 	}
 	return &RoofUnit{
 		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
 		Roof:                  *roof,
-		Elevated:              elevated}
+		Connected:             connected}
 }
 
 func (b *Building) hasArch(d uint8) bool {
