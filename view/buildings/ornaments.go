@@ -74,10 +74,10 @@ func RenderRoofFence(cv *canvas.Canvas, roof *building.RoofUnit, rp1 renderer.Po
 					cv.Fill()
 				}
 				cv.BeginPath()
-				cv.LineTo(rp1.Points[rfIdx1].X, rp1.Points[rfIdx1].Y-13)
+				cv.LineTo(rp1.Points[rfIdx1].X, rp1.Points[rfIdx1].Y-12)
 				cv.LineTo(rp1.Points[rfIdx1].X, rp1.Points[rfIdx1].Y-17)
 				cv.LineTo(rp1.Points[rfIdx2].X, rp1.Points[rfIdx2].Y-17)
-				cv.LineTo(rp1.Points[rfIdx2].X, rp1.Points[rfIdx2].Y-13)
+				cv.LineTo(rp1.Points[rfIdx2].X, rp1.Points[rfIdx2].Y-12)
 				cv.ClosePath()
 				cv.Fill()
 			}
