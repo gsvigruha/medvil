@@ -7,23 +7,11 @@ import (
 	"medvil/controller"
 	"medvil/model/terrain"
 	"medvil/renderer"
-	"os"
-	"strconv"
 	"time"
 )
 
 const DefaultPlantBufferW = 200
 const DefaultPlantBufferH = 300
-
-var PlantRenderBufferTimeMs = 1000
-
-func init() {
-	if val, exists := os.LookupEnv("MEDVIL_PLANT_RENDER_BUFFER_TIME_MS"); exists {
-		if time, err := strconv.Atoi(val); err == nil {
-			PlantRenderBufferTimeMs = time
-		}
-	}
-}
 
 func getPlantBufferSize(p *terrain.Plant) (float64, float64) {
 	if p.T.TreeT == &terrain.Oak {

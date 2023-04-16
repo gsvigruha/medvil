@@ -49,25 +49,25 @@ func (ic *ImageCache) Clean() {
 		}
 	}
 	for k, v := range ic.Fic.entries {
-		if t-v.createdTime > 10000*1000*1000 {
+		if t-v.createdTime > int64(RenderBufferTimeMs)*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Fic.entries, k)
 		}
 	}
 	for k, v := range ic.Bic.roofEntries {
-		if t-v.createdTime > 10000*1000*1000 {
+		if t-v.createdTime > int64(RenderBufferTimeMs)*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Bic.roofEntries, k)
 		}
 	}
 	for k, v := range ic.Bic.unitEntries {
-		if t-v.createdTime > 10000*1000*1000 {
+		if t-v.createdTime > int64(RenderBufferTimeMs)*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Bic.unitEntries, k)
 		}
 	}
 	for k, v := range ic.Bic.extensionEntries {
-		if t-v.createdTime > 10000*1000*1000 {
+		if t-v.createdTime > int64(RenderBufferTimeMs)*1000*1000 {
 			v.offscreen.Delete()
 			delete(ic.Bic.extensionEntries, k)
 		}
