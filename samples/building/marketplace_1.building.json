@@ -1,9 +1,9 @@
 {
 	"baseShape": [
 		[null, null, null, null, null],
+		[null, ["wood", "textile"], null, null, null],
 		[null, ["wood", "textile"], ["wood", "textile"], null, null],
-		[null, ["wood", "textile"], ["wood", "textile"], null, null],
-		[null, null, null, null, null],
+		[null, ["wood", "textile"], null, null, null],
 		[null, null, null, null, null]
 	]
 }

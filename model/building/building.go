@@ -71,6 +71,9 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 }
 
 func (b *Building) hasArch(d uint8) bool {
+	if b.Plan.BuildingType == BuildingTypeMarket {
+		return true
+	}
 	if b.Plan.BuildingType != BuildingTypeGate {
 		return false
 	}
@@ -81,7 +84,7 @@ func (b *Building) hasDoor(d uint8, floor uint8, open bool) bool {
 	if !open {
 		return false
 	}
-	if b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeWall {
+	if b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeWall || b.Plan.BuildingType == BuildingTypeMarket {
 		return false
 	}
 	if b.Direction != d {
@@ -97,7 +100,7 @@ func (b *Building) getWindowType(open bool, floor uint8) WindowType {
 	if !open {
 		return WindowTypeNone
 	}
-	if b.Plan.BuildingType == BuildingTypeWall || b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeTower {
+	if b.Plan.BuildingType == BuildingTypeWall || b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeTower || b.Plan.BuildingType == BuildingTypeMarket {
 		return WindowTypeNone
 	}
 	if b.Plan.BuildingType == BuildingTypeWorkshop || b.Plan.BuildingType == BuildingTypeTownhall {

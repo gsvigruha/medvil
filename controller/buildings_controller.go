@@ -50,6 +50,13 @@ type BuildingBaseButton struct {
 	ET    *building.BuildingExtensionType
 }
 
+func getBuildingType(m *materials.Material) building.RoofType {
+	if m == materials.GetMaterial("textile") {
+		return building.RoofTypeFlat
+	}
+	return building.RoofTypeSplit
+}
+
 func (b BuildingBaseButton) Click() {
 	if b.bc.UnitM != nil {
 		if !b.bc.del && !b.bc.Plan.HasUnit(uint8(b.i), uint8(b.j), uint8(b.k)) {
@@ -63,7 +70,7 @@ func (b BuildingBaseButton) Click() {
 		}
 	} else if b.bc.RoofM != nil {
 		if !b.bc.del && b.bc.Plan.BaseShape[b.i][b.j] != nil && len(b.bc.Plan.BaseShape[b.i][b.j].Floors) > 0 {
-			b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{RoofType: building.RoofTypeSplit, M: b.bc.RoofM}
+			b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{RoofType: getBuildingType(b.bc.RoofM), M: b.bc.RoofM}
 		}
 	} else if b.bc.ExtensionT != nil && b.bc.Plan.HasNeighborUnit(uint8(b.i), uint8(b.j), 0) && len(b.bc.Plan.GetExtensions()) == 0 {
 		if !b.bc.del && b.bc.Plan.BaseShape[b.i][b.j] == nil {

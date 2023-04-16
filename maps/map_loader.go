@@ -172,6 +172,7 @@ func LoadSociety(dir string, m *model.Map) {
 			AddBuilding(town.Townhall.Household.Building, m)
 
 			town.Marketplace.Town = town
+			town.Marketplace.Building.Plan.BuildingType = building.BuildingTypeMarket
 			AddBuilding(town.Marketplace.Building, m)
 			town.Marketplace.Init()
 			for k := range town.Farms {
