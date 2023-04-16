@@ -75,11 +75,7 @@ func (b *BuildingPlan) UnmarshalJSON(data []byte) error {
 						b.BaseShape[i][j].Floors = append(b.BaseShape[i][j].Floors, Floor{M: materials.GetMaterial(shape[i][j][k])})
 					} else {
 						m := materials.GetMaterial(shape[i][j][k])
-						var rt RoofType = RoofTypeSplit
-						if m.Name == "textile" {
-							rt = RoofTypeFlat
-						}
-						b.BaseShape[i][j].Roof = &Roof{M: m, RoofType: rt}
+						b.BaseShape[i][j].Roof = &Roof{M: m, RoofType: GetRoofType(m)}
 					}
 				}
 			}
@@ -339,4 +335,11 @@ func (b *BuildingPlan) GetExtensions() []*BuildingExtension {
 		}
 	}
 	return es
+}
+
+func GetRoofType(m *materials.Material) RoofType {
+	if m == materials.GetMaterial("textile") {
+		return RoofTypeFlat
+	}
+	return RoofTypeSplit
 }

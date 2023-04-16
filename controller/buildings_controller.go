@@ -50,13 +50,6 @@ type BuildingBaseButton struct {
 	ET    *building.BuildingExtensionType
 }
 
-func getBuildingType(m *materials.Material) building.RoofType {
-	if m == materials.GetMaterial("textile") {
-		return building.RoofTypeFlat
-	}
-	return building.RoofTypeSplit
-}
-
 func (b BuildingBaseButton) Click() {
 	if b.bc.UnitM != nil {
 		if !b.bc.del && !b.bc.Plan.HasUnit(uint8(b.i), uint8(b.j), uint8(b.k)) {
@@ -70,7 +63,7 @@ func (b BuildingBaseButton) Click() {
 		}
 	} else if b.bc.RoofM != nil {
 		if !b.bc.del && b.bc.Plan.BaseShape[b.i][b.j] != nil && len(b.bc.Plan.BaseShape[b.i][b.j].Floors) > 0 {
-			b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{RoofType: getBuildingType(b.bc.RoofM), M: b.bc.RoofM}
+			b.bc.Plan.BaseShape[b.i][b.j].Roof = &building.Roof{RoofType: building.GetRoofType(b.bc.RoofM), M: b.bc.RoofM}
 		}
 	} else if b.bc.ExtensionT != nil && b.bc.Plan.HasNeighborUnit(uint8(b.i), uint8(b.j), 0) && len(b.bc.Plan.GetExtensions()) == 0 {
 		if !b.bc.del && b.bc.Plan.BaseShape[b.i][b.j] == nil {
@@ -139,6 +132,7 @@ func createBuildingBaseButton(
 	x, y float64,
 	FloorM *materials.Material,
 	RoofM *materials.Material,
+	RoofT *building.RoofType,
 	ExtensionT *building.BuildingExtensionType) *BuildingBaseButton {
 
 	var polygon renderer.Polygon
@@ -152,12 +146,21 @@ func createBuildingBaseButton(
 			renderer.Point{x + DX, y + DY},
 		}}
 	} else if RoofM != nil {
-		polygon = renderer.Polygon{Points: []renderer.Point{
-			renderer.Point{x, y + DY*2},
-			renderer.Point{x - DX, y + DY},
-			renderer.Point{x, y - DZ},
-			renderer.Point{x + DX, y + DY},
-		}}
+		if *RoofT == building.RoofTypeSplit {
+			polygon = renderer.Polygon{Points: []renderer.Point{
+				renderer.Point{x, y + DY*2},
+				renderer.Point{x - DX, y + DY},
+				renderer.Point{x, y - DZ},
+				renderer.Point{x + DX, y + DY},
+			}}
+		} else if *RoofT == building.RoofTypeFlat {
+			polygon = renderer.Polygon{Points: []renderer.Point{
+				renderer.Point{x, y + DY*2},
+				renderer.Point{x - DX, y + DY},
+				renderer.Point{x, y},
+				renderer.Point{x + DX, y + DY},
+			}}
+		}
 		M = RoofM
 	} else if FloorM != nil {
 		polygon = renderer.Polygon{Points: []renderer.Point{
@@ -393,17 +396,17 @@ func (bc *BuildingsController) GenerateButtons() {
 
 			x := (ControlPanelSX-20)/2 - float64(i)*DX + float64(j)*DX + 10
 			y := float64(j)*DY + float64(i)*DY + BuildingBasePanelTop*ControlPanelSY
-			bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, 0, x, y, nil, nil, nil))
+			bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, 0, x, y, nil, nil, nil, nil))
 			if bc.Plan.BaseShape[pi][pj] != nil {
 				var k int
 				for k = range bc.Plan.BaseShape[pi][pj].Floors {
-					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), bc.Plan.BaseShape[pi][pj].Floors[k].M, nil, nil))
+					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), bc.Plan.BaseShape[pi][pj].Floors[k].M, nil, nil, nil))
 				}
-				if bc.Plan.BaseShape[pi][pj].Roof != nil && !bc.Plan.BaseShape[pi][pj].Roof.Flat() {
-					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), nil, bc.Plan.BaseShape[pi][pj].Roof.M, nil))
+				if bc.Plan.BaseShape[pi][pj].Roof != nil {
+					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), nil, bc.Plan.BaseShape[pi][pj].Roof.M, &bc.Plan.BaseShape[pi][pj].Roof.RoofType, nil))
 				}
 				if bc.Plan.BaseShape[pi][pj].Extension != nil {
-					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), nil, nil, bc.Plan.BaseShape[pi][pj].Extension.T))
+					bc.p.AddButton(createBuildingBaseButton(bc, pi, pj, k+1, x, y-DZ*float64(k+1), nil, nil, nil, bc.Plan.BaseShape[pi][pj].Extension.T))
 				}
 			}
 		}
