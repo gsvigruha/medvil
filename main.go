@@ -18,6 +18,16 @@ const (
 	sy uint16 = 25
 )
 
+var PlantFrameRenderTimeNs int64 = 25000000
+
+func init() {
+	if val, exists := os.LookupEnv("MEDVIL_FRAME_RENDER_TIME_MS"); exists {
+		if time, err := strconv.Atoi(val); err == nil {
+			PlantFrameRenderTimeNs = int64(time) * 1000 * 1000
+		}
+	}
+}
+
 func main() {
 	defer profile.Start(profile.ProfilePath(".")).Stop()
 
@@ -39,8 +49,8 @@ func main() {
 		view.Render(ic, cv, m, c)
 		elapsed := time.Since(start)
 
-		if elapsed.Nanoseconds() < 25000000 {
-			time.Sleep(time.Duration(25000000-elapsed.Nanoseconds()) * time.Nanosecond)
+		if elapsed.Nanoseconds() < PlantFrameRenderTimeNs {
+			time.Sleep(time.Duration(PlantFrameRenderTimeNs-elapsed.Nanoseconds()) * time.Nanosecond)
 		}
 
 		c.Refresh()
