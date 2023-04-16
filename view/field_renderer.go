@@ -10,10 +10,11 @@ import (
 )
 
 func renderPlant(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
-	tx := rf.X[0] - PlantBufferW/2
-	ty := rf.Y[2] - PlantBufferH
+	plantBufferW, plantBufferH := getPlantBufferSize(f.Plant)
+	tx := rf.X[0] - plantBufferW/2
+	ty := rf.Y[2] - plantBufferH
 	img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
-	cv.DrawImage(img, tx, ty, PlantBufferW, PlantBufferH)
+	cv.DrawImage(img, tx, ty, plantBufferW, plantBufferH)
 }
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
