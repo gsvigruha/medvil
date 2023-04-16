@@ -10,10 +10,11 @@ import (
 )
 
 func renderPlant(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
-	tx := rf.X[0] - PlantBufferW/2
-	ty := rf.Y[2] - PlantBufferH
+	plantBufferW, plantBufferH := getPlantBufferSize(f.Plant)
+	tx := rf.X[0] - plantBufferW/2
+	ty := rf.Y[2] - plantBufferH
 	img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
-	cv.DrawImage(img, tx, ty, PlantBufferW, PlantBufferH)
+	cv.DrawImage(img, tx, ty, plantBufferW, plantBufferH)
 }
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
@@ -53,14 +54,14 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		}
 	}
 
+	if f.Terrain.Resources.HasRealArtifacts() {
+		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+40, rf.Y[2]-72, 32, 32)
+	}
 	if f.Plant != nil && f.Plant.IsTree() {
 		renderPlant(ic, cv, rf, f, c)
 	}
 	if f.Animal != nil && !f.Animal.Corralled {
 		cv.DrawImage("texture/terrain/"+f.Animal.T.Name+".png", rf.X[0]-32, rf.Y[2]-64, 64, 64)
-	}
-	if f.Terrain.Resources.HasRealArtifacts() {
-		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+44, rf.Y[2]-64, 32, 32)
 	}
 	if f.Travellers != nil {
 		RenderTravellers(cv, f.Travellers, midY, float64(c.H), rf, c)

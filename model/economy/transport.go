@@ -31,7 +31,11 @@ func (t *TransportTask) Destination() navigation.Destination {
 func (t *TransportTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.dropoff {
 		t.DropoffR.Add(t.A, t.q)
-		return t.Quantity == 0 || !t.CompleteQuantity
+		if t.Quantity == 0 || !t.CompleteQuantity {
+			return true
+		}
+		t.dropoff = false
+		return false
 	} else {
 		t.q = t.PickupR.Remove(t.A, t.Quantity)
 		t.Quantity -= t.q
