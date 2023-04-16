@@ -15,9 +15,6 @@ import (
 func RoofMaterialName(r *building.RoofUnit) string {
 	m := r.Roof.M
 	shape := r.B.Shape
-	if r.B.Plan.BuildingType == building.BuildingTypeTownhall {
-		return "tile_copper"
-	}
 	if m == materials.GetMaterial("tile") {
 		if shape == 0 {
 			return "tile_red"

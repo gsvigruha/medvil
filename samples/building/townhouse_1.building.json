@@ -1,8 +1,8 @@
 {
 	"baseShape": [
 		[null, null, null, null, null],
-		[null, ["marble", "marble", "marble", "tile"], ["marble", "marble", "marble", "tile"], null, null],
-		[null, ["marble", "marble", "marble", "tile"], ["marble", "marble", "marble", "tile"], null, null],
+		[null, ["marble", "marble", "marble", "copper"], ["marble", "marble", "marble", "copper"], null, null],
+		[null, ["marble", "marble", "marble", "copper"], ["marble", "marble", "marble", "copper"], null, null],
 		[null, null, null, null, null],
 		[null, null, null, null, null]
 	]
