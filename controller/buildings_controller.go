@@ -146,21 +146,16 @@ func createBuildingBaseButton(
 			renderer.Point{x + DX, y + DY},
 		}}
 	} else if RoofM != nil {
+		var h = 0.0
 		if *RoofT == building.RoofTypeSplit {
-			polygon = renderer.Polygon{Points: []renderer.Point{
-				renderer.Point{x, y + DY*2},
-				renderer.Point{x - DX, y + DY},
-				renderer.Point{x, y - DZ},
-				renderer.Point{x + DX, y + DY},
-			}}
-		} else if *RoofT == building.RoofTypeFlat {
-			polygon = renderer.Polygon{Points: []renderer.Point{
-				renderer.Point{x, y + DY*2},
-				renderer.Point{x - DX, y + DY},
-				renderer.Point{x, y},
-				renderer.Point{x + DX, y + DY},
-			}}
+			h = DZ
 		}
+		polygon = renderer.Polygon{Points: []renderer.Point{
+			renderer.Point{x, y + DY*2},
+			renderer.Point{x - DX, y + DY},
+			renderer.Point{x, y - h},
+			renderer.Point{x + DX, y + DY},
+		}}
 		M = RoofM
 	} else if FloorM != nil {
 		polygon = renderer.Polygon{Points: []renderer.Point{

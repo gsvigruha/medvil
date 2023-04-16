@@ -214,6 +214,9 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 						cubes += 1
 					case materials.GetMaterial("textile"):
 						textiles += 1
+					case materials.GetMaterial("copper"):
+						tiles += 1
+						boards += 1
 					}
 				}
 				if b.BaseShape[i][j].Extension != nil {

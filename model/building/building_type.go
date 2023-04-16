@@ -77,7 +77,7 @@ func RoofMaterials(bt BuildingType) []*materials.Material {
 		}
 	case BuildingTypeTownhall:
 		return []*materials.Material{
-			materials.GetMaterial("tile"),
+			materials.GetMaterial("copper"),
 		}
 	case BuildingTypeMarket:
 		return []*materials.Material{
