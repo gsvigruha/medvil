@@ -52,13 +52,13 @@ func GetScreenXY(t *navigation.Traveller, rf renderer.RenderedField, c *controll
 	return x, y
 }
 
-func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, minY, maxY float64, rf renderer.RenderedField, c *controller.Controller) {
+func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, show func(*navigation.Traveller) bool, rf renderer.RenderedField, c *controller.Controller) {
 	for i := range travellers {
 		t := travellers[i]
 		px := float64(t.PX)
 		py := float64(t.PY)
 		x, y := GetScreenXY(t, rf, c)
-		if y > maxY || y <= minY {
+		if !show(t) {
 			continue
 		}
 		if t.GetPathElement() != nil && t.GetPathElement().GetLocation().Z > 0 {
