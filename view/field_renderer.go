@@ -32,8 +32,24 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 
 	_, midY := rf.MidPoint()
 	if f.Travellers != nil {
+		// Travellers on the ground behind other ground objects
 		sort.Slice(f.Travellers, func(i, j int) bool { return GetScreenY(f.Travellers[i], rf, c) < GetScreenY(f.Travellers[j], rf, c) })
-		RenderTravellers(cv, f.Travellers, 0, midY, rf, c)
+		show := func(t *navigation.Traveller) bool { _, y := GetScreenXY(t, rf, c); return y < midY && t.FZ == 0 }
+		RenderTravellers(cv, f.Travellers, show, rf, c)
+	}
+	if f.Terrain.Resources.HasRealArtifacts() {
+		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+40, rf.Y[2]-72, 32, 32)
+	}
+	if f.Plant != nil && f.Plant.IsTree() {
+		renderPlant(ic, cv, rf, f, c)
+	}
+	if f.Animal != nil && !f.Animal.Corralled {
+		cv.DrawImage("texture/terrain/"+f.Animal.T.Name+".png", rf.X[0]-32, rf.Y[2]-64, 64, 64)
+	}
+	if f.Travellers != nil {
+		// Travellers on the ground ahead other ground objects
+		show := func(t *navigation.Traveller) bool { _, y := GetScreenXY(t, rf, c); return y >= midY && t.FZ == 0 }
+		RenderTravellers(cv, f.Travellers, show, rf, c)
 	}
 
 	components := f.Building.BuildingComponents
@@ -54,16 +70,9 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		}
 	}
 
-	if f.Terrain.Resources.HasRealArtifacts() {
-		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+40, rf.Y[2]-72, 32, 32)
-	}
-	if f.Plant != nil && f.Plant.IsTree() {
-		renderPlant(ic, cv, rf, f, c)
-	}
-	if f.Animal != nil && !f.Animal.Corralled {
-		cv.DrawImage("texture/terrain/"+f.Animal.T.Name+".png", rf.X[0]-32, rf.Y[2]-64, 64, 64)
-	}
 	if f.Travellers != nil {
-		RenderTravellers(cv, f.Travellers, midY, float64(c.H), rf, c)
+		// Travellers on top of buildings
+		show := func(t *navigation.Traveller) bool { return t.FZ > 0 }
+		RenderTravellers(cv, f.Travellers, show, rf, c)
 	}
 }
