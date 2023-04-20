@@ -10,6 +10,7 @@ type ConnectionType uint8
 const ConnectionTypeNone = 0
 const ConnectionTypeLowerLevel = 1
 const ConnectionTypeUpperLevel = 2
+const ConnectionTypeGround = 3
 
 type BuildingComponentBase struct {
 	B            *Building
@@ -79,7 +80,7 @@ func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
 	// Gates can only be passed through one direction
 	if u.B.Plan.BuildingType == BuildingTypeGate {
 		if dir%2 == u.B.Direction%2 {
-			return ConnectionTypeLowerLevel
+			return ConnectionTypeGround
 		}
 	}
 	// Towers are accessible to all neighbors
