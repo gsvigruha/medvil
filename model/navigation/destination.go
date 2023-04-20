@@ -22,3 +22,11 @@ func (bd BuildingDestination) Check(pe PathElement) bool {
 	}
 	return false
 }
+
+type TravellerDestination struct {
+	T *Traveller
+}
+
+func (td TravellerDestination) Check(pe PathElement) bool {
+	return pe.GetLocation().X == td.T.FX && pe.GetLocation().Y == td.T.FY && pe.GetLocation().Z == td.T.FZ
+}

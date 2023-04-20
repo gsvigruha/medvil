@@ -28,6 +28,7 @@ type Home interface {
 	GetVehicle() *vehicles.Vehicle
 	NumTasks(name string, tag string) int
 	GetMoney() *uint32
+	Destination() navigation.Destination
 }
 
 var water = artifacts.GetArtifact("water")
@@ -51,7 +52,7 @@ func FindWaterTask(h Home, numP uint16, m navigation.IMap) {
 			if dest != nil {
 				h.AddPriorityTask(&economy.TransportTask{
 					PickupD:  dest,
-					DropoffD: hf,
+					DropoffD: h.Destination(),
 					PickupR:  &dest.Terrain.Resources,
 					DropoffR: h.GetResources(),
 					A:        water,

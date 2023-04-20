@@ -179,3 +179,7 @@ func (t *Trader) NumTasks(name string, tag string) int {
 func (t *Trader) GetMoney() *uint32 {
 	return &t.Money
 }
+
+func (t *Trader) Destination() navigation.Destination {
+	return navigation.TravellerDestination{T: t.Person.Traveller}
+}
