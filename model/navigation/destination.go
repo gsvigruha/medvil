@@ -20,6 +20,9 @@ func (bd BuildingDestination) Check(pe PathElement) bool {
 	if bpe, ok := pe.(*BuildingPathElement); ok {
 		return bpe.BC.Building() == bd.B
 	}
+	if f, ok := pe.(*Field); ok {
+		return f.Building.GetBuilding() == bd.B
+	}
 	return false
 }
 
