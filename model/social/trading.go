@@ -74,21 +74,17 @@ func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 		goodsSourceToDest := t.GetGoodsToTrade(artifactSourceToDest, t.SourceExchange)
 		goodsDestToSource := t.GetGoodsToTrade(artifactDestToSource, t.TargetExchange)
 		if len(goodsSourceToDest) > 0 || len(goodsDestToSource) > 0 {
-			smx, smy, smok := GetRandomBuildingXY(t.SourceExchange.Building, m, navigation.Field.BuildingNonExtension)
-			tmx, tmy, tmok := GetRandomBuildingXY(t.TargetExchange.Building, m, navigation.Field.BuildingNonExtension)
-			if smok && tmok {
-				return &economy.TradeTask{
-					SourceMarketF:     m.GetField(smx, smy),
-					TargetMarketF:     m.GetField(tmx, tmy),
-					SourceExchange:    t.SourceExchange,
-					TargetExchange:    t.TargetExchange,
-					TraderR:           &t.Resources,
-					TraderMoney:       &t.Money,
-					Vehicle:           nil,
-					GoodsSourceToDest: goodsSourceToDest,
-					GoodsDestToSource: goodsDestToSource,
-					TaskTag:           "trade",
-				}
+			return &economy.TradeTask{
+				SourceMarketD:     navigation.BuildingDestination{B: t.SourceExchange.Building},
+				TargetMarketD:     navigation.BuildingDestination{B: t.TargetExchange.Building},
+				SourceExchange:    t.SourceExchange,
+				TargetExchange:    t.TargetExchange,
+				TraderR:           &t.Resources,
+				TraderMoney:       &t.Money,
+				Vehicle:           nil,
+				GoodsSourceToDest: goodsSourceToDest,
+				GoodsDestToSource: goodsDestToSource,
+				TaskTag:           "trade",
 			}
 		}
 	}

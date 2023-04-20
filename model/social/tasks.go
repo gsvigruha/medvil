@@ -3,6 +3,7 @@ package social
 import (
 	"math"
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/vehicles"
@@ -40,7 +41,7 @@ func IsExchangeBaseTask(t economy.Task) bool {
 func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicles.Vehicle) *economy.ExchangeTask {
 	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
 	var buildingCheckFn = navigation.Field.BuildingNonExtension
-	_, _, sailableMP := GetRandomBuildingXY(mp.Building, m, navigation.Field.BoatDestination)
+	sailableMP := mp.Building.HasExtension(building.Deck)
 	sailableH := h.RandomField(m, navigation.Field.BoatDestination) != nil
 	if vehicle != nil {
 		if vehicle.T.Water && sailableMP && sailableH {
@@ -49,14 +50,13 @@ func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicl
 		maxVolume = vehicle.T.MaxVolume
 	}
 
-	mx, my, mok := GetRandomBuildingXY(mp.Building, m, buildingCheckFn)
 	hf := h.RandomField(m, buildingCheckFn)
-	if hf == nil || !mok {
+	if hf == nil {
 		return nil
 	}
 	et := &economy.ExchangeTask{
-		HomeF:          hf,
-		MarketF:        m.GetField(mx, my),
+		HomeD:          hf,
+		MarketD:        navigation.BuildingDestination{B: mp.Building},
 		Exchange:       mp,
 		HouseholdR:     h.GetResources(),
 		HouseholdMoney: h.GetMoney(),

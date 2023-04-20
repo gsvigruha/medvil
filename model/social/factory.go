@@ -99,7 +99,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	var newOrders []*VehicleOrder
 	for _, order := range f.Orders {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
-			var field *navigation. Field
+			var field *navigation.Field
 			if order.T.Output.Water {
 				ext, x, y := f.Household.Building.GetExtensionWithCoords(building.Deck)
 				if ext == nil {

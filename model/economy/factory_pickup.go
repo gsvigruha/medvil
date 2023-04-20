@@ -13,17 +13,17 @@ type Household interface {
 
 type FactoryPickupTask struct {
 	TaskBase
-	PickupF  *navigation.Field
-	DropoffF *navigation.Field
+	PickupD  navigation.Destination
+	DropoffD navigation.Destination
 	Order    VehicleOrder
 	dropoff  bool
 }
 
 func (t *FactoryPickupTask) Destination() navigation.Destination {
 	if t.dropoff {
-		return t.DropoffF
+		return t.DropoffD
 	} else {
-		return t.PickupF
+		return t.PickupD
 	}
 }
 

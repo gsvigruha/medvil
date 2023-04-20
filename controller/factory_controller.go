@@ -63,8 +63,8 @@ func (b OrderButton) Click() {
 	hx, hy, _ := social.GetRandomBuildingXY(h.Building, b.m, navigation.Field.BuildingNonExtension)
 	fx, fy, _ := social.GetRandomBuildingXY(factory.Household.Building, b.m, navigation.Field.BuildingNonExtension)
 	h.AddTask(&economy.FactoryPickupTask{
-		PickupF:  b.m.GetField(fx, fy),
-		DropoffF: b.m.GetField(hx, hy),
+		PickupD:  b.m.GetField(fx, fy),
+		DropoffD: b.m.GetField(hx, hy),
 		Order:    order,
 		TaskBase: economy.TaskBase{FieldCenter: true},
 	})

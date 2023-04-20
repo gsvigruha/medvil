@@ -185,13 +185,11 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 	if h.numVehicles(vehicles.Boat) == 0 && h.Building.HasExtension(building.Deck) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
-			ext, hx, hy := h.Building.GetExtensionWithCoords(building.Deck)
-			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
-			if ext != nil && ext.T == building.Deck && fok {
+			if h.Building.HasExtension(building.Deck) {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
 				h.AddTask(&economy.FactoryPickupTask{
-					PickupF:  m.GetField(fx, fy),
-					DropoffF: m.GetField(hx, hy),
+					PickupD:  factory.Household.Destination(),
+					DropoffD: h.Destination(),
 					Order:    order,
 					TaskBase: economy.TaskBase{FieldCenter: true},
 				})
@@ -204,17 +202,13 @@ func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap)
 	if h.numVehicles(vehicles.Cart) == 0 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
-			hx, hy, _ := GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
-			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
-			if fok {
-				order := factory.CreateOrder(economy.CartConstruction, h)
-				h.AddTask(&economy.FactoryPickupTask{
-					PickupF:  m.GetField(fx, fy),
-					DropoffF: m.GetField(hx, hy),
-					Order:    order,
-					TaskBase: economy.TaskBase{FieldCenter: true},
-				})
-			}
+			order := factory.CreateOrder(economy.CartConstruction, h)
+			h.AddTask(&economy.FactoryPickupTask{
+				PickupD:  factory.Household.Destination(),
+				DropoffD: h.Destination(),
+				Order:    order,
+				TaskBase: economy.TaskBase{FieldCenter: true},
+			})
 		}
 	}
 }
@@ -363,16 +357,16 @@ func (h *Household) NumTasks(name string, tag string) int {
 }
 
 func (h *Household) NewPerson(m navigation.IMap) *Person {
-	hx, hy, _ := GetRandomBuildingXY(h.Building, m, func(navigation.Field) bool { return true })
+	f := h.RandomField(m, func(navigation.Field) bool { return true })
 	traveller := &navigation.Traveller{
-		FX: hx,
-		FY: hy,
+		FX: f.X,
+		FY: f.Y,
 		FZ: 0,
 		PX: 0,
 		PY: 0,
 		T:  navigation.TravellerTypePedestrian,
 	}
-	traveller.InitPathElement(m.GetField(hx, hy))
+	traveller.InitPathElement(f)
 	return &Person{
 		Food:      MaxPersonState,
 		Water:     MaxPersonState,
@@ -484,4 +478,8 @@ func (h *Household) Destroy(m navigation.IMap) {
 	}
 	dstH.Money += h.Money
 	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(h.Resources)
+}
+
+func (h *Household) Destination() navigation.Destination {
+	return navigation.BuildingDestination{B: h.Building}
 }
