@@ -2,7 +2,6 @@ package building
 
 import (
 	"encoding/json"
-	"math/rand"
 )
 
 type Building struct {
@@ -176,15 +175,6 @@ func (b *Building) GetBuildingXYs(includeExtensions bool) [][2]uint16 {
 		}
 	}
 	return fields
-}
-
-func (b *Building) GetRandomBuildingXY() (uint16, uint16, bool) {
-	fields := b.GetBuildingXYs(true)
-	if fields == nil {
-		return 0, 0, false
-	}
-	idx := rand.Intn(len(fields))
-	return fields[idx][0], fields[idx][1], true
 }
 
 func (b *Building) HasExtension(et *BuildingExtensionType) bool {
