@@ -53,6 +53,15 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("brick"), Quantity: 2}}},
 	&Manufacture{
+		Name:                  "pottery",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Forge,
+		Inputs: []artifacts.Artifacts{
+			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
+			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("pot"), Quantity: 3}}},
+	&Manufacture{
 		Name:    "thatching",
 		Time:    10 * 24,
 		Power:   1000,
