@@ -188,8 +188,9 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 			if h.Building.HasExtension(building.Deck) {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
 				h.AddTask(&economy.FactoryPickupTask{
-					PickupD:  factory.Household.Destination(),
-					DropoffD: h.Destination(),
+					// Factories need to be accessed via land even for boat pickups first
+					PickupD:  factory.Household.Destination(navigation.Field.BuildingNonExtension),
+					DropoffD: h.Destination(navigation.Field.BoatDestination),
 					Order:    order,
 					TaskBase: economy.TaskBase{FieldCenter: true},
 				})
@@ -204,8 +205,8 @@ func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap)
 		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			order := factory.CreateOrder(economy.CartConstruction, h)
 			h.AddTask(&economy.FactoryPickupTask{
-				PickupD:  factory.Household.Destination(),
-				DropoffD: h.Destination(),
+				PickupD:  factory.Household.Destination(navigation.Field.BuildingNonExtension),
+				DropoffD: h.Destination(navigation.Field.BuildingNonExtension),
 				Order:    order,
 				TaskBase: economy.TaskBase{FieldCenter: true},
 			})
@@ -480,6 +481,6 @@ func (h *Household) Destroy(m navigation.IMap) {
 	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(h.Resources)
 }
 
-func (h *Household) Destination() navigation.Destination {
-	return navigation.BuildingDestination{B: h.Building}
+func (h *Household) Destination(fieldChecker navigation.FieldChecker) navigation.Destination {
+	return navigation.BuildingDestination{B: h.Building, CheckField: fieldChecker}
 }
