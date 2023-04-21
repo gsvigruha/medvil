@@ -15,8 +15,8 @@ type Destination interface {
 type FieldChecker func(Field) bool
 
 type BuildingDestination struct {
-	B            *building.Building
-	FieldCheckFn FieldChecker
+	B          *building.Building
+	CheckField FieldChecker
 }
 
 func (bd BuildingDestination) Check(pe PathElement) bool {
@@ -24,7 +24,7 @@ func (bd BuildingDestination) Check(pe PathElement) bool {
 		return bpe.BC.Building() == bd.B
 	}
 	if f, ok := pe.(*Field); ok {
-		return f.Building.GetBuilding() == bd.B && bd.FieldCheckFn(*f)
+		return f.Building.GetBuilding() == bd.B && bd.CheckField(*f)
 	}
 	return false
 }

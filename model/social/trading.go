@@ -75,8 +75,8 @@ func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 		goodsDestToSource := t.GetGoodsToTrade(artifactDestToSource, t.TargetExchange)
 		if len(goodsSourceToDest) > 0 || len(goodsDestToSource) > 0 {
 			return &economy.TradeTask{
-				SourceMarketD:     navigation.BuildingDestination{B: t.SourceExchange.Building, FieldCheckFn: t.Vehicle.T.BuildingCheckFn},
-				TargetMarketD:     navigation.BuildingDestination{B: t.TargetExchange.Building, FieldCheckFn: t.Vehicle.T.BuildingCheckFn},
+				SourceMarketD:     navigation.BuildingDestination{B: t.SourceExchange.Building, CheckField: t.Vehicle.T.BuildingCheckFn},
+				TargetMarketD:     navigation.BuildingDestination{B: t.TargetExchange.Building, CheckField: t.Vehicle.T.BuildingCheckFn},
 				SourceExchange:    t.SourceExchange,
 				TargetExchange:    t.TargetExchange,
 				TraderR:           &t.Resources,

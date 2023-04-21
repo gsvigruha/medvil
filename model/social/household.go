@@ -188,7 +188,8 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 			if h.Building.HasExtension(building.Deck) {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
 				h.AddTask(&economy.FactoryPickupTask{
-					PickupD:  factory.Household.Destination(navigation.Field.BoatDestination),
+					// Factories need to be accessed via land even for boat pickups first
+					PickupD:  factory.Household.Destination(navigation.Field.BuildingNonExtension),
 					DropoffD: h.Destination(navigation.Field.BoatDestination),
 					Order:    order,
 					TaskBase: economy.TaskBase{FieldCenter: true},
@@ -481,5 +482,5 @@ func (h *Household) Destroy(m navigation.IMap) {
 }
 
 func (h *Household) Destination(fieldChecker navigation.FieldChecker) navigation.Destination {
-	return navigation.BuildingDestination{B: h.Building, FieldCheckFn: fieldChecker}
+	return navigation.BuildingDestination{B: h.Building, CheckField: fieldChecker}
 }

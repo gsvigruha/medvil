@@ -56,7 +56,7 @@ func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicl
 	}
 	et := &economy.ExchangeTask{
 		HomeD:          hf,
-		MarketD:        navigation.BuildingDestination{B: mp.Building, FieldCheckFn: buildingCheckFn},
+		MarketD:        navigation.BuildingDestination{B: mp.Building, CheckField: buildingCheckFn},
 		Exchange:       mp,
 		HouseholdR:     h.GetResources(),
 		HouseholdMoney: h.GetMoney(),
