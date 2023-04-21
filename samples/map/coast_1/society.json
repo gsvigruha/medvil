@@ -24,7 +24,8 @@
                 "log": 20,
                 "sword": 10,
                 "shield": 10,
-                "textile": 30         
+                "textile": 30,
+                "pot": 30 
               }
             }
           }, 
