@@ -115,6 +115,9 @@ func (f Field) Empty() bool {
 	if f.Road != nil {
 		return false
 	}
+	if f.Animal != nil {
+		return false
+	}
 	return true
 }
 
