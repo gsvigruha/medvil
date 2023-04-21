@@ -76,7 +76,7 @@ func (t *Townhall) FieldWithinDistance(field *navigation.Field) bool {
 
 func (t *Townhall) getTraderDestField(trader *Trader, m navigation.IMap) *navigation.Field {
 	hf := t.Household.RandomField(m, trader.Vehicle.T.BuildingCheckFn)
-	dest := navigation.BuildingDestination{B: t.Household.Town.Marketplace.Building}
+	dest := navigation.BuildingDestination{B: t.Household.Town.Marketplace.Building, FieldCheckFn: trader.Vehicle.T.BuildingCheckFn}
 	if hf != nil {
 		path := m.ShortPath(hf.GetLocation(), dest, trader.Person.Traveller.PathType())
 		if path != nil && len(path.P) > 2 {

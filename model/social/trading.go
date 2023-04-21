@@ -75,8 +75,8 @@ func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 		goodsDestToSource := t.GetGoodsToTrade(artifactDestToSource, t.TargetExchange)
 		if len(goodsSourceToDest) > 0 || len(goodsDestToSource) > 0 {
 			return &economy.TradeTask{
-				SourceMarketD:     navigation.BuildingDestination{B: t.SourceExchange.Building},
-				TargetMarketD:     navigation.BuildingDestination{B: t.TargetExchange.Building},
+				SourceMarketD:     navigation.BuildingDestination{B: t.SourceExchange.Building, FieldCheckFn: t.Vehicle.T.BuildingCheckFn},
+				TargetMarketD:     navigation.BuildingDestination{B: t.TargetExchange.Building, FieldCheckFn: t.Vehicle.T.BuildingCheckFn},
 				SourceExchange:    t.SourceExchange,
 				TargetExchange:    t.TargetExchange,
 				TraderR:           &t.Resources,
@@ -180,6 +180,6 @@ func (t *Trader) GetMoney() *uint32 {
 	return &t.Money
 }
 
-func (t *Trader) Destination() navigation.Destination {
+func (t *Trader) Destination(fieldChecker navigation.FieldChecker) navigation.Destination {
 	return navigation.TravellerDestination{T: t.Person.Traveller}
 }

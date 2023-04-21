@@ -52,7 +52,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						if pickup != nil {
 							w.Household.AddPriorityTask(&economy.TransportTask{
 								PickupD:  pickup,
-								DropoffD: w.Household.Destination(),
+								DropoffD: w.Household.Destination(navigation.Field.BuildingNonExtension),
 								PickupR:  &pickup.Terrain.Resources,
 								DropoffR: &w.Household.Resources,
 								A:        water,
