@@ -19,6 +19,7 @@ const AgriculturalTaskTreeCutting = 6
 const AgriculturalTaskReedCutting = 7
 const AgriculturalTaskGrazing = 8
 const AgriculturalTaskCorralling = 9
+const AgriculturalTaskPlantingReed = 10
 
 const AgriculturalTaskDurationPloughing = 24 * 30
 const AgriculturalTaskDurationSowing = 24 * 15
@@ -121,6 +122,17 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 			}
 			return true
 		}
+	case AgriculturalTaskPlantingReed:
+		if t.Progress >= AgriculturalTaskDurationPlanting {
+			t.F.Plant = &terrain.Plant{
+				T:             &terrain.AllCropTypes[2],
+				X:             t.F.X,
+				Y:             t.F.Y,
+				BirthDateDays: Calendar.DaysElapsed(),
+				Shape:         uint8(rand.Intn(10)),
+			}
+			return true
+		}
 	case AgriculturalTaskReedCutting:
 		if t.Progress >= AgriculturalTaskDurationReedCutting {
 			if t.F.Plant != nil {
@@ -173,6 +185,8 @@ func (t *AgriculturalTask) Blocked() bool {
 		return t.F.Plant != nil
 	case AgriculturalTaskPlantingOakTree:
 		return t.F.Plant != nil
+	case AgriculturalTaskPlantingReed:
+		return t.F.Plant != nil
 	case AgriculturalTaskTreeCutting:
 		return t.F.Plant == nil || !t.F.Plant.IsTree()
 	case AgriculturalTaskReedCutting:
@@ -196,6 +210,8 @@ func (t *AgriculturalTask) Name() string {
 	case AgriculturalTaskPlantingAppleTree:
 		return "planting"
 	case AgriculturalTaskPlantingOakTree:
+		return "planting"
+	case AgriculturalTaskPlantingReed:
 		return "planting"
 	case AgriculturalTaskTreeCutting:
 		return "treecutting"

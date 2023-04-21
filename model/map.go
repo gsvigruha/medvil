@@ -10,7 +10,7 @@ import (
 	"medvil/model/time"
 )
 
-const ReedSpreadRate = 0.0001
+const PlantSpreadRate = 0.00002
 const GrassGrowRate = 0.0001
 
 type Map struct {
@@ -20,14 +20,14 @@ type Map struct {
 	Countries []*social.Country
 }
 
-func (m *Map) SpreadPlant(i, j uint16) {
-	if i >= 0 && j >= 0 && i < m.SX && j < m.SY {
-		if m.Fields[i][j].Plant == nil && m.Fields[i][j].Road == nil && m.Shore(i, j) {
+func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.CalendarType) {
+	if rand.Float64() < PlantSpreadRate && i >= 0 && j >= 0 && i < m.SX && j < m.SY && m.Fields[i][j].Empty() && !m.Fields[i][j].Allocated {
+		if (p.T.Habitat == terrain.Shore && m.Shore(i, j)) || (p.T.Habitat == terrain.Land && m.Fields[i][j].Terrain.T == terrain.Grass) {
 			m.Fields[i][j].Plant = &terrain.Plant{
-				T:             &terrain.AllCropTypes[2],
+				T:             p.T,
 				X:             uint16(i),
 				Y:             uint16(j),
-				BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),
+				BirthDateDays: Calendar.DaysElapsed(),
 				Shape:         uint8(rand.Intn(10)),
 			}
 		}
@@ -46,11 +46,11 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			f := &m.Fields[i][j]
 			if f.Plant != nil {
 				f.Plant.ElapseTime(Calendar)
-				if f.Plant.T.Name == "reed" && rand.Float64() < ReedSpreadRate {
-					m.SpreadPlant(i-1, j)
-					m.SpreadPlant(i, j-1)
-					m.SpreadPlant(i+1, j)
-					m.SpreadPlant(i, j+1)
+				if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(Calendar) {
+					m.SpreadPlant(i-1, j, f.Plant, Calendar)
+					m.SpreadPlant(i, j-1, f.Plant, Calendar)
+					m.SpreadPlant(i+1, j, f.Plant, Calendar)
+					m.SpreadPlant(i, j+1, f.Plant, Calendar)
 				}
 				if f.Plant.T.IsAnnual() && Calendar.Season() == time.Winter {
 					f.Plant = nil
@@ -64,6 +64,7 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 			}
 			if f.Terrain.T == terrain.Canal && m.HasNeighborField(f.X, f.Y, terrain.Water) {
 				f.Terrain.T = terrain.Water
+				f.Allocated = false
 				f.Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
 				navigation.SetRoadConnectionsForNeighbors(m, f)
 				navigation.SetBuildingDeckForNeighbors(m, f)

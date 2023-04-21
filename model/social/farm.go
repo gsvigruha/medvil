@@ -112,7 +112,9 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingOakTree, F: l.F, UseType: l.UseType, Start: *Calendar})
 				}
 			} else if l.UseType == economy.FarmFieldUseTypeReed {
-				if l.F.Plant != nil && l.F.Plant.T.Name == "reed" {
+				if l.F.Plant == nil {
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingReed, F: l.F, UseType: l.UseType, Start: *Calendar})
+				} else if l.F.Plant != nil && l.F.Plant.T.Name == "reed" {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskReedCutting, F: l.F, UseType: l.UseType, Start: *Calendar})
 				}
 			} else if l.UseType == economy.FarmFieldUseTypePasture && l.F.Terrain.T == terrain.Grass {
