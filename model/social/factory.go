@@ -99,21 +99,16 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	var newOrders []*VehicleOrder
 	for _, order := range f.Orders {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
-			var x, y uint16
-			var ok bool
-			var ext *building.BuildingExtension
+			var field *navigation.Field
 			if order.T.Output.Water {
-				ext, x, y = f.Household.Building.GetExtensionWithCoords(building.Deck)
+				ext, x, y := f.Household.Building.GetExtensionWithCoords(building.Deck)
 				if ext == nil {
 					continue
 				}
+				field = m.GetField(x, y)
 			} else {
-				x, y, ok = GetRandomBuildingXY(f.Household.Building, m, navigation.Field.BuildingNonExtension)
-				if !ok {
-					continue
-				}
+				field = f.Household.RandomField(m, navigation.Field.BuildingNonExtension)
 			}
-			field := m.GetField(x, y)
 			f.Household.AddTask(&economy.VehicleConstructionTask{
 				T: order.T,
 				O: order,
