@@ -18,7 +18,7 @@ type FieldImageCache struct {
 }
 
 func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField) {
-	if f.Terrain.T == terrain.Grass || f.Terrain.T == terrain.Rock || f.Terrain.T == terrain.IronBog || f.Terrain.T == terrain.Mud {
+	if f.Terrain.T == terrain.Grass || f.Terrain.T.Object {
 		if c.Calendar.Season() == 3 {
 			cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		} else {
@@ -31,7 +31,7 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 	rf.Draw(cv)
 	cv.Fill()
 
-	if f.Terrain.T == terrain.Rock || f.Terrain.T == terrain.IronBog || f.Terrain.T == terrain.Mud {
+	if f.Terrain.T.Object {
 		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
 		rf.Draw(cv)
 		cv.Fill()

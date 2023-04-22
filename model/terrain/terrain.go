@@ -13,21 +13,22 @@ type TerrainType struct {
 	Water     bool
 	Buildable bool
 	Name      string
+	Object    bool
 }
 
 func (tt *TerrainType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(tt.Name)
 }
 
-var Water = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "water"}
-var Grass = &TerrainType{Walkable: true, Arable: true, Pasture: true, Water: false, Buildable: true, Name: "grass"}
-var Sand = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "sand"}
-var Dirt = &TerrainType{Walkable: true, Arable: true, Pasture: false, Water: false, Buildable: true, Name: "dirt"}
-var Rock = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: true, Name: "rock"}
-var Mud = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "mud"}
-var IronBog = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "iron_bog"}
-var Gold = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "gold"}
-var Canal = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "canal"}
+var Water = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "water", Object: false}
+var Grass = &TerrainType{Walkable: true, Arable: true, Pasture: true, Water: false, Buildable: true, Name: "grass", Object: false}
+var Sand = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "sand", Object: false}
+var Dirt = &TerrainType{Walkable: true, Arable: true, Pasture: false, Water: false, Buildable: true, Name: "dirt", Object: false}
+var Rock = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: true, Name: "rock", Object: true}
+var Mud = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "mud", Object: true}
+var IronBog = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "iron_bog", Object: true}
+var Gold = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "gold", Object: false}
+var Canal = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "canal", Object: false}
 
 type Terrain struct {
 	T         *TerrainType
