@@ -103,15 +103,16 @@ func (b *Building) getWindowType(open bool, floor uint8) WindowType {
 		return WindowTypeNone
 	}
 	if b.Plan.BuildingType == BuildingTypeWorkshop || b.Plan.BuildingType == BuildingTypeTownhall {
-		if b.Shape%3 == 0 {
+		switch b.Shape % 3 {
+		case 0:
 			if floor == 0 {
 				return WindowTypePlain
 			} else {
 				return WindowTypeBalcony
 			}
-		} else if b.Shape%3 == 1 {
+		case 1:
 			return WindowTypeFactory
-		} else {
+		case 2:
 			return WindowTypeFrench
 		}
 	}

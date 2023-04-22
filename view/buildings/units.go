@@ -11,15 +11,16 @@ import (
 )
 
 func BrickMaterialName(shape uint8) string {
-	if shape == 0 {
+	switch shape % 5 {
+	case 0:
 		return "painted_yellow"
-	} else if shape == 1 {
+	case 1:
 		return "painted_red"
-	} else if shape == 2 {
+	case 2:
 		return "painted_brown"
-	} else if shape == 3 {
+	case 3:
 		return "painted_beige"
-	} else if shape == 4 {
+	case 4:
 		return "painted_sand"
 	}
 	return "painted"
