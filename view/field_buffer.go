@@ -18,11 +18,11 @@ type FieldImageCache struct {
 }
 
 func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField) {
-	if f.Terrain.T == terrain.Grass {
+	if f.Terrain.T == terrain.Grass || f.Terrain.T.Object {
 		if c.Calendar.Season() == 3 {
-			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+			cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		} else {
-			cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + "_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+			cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		}
 	} else {
 		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
@@ -30,6 +30,12 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 
 	rf.Draw(cv)
 	cv.Fill()
+
+	if f.Terrain.T.Object {
+		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
+		rf.Draw(cv)
+		cv.Fill()
+	}
 
 	if (f.SE + f.SW) > (f.NE + f.NW) {
 		slope := (f.SE + f.SW) - (f.NE + f.NW)
