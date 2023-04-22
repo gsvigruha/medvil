@@ -12,14 +12,6 @@ type Location struct {
 	Z uint8
 }
 
-func (l Location) Check(pe PathElement) bool {
-	return l == pe.GetLocation()
-}
-
-type Destination interface {
-	Check(PathElement) bool
-}
-
 type FieldWithContext interface {
 	Field() *Field
 	Context() string
@@ -77,6 +69,9 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 					nbc.Building().Plan.BuildingType != building.BuildingTypeGate {
 					// Regular (not wall, gate) buildings can be final ground destinations
 					n = append(n, nf)
+				} else if nbc != nil && nbc.Connection(building.OppDir(uint8(dir))) == building.ConnectionTypeGround {
+					// Some buildings (gate) passable through the ground
+					n = append(n, nf)
 				}
 				// Upper level (building type) connections
 				if nbc != nil && nbc.Connection(building.OppDir(uint8(dir))) == building.ConnectionTypeLowerLevel {
@@ -118,6 +113,9 @@ func (f Field) Empty() bool {
 		return false
 	}
 	if f.Road != nil {
+		return false
+	}
+	if f.Animal != nil {
 		return false
 	}
 	return true
@@ -166,7 +164,11 @@ func (f Field) Buildable() bool {
 	if f.Allocated {
 		return false
 	}
-	return f.Terrain.T.Buildable && f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
+	return f.Terrain.T.Buildable && f.Flat()
+}
+
+func (f Field) Flat() bool {
+	return f.NE == f.NW && f.SE == f.SW && f.NE == f.SE && f.NW == f.SW
 }
 
 func (f Field) RoadCompatible() bool {
@@ -217,9 +219,14 @@ func (f *Field) CacheKey() string {
 		strconv.Itoa(int(f.SE)) + "#" +
 		strconv.Itoa(int(f.SW)) + "#" +
 		strconv.Itoa(int(f.NW)) + "#" +
-		f.Terrain.T.Name)
+		f.Terrain.T.Name + "#" +
+		strconv.Itoa(int(f.Terrain.Shape)))
 }
 
 func (f *Field) TravellerVisible() bool {
 	return true
+}
+
+func (f *Field) TopLocation() Location {
+	return Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
 }

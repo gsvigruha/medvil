@@ -17,7 +17,7 @@ type DemolishTask struct {
 	progress uint16
 }
 
-func (t *DemolishTask) Field() *navigation.Field {
+func (t *DemolishTask) Destination() navigation.Destination {
 	return t.F
 }
 

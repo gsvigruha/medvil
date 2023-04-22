@@ -185,13 +185,12 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 	if h.numVehicles(vehicles.Boat) == 0 && h.Building.HasExtension(building.Deck) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
-			ext, hx, hy := h.Building.GetExtensionWithCoords(building.Deck)
-			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
-			if ext != nil && ext.T == building.Deck && fok {
+			if h.Building.HasExtension(building.Deck) {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
 				h.AddTask(&economy.FactoryPickupTask{
-					PickupF:  m.GetField(fx, fy),
-					DropoffF: m.GetField(hx, hy),
+					// Factories need to be accessed via land even for boat pickups first
+					PickupD:  factory.Household.Destination(navigation.Field.BuildingNonExtension),
+					DropoffD: h.Destination(navigation.Field.BoatDestination),
 					Order:    order,
 					TaskBase: economy.TaskBase{FieldCenter: true},
 				})
@@ -204,17 +203,13 @@ func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap)
 	if h.numVehicles(vehicles.Cart) == 0 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
-			hx, hy, _ := GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
-			fx, fy, fok := GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
-			if fok {
-				order := factory.CreateOrder(economy.CartConstruction, h)
-				h.AddTask(&economy.FactoryPickupTask{
-					PickupF:  m.GetField(fx, fy),
-					DropoffF: m.GetField(hx, hy),
-					Order:    order,
-					TaskBase: economy.TaskBase{FieldCenter: true},
-				})
-			}
+			order := factory.CreateOrder(economy.CartConstruction, h)
+			h.AddTask(&economy.FactoryPickupTask{
+				PickupD:  factory.Household.Destination(navigation.Field.BuildingNonExtension),
+				DropoffD: h.Destination(navigation.Field.BuildingNonExtension),
+				Order:    order,
+				TaskBase: economy.TaskBase{FieldCenter: true},
+			})
 		}
 	}
 }
@@ -307,7 +302,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 	}
 	if a == Log {
 		if q >= MinLog {
-			result = q - 1
+			result = q - MinLog
 		} else {
 			return 0
 		}
@@ -316,6 +311,13 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 		textile := h.textileNeeded() + ProductTransportQuantity(Textile)
 		if q > textile {
 			result = q - textile
+		} else {
+			return 0
+		}
+	}
+	if a == economy.Beer || a == economy.Medicine {
+		if q >= p {
+			result = q - p
 		} else {
 			return 0
 		}
@@ -356,7 +358,16 @@ func (h *Household) NumTasks(name string, tag string) int {
 }
 
 func (h *Household) NewPerson(m navigation.IMap) *Person {
-	hx, hy, _ := GetRandomBuildingXY(h.Building, m, func(navigation.Field) bool { return true })
+	f := h.RandomField(m, func(navigation.Field) bool { return true })
+	traveller := &navigation.Traveller{
+		FX: f.X,
+		FY: f.Y,
+		FZ: 0,
+		PX: 0,
+		PY: 0,
+		T:  navigation.TravellerTypePedestrian,
+	}
+	traveller.InitPathElement(f)
 	return &Person{
 		Food:      MaxPersonState,
 		Water:     MaxPersonState,
@@ -365,14 +376,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 		Home:      h,
 		Task:      nil,
 		IsHome:    true,
-		Traveller: &navigation.Traveller{
-			FX: hx,
-			FY: hy,
-			FZ: 0,
-			PX: 0,
-			PY: 0,
-			T:  navigation.TravellerTypePedestrian,
-		},
+		Traveller: traveller,
 		Equipment: &economy.NoEquipment{},
 	}
 }
@@ -475,4 +479,8 @@ func (h *Household) Destroy(m navigation.IMap) {
 	}
 	dstH.Money += h.Money
 	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(h.Resources)
+}
+
+func (h *Household) Destination(fieldChecker navigation.FieldChecker) navigation.Destination {
+	return navigation.BuildingDestination{B: h.Building, CheckField: fieldChecker}
 }

@@ -9,8 +9,8 @@ import (
 
 type TransportTask struct {
 	TaskBase
-	PickupF          *navigation.Field
-	DropoffF         *navigation.Field
+	PickupD          navigation.Destination
+	DropoffD         navigation.Destination
 	PickupR          *artifacts.Resources
 	DropoffR         *artifacts.Resources
 	A                *artifacts.Artifact
@@ -20,18 +20,22 @@ type TransportTask struct {
 	dropoff          bool
 }
 
-func (t *TransportTask) Field() *navigation.Field {
+func (t *TransportTask) Destination() navigation.Destination {
 	if t.dropoff {
-		return t.DropoffF
+		return t.DropoffD
 	} else {
-		return t.PickupF
+		return t.PickupD
 	}
 }
 
 func (t *TransportTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.dropoff {
 		t.DropoffR.Add(t.A, t.q)
-		return t.Quantity == 0 || !t.CompleteQuantity
+		if t.Quantity == 0 || !t.CompleteQuantity {
+			return true
+		}
+		t.dropoff = false
+		return false
 	} else {
 		t.q = t.PickupR.Remove(t.A, t.Quantity)
 		t.Quantity -= t.q
@@ -55,11 +59,17 @@ func (t *TransportTask) Name() string {
 }
 
 func (t *TransportTask) Tag() string {
-	return TransportTaskTag(t.PickupF, t.A)
+	return TransportTaskTag(t.PickupD, t.A)
 }
 
-func TransportTaskTag(f *navigation.Field, a *artifacts.Artifact) string {
-	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y)) + "#" + a.Name
+func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) string {
+	if f, ok := dest.(*navigation.Field); ok {
+		return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y)) + "#" + a.Name
+	}
+	if l, ok := dest.(navigation.Location); ok {
+		return strconv.Itoa(int(l.X)) + "#" + strconv.Itoa(int(l.Y)) + "#" + strconv.Itoa(int(l.Z)) + "#" + a.Name
+	}
+	return a.Name
 }
 
 func (t *TransportTask) Expired(Calendar *time.CalendarType) bool {

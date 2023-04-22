@@ -12,19 +12,19 @@ import (
 	"strconv"
 )
 
-func RoofMaterialName(m *materials.Material, shape uint8) string {
+func RoofMaterialName(r *building.RoofUnit) string {
+	m := r.Roof.M
+	shape := r.B.Shape
 	if m == materials.GetMaterial("tile") {
-		if shape == 0 {
+		switch shape % 2 {
+		case 0:
 			return "tile_red"
-		} else if shape == 1 {
-			return "tile_darkred"
-		} else if shape == 2 {
-			return "tile_darkred"
-		} else if shape == 3 {
-			return "tile_red"
-		} else if shape == 4 {
+		case 1:
 			return "tile_darkred"
 		}
+	}
+	if m == materials.GetMaterial("brick") {
+		return BrickMaterialName(shape)
 	}
 	return m.Name
 }
@@ -43,7 +43,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 		for l := uint8(startL); l < 4+startL; l++ {
 			rfIdx1 := (3 - (-c.Perspective + l)) % 4
 			rfIdx2 := (2 - (-c.Perspective + l)) % 4
-			if roof.Elevated[l%4] {
+			if roof.Connected[l%4] {
 				var suffix = ""
 				if rfIdx1%2 == 0 {
 					suffix = "_flipped"
@@ -65,7 +65,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + suffix + ".png")
+						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + suffix + ".png")
 					} else {
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}
@@ -91,7 +91,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + suffix + ".png")
+						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + suffix + ".png")
 					} else {
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}
@@ -112,8 +112,9 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			}}
 			roofPolygons = append(roofPolygons, rp1)
 			if cv != nil {
-				cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + "_flat.png")
+				cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + "_flat.png")
 				util.RenderPolygon(cv, rp1, false)
+				RenderRoofFence(cv, roof, rp1, c)
 			}
 		}
 	} else if roof.Roof.RoofType == building.RoofTypeRamp {
@@ -123,7 +124,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			rfIdx2 := (2 - (-c.Perspective + l)) % 4
 			rfIdx3 := (1 - (-c.Perspective + l)) % 4
 			rfIdx4 := (0 - (-c.Perspective + l)) % 4
-			if roof.Elevated[l%4] {
+			if roof.Connected[l%4] {
 				var suffix = ""
 				if rfIdx1%2 == 0 {
 					suffix = "_flipped"
@@ -148,7 +149,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + suffix + ".png")
+						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + suffix + ".png")
 					} else {
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}
@@ -160,7 +161,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					util.RenderPolygon(cv, rp2, true)
 
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof.Roof.M, roof.B.Shape) + "_flat.png")
+						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + "_flat.png")
 					} else {
 						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 					}

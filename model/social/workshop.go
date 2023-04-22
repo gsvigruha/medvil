@@ -47,19 +47,17 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					if w.Manufacture.IsInput(water) &&
 						w.Household.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP+WaterTransportQuantity &&
 						w.Household.NumTasks("transport", "water") == 0 {
-						hx, hy, ok := GetRandomBuildingXY(w.Household.Building, m, navigation.Field.BuildingNonExtension)
-						if ok {
-							dest := m.FindDest(navigation.Location{X: hx, Y: hy, Z: 0}, economy.WaterDestination{}, navigation.PathTypePedestrian)
-							if dest != nil {
-								w.Household.AddPriorityTask(&economy.TransportTask{
-									PickupF:  dest,
-									DropoffF: m.GetField(hx, hy),
-									PickupR:  &dest.Terrain.Resources,
-									DropoffR: &w.Household.Resources,
-									A:        water,
-									Quantity: WaterTransportQuantity,
-								})
-							}
+						hf := w.Household.RandomField(m, navigation.Field.BuildingNonExtension)
+						pickup := m.FindDest(navigation.Location{X: hf.X, Y: hf.Y, Z: 0}, economy.WaterDestination{}, navigation.PathTypePedestrian)
+						if pickup != nil {
+							w.Household.AddPriorityTask(&economy.TransportTask{
+								PickupD:  pickup,
+								DropoffD: w.Household.Destination(navigation.Field.BuildingNonExtension),
+								PickupR:  &pickup.Terrain.Resources,
+								DropoffR: &w.Household.Resources,
+								A:        water,
+								Quantity: WaterTransportQuantity,
+							})
 						}
 					}
 				}

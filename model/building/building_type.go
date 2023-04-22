@@ -49,7 +49,7 @@ func FloorMaterials(bt BuildingType) []*materials.Material {
 		}
 	case BuildingTypeMarket:
 		return []*materials.Material{
-			materials.GetMaterial("brick"),
+			materials.GetMaterial("wood"),
 		}
 	}
 	return nil
@@ -77,11 +77,11 @@ func RoofMaterials(bt BuildingType) []*materials.Material {
 		}
 	case BuildingTypeTownhall:
 		return []*materials.Material{
-			materials.GetMaterial("tile"),
+			materials.GetMaterial("copper"),
 		}
 	case BuildingTypeMarket:
 		return []*materials.Material{
-			materials.GetMaterial("tile"),
+			materials.GetMaterial("textile"),
 		}
 	}
 	return nil
@@ -96,4 +96,17 @@ func ExtensionTypes(bt BuildingType) []*BuildingExtensionType {
 		}
 	}
 	return nil
+}
+
+func MaxNumFloors(bt BuildingType) int {
+	switch bt {
+	case BuildingTypeFarm, BuildingTypeMine:
+		return 2
+	case BuildingTypeWorkshop, BuildingTypeFactory, BuildingTypeTownhall:
+		return 3
+	case BuildingTypeMarket:
+		return 1
+	default:
+		return 2
+	}
 }

@@ -78,22 +78,22 @@ func RefreshSubPanels(tc *TownhallController) {
 	s := IconS / 2
 	h := float64(IconH / 2)
 	tp.AddPanel(gui.CreateNumberPanel(10, top+h*2, tpw-s, s, 0, 100, 10, "farm tax rate %v", &th.Household.Town.Transfers.Farm.TaxRate).P)
-	tp.AddPanel(gui.CreateNumberPanel(10, top+h*3, tpw-s, s, 0, 1000, 10, "farm threshold %v", &th.Household.Town.Transfers.Farm.TaxThreshold).P)
-	tp.AddPanel(gui.CreateNumberPanel(10, top+h*4, tpw-s, s, 0, 1000, 10, "farm subsidy %v", &th.Household.Town.Transfers.Farm.Subsidy).P)
+	tp.AddPanel(gui.CreateNumberPanel(10, top+h*3, tpw-s, s, 0, 1000, 50, "farm threshold %v", &th.Household.Town.Transfers.Farm.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPanel(10, top+h*4, tpw-s, s, 0, 1000, 50, "farm subsidy %v", &th.Household.Town.Transfers.Farm.Subsidy).P)
 
 	tp.AddPanel(gui.CreateNumberPanel(10, top+h*5, tpw-s, s, 0, 100, 10, "shop tax rate %v", &th.Household.Town.Transfers.Workshop.TaxRate).P)
-	tp.AddPanel(gui.CreateNumberPanel(10, top+h*6, tpw-s, s, 0, 1000, 10, "shop threshold %v", &th.Household.Town.Transfers.Workshop.TaxThreshold).P)
-	tp.AddPanel(gui.CreateNumberPanel(10, top+h*7, tpw-s, s, 0, 1000, 10, "shop subsidy %v", &th.Household.Town.Transfers.Workshop.Subsidy).P)
+	tp.AddPanel(gui.CreateNumberPanel(10, top+h*6, tpw-s, s, 0, 1000, 50, "shop threshold %v", &th.Household.Town.Transfers.Workshop.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPanel(10, top+h*7, tpw-s, s, 0, 1000, 50, "shop subsidy %v", &th.Household.Town.Transfers.Workshop.Subsidy).P)
 
 	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*2, tpw-s, s, 0, 100, 10, "mine tax rate %v", &th.Household.Town.Transfers.Mine.TaxRate).P)
-	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*3, tpw-s, s, 0, 1000, 10, "mine threshold %v", &th.Household.Town.Transfers.Mine.TaxThreshold).P)
-	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*4, tpw-s, s, 0, 1000, 10, "mine subsidy %v", &th.Household.Town.Transfers.Mine.Subsidy).P)
+	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*3, tpw-s, s, 0, 1000, 50, "mine threshold %v", &th.Household.Town.Transfers.Mine.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*4, tpw-s, s, 0, 1000, 50, "mine subsidy %v", &th.Household.Town.Transfers.Mine.Subsidy).P)
 
 	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*5, tpw-s, s, 0, 100, 10, "factory tax rate %v", &th.Household.Town.Transfers.Factory.TaxRate).P)
-	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*6, tpw-s, s, 0, 1000, 10, "factory threshold %v", &th.Household.Town.Transfers.Factory.TaxThreshold).P)
-	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*7, tpw-s, s, 0, 1000, 10, "factory subsidy %v", &th.Household.Town.Transfers.Factory.Subsidy).P)
+	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*6, tpw-s, s, 0, 1000, 50, "factory threshold %v", &th.Household.Town.Transfers.Factory.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*7, tpw-s, s, 0, 1000, 50, "factory subsidy %v", &th.Household.Town.Transfers.Factory.Subsidy).P)
 
-	tp.AddPanel(gui.CreateNumberPanel(10, top+h*8, tpw-s, s, 0, 100, 10, "military funding %v", &th.Household.Town.Transfers.Tower.Subsidy).P)
+	tp.AddPanel(gui.CreateNumberPanel(10, top+h*8, tpw-s, s, 0, 100, 50, "military funding %v", &th.Household.Town.Transfers.Tower.Subsidy).P)
 	tp.AddPanel(gui.CreateNumberPanel(10+tpw, top+h*8, tpw-s, s, 0, 100, 10, "market funding %v", &th.Household.Town.Transfers.MarketFundingRate).P)
 
 	var aI = 0

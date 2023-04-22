@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"medvil/controller"
 	"medvil/model/navigation"
+	"medvil/model/terrain"
 	"medvil/renderer"
 	"strconv"
 	"time"
@@ -16,11 +17,25 @@ type FieldImageCache struct {
 	ctx     *goglbackend.GLContext
 }
 
-func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedField) {
-	cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
+func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField) {
+	if f.Terrain.T == terrain.Grass || f.Terrain.T.Object {
+		if c.Calendar.Season() == 3 {
+			cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+		} else {
+			cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+		}
+	} else {
+		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
+	}
 
 	rf.Draw(cv)
 	cv.Fill()
+
+	if f.Terrain.T.Object {
+		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
+		rf.Draw(cv)
+		cv.Fill()
+	}
 
 	if (f.SE + f.SW) > (f.NE + f.NW) {
 		slope := (f.SE + f.SW) - (f.NE + f.NW)
@@ -36,7 +51,7 @@ func renderField(cv *canvas.Canvas, f *navigation.Field, rf renderer.RenderedFie
 }
 
 func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
-	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
+	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(c.Calendar.Season()))
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[key]; ok {
 		return ce.cv
@@ -49,7 +64,7 @@ func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.
 		offscreen, _ := goglbackend.NewOffscreen(int(w), int(h), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, w, h)
-		renderField(cv, f, bufferedRF)
+		renderField(cv, c, f, bufferedRF)
 		ic.entries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,

@@ -8,11 +8,21 @@ import (
 	"medvil/model/time"
 )
 
+type PlantHabitatType uint8
+
+const (
+	Cultivated PlantHabitatType = 0
+	Land       PlantHabitatType = 1
+	Shore      PlantHabitatType = 2
+)
+
 type PlantType struct {
 	Name             string
 	MaturityAgeYears uint8
 	TreeT            *TreeType
 	Yield            artifacts.Artifacts
+	Tall             bool
+	Habitat          PlantHabitatType
 }
 
 func (pt *PlantType) MarshalJSON() ([]byte, error) {

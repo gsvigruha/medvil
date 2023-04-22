@@ -82,3 +82,9 @@ func (rf RenderedField) CacheKey() string {
 		strconv.Itoa(int(rf.Z[2])) + "#" +
 		strconv.Itoa(int(rf.Z[3])))
 }
+
+func (rf RenderedField) MidPoint() (float64, float64) {
+	midX := (rf.X[0] + rf.X[1] + rf.X[2] + rf.X[3]) / 4
+	midY := (rf.Y[0] + rf.Y[1] + rf.Y[2] + rf.Y[3]) / 4
+	return midX, midY
+}

@@ -58,7 +58,7 @@ type GoHomeTask struct {
 	P Person
 }
 
-func (t *EatTask) Field() *navigation.Field {
+func (t *EatTask) Destination() navigation.Destination {
 	return t.F
 }
 
@@ -87,7 +87,7 @@ func (t *EatTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
-func (t *DrinkTask) Field() *navigation.Field {
+func (t *DrinkTask) Destination() navigation.Destination {
 	return t.F
 }
 
@@ -116,7 +116,7 @@ func (t *DrinkTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
-func (t *HealTask) Field() *navigation.Field {
+func (t *HealTask) Destination() navigation.Destination {
 	return t.F
 }
 
@@ -145,7 +145,7 @@ func (t *HealTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
-func (t *RelaxTask) Field() *navigation.Field {
+func (t *RelaxTask) Destination() navigation.Destination {
 	return t.F
 }
 
@@ -174,7 +174,7 @@ func (t *RelaxTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
-func (t *GoHomeTask) Field() *navigation.Field {
+func (t *GoHomeTask) Destination() navigation.Destination {
 	return t.F
 }
 

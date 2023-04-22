@@ -2,7 +2,6 @@ package building
 
 import (
 	"encoding/json"
-	"math/rand"
 )
 
 type Building struct {
@@ -40,33 +39,40 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 	}
 	z := uint8(len(p.BaseShape[x][y].Floors))
 	roof := p.BaseShape[x][y].Roof
-	var elevated [4]bool
+	var connected [4]bool
 	if roof.RoofType == RoofTypeSplit {
-		elevated = [4]bool{
+		connected = [4]bool{
 			y > 0 && p.HasUnitOrRoof(x, y-1, z),
 			x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z),
 			y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z),
 			x > 0 && p.HasUnitOrRoof(x-1, y, z)}
 	} else if roof.RoofType == RoofTypeFlat {
-		elevated = [4]bool{false, false, false, false}
+		connected = [4]bool{
+			y > 0 && p.HasUnit(x, y-1, z-1),
+			x < BuildingBaseMaxSize-1 && p.HasUnit(x+1, y, z-1),
+			y < BuildingBaseMaxSize-1 && p.HasUnit(x, y+1, z-1),
+			x > 0 && p.HasUnit(x-1, y, z-1)}
 	} else if roof.RoofType == RoofTypeRamp {
 		if roof.RampD == DirectionN {
-			elevated = [4]bool{true, false, false, false}
+			connected = [4]bool{true, false, false, false}
 		} else if roof.RampD == DirectionE {
-			elevated = [4]bool{false, true, false, false}
+			connected = [4]bool{false, true, false, false}
 		} else if roof.RampD == DirectionS {
-			elevated = [4]bool{false, false, true, false}
+			connected = [4]bool{false, false, true, false}
 		} else if roof.RampD == DirectionW {
-			elevated = [4]bool{false, false, false, true}
+			connected = [4]bool{false, false, false, true}
 		}
 	}
 	return &RoofUnit{
 		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
 		Roof:                  *roof,
-		Elevated:              elevated}
+		Connected:             connected}
 }
 
 func (b *Building) hasArch(d uint8) bool {
+	if b.Plan.BuildingType == BuildingTypeMarket {
+		return true
+	}
 	if b.Plan.BuildingType != BuildingTypeGate {
 		return false
 	}
@@ -77,7 +83,7 @@ func (b *Building) hasDoor(d uint8, floor uint8, open bool) bool {
 	if !open {
 		return false
 	}
-	if b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeWall {
+	if b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeWall || b.Plan.BuildingType == BuildingTypeMarket {
 		return false
 	}
 	if b.Direction != d {
@@ -93,17 +99,20 @@ func (b *Building) getWindowType(open bool, floor uint8) WindowType {
 	if !open {
 		return WindowTypeNone
 	}
-	if b.Plan.BuildingType == BuildingTypeWall || b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeTower {
+	if b.Plan.BuildingType == BuildingTypeWall || b.Plan.BuildingType == BuildingTypeGate || b.Plan.BuildingType == BuildingTypeTower || b.Plan.BuildingType == BuildingTypeMarket {
 		return WindowTypeNone
 	}
 	if b.Plan.BuildingType == BuildingTypeWorkshop || b.Plan.BuildingType == BuildingTypeTownhall {
-		if b.Shape%2 == 0 {
+		switch b.Shape % 3 {
+		case 0:
 			if floor == 0 {
 				return WindowTypePlain
 			} else {
 				return WindowTypeBalcony
 			}
-		} else {
+		case 1:
+			return WindowTypeFactory
+		case 2:
 			return WindowTypeFrench
 		}
 	}
@@ -167,15 +176,6 @@ func (b *Building) GetBuildingXYs(includeExtensions bool) [][2]uint16 {
 		}
 	}
 	return fields
-}
-
-func (b *Building) GetRandomBuildingXY() (uint16, uint16, bool) {
-	fields := b.GetBuildingXYs(true)
-	if fields == nil {
-		return 0, 0, false
-	}
-	idx := rand.Intn(len(fields))
-	return fields[idx][0], fields[idx][1], true
 }
 
 func (b *Building) HasExtension(et *BuildingExtensionType) bool {

@@ -34,7 +34,7 @@ type MiningTask struct {
 	UseType  uint8
 }
 
-func (t *MiningTask) Field() *navigation.Field {
+func (t *MiningTask) Destination() navigation.Destination {
 	return t.F
 }
 

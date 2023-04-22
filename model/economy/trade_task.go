@@ -14,8 +14,8 @@ const TradeTaskStateDropoffAtSource uint8 = 3
 
 type TradeTask struct {
 	TaskBase
-	SourceMarketF     *navigation.Field
-	TargetMarketF     *navigation.Field
+	SourceMarketD     navigation.Destination
+	TargetMarketD     navigation.Destination
 	SourceExchange    Exchange
 	TargetExchange    Exchange
 	TraderR           *artifacts.Resources
@@ -28,16 +28,16 @@ type TradeTask struct {
 	state             uint8
 }
 
-func (t *TradeTask) Field() *navigation.Field {
+func (t *TradeTask) Destination() navigation.Destination {
 	switch t.state {
 	case TradeTaskStatePickupAtSource:
-		return t.SourceMarketF
+		return t.SourceMarketD
 	case TradeTaskStateDropoffAtDest:
-		return t.TargetMarketF
+		return t.TargetMarketD
 	case TradeTaskStatePickupAtDest:
-		return t.TargetMarketF
+		return t.TargetMarketD
 	case TradeTaskStateDropoffAtSource:
-		return t.SourceMarketF
+		return t.SourceMarketD
 	}
 	return nil
 }

@@ -10,19 +10,25 @@ import (
 	"medvil/renderer"
 )
 
+func BrickMaterialName(shape uint8) string {
+	switch shape % 5 {
+	case 0:
+		return "painted_yellow"
+	case 1:
+		return "painted_red"
+	case 2:
+		return "painted_brown"
+	case 3:
+		return "painted_beige"
+	case 4:
+		return "painted_sand"
+	}
+	return "painted"
+}
+
 func WallMaterialName(t building.BuildingType, m *materials.Material, shape uint8) string {
 	if m == materials.GetMaterial("brick") {
-		if shape == 0 {
-			return "painted_yellow"
-		} else if shape == 1 {
-			return "painted_red"
-		} else if shape == 2 {
-			return "painted_brown"
-		} else if shape == 3 {
-			return "painted_beige"
-		} else if shape == 4 {
-			return "painted_sand"
-		}
+		return BrickMaterialName(shape)
 	}
 	if t == building.BuildingTypeWall && m == materials.GetMaterial("stone") {
 		if shape == 0 {
@@ -94,6 +100,10 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			cv.Fill()
 			cv.Stroke()
 
+			if !wall.Arch && !unit.Construction {
+				RenderOrnaments(cv, unit, rf, rw)
+			}
+
 			/*
 				if !wall.Arch {
 					cv.SetFillStyle("texture/building/ornament" + suffix + ".png")
@@ -109,12 +119,18 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 
 			z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
 			if !unit.Construction && wall.Windows != building.WindowTypeNone {
-				cv.SetFillStyle("texture/building/glass_2.png")
-				cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
 				cv.SetLineWidth(2)
-				RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench)
-				if wall.Windows == building.WindowTypeBalcony {
-					RenderBalcony(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+				if wall.Windows == building.WindowTypeFactory {
+					cv.SetFillStyle("texture/building/glass_3.png")
+					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 192})
+					RenderFactoryWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+				} else {
+					cv.SetFillStyle("texture/building/glass_2.png")
+					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
+					RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench)
+					if wall.Windows == building.WindowTypeBalcony {
+						RenderBalcony(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
+					}
 				}
 			}
 

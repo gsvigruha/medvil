@@ -15,7 +15,7 @@ type BuyTask struct {
 	TaskTag        string
 }
 
-func (t *BuyTask) Field() *navigation.Field {
+func (t *BuyTask) Destination() navigation.Destination {
 	return nil
 }
 
@@ -44,4 +44,8 @@ func (t *BuyTask) Expired(Calendar *time.CalendarType) bool {
 
 func (t *BuyTask) Motion() uint8 {
 	return navigation.MotionStand
+}
+
+func (t *BuyTask) IconName() string {
+	return "buy"
 }

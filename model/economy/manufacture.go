@@ -53,6 +53,15 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("brick"), Quantity: 2}}},
 	&Manufacture{
+		Name:                  "pottery",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Forge,
+		Inputs: []artifacts.Artifacts{
+			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
+			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("pot"), Quantity: 3}}},
+	&Manufacture{
 		Name:    "thatching",
 		Time:    10 * 24,
 		Power:   1000,
@@ -97,6 +106,7 @@ var AllManufacture = [...]*Manufacture{
 		Power: 1000,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("grain"), Quantity: 1},
+			artifacts.Artifacts{A: artifacts.GetArtifact("pot"), Quantity: 2},
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 2}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("beer"), Quantity: 2}}},
 	&Manufacture{
@@ -133,10 +143,12 @@ var AllManufacture = [...]*Manufacture{
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 2}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 1}}},
 	&Manufacture{
-		Name:    "medicine",
-		Time:    120 * 24,
-		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("herb"), Quantity: 1}},
+		Name:  "medicine",
+		Time:  120 * 24,
+		Power: 1000,
+		Inputs: []artifacts.Artifacts{
+			artifacts.Artifacts{A: artifacts.GetArtifact("herb"), Quantity: 1},
+			artifacts.Artifacts{A: artifacts.GetArtifact("pot"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("medicine"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "swordsmith",

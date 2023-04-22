@@ -19,12 +19,13 @@
                 "cube": 50,
                 "brick": 50,
                 "board": 40,
-                "tile": 10,
+                "tile": 20,
                 "thatch": 10,
                 "log": 20,
                 "sword": 10,
                 "shield": 10,
-                "textile": 30         
+                "textile": 30,
+                "pot": 30 
               }
             }
           }, 

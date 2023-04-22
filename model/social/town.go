@@ -287,8 +287,8 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 			}
 			totalQ -= q
 			town.Townhall.Household.AddTask(&economy.TransportTask{
-				PickupF:          m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
-				DropoffF:         buildingF,
+				PickupD:          m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
+				DropoffD:         buildingF.TopLocation(),
 				PickupR:          &town.Townhall.Household.Resources,
 				DropoffR:         c.Storage,
 				A:                a.A,
@@ -303,7 +303,7 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 	c.MaxProgress = totalTasks
 	for i := uint16(0); i < totalTasks; i++ {
 		town.Townhall.Household.AddTask(&economy.BuildingTask{
-			F: buildingF,
+			D: buildingF.TopLocation(),
 			C: c,
 		})
 	}

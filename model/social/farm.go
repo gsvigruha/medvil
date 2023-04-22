@@ -75,8 +75,8 @@ func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 			tag := economy.TransportTaskTag(l.F, a)
 			if f.Household.NumTasks("transport", tag) == 0 {
 				f.Household.AddTask(&economy.TransportTask{
-					PickupF:  l.F,
-					DropoffF: home,
+					PickupD:  l.F,
+					DropoffD: home,
 					PickupR:  &l.F.Terrain.Resources,
 					DropoffR: &f.Household.Resources,
 					A:        a,
@@ -112,7 +112,9 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingOakTree, F: l.F, UseType: l.UseType, Start: *Calendar})
 				}
 			} else if l.UseType == economy.FarmFieldUseTypeReed {
-				if l.F.Plant != nil && l.F.Plant.T.Name == "reed" {
+				if l.F.Plant == nil {
+					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingReed, F: l.F, UseType: l.UseType, Start: *Calendar})
+				} else if l.F.Plant != nil && l.F.Plant.T.Name == "reed" {
 					f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskReedCutting, F: l.F, UseType: l.UseType, Start: *Calendar})
 				}
 			} else if l.UseType == economy.FarmFieldUseTypePasture && l.F.Terrain.T == terrain.Grass {
@@ -152,10 +154,8 @@ func (f *Farm) GetFields() []navigation.FieldWithContext {
 func (f *Farm) FieldUsableFor(m navigation.IMap, field *navigation.Field, useType uint8) bool {
 	if useType == economy.FarmFieldUseTypeReed {
 		return m.Shore(field.X, field.Y)
-	} else if useType != economy.FarmFieldUseTypeBarren {
-		return field.Arable()
 	}
-	return false
+	return field.Arable()
 }
 
 func (f *Farm) FieldWithinDistance(field *navigation.Field) bool {

@@ -149,7 +149,7 @@ func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task e
 		style = gui.ImageLabelStyleDisabled
 	}
 	p.AddButton(&gui.ImageButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "tasks/" + task.Name(), X: float64(10 + i*w), Y: y, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/" + economy.IconName(task), X: float64(10 + i*w), Y: y, SX: IconS, SY: IconS},
 		Style:     style,
 		ClickImpl: func() {
 			TaskToHelperPanel(cp.GetHelperPanel(), task)

@@ -19,7 +19,7 @@ type TerraformTask struct {
 	progress uint16
 }
 
-func (t *TerraformTask) Field() *navigation.Field {
+func (t *TerraformTask) Destination() navigation.Destination {
 	return t.F
 }
 

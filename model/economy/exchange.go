@@ -26,8 +26,8 @@ const MaxWaitTime = 24 * 10
 
 type ExchangeTask struct {
 	TaskBase
-	HomeF          *navigation.Field
-	MarketF        *navigation.Field
+	HomeD          navigation.Destination
+	MarketD        navigation.Destination
 	Exchange       Exchange
 	HouseholdR     *artifacts.Resources
 	HouseholdMoney *uint32
@@ -40,14 +40,14 @@ type ExchangeTask struct {
 	waittime       uint16
 }
 
-func (t *ExchangeTask) Field() *navigation.Field {
+func (t *ExchangeTask) Destination() navigation.Destination {
 	switch t.state {
 	case ExchangeTaskStatePickupAtHome:
-		return t.HomeF
+		return t.HomeD
 	case ExchangeTaskStateMarket:
-		return t.MarketF
+		return t.MarketD
 	case ExchangeTaskStateDropoffAtHome:
-		return t.HomeF
+		return t.HomeD
 	}
 	return nil
 }

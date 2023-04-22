@@ -25,27 +25,42 @@ func getZByDir(bpe *navigation.BuildingPathElement, dir uint8) float64 {
 	return 0
 }
 
-func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) {
+func GetScreenY(t *navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) float64 {
+	_, y := GetScreenXY(t, rf, c)
+	return y
+}
+
+func GetScreenXY(t *navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) (float64, float64) {
+	px := float64(t.PX)
+	py := float64(t.PY)
+	NEPX := rf.X[(2+c.Perspective)%4]
+	NEPY := rf.Y[(2+c.Perspective)%4] - rf.Z[(2+c.Perspective)%4]
+	SEPX := rf.X[(1+c.Perspective)%4]
+	SEPY := rf.Y[(1+c.Perspective)%4] - rf.Z[(1+c.Perspective)%4]
+	SWPX := rf.X[(0+c.Perspective)%4]
+	SWPY := rf.Y[(0+c.Perspective)%4] - rf.Z[(0+c.Perspective)%4]
+	NWPX := rf.X[(3+c.Perspective)%4]
+	NWPY := rf.Y[(3+c.Perspective)%4] - rf.Z[(3+c.Perspective)%4]
+	x := (NWPX*(MaxPX-px)*(MaxPY-py) +
+		SWPX*(MaxPX-px)*py +
+		NEPX*px*(MaxPY-py) +
+		SEPX*px*py) / (MaxPX * MaxPY)
+	y := (NWPY*(MaxPX-px)*(MaxPY-py) +
+		SWPY*(MaxPX-px)*py +
+		NEPY*px*(MaxPY-py) +
+		SEPY*px*py) / (MaxPX * MaxPY)
+	return x, y
+}
+
+func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, show func(*navigation.Traveller) bool, rf renderer.RenderedField, c *controller.Controller) {
 	for i := range travellers {
 		t := travellers[i]
 		px := float64(t.PX)
 		py := float64(t.PY)
-		NEPX := rf.X[(2+c.Perspective)%4]
-		NEPY := rf.Y[(2+c.Perspective)%4] - rf.Z[(2+c.Perspective)%4]
-		SEPX := rf.X[(1+c.Perspective)%4]
-		SEPY := rf.Y[(1+c.Perspective)%4] - rf.Z[(1+c.Perspective)%4]
-		SWPX := rf.X[(0+c.Perspective)%4]
-		SWPY := rf.Y[(0+c.Perspective)%4] - rf.Z[(0+c.Perspective)%4]
-		NWPX := rf.X[(3+c.Perspective)%4]
-		NWPY := rf.Y[(3+c.Perspective)%4] - rf.Z[(3+c.Perspective)%4]
-		x := (NWPX*(MaxPX-px)*(MaxPY-py) +
-			SWPX*(MaxPX-px)*py +
-			NEPX*px*(MaxPY-py) +
-			SEPX*px*py) / (MaxPX * MaxPY)
-		y := (NWPY*(MaxPX-px)*(MaxPY-py) +
-			SWPY*(MaxPX-px)*py +
-			NEPY*px*(MaxPY-py) +
-			SEPY*px*py) / (MaxPX * MaxPY)
+		x, y := GetScreenXY(t, rf, c)
+		if !show(t) {
+			continue
+		}
 		if t.GetPathElement() != nil && t.GetPathElement().GetLocation().Z > 0 {
 			if bpe, ok := t.GetPathElement().(*navigation.BuildingPathElement); ok {
 				z1 := getZByDir(bpe, t.Direction)
@@ -61,12 +76,12 @@ func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, rf 
 				case navigation.DirectionE:
 					z = (z1*px + z2*(MaxPX-px)) / MaxPX
 				}
-				DrawTraveller(cv, t, x, y-5-z, c)
+				DrawTraveller(cv, t, x, y-5-z, rf.F, c)
 			} else {
-				DrawTraveller(cv, t, x, y-5, c)
+				DrawTraveller(cv, t, x, y-5, rf.F, c)
 			}
 		} else {
-			DrawTraveller(cv, t, x, y-5, c)
+			DrawTraveller(cv, t, x, y-5, rf.F, c)
 		}
 	}
 }
@@ -158,10 +173,17 @@ func DrawTool(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.Pers
 	cv.Fill()
 }
 
-func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
+func tallPlant(f *navigation.Field) bool {
+	return f.Plant != nil && f.Plant.T.Tall
+}
+
+func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, f *navigation.Field, c *controller.Controller) {
 	if t.T == navigation.TravellerTypePedestrian {
 		inBoat := t.Vehicle != nil && t.Vehicle.Water()
-		DrawPerson(cv, t, x, y, inBoat, c)
+		if inBoat {
+			y += 5
+		}
+		DrawPerson(cv, t, x, y, !inBoat && !tallPlant(f), c)
 	} else if t.T == navigation.TravellerTypeBoat {
 		vehicles.DrawBoat(cv, t, x, y, c)
 	} else if t.T == navigation.TravellerTypeTradingBoat {
@@ -174,12 +196,9 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 	c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y, H: 32, W: 8, Traveller: t})
 }
 
-func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, InVehicle bool, c *controller.Controller) {
+func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, drawLeg bool, c *controller.Controller) {
 	if !t.Visible {
 		return
-	}
-	if InVehicle {
-		y += 5
 	}
 	var m animation.PersonMotion
 	switch t.Motion {
@@ -198,12 +217,12 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 
 	if dirIdx >= 2 {
 		DrawLeftArm(cv, pm, m, x, y, p)
-		if !InVehicle {
+		if drawLeg {
 			DrawLeftLeg(cv, pm, m, x, y, p)
 		}
 	} else {
 		DrawRightArm(cv, pm, m, x, y, p)
-		if !InVehicle {
+		if drawLeg {
 			DrawRightLeg(cv, pm, m, x, y, p)
 		}
 	}
@@ -215,6 +234,22 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 
 	// Body
 	cv.SetFillStyle("#BA6")
+	person := c.ReverseReferences.TravellerToPerson[t]
+	if person != nil {
+		switch person.Home.GetBuilding().Plan.BuildingType {
+		case building.BuildingTypeFarm:
+			cv.SetFillStyle("#BA6")
+		case building.BuildingTypeMine:
+			cv.SetFillStyle("#B42")
+		case building.BuildingTypeWorkshop:
+			cv.SetFillStyle("#B6D")
+		case building.BuildingTypeFactory:
+			cv.SetFillStyle("#B6D")
+		case building.BuildingTypeTownhall:
+			cv.SetFillStyle("#2AE")
+		}
+	}
+
 	cv.FillRect(x-2, y-28, 4, 3)
 	cv.FillRect(x-4, y-25, 8, 10)
 	cv.SetFillStyle("#840")
@@ -225,12 +260,12 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	cv.Fill()
 
 	if dirIdx >= 2 {
-		if !InVehicle {
+		if drawLeg {
 			DrawRightLeg(cv, pm, m, x, y, p)
 		}
 		DrawRightArm(cv, pm, m, x, y, p)
 	} else {
-		if !InVehicle {
+		if drawLeg {
 			DrawLeftLeg(cv, pm, m, x, y, p)
 		}
 		DrawLeftArm(cv, pm, m, x, y, p)

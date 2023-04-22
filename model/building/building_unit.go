@@ -10,6 +10,7 @@ type ConnectionType uint8
 const ConnectionTypeNone = 0
 const ConnectionTypeLowerLevel = 1
 const ConnectionTypeUpperLevel = 2
+const ConnectionTypeGround = 3
 
 type BuildingComponentBase struct {
 	B            *Building
@@ -30,8 +31,8 @@ func (b *BuildingComponentBase) IsConstruction() bool {
 
 type RoofUnit struct {
 	BuildingComponentBase
-	Roof     Roof
-	Elevated [4]bool
+	Roof      Roof
+	Connected [4]bool
 }
 
 func (u *RoofUnit) Connection(dir uint8) ConnectionType {
@@ -61,6 +62,7 @@ const WindowTypeNone WindowType = 0
 const WindowTypePlain WindowType = 1
 const WindowTypeBalcony WindowType = 2
 const WindowTypeFrench WindowType = 3
+const WindowTypeFactory WindowType = 4
 
 type BuildingWall struct {
 	M       *materials.Material
@@ -78,7 +80,7 @@ func (u *BuildingUnit) Connection(dir uint8) ConnectionType {
 	// Gates can only be passed through one direction
 	if u.B.Plan.BuildingType == BuildingTypeGate {
 		if dir%2 == u.B.Direction%2 {
-			return ConnectionTypeLowerLevel
+			return ConnectionTypeGround
 		}
 	}
 	// Towers are accessible to all neighbors
@@ -130,7 +132,7 @@ func (b BuildingUnit) LiftS() int8    { return 0 }
 func (b BuildingUnit) LiftW() int8    { return 0 }
 
 func (r *RoofUnit) CacheKey() string {
-	return fmt.Sprintf("%v#%v#%v#%v#%v", r.Roof.M.Name, r.Elevated, r.Roof.RoofType, r.Construction, r.B.Shape)
+	return fmt.Sprintf("%v#%v#%v#%v#%v#%v", r.Roof.M.Name, r.Connected, r.Roof.RoofType, r.Construction, r.B.Shape, r.B.Plan.BuildingType)
 }
 
 func (e *ExtensionUnit) CacheKey() string {

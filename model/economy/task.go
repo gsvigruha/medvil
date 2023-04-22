@@ -7,9 +7,10 @@ import (
 
 type Task interface {
 	Complete(Calendar *time.CalendarType, tool bool) bool
-	Field() *navigation.Field
+	Destination() navigation.Destination
 	Blocked() bool
 	Name() string
+	IconName() string
 	Tag() string
 	Expired(Calendar *time.CalendarType) bool
 	Pause(bool)
@@ -46,4 +47,15 @@ func (t *TaskBase) IsFieldCenter() bool {
 
 func (t *TaskBase) Equipped(Equipment) bool {
 	return true
+}
+
+func (t *TaskBase) IconName() string {
+	return ""
+}
+
+func IconName(t Task) string {
+	if t.IconName() != "" {
+		return t.IconName()
+	}
+	return t.Name()
 }
