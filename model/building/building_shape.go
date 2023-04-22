@@ -4,7 +4,7 @@ import (
 	"math/rand"
 )
 
-const NumShapes = 5
+const NumShapes = 10
 
 const ShapeAreaSize = 3
 

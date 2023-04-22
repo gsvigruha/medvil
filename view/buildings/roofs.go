@@ -16,15 +16,10 @@ func RoofMaterialName(r *building.RoofUnit) string {
 	m := r.Roof.M
 	shape := r.B.Shape
 	if m == materials.GetMaterial("tile") {
-		if shape == 0 {
+		switch shape % 2 {
+		case 0:
 			return "tile_red"
-		} else if shape == 1 {
-			return "tile_darkred"
-		} else if shape == 2 {
-			return "tile_darkred"
-		} else if shape == 3 {
-			return "tile_red"
-		} else if shape == 4 {
+		case 1:
 			return "tile_darkred"
 		}
 	}

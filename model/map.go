@@ -11,6 +11,7 @@ import (
 )
 
 const PlantSpreadRate = 0.00002
+const PlantDeathRate = 0.00001
 const GrassGrowRate = 0.0001
 
 type Map struct {
@@ -52,8 +53,14 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 					m.SpreadPlant(i+1, j, f.Plant, Calendar)
 					m.SpreadPlant(i, j+1, f.Plant, Calendar)
 				}
-				if f.Plant.T.IsAnnual() && Calendar.Season() == time.Winter {
-					f.Plant = nil
+				if f.Plant.T.IsAnnual() {
+					if Calendar.Season() == time.Winter {
+						f.Plant = nil
+					}
+				} else {
+					if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(Calendar) && rand.Float64() < PlantDeathRate {
+						f.Plant = nil
+					}
 				}
 			}
 			if f.Animal != nil {
