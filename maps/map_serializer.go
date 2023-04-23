@@ -35,6 +35,15 @@ func Serialize(o interface{}, dir string) {
 	}
 }
 
+func staticType(t reflect.Type) bool {
+	return t.Elem().Name() == "Artifact" ||
+		t.Elem().Name() == "Material" ||
+		t.Elem().Name() == "PlantType" ||
+		t.Elem().Name() == "TerrainType" ||
+		t.Elem().Name() == "VehicleType" ||
+		t.Elem().Name() == "NoEquipment"
+}
+
 func SerializeObject(o interface{}, writer *bytes.Buffer) {
 	t := reflect.TypeOf(o)
 	v := reflect.ValueOf(o)
@@ -65,21 +74,24 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 		writer.WriteString("}")
 	case reflect.Ptr:
 		if !v.IsNil() {
-			writer.WriteString("\"" + fmt.Sprint(v.Pointer()) + "\"")
+			if staticType(t) {
+				writer.WriteString("\"" + v.Elem().FieldByName("Name").String() + "\"")
+			} else {
+				writer.WriteString("\"" + fmt.Sprint(v.Pointer()) + "\"")
+			}
 		} else {
 			writer.WriteString("null")
 		}
 	case reflect.Struct:
 		writer.WriteString("{")
-		var first bool = true
+		writer.WriteString("\"$pkg\": \"" + t.PkgPath() + "\", ")
+		writer.WriteString("\"$type\": \"" + t.Name() + "\"")
 		for i := 0; i < t.NumField(); i++ {
 			if v.Field(i).Kind() == reflect.Func {
 				fmt.Println(t.Field(i).Name)
 			}
 			if v.Field(i).CanInterface() {
-				if !first {
-					writer.WriteString(", ")
-				}
+				writer.WriteString(", ")
 				writer.WriteString("\"" + t.Field(i).Name + "\": ")
 				if v.Field(i).Kind() == reflect.Ptr || v.Field(i).Kind() == reflect.Interface {
 					if !v.Field(i).IsNil() {
@@ -91,7 +103,6 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 					fv := v.Field(i).Interface()
 					SerializeObject(fv, writer)
 				}
-				first = false
 			}
 		}
 		writer.WriteString("}")
@@ -124,7 +135,7 @@ func CollectObjects(o interface{}, objects map[uintptr]interface{}) {
 			CollectObjects(v.MapIndex(key).Interface(), objects)
 		}
 	case reflect.Ptr:
-		if !v.IsNil() {
+		if !v.IsNil() && !staticType(t) {
 			if _, ok := objects[v.Pointer()]; !ok {
 				objects[v.Pointer()] = v.Elem().Interface()
 				CollectObjects(v.Elem().Interface(), objects)
