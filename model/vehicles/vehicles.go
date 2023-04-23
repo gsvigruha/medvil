@@ -1,54 +1,60 @@
 package vehicles
 
 import (
+	"medvil/model/building"
 	"medvil/model/navigation"
 )
 
 type VehicleType struct {
-	Name            string
-	Water           bool
-	Land            bool
-	IndoorStorage   bool
-	Trader          bool
-	MaxVolume       uint16
-	BuildingCheckFn func(navigation.Field) bool
+	Name                  string
+	Water                 bool
+	Land                  bool
+	IndoorStorage         bool
+	Trader                bool
+	MaxVolume             uint16
+	BuildingCheckFn       func(navigation.Field) bool
+	BuildingExtensionType *building.BuildingExtensionType
 }
 
 var Boat = &VehicleType{
-	Name:            "boat",
-	Water:           true,
-	Land:            false,
-	IndoorStorage:   false,
-	Trader:          false,
-	MaxVolume:       75,
-	BuildingCheckFn: navigation.Field.Sailable,
+	Name:                  "boat",
+	Water:                 true,
+	Land:                  false,
+	IndoorStorage:         false,
+	Trader:                false,
+	MaxVolume:             75,
+	BuildingCheckFn:       navigation.Field.Sailable,
+	BuildingExtensionType: building.Deck,
 }
 var Cart = &VehicleType{
-	Name:            "cart",
-	Water:           false,
-	Land:            true,
-	IndoorStorage:   true,
-	Trader:          false,
-	MaxVolume:       50,
-	BuildingCheckFn: navigation.Field.BuildingNonExtension,
+	Name:                  "cart",
+	Water:                 false,
+	Land:                  true,
+	IndoorStorage:         true,
+	Trader:                false,
+	MaxVolume:             50,
+	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
+	BuildingExtensionType: building.NonExtension,
 }
 var TradingBoat = &VehicleType{
-	Name:            "trading_boat",
-	Water:           true,
-	Land:            false,
-	IndoorStorage:   false,
-	Trader:          true,
-	MaxVolume:       75,
-	BuildingCheckFn: navigation.Field.Sailable,
+	Name:                  "trading_boat",
+	Water:                 true,
+	Land:                  false,
+	IndoorStorage:         false,
+	Trader:                true,
+	MaxVolume:             75,
+	BuildingCheckFn:       navigation.Field.Sailable,
+	BuildingExtensionType: building.Deck,
 }
 var TradingCart = &VehicleType{
-	Name:            "trading_cart",
-	Water:           false,
-	Land:            true,
-	IndoorStorage:   true,
-	Trader:          true,
-	MaxVolume:       50,
-	BuildingCheckFn: navigation.Field.BuildingNonExtension,
+	Name:                  "trading_cart",
+	Water:                 false,
+	Land:                  true,
+	IndoorStorage:         true,
+	Trader:                true,
+	MaxVolume:             50,
+	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
+	BuildingExtensionType: building.NonExtension,
 }
 
 type Vehicle struct {
