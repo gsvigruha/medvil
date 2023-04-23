@@ -18,7 +18,7 @@ type Task interface {
 	SetUp(traveller *navigation.Traveller, household Household)
 	Motion() uint8
 	IsFieldCenter() bool
-	Equipped(Equipment) bool
+	Equipped(*EquipmentType) bool
 }
 
 type TaskBase struct {
@@ -45,7 +45,7 @@ func (t *TaskBase) IsFieldCenter() bool {
 	return t.FieldCenter
 }
 
-func (t *TaskBase) Equipped(Equipment) bool {
+func (t *TaskBase) Equipped(*EquipmentType) bool {
 	return true
 }
 

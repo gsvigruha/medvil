@@ -37,11 +37,11 @@ type Household struct {
 	Heating         float64
 }
 
-func (h *Household) NextTask(m navigation.IMap, e economy.Equipment) economy.Task {
+func (h *Household) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.Task {
 	return h.getNextTaskCombineExchange(m, e)
 }
 
-func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e economy.Equipment) economy.Task {
+func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e *economy.EquipmentType) economy.Task {
 	firstTask := FirstUnblockedTask(h, e)
 	if firstTask != nil && IsExchangeBaseTask(firstTask) {
 		vehicle := h.GetVehicle()
@@ -247,7 +247,7 @@ func (h *Household) heatingFuelNeeded() uint16 {
 func (h *Household) PeopleWithTools() uint16 {
 	var n = uint16(0)
 	for _, p := range h.People {
-		if p.Equipment.Tool() {
+		if p.Equipment.Tool {
 			n++
 		}
 	}
@@ -377,7 +377,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 		Task:      nil,
 		IsHome:    true,
 		Traveller: traveller,
-		Equipment: &economy.NoEquipment{},
+		Equipment: economy.NoEquipment,
 	}
 }
 

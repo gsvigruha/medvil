@@ -122,9 +122,9 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 
 func PersonToPanel(cp *ControlPanel, p *gui.Panel, i int, person *social.Person, w int, top float64) {
 	p.AddImageLabel("person", float64(10+i*w), top, IconS, IconS, gui.ImageLabelStyleRegular)
-	if person.Equipment.Weapon() {
+	if person.Equipment.Weapon {
 		p.AddImageLabel("tasks/swordsmith", float64(10+i*w)+16, top+16, 24, 24, gui.ImageLabelStyleRegular)
-	} else if person.Equipment.Tool() {
+	} else if person.Equipment.Tool {
 		p.AddImageLabel("tasks/toolsmith", float64(10+i*w)+16, top+16, 24, 24, gui.ImageLabelStyleRegular)
 	}
 	p.AddScaleLabel("food", float64(10+i*w), top+float64(IconH), IconS, IconS, 4, float64(person.Food)/float64(social.MaxPersonState), false)
