@@ -19,7 +19,7 @@ type Home interface {
 	HasMedicine() bool
 	Field(navigation.IMap) *navigation.Field
 	RandomField(navigation.IMap, func(navigation.Field) bool) *navigation.Field
-	NextTask(navigation.IMap, economy.Equipment) economy.Task
+	NextTask(navigation.IMap, *economy.EquipmentType) economy.Task
 	GetResources() *artifacts.Resources
 	GetBuilding() *building.Building
 	GetHeating() float64

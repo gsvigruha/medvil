@@ -94,7 +94,7 @@ func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicl
 	return nil
 }
 
-func FirstUnblockedTask(h Home, e economy.Equipment) economy.Task {
+func FirstUnblockedTask(h Home, e *economy.EquipmentType) economy.Task {
 	if len(h.GetTasks()) == 0 {
 		return nil
 	}
@@ -112,7 +112,7 @@ func FirstUnblockedTask(h Home, e economy.Equipment) economy.Task {
 	return h.GetTasks()[i]
 }
 
-func GetNextTask(h Home, e economy.Equipment) economy.Task {
+func GetNextTask(h Home, e *economy.EquipmentType) economy.Task {
 	if len(h.GetTasks()) == 0 {
 		return nil
 	}
