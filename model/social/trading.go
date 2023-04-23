@@ -180,6 +180,6 @@ func (t *Trader) GetMoney() *uint32 {
 	return &t.Money
 }
 
-func (t *Trader) Destination(extenstionType *building.BuildingExtensionType) navigation.Destination {
+func (t *Trader) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
 	return navigation.TravellerDestination{T: t.Person.Traveller}
 }
