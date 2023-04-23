@@ -1,39 +1,10 @@
 package economy
 
-type Equipment interface {
-	Weapon() bool
-	Tool() bool
+type EquipmentType struct {
+	Weapon bool
+	Tool   bool
 }
 
-type NoEquipment struct {
-}
-
-func (e *NoEquipment) Tool() bool {
-	return false
-}
-
-func (e *NoEquipment) Weapon() bool {
-	return false
-}
-
-type Tool struct {
-}
-
-func (t *Tool) Tool() bool {
-	return true
-}
-
-func (t *Tool) Weapon() bool {
-	return false
-}
-
-type Weapon struct {
-}
-
-func (w *Weapon) Tool() bool {
-	return false
-}
-
-func (w *Weapon) Weapon() bool {
-	return true
-}
+var NoEquipment = &EquipmentType{Tool: false, Weapon: false}
+var Tool = &EquipmentType{Tool: true, Weapon: false}
+var Weapon = &EquipmentType{Tool: false, Weapon: true}

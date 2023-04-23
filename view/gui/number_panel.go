@@ -13,7 +13,8 @@ type NumberPanel struct {
 	format     string
 	min        int
 	max        int
-	val        *int
+	get        func() int
+	set        func(int)
 }
 
 type NumberPanelButton struct {
@@ -23,13 +24,13 @@ type NumberPanelButton struct {
 }
 
 func (b NumberPanelButton) Click() {
-	if *b.np.val+b.inc >= b.np.min && *b.np.val+b.inc <= b.np.max {
-		*b.np.val += b.inc
+	if b.np.get()+b.inc >= b.np.min && b.np.get()+b.inc <= b.np.max {
+		b.np.set(b.np.get() + b.inc)
 	}
 }
 
 func (b NumberPanelButton) Render(cv *canvas.Canvas) {
-	b.np.TextLabel.Text = fmt.Sprintf(b.np.format, *b.np.val)
+	b.np.TextLabel.Text = fmt.Sprintf(b.np.format, b.np.get())
 	b.b.Render(cv)
 }
 
@@ -41,9 +42,13 @@ func (b NumberPanelButton) Enabled() bool {
 	return b.b.Enabled()
 }
 
-func CreateNumberPanel(x, y, sx, sy float64, min, max, inc int, format string, val *int) *NumberPanel {
+func CreateNumberPaneFromVal(x, y, sx, sy float64, min, max, inc int, format string, val *int) *NumberPanel {
+	return CreateNumberPanel(x, y, sx, sy, min, max, inc, format, func() int { return *val }, func(v int) { *val = v })
+}
+
+func CreateNumberPanel(x, y, sx, sy float64, min, max, inc int, format string, get func() int, set func(int)) *NumberPanel {
 	p := &Panel{}
-	np := &NumberPanel{P: p, val: val, format: format, min: min, max: max}
+	np := &NumberPanel{P: p, format: format, min: min, max: max, get: get, set: set}
 	np.TextLabel = p.AddTextLabel("", x, y+sy*2/3)
 	si := sy / 2
 	np.UpButton = NumberPanelButton{

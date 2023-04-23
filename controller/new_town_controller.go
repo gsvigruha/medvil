@@ -42,14 +42,14 @@ func (ntc *NewTownController) SetToState() {
 		srcH := &ntc.sourceTH.Household
 		dstH := &ntc.newTown.Townhall.Household
 		for a, q := range ntc.resources {
-			if *q > 0 {
+			if q > 0 {
 				srcH.AddTask(&economy.TransportTask{
 					PickupD:  ntc.cp.C.Map.GetField(srcH.Building.X, srcH.Building.Y),
 					DropoffD: ntc.cp.C.Map.GetField(dstH.Building.X, dstH.Building.Y),
 					PickupR:  &srcH.Resources,
 					DropoffR: &dstH.Resources,
 					A:        a,
-					Quantity: uint16(*q),
+					Quantity: uint16(q),
 				})
 			}
 		}
@@ -68,8 +68,8 @@ func (ntc *NewTownController) SetToState() {
 			srcH.Money = 0
 		}
 		for a, q := range ntc.resources {
-			if q2, ok := ntc.newTown.Townhall.StorageTarget[a]; ok && *q2 < *q {
-				*ntc.newTown.Townhall.StorageTarget[a] = *q
+			if q2, ok := ntc.newTown.Townhall.StorageTarget[a]; ok && q2 < q {
+				ntc.newTown.Townhall.StorageTarget[a] = q
 			}
 		}
 		srcH.Town.Country.AddTownIfDoesNotExist(ntc.newTown)
@@ -103,7 +103,7 @@ func (b *NewTownControllerButton) Contains(x float64, y float64) bool {
 type NewTownController struct {
 	p         *gui.Panel
 	bc        *BuildingsController
-	resources map[*artifacts.Artifact]*int
+	resources map[*artifacts.Artifact]int
 	numPeople *int
 	money     *int
 	sourceTH  *social.Townhall
@@ -117,10 +117,10 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		return
 	}
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
-	resources := make(map[*artifacts.Artifact]*int)
+	resources := make(map[*artifacts.Artifact]int)
 	for _, a := range artifacts.All {
 		var n int = 0
-		resources[a] = &n
+		resources[a] = n
 	}
 	newTown := &social.Town{Country: th.Household.Town.Country}
 	newTown.Townhall = &social.Townhall{Household: social.Household{Town: newTown}}
@@ -152,11 +152,11 @@ func SetupNewTownController(c *NewTownController) {
 	if c.state == NewTownControllerStatePickResources {
 		c.p.AddImageLabel("person", 10, resTop, IconS, IconS, gui.ImageLabelStyleRegular)
 		c.p.AddTextLabel(strconv.Itoa(len(c.sourceTH.Household.People)), 10, resTop+float64(IconH+4))
-		c.p.AddPanel(gui.CreateNumberPanel(10, resTop+float64(IconH+8), IconS, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
+		c.p.AddPanel(gui.CreateNumberPaneFromVal(10, resTop+float64(IconH+8), IconS, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
 
 		c.p.AddImageLabel("coin", float64(10+IconW), resTop, IconS, IconS, gui.ImageLabelStyleRegular)
 		c.p.AddTextLabel(strconv.Itoa(int(c.sourceTH.Household.Money)), float64(10+IconW), resTop+float64(IconH+4))
-		c.p.AddPanel(gui.CreateNumberPanel(float64(10+IconW), resTop+float64(IconH+8), IconS, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
+		c.p.AddPanel(gui.CreateNumberPaneFromVal(float64(10+IconW), resTop+float64(IconH+8), IconS, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
 
 		var aI = 2
 		for _, a := range artifacts.All {
@@ -211,13 +211,15 @@ func ArtifactsPickerToControlPanel(c *NewTownController, i int, a *artifacts.Art
 	yI := i / IconRowMax
 	c.p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
 	c.p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*rowH+IconH+4))
-	c.p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*rowH+IconH+8), IconS, 20, 0, int(q), 5, "%v", c.resources[a]).P)
+	c.p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*rowH+IconH+8), IconS, 20, 0, int(q), 5, "%v",
+		func() int { return c.resources[a] },
+		func(v int) { c.resources[a] = v }).P)
 }
 
 func (ntc *NewTownController) GetResourceVolume() uint16 {
 	var v uint16 = 0
 	for a, q := range ntc.resources {
-		v += a.V * uint16(*q)
+		v += a.V * uint16(q)
 	}
 	return v
 }
@@ -282,7 +284,7 @@ func (ntc *NewTownController) HandleClick(c *Controller, rf *renderer.RenderedFi
 			}
 			ntc.newTown.CreateBuildingConstruction(b, c.Map)
 			for _, as := range ntc.bc.Plan.ConstructionCost() {
-				*ntc.resources[as.A] = *ntc.resources[as.A] + int(as.Quantity)
+				ntc.resources[as.A] = ntc.resources[as.A] + int(as.Quantity)
 			}
 			ntc.SetToState()
 			return true

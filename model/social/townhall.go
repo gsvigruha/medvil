@@ -9,7 +9,7 @@ import (
 
 type Townhall struct {
 	Household     Household
-	StorageTarget map[*artifacts.Artifact]*int
+	StorageTarget map[*artifacts.Artifact]int
 	Traders       []*Trader
 }
 
@@ -28,7 +28,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: transportQuantity}}
 		if q, ok := t.Household.Resources.Artifacts[a]; ok {
 			if t.Household.NumTasks("exchange", tag) == 0 {
-				targetQ := uint16(*(t.StorageTarget[a]))
+				targetQ := uint16(t.StorageTarget[a])
 				if q > targetQ {
 					qToSell := t.Household.ArtifactToSell(a, q, false, false)
 					if qToSell > 0 {

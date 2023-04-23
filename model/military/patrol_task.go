@@ -46,6 +46,6 @@ func (t *PatrolTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
-func (t *PatrolTask) Equipped(e economy.Equipment) bool {
-	return e.Weapon()
+func (t *PatrolTask) Equipped(e *economy.EquipmentType) bool {
+	return e.Weapon
 }
