@@ -12,19 +12,30 @@ type Destination interface {
 	Check(PathElement) bool
 }
 
-type FieldChecker func(Field) bool
-
 type BuildingDestination struct {
-	B          *building.Building
-	CheckField FieldChecker
+	B  *building.Building
+	ET *building.BuildingExtensionType
+}
+
+func (bd BuildingDestination) extensionMatch(bc building.BuildingComponent) bool {
+	unit, ok := bc.(*building.ExtensionUnit)
+	if !ok {
+		return bd.ET == nil
+	} else {
+		return unit.T == bd.ET
+	}
 }
 
 func (bd BuildingDestination) Check(pe PathElement) bool {
 	if bpe, ok := pe.(*BuildingPathElement); ok {
-		return bpe.BC.Building() == bd.B
+		if bpe.BC.Building() == bd.B {
+			return bd.extensionMatch(bpe.BC)
+		}
 	}
 	if f, ok := pe.(*Field); ok {
-		return f.Building.GetBuilding() == bd.B && bd.CheckField(*f)
+		if f.Building.GetBuilding() == bd.B {
+			return bd.extensionMatch(f.Building.BuildingComponents[0])
+		}
 	}
 	return false
 }

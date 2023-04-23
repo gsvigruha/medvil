@@ -41,11 +41,13 @@ func IsExchangeBaseTask(t economy.Task) bool {
 func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicles.Vehicle) *economy.ExchangeTask {
 	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
 	var buildingCheckFn = navigation.Field.BuildingNonExtension
+	var buildingExtension = building.NonExtension
 	sailableMP := mp.Building.HasExtension(building.Deck)
 	sailableH := h.RandomField(m, navigation.Field.BoatDestination) != nil
 	if vehicle != nil {
 		if vehicle.T.Water && sailableMP && sailableH {
 			buildingCheckFn = navigation.Field.BoatDestination
+			buildingExtension = building.Deck
 		}
 		maxVolume = vehicle.T.MaxVolume
 	}
@@ -56,7 +58,7 @@ func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicl
 	}
 	et := &economy.ExchangeTask{
 		HomeD:          hf,
-		MarketD:        navigation.BuildingDestination{B: mp.Building, CheckField: buildingCheckFn},
+		MarketD:        navigation.BuildingDestination{B: mp.Building, ET: buildingExtension},
 		Exchange:       mp,
 		HouseholdR:     h.GetResources(),
 		HouseholdMoney: h.GetMoney(),
