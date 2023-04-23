@@ -2,6 +2,7 @@ package social
 
 import (
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -52,7 +53,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						if pickup != nil {
 							w.Household.AddPriorityTask(&economy.TransportTask{
 								PickupD:  pickup,
-								DropoffD: w.Household.Destination(navigation.Field.BuildingNonExtension),
+								DropoffD: w.Household.Destination(building.NonExtension),
 								PickupR:  &pickup.Terrain.Resources,
 								DropoffR: &w.Household.Resources,
 								A:        water,
