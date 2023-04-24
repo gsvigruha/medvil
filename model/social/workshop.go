@@ -37,11 +37,11 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if w.Household.Resources.Needs(batch) != nil && w.Household.NumTasks("exchange", tag) == 0 {
 				if w.Household.Money >= mp.Price(batch) {
 					w.Household.AddTask(&economy.BuyTask{
-						Exchange:       mp,
-						HouseholdMoney: &w.Household.Money,
-						Goods:          batch,
-						MaxPrice:       uint32(maxUnitCost * float64(transportQ)),
-						TaskTag:        tag,
+						Exchange:        mp,
+						HouseholdWallet: &w.Household,
+						Goods:           batch,
+						MaxPrice:        uint32(maxUnitCost * float64(transportQ)),
+						TaskTag:         tag,
 					})
 					numP := uint16(len(w.Household.People))
 					water := artifacts.GetArtifact("water")

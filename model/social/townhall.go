@@ -42,11 +42,11 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					maxPrice := uint32(float64(t.Household.Money) * StorageRefillBudgetPercentage / float64(len(t.Household.Resources.Artifacts)))
 					if t.Household.Money >= mp.Price(goods) && mp.HasTraded(a) {
 						t.Household.AddTask(&economy.BuyTask{
-							Exchange:       mp,
-							HouseholdMoney: &t.Household.Money,
-							Goods:          goods,
-							MaxPrice:       maxPrice,
-							TaskTag:        tag,
+							Exchange:        mp,
+							HouseholdWallet: &t.Household,
+							Goods:           goods,
+							MaxPrice:        maxPrice,
+							TaskTag:         tag,
 						})
 					}
 				}

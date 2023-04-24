@@ -80,7 +80,7 @@ func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 				SourceExchange:    t.SourceExchange,
 				TargetExchange:    t.TargetExchange,
 				TraderR:           &t.Resources,
-				TraderMoney:       &t.Money,
+				TraderWallet:      t,
 				Vehicle:           nil,
 				GoodsSourceToDest: goodsSourceToDest,
 				GoodsDestToSource: goodsDestToSource,
@@ -176,8 +176,16 @@ func (t *Trader) NumTasks(name string, tag string) int {
 	return i
 }
 
-func (t *Trader) GetMoney() *uint32 {
-	return &t.Money
+func (t *Trader) Spend(amount uint32) {
+	t.Money -= amount
+}
+
+func (t *Trader) Earn(amount uint32) {
+	t.Money += amount
+}
+
+func (t *Trader) GetMoney() uint32 {
+	return t.Money
 }
 
 func (t *Trader) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
