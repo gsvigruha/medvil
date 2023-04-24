@@ -86,11 +86,11 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			inputs := artifacts.Artifacts{A: a, Quantity: transportQ}.Wrap()
 			if f.Household.Money >= mp.Price(inputs) {
 				f.Household.AddTask(&economy.BuyTask{
-					Exchange:       mp,
-					HouseholdMoney: &f.Household.Money,
-					Goods:          inputs,
-					MaxPrice:       mp.Price(inputs) * 2,
-					TaskTag:        tag,
+					Exchange:        mp,
+					HouseholdWallet: &f.Household,
+					Goods:           inputs,
+					MaxPrice:        mp.Price(inputs) * 2,
+					TaskTag:         tag,
 				})
 			}
 		}

@@ -19,7 +19,7 @@ type TradeTask struct {
 	SourceExchange    Exchange
 	TargetExchange    Exchange
 	TraderR           *artifacts.Resources
-	TraderMoney       *uint32
+	TraderWallet      Wallet
 	Vehicle           *vehicles.Vehicle
 	GoodsSourceToDest []artifacts.Artifacts
 	GoodsDestToSource []artifacts.Artifacts
@@ -46,24 +46,24 @@ func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	switch t.state {
 	case TradeTaskStatePickupAtSource:
 		t.Goods = []artifacts.Artifacts{}
-		if t.SourceExchange.Price(t.GoodsSourceToDest) <= *t.TraderMoney {
-			t.Goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderMoney)
+		if t.SourceExchange.Price(t.GoodsSourceToDest) <= t.TraderWallet.GetMoney() {
+			t.Goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderWallet)
 		}
 		t.state = TradeTaskStateDropoffAtDest
 	case TradeTaskStateDropoffAtDest:
 		if t.TargetExchange.CanSell(t.Goods) {
-			t.TargetExchange.Sell(t.Goods, t.TraderMoney)
+			t.TargetExchange.Sell(t.Goods, t.TraderWallet)
 		}
 		t.state = TradeTaskStatePickupAtDest
 	case TradeTaskStatePickupAtDest:
 		t.Goods = []artifacts.Artifacts{}
-		if t.TargetExchange.Price(t.GoodsDestToSource) <= *t.TraderMoney {
-			t.Goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderMoney)
+		if t.TargetExchange.Price(t.GoodsDestToSource) <= t.TraderWallet.GetMoney() {
+			t.Goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderWallet)
 		}
 		t.state = TradeTaskStateDropoffAtSource
 	case TradeTaskStateDropoffAtSource:
 		if t.SourceExchange.CanSell(t.Goods) {
-			t.SourceExchange.Sell(t.Goods, t.TraderMoney)
+			t.SourceExchange.Sell(t.Goods, t.TraderWallet)
 		}
 		return true
 	}

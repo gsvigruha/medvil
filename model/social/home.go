@@ -9,6 +9,7 @@ import (
 )
 
 type Home interface {
+	economy.Wallet
 	AddTask(economy.Task)
 	AddPriorityTask(economy.Task)
 	GetTasks() []economy.Task
@@ -27,7 +28,6 @@ type Home interface {
 	AddVehicle(*vehicles.Vehicle)
 	GetVehicle() *vehicles.Vehicle
 	NumTasks(name string, tag string) int
-	GetMoney() *uint32
 	Destination(extensionType *building.BuildingExtensionType) navigation.Destination
 }
 
@@ -88,17 +88,17 @@ func GetFoodTasks(h Home, numP uint16, mp *Marketplace) {
 		if h.GetResources().Get(a) < economy.MinFoodOrDrinkPerPerson*numP {
 			if needsFood(h, numP, a) {
 				needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
-				var maxPrice = *h.GetMoney() / uint32(numFoodBatchesNeeded)
+				var maxPrice = h.GetMoney() / uint32(numFoodBatchesNeeded)
 				if maxPrice > mp.Price(needs)*2 {
 					maxPrice = mp.Price(needs) * 2
 				}
-				if *h.GetMoney() >= mp.Price(needs) && mp.HasTraded(a) {
+				if h.GetMoney() >= mp.Price(needs) && mp.HasTraded(a) {
 					h.AddPriorityTask(&economy.BuyTask{
-						Exchange:       mp,
-						HouseholdMoney: h.GetMoney(),
-						Goods:          needs,
-						MaxPrice:       maxPrice,
-						TaskTag:        "food_shopping#" + a.Name,
+						Exchange:        mp,
+						HouseholdWallet: h,
+						Goods:           needs,
+						MaxPrice:        maxPrice,
+						TaskTag:         "food_shopping#" + a.Name,
 					})
 				}
 			}

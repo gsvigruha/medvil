@@ -65,11 +65,11 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				artifacts.Artifacts{A: Shield, Quantity: quantity}}
 			if h.Money >= mp.Price(needs) && mp.HasTraded(Sword) && mp.HasTraded(Shield) {
 				h.AddTask(&economy.BuyTask{
-					Exchange:       mp,
-					HouseholdMoney: &h.Money,
-					Goods:          needs,
-					MaxPrice:       uint32(float64(h.Money) * WeaponBudgetRatio),
-					TaskTag:        tag,
+					Exchange:        mp,
+					HouseholdWallet: h,
+					Goods:           needs,
+					MaxPrice:        uint32(float64(h.Money) * WeaponBudgetRatio),
+					TaskTag:         tag,
 				})
 			}
 		}
