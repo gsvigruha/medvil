@@ -57,15 +57,15 @@ func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicl
 		return nil
 	}
 	et := &economy.ExchangeTask{
-		HomeD:          hf,
-		MarketD:        navigation.BuildingDestination{B: mp.Building, ET: buildingExtension},
-		Exchange:       mp,
-		HouseholdR:     h.GetResources(),
-		HouseholdMoney: h.GetMoney(),
-		Vehicle:        vehicle,
-		GoodsToBuy:     nil,
-		GoodsToSell:    nil,
-		TaskTag:        "",
+		HomeD:           hf,
+		MarketD:         navigation.BuildingDestination{B: mp.Building, ET: buildingExtension},
+		Exchange:        mp,
+		HouseholdR:      h.GetResources(),
+		HouseholdWallet: h,
+		Vehicle:         vehicle,
+		GoodsToBuy:      nil,
+		GoodsToSell:     nil,
+		TaskTag:         "",
 	}
 	var empty = true
 	var tasks []economy.Task

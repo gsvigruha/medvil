@@ -121,11 +121,11 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Tools, Quantity: 1}}
 		if h.Money >= mp.Price(needs) && mp.HasTraded(Tools) {
 			h.AddTask(&economy.BuyTask{
-				Exchange:       mp,
-				HouseholdMoney: &h.Money,
-				Goods:          needs,
-				MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
-				TaskTag:        "tools_purchase",
+				Exchange:        mp,
+				HouseholdWallet: h,
+				Goods:           needs,
+				MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+				TaskTag:         "tools_purchase",
 			})
 		}
 	}
@@ -170,11 +170,11 @@ func (h *Household) MaybeBuyExtras(a *artifacts.Artifact, threshold uint16, tag 
 			needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantity(a)}}
 			if h.Money >= mp.Price(needs) && mp.HasTraded(a) {
 				h.AddTask(&economy.BuyTask{
-					Exchange:       mp,
-					HouseholdMoney: &h.Money,
-					Goods:          needs,
-					MaxPrice:       uint32(float64(h.Money) * ExtrasBudgetRatio),
-					TaskTag:        tag,
+					Exchange:        mp,
+					HouseholdWallet: h,
+					Goods:           needs,
+					MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+					TaskTag:         tag,
 				})
 			}
 		}
@@ -468,8 +468,16 @@ func (h *Household) GetHeating() float64 {
 	return h.Heating
 }
 
-func (h *Household) GetMoney() *uint32 {
-	return &h.Money
+func (h *Household) Spend(amount uint32) {
+	h.Money -= amount
+}
+
+func (h *Household) Earn(amount uint32) {
+	h.Money -= amount
+}
+
+func (h *Household) GetMoney() uint32 {
+	return h.Money
 }
 
 func (h *Household) Destroy(m navigation.IMap) {
