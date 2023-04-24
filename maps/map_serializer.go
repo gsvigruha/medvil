@@ -41,7 +41,7 @@ func staticType(t reflect.Type) bool {
 		t.Elem().Name() == "PlantType" ||
 		t.Elem().Name() == "TerrainType" ||
 		t.Elem().Name() == "VehicleType" ||
-		t.Elem().Name() == "NoEquipment"
+		t.Elem().Name() == "EquipmentType"
 }
 
 func SerializeObject(o interface{}, writer *bytes.Buffer) {
