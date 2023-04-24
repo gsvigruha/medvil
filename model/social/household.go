@@ -473,7 +473,7 @@ func (h *Household) Spend(amount uint32) {
 }
 
 func (h *Household) Earn(amount uint32) {
-	h.Money -= amount
+	h.Money += amount
 }
 
 func (h *Household) GetMoney() uint32 {

@@ -181,7 +181,7 @@ func (t *Trader) Spend(amount uint32) {
 }
 
 func (t *Trader) Earn(amount uint32) {
-	t.Money -= amount
+	t.Money += amount
 }
 
 func (t *Trader) GetMoney() uint32 {
