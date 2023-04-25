@@ -11,21 +11,24 @@ import (
 	"time"
 )
 
+const Version = "0.1"
+
 func Serialize(o interface{}, dir string) {
 	var writer bytes.Buffer
-	var objects map[uintptr]interface{} = make(map[uintptr]interface{})
+	var objects map[string]interface{} = make(map[string]interface{})
 	CollectObjects(o, objects)
+	firstKey := fmt.Sprint(reflect.ValueOf(o).Pointer())
+	firstObj := objects[firstKey]
+	delete(objects, firstKey)
+	objects["0"] = firstObj
 	log.Printf("Objects to save %d", len(objects))
 	writer.WriteString("{")
-	var first bool = true
+	writer.WriteString("\"$version\": \"" + Version + "\"")
 	for ptr, obj := range objects {
-		if !first {
-			writer.WriteString(", ")
-		}
+		writer.WriteString(", ")
 		writer.WriteString("\"" + fmt.Sprint(ptr) + "\"")
 		writer.WriteString(": ")
 		SerializeObject(obj, &writer)
-		first = false
 	}
 	writer.WriteString("}")
 	os.MkdirAll(dir, os.ModePerm)
@@ -126,7 +129,7 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 	}
 }
 
-func CollectObjects(o interface{}, objects map[uintptr]interface{}) {
+func CollectObjects(o interface{}, objects map[string]interface{}) {
 	t := reflect.TypeOf(o)
 	v := reflect.ValueOf(o)
 	switch t.Kind() {
@@ -141,8 +144,9 @@ func CollectObjects(o interface{}, objects map[uintptr]interface{}) {
 		}
 	case reflect.Ptr:
 		if !v.IsNil() && !staticType(t) {
-			if _, ok := objects[v.Pointer()]; !ok {
-				objects[v.Pointer()] = v.Elem().Interface()
+			objKey := fmt.Sprint(v.Pointer())
+			if _, ok := objects[objKey]; !ok {
+				objects[objKey] = v.Elem().Interface()
 				CollectObjects(v.Elem().Interface(), objects)
 			}
 		}
@@ -156,6 +160,10 @@ func CollectObjects(o interface{}, objects map[uintptr]interface{}) {
 				} else {
 					fv := v.Field(i).Interface()
 					CollectObjects(fv, objects)
+				}
+			} else {
+				if t.Field(i).Tag.Get("ser") != "false" {
+					fmt.Println("Cant interface: " + t.Field(i).Name)
 				}
 			}
 		}

@@ -13,8 +13,8 @@ type BuildingTask struct {
 	TaskBase
 	D        navigation.Destination
 	C        *building.Construction
-	started  bool
-	progress uint16
+	Started  bool
+	Progress uint16
 }
 
 func (t *BuildingTask) Destination() navigation.Destination {
@@ -22,16 +22,16 @@ func (t *BuildingTask) Destination() navigation.Destination {
 }
 
 func (t *BuildingTask) Complete(Calendar *time.CalendarType, tool bool) bool {
-	if !t.started && !t.Blocked() {
+	if !t.Started && !t.Blocked() {
 		if len(t.C.Cost) > 0 {
 			a := t.C.Storage.GetArtifacts()[0]
 			t.C.Storage.Remove(a, 1)
 		}
-		t.started = true
+		t.Started = true
 	}
-	if t.started {
-		if t.progress < BuildingTaskMaxProgress {
-			t.progress++
+	if t.Started {
+		if t.Progress < BuildingTaskMaxProgress {
+			t.Progress++
 		} else {
 			t.C.Progress++
 			return true
@@ -41,7 +41,7 @@ func (t *BuildingTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 }
 
 func (t *BuildingTask) Blocked() bool {
-	return !t.started && t.C.Storage.IsEmpty() && len(t.C.Cost) > 0
+	return !t.Started && t.C.Storage.IsEmpty() && len(t.C.Cost) > 0
 }
 
 func (t *BuildingTask) Name() string {
