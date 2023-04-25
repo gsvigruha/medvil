@@ -163,7 +163,7 @@ func CollectObjects(o interface{}, objects map[string]interface{}) {
 				}
 			} else {
 				if t.Field(i).Tag.Get("ser") != "false" {
-					fmt.Println("Cant interface: " + t.Field(i).Name)
+					fmt.Println("Cannot serialize: " + t.Name() + "." + t.Field(i).Name)
 				}
 			}
 		}
