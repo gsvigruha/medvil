@@ -310,5 +310,5 @@ func (c *Controller) AddRenderedTraveller(rt *renderer.RenderedTraveller) {
 }
 
 func (c *Controller) Save() {
-	maps.SaveMap(c.Map, "samples/map/coast_2")
+	maps.Serialize(c.Map, "samples/map/coast_3")
 }

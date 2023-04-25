@@ -43,9 +43,9 @@ type Traveller struct {
 	Visible   bool
 	T         uint8
 	Vehicle   Vehicle
-	pc        PathComp
-	lane      uint8
-	stuckCntr uint8
+	pc        PathComp `ser:"false"`
+	Lane      uint8
+	StuckCntr uint8
 }
 
 func (t *Traveller) consumePathElement() {
@@ -187,9 +187,9 @@ func (t *Traveller) Move(m IMap) {
 			if t.FX == l.X && t.FY == l.Y {
 				t.Jump(m)
 			} else if t.FY == l.Y {
-				if t.PY < MaxPY/4*t.lane {
+				if t.PY < MaxPY/4*t.Lane {
 					dirToLane = DirectionS
-				} else if t.PY > MaxPY/4*t.lane {
+				} else if t.PY > MaxPY/4*t.Lane {
 					dirToLane = DirectionN
 				}
 				if t.FX > l.X {
@@ -198,9 +198,9 @@ func (t *Traveller) Move(m IMap) {
 					dirToNextField = DirectionE
 				}
 			} else if t.FX == l.X {
-				if t.PX < MaxPX/4*t.lane {
+				if t.PX < MaxPX/4*t.Lane {
 					dirToLane = DirectionE
-				} else if t.PX > MaxPX/4*t.lane {
+				} else if t.PX > MaxPX/4*t.Lane {
 					dirToLane = DirectionW
 				}
 				if t.FY > l.Y {
@@ -212,15 +212,15 @@ func (t *Traveller) Move(m IMap) {
 			if dirToLane != DirectionNone && t.HasRoom(m, dirToLane) {
 				// Move towards the lane if possible
 				t.MoveToDir(dirToLane, true, m)
-				t.stuckCntr = 0
+				t.StuckCntr = 0
 			} else if dirToNextField != DirectionNone && t.HasRoom(m, dirToNextField) {
 				// Move towards the next field if in correct lane and possible
 				t.MoveToDir(dirToNextField, false, m)
-				t.stuckCntr = 0
-			} else if t.stuckCntr < MaxStuckCntr {
+				t.StuckCntr = 0
+			} else if t.StuckCntr < MaxStuckCntr {
 				// Try to pick a different lane a few times
-				t.lane = uint8(rand.Intn(3) + 1)
-				t.stuckCntr++
+				t.Lane = uint8(rand.Intn(3) + 1)
+				t.StuckCntr++
 			} else {
 				// Move towards any available space
 				for i := uint8(0); i < 4; i++ {
@@ -268,8 +268,8 @@ func (t *Traveller) EnsurePath(dest Destination, m IMap) (bool, bool) {
 			select {
 			case t.pc.path = <-t.pc.pc:
 				t.pc.computing = false
-				t.lane = uint8(rand.Intn(3) + 1)
-				t.stuckCntr = 0
+				t.Lane = uint8(rand.Intn(3) + 1)
+				t.StuckCntr = 0
 			}
 		}
 	}

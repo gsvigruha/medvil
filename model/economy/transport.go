@@ -16,12 +16,12 @@ type TransportTask struct {
 	A                *artifacts.Artifact
 	Quantity         uint16
 	CompleteQuantity bool
-	q                uint16
-	dropoff          bool
+	Q                uint16
+	Dropoff          bool
 }
 
 func (t *TransportTask) Destination() navigation.Destination {
-	if t.dropoff {
+	if t.Dropoff {
 		return t.DropoffD
 	} else {
 		return t.PickupD
@@ -29,17 +29,17 @@ func (t *TransportTask) Destination() navigation.Destination {
 }
 
 func (t *TransportTask) Complete(Calendar *time.CalendarType, tool bool) bool {
-	if t.dropoff {
-		t.DropoffR.Add(t.A, t.q)
+	if t.Dropoff {
+		t.DropoffR.Add(t.A, t.Q)
 		if t.Quantity == 0 || !t.CompleteQuantity {
 			return true
 		}
-		t.dropoff = false
+		t.Dropoff = false
 		return false
 	} else {
-		t.q = t.PickupR.Remove(t.A, t.Quantity)
-		t.Quantity -= t.q
-		t.dropoff = true
+		t.Q = t.PickupR.Remove(t.A, t.Quantity)
+		t.Quantity -= t.Q
+		t.Dropoff = true
 	}
 	return false
 }
@@ -48,7 +48,7 @@ func (t *TransportTask) Blocked() bool {
 	if t.DropoffR.UsedVolumeCapacity() > 1.0 {
 		return true
 	}
-	if !t.dropoff {
+	if !t.Dropoff {
 		return t.PickupR.Get(t.A) < t.Quantity
 	}
 	return false

@@ -16,7 +16,7 @@ type TerraformTask struct {
 	M        navigation.IMap
 	F        *navigation.Field
 	T        uint8
-	progress uint16
+	Progress uint16
 }
 
 func (t *TerraformTask) Destination() navigation.Destination {
@@ -24,8 +24,8 @@ func (t *TerraformTask) Destination() navigation.Destination {
 }
 
 func (t *TerraformTask) Complete(Calendar *time.CalendarType, tool bool) bool {
-	if t.progress < TerraformTaskMaxProgress {
-		t.progress++
+	if t.Progress < TerraformTaskMaxProgress {
+		t.Progress++
 		return false
 	} else {
 		switch t.T {
