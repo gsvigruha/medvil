@@ -111,6 +111,10 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 					fv := v.Field(i).Interface()
 					SerializeObject(fv, writer)
 				}
+			} else {
+				if t.Field(i).Tag.Get("ser") != "false" {
+					fmt.Println("Cannot serialize: " + t.Name() + "." + t.Field(i).Name)
+				}
 			}
 		}
 		writer.WriteString("}")
@@ -123,7 +127,7 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 	case reflect.String:
 		writer.WriteString("\"" + v.String() + "\"")
 	case reflect.Float64:
-		writer.WriteString(strconv.FormatFloat(v.Float(), 'E', -1, 32))
+		writer.WriteString(strconv.FormatFloat(v.Float(), 'E', -1, 64))
 	default:
 		fmt.Println(t.Kind(), o)
 	}
