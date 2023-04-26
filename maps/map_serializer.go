@@ -39,6 +39,9 @@ func Serialize(o interface{}, dir string) {
 }
 
 func StaticType(t reflect.Type) bool {
+	if t.Kind() == reflect.Interface {
+		return false
+	}
 	return t.Elem().Name() == "Artifact" ||
 		t.Elem().Name() == "Material" ||
 		t.Elem().Name() == "PlantType" ||

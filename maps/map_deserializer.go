@@ -33,21 +33,32 @@ func Deserialize(file string) interface{} {
 	}
 	var objects map[string]reflect.Value = make(map[string]reflect.Value)
 	log.Printf("Objects to load %d", len(jsonData))
-	return DeserializeObject(jsonData["0"], reflect.TypeOf(model.Map{}), jsonData, objects).Interface()
+	result := DeserializeObject(jsonData["0"], reflect.TypeOf(model.Map{}), jsonData, objects, nil)
+	return result.Addr().Interface()
 }
 
-func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]json.RawMessage, objects map[string]reflect.Value) reflect.Value {
+func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]json.RawMessage, objects map[string]reflect.Value, objKey *string) reflect.Value {
 	fmt.Println(t.Kind(), t.Name())
 	switch t.Kind() {
-	case reflect.Array, reflect.Slice:
+	case reflect.Slice:
 		var mData []json.RawMessage
 		if err := json.Unmarshal(m, &mData); err != nil {
 			fmt.Println("Error when loading "+t.Name()+": ", err)
 		}
 		v := reflect.MakeSlice(t, 0, 0)
 		for i := 0; i < len(mData); i++ {
-			x := DeserializeObject(mData[i], t.Elem(), jsonData, objects)
+			x := DeserializeObject(mData[i], t.Elem(), jsonData, objects, nil)
 			v = reflect.Append(v, x)
+		}
+		return v
+	case reflect.Array:
+		var mData []json.RawMessage
+		if err := json.Unmarshal(m, &mData); err != nil {
+			fmt.Println("Error when loading "+t.Name()+": ", err)
+		}
+		v := reflect.New(t).Elem()
+		for i := 0; i < len(mData); i++ {
+			v.Index(i).Set(DeserializeObject(mData[i], t.Elem(), jsonData, objects, nil))
 		}
 		return v
 	case reflect.Map:
@@ -58,48 +69,66 @@ func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]js
 		v := reflect.MakeMap(t)
 		for rk, rv := range mData {
 			v.SetMapIndex(
-				DeserializeObject([]byte(rk), t.Key(), jsonData, objects),
-				DeserializeObject(rv, t.Elem(), jsonData, objects),
+				DeserializeObject([]byte(rk), t.Key(), jsonData, objects, nil),
+				DeserializeObject(rv, t.Elem(), jsonData, objects, nil),
 			)
 		}
 		return v
+	case reflect.Ptr:
+		var objKey string
+		if err := json.Unmarshal(m, &objKey); err != nil {
+			fmt.Println("Error when loading "+t.Name()+" "+string(m)+": ", err)
+		}
+		if objKey == "" {
+			// Hacky way of testing for null
+			return reflect.Zero(t)
+		} else {
+			if StaticType(t) {
+				return LoadStaticType(t, objKey)
+			} else {
+				if _, ok := objects[objKey]; !ok {
+					objects[objKey] = DeserializeObject(jsonData[objKey], t.Elem(), jsonData, objects, &objKey).Addr()
+				}
+				return objects[objKey]
+			}
+		}
+	case reflect.Interface:
+		var objKey string
+		if err := json.Unmarshal(m, &objKey); err != nil {
+			fmt.Println("Error when loading "+t.Name()+" "+string(m)+": ", err)
+		}
+		if objKey == "" {
+			// Hacky way of testing for null
+			return reflect.Zero(t)
+		} else {
+			if StaticType(t) {
+				return LoadStaticType(t, objKey)
+			} else {
+				if _, ok := objects[objKey]; !ok {
+					objects[objKey] = DeserializeObject(jsonData[objKey], t, jsonData, objects, &objKey)
+				}
+				return objects[objKey]
+			}
+		}
 	case reflect.Struct:
 		var mData map[string]json.RawMessage
 		if err := json.Unmarshal(m, &mData); err != nil {
 			fmt.Println("Error when loading "+t.Name()+": ", err)
 		}
 		v := reflect.New(t)
+		if objKey != nil {
+			objects[*objKey] = v
+		}
 		for i := 0; i < t.NumField(); i++ {
 			sf := v.Elem().Field(i)
 			if sf.Kind() == reflect.Func {
 				fmt.Println(t.Field(i).Name)
 			}
 			if sf.CanInterface() {
-				if sf.Kind() == reflect.Ptr || sf.Kind() == reflect.Interface {
-					var objKey string
-					if err := json.Unmarshal(mData[t.Field(i).Name], &objKey); err != nil {
-						fmt.Println("Error when loading "+t.Field(i).Name+": ", err)
-					}
-					if objKey == "" {
-						// Hacky way of testing for null
-						sf.Set(reflect.Zero(sf.Type()))
-					} else {
-						fmt.Println(objKey)
-						if StaticType(sf.Type()) {
-							sf.Set(LoadStaticType(sf.Type(), objKey))
-						} else {
-							if _, ok := objects[objKey]; !ok {
-								objects[objKey] = DeserializeObject(jsonData[objKey], sf.Type(), jsonData, objects)
-							}
-							sf.Set(objects[objKey])
-						}
-					}
-				} else {
-					fv := DeserializeObject(mData[t.Field(i).Name], t.Field(i).Type, jsonData, objects)
-					sf.Set(fv)
-				}
+				fv := DeserializeObject(mData[t.Field(i).Name], t.Field(i).Type, jsonData, objects, nil)
+				sf.Set(fv)
 			} else {
-				if t.Elem().Field(i).Tag.Get("ser") != "false" {
+				if t.Field(i).Tag.Get("ser") != "false" {
 					fmt.Println("Cannot serialize: " + t.Name() + "." + t.Field(i).Name)
 				}
 			}
@@ -140,7 +169,7 @@ func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]js
 		}
 		return reflect.ValueOf(i).Convert(t)
 	}
-	return reflect.ValueOf(nil)
+	panic("Invalid type " + t.Name())
 }
 
 func LoadStaticType(t reflect.Type, key string) reflect.Value {
@@ -168,5 +197,5 @@ func LoadStaticType(t reflect.Type, key string) reflect.Value {
 	case "VehicleConstruction":
 		return reflect.ValueOf(economy.GetVehicleConstruction(key))
 	}
-	return reflect.ValueOf(nil)
+	panic("Invalid type " + t.Elem().Name())
 }
