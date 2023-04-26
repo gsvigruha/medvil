@@ -23,6 +23,21 @@ var BridgeRoadType = &RoadType{
 	Cost: []artifacts.Artifacts{artifacts.Artifacts{artifacts.GetArtifact("board"), 3}},
 }
 
+var RoadTypes = [...]*RoadType{
+	DirtRoadType,
+	CobbleRoadType,
+	BridgeRoadType,
+}
+
+func GetRoadType(name string) *RoadType {
+	for _, t := range RoadTypes {
+		if t.Name == name {
+			return t
+		}
+	}
+	return nil
+}
+
 type Road struct {
 	T                 *RoadType
 	Construction      bool

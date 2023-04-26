@@ -32,7 +32,7 @@ func LoadPlants(dir string, m *model.Map) {
 			switch plants[i+0 : i+1] {
 			case "G":
 				m.Fields[i][j].Plant = &terrain.Plant{
-					T:             &terrain.AllCropTypes[0],
+					T:             terrain.AllCropTypes[0],
 					X:             uint16(i),
 					Y:             uint16(j),
 					BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),
@@ -40,7 +40,7 @@ func LoadPlants(dir string, m *model.Map) {
 				}
 			case "O":
 				m.Fields[i][j].Plant = &terrain.Plant{
-					T:             &terrain.AllTreeTypes[0],
+					T:             terrain.AllTreeTypes[0],
 					X:             uint16(i),
 					Y:             uint16(j),
 					BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),
@@ -48,7 +48,7 @@ func LoadPlants(dir string, m *model.Map) {
 				}
 			case "A":
 				m.Fields[i][j].Plant = &terrain.Plant{
-					T:             &terrain.AllTreeTypes[1],
+					T:             terrain.AllTreeTypes[1],
 					X:             uint16(i),
 					Y:             uint16(j),
 					BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),
@@ -56,7 +56,7 @@ func LoadPlants(dir string, m *model.Map) {
 				}
 			case "R":
 				m.Fields[i][j].Plant = &terrain.Plant{
-					T:             &terrain.AllCropTypes[2],
+					T:             terrain.AllCropTypes[2],
 					X:             uint16(i),
 					Y:             uint16(j),
 					BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),

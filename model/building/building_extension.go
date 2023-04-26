@@ -14,6 +14,21 @@ var Forge = &BuildingExtensionType{Name: "forge", OnWater: false}
 var Deck = &BuildingExtensionType{Name: "deck", OnWater: true}
 var NonExtension *BuildingExtensionType = nil
 
+var BuildingExtensionTypes = [...]*BuildingExtensionType{
+	WaterMillWheel,
+	Forge,
+	Deck,
+}
+
+func GetBuildingExtensionType(name string) *BuildingExtensionType {
+	for _, t := range BuildingExtensionTypes {
+		if t.Name == name {
+			return t
+		}
+	}
+	return nil
+}
+
 type BuildingExtension struct {
 	T *BuildingExtensionType
 }

@@ -57,6 +57,22 @@ var TradingCart = &VehicleType{
 	BuildingExtensionType: building.NonExtension,
 }
 
+var VehicleTypes = [...]*VehicleType{
+	Boat,
+	Cart,
+	TradingBoat,
+	TradingCart,
+}
+
+func GetVehicleType(name string) *VehicleType {
+	for _, t := range VehicleTypes {
+		if t.Name == name {
+			return t
+		}
+	}
+	return nil
+}
+
 type Vehicle struct {
 	T         *VehicleType
 	Traveller *navigation.Traveller

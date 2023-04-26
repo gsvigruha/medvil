@@ -6,6 +6,12 @@ import (
 	"io/ioutil"
 	"log"
 	"medvil/model"
+	"medvil/model/artifacts"
+	"medvil/model/building"
+	"medvil/model/economy"
+	"medvil/model/materials"
+	"medvil/model/terrain"
+	"medvil/model/vehicles"
 	"os"
 	"reflect"
 	"strconv"
@@ -31,16 +37,17 @@ func Deserialize(file string) interface{} {
 }
 
 func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]json.RawMessage, objects map[string]reflect.Value) reflect.Value {
-	fmt.Println(t.Kind())
+	fmt.Println(t.Kind(), t.Name())
 	switch t.Kind() {
 	case reflect.Array, reflect.Slice:
 		var mData []json.RawMessage
 		if err := json.Unmarshal(m, &mData); err != nil {
 			fmt.Println("Error when loading "+t.Name()+": ", err)
 		}
-		v := reflect.New(t)
+		v := reflect.MakeSlice(t, 0, 0)
 		for i := 0; i < len(mData); i++ {
-			v = reflect.Append(v, DeserializeObject(mData[i], t.Elem(), jsonData, objects))
+			x := DeserializeObject(mData[i], t.Elem(), jsonData, objects)
+			v = reflect.Append(v, x)
 		}
 		return v
 	case reflect.Map:
@@ -48,7 +55,7 @@ func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]js
 		if err := json.Unmarshal(m, &mData); err != nil {
 			fmt.Println("Error when loading "+t.Name()+"["+t.Key().Name()+"]"+t.Elem().Name()+": ", err)
 		}
-		v := reflect.New(t)
+		v := reflect.MakeMap(t)
 		for rk, rv := range mData {
 			v.SetMapIndex(
 				DeserializeObject([]byte(rk), t.Key(), jsonData, objects),
@@ -69,11 +76,24 @@ func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]js
 			}
 			if sf.CanInterface() {
 				if sf.Kind() == reflect.Ptr || sf.Kind() == reflect.Interface {
-					objKey := string(mData[t.Field(i).Name])
-					if _, ok := objects[objKey]; !ok {
-						objects[objKey] = DeserializeObject(jsonData[objKey], t.Field(i).Type, jsonData, objects)
+					var objKey string
+					if err := json.Unmarshal(mData[t.Field(i).Name], &objKey); err != nil {
+						fmt.Println("Error when loading "+t.Field(i).Name+": ", err)
 					}
-					sf.Set(objects[objKey])
+					if objKey == "" {
+						// Hacky way of testing for null
+						sf.Set(reflect.Zero(sf.Type()))
+					} else {
+						fmt.Println(objKey)
+						if StaticType(sf.Type()) {
+							sf.Set(LoadStaticType(sf.Type(), objKey))
+						} else {
+							if _, ok := objects[objKey]; !ok {
+								objects[objKey] = DeserializeObject(jsonData[objKey], sf.Type(), jsonData, objects)
+							}
+							sf.Set(objects[objKey])
+						}
+					}
 				} else {
 					fv := DeserializeObject(mData[t.Field(i).Name], t.Field(i).Type, jsonData, objects)
 					sf.Set(fv)
@@ -84,7 +104,7 @@ func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]js
 				}
 			}
 		}
-		return v
+		return v.Elem()
 	case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Int:
 		i, err := strconv.ParseInt(string(m), 10, 64)
 		if err != nil {
@@ -98,19 +118,55 @@ func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]js
 		}
 		return reflect.ValueOf(i).Convert(t)
 	case reflect.Bool:
-		i, err := strconv.ParseBool(string(m))
+		var s string
+		if err := json.Unmarshal(m, &s); err != nil {
+			fmt.Println("err")
+		}
+		i, err := strconv.ParseBool(s)
 		if err != nil {
 			fmt.Println("err")
 		}
 		return reflect.ValueOf(i)
 	case reflect.String:
-		return reflect.ValueOf(string(m))
+		var s string
+		if err := json.Unmarshal(m, &s); err != nil {
+			fmt.Println("err")
+		}
+		return reflect.ValueOf(s)
 	case reflect.Float64:
 		i, err := strconv.ParseFloat(string(m), 64)
 		if err != nil {
 			fmt.Println("err")
 		}
 		return reflect.ValueOf(i).Convert(t)
+	}
+	return reflect.ValueOf(nil)
+}
+
+func LoadStaticType(t reflect.Type, key string) reflect.Value {
+	switch t.Elem().Name() {
+	case "Artifact":
+		return reflect.ValueOf(artifacts.GetArtifact(key))
+	case "Material":
+		return reflect.ValueOf(materials.GetMaterial(key))
+	case "PlantType":
+		return reflect.ValueOf(terrain.GetPlantType(key))
+	case "TerrainType":
+		return reflect.ValueOf(terrain.GetTerrainType(key))
+	case "VehicleType":
+		return reflect.ValueOf(vehicles.GetVehicleType(key))
+	case "EquipmentType":
+		return reflect.ValueOf(economy.GetEquipmentType(key))
+	case "Manufacture":
+		return reflect.ValueOf(economy.GetManufacture(key))
+	case "RoadType":
+		return reflect.ValueOf(building.GetRoadType(key))
+	case "AnimalType":
+		return reflect.ValueOf(terrain.GetAnimalType(key))
+	case "BuildingExtensionType":
+		return reflect.ValueOf(building.GetBuildingExtensionType(key))
+	case "VehicleConstruction":
+		return reflect.ValueOf(economy.GetVehicleConstruction(key))
 	}
 	return reflect.ValueOf(nil)
 }

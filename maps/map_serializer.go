@@ -38,7 +38,7 @@ func Serialize(o interface{}, dir string) {
 	}
 }
 
-func staticType(t reflect.Type) bool {
+func StaticType(t reflect.Type) bool {
 	return t.Elem().Name() == "Artifact" ||
 		t.Elem().Name() == "Material" ||
 		t.Elem().Name() == "PlantType" ||
@@ -82,7 +82,7 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 		writer.WriteString("}")
 	case reflect.Ptr:
 		if !v.IsNil() {
-			if staticType(t) {
+			if StaticType(t) {
 				writer.WriteString("\"" + v.Elem().FieldByName("Name").String() + "\"")
 			} else {
 				writer.WriteString("\"" + fmt.Sprint(v.Pointer()) + "\"")
@@ -147,7 +147,7 @@ func CollectObjects(o interface{}, objects map[string]interface{}) {
 			CollectObjects(v.MapIndex(key).Interface(), objects)
 		}
 	case reflect.Ptr:
-		if !v.IsNil() && !staticType(t) {
+		if !v.IsNil() && !StaticType(t) {
 			objKey := fmt.Sprint(v.Pointer())
 			if _, ok := objects[objKey]; !ok {
 				objects[objKey] = v.Elem().Interface()
