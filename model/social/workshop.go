@@ -9,7 +9,7 @@ import (
 )
 
 type Workshop struct {
-	Household   Household
+	Household   *Household
 	Manufacture *economy.Manufacture
 }
 
@@ -38,7 +38,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				if w.Household.Money >= mp.Price(batch) {
 					w.Household.AddTask(&economy.BuyTask{
 						Exchange:        mp,
-						HouseholdWallet: &w.Household,
+						HouseholdWallet: w.Household,
 						Goods:           batch,
 						MaxPrice:        uint32(maxUnitCost * float64(transportQ)),
 						TaskTag:         tag,
@@ -84,5 +84,5 @@ func (w *Workshop) GetFields() []navigation.FieldWithContext {
 }
 
 func (w *Workshop) GetHousehold() *Household {
-	return &w.Household
+	return w.Household
 }

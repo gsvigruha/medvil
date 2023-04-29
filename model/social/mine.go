@@ -36,7 +36,7 @@ func (l MineLand) Context() string {
 }
 
 type Mine struct {
-	Household Household
+	Household *Household
 	Land      []MineLand
 }
 
@@ -127,5 +127,5 @@ func (m *Mine) FieldWithinDistance(field *navigation.Field) bool {
 }
 
 func (m *Mine) GetHousehold() *Household {
-	return &m.Household
+	return m.Household
 }

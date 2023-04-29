@@ -93,7 +93,7 @@ func (h *Household) HasSurplusPeople() bool {
 }
 
 func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	if &h.Town.Townhall.Household != h { // Not Townhall, needs better check
+	if h.Town.Townhall.Household != h { // Not Townhall, needs better check
 		if h.HasRoomForPeople() {
 			h.Town.Townhall.Household.ReassignFirstPerson(h, m)
 		}
@@ -109,7 +109,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 		if h.HasSurplusPeople() && h.Town.Townhall.Household.HasRoomForPeople() {
-			h.ReassignFirstPerson(&h.Town.Townhall.Household, m)
+			h.ReassignFirstPerson(h.Town.Townhall.Household, m)
 		}
 	}
 	numP := uint16(len(h.People))
@@ -481,7 +481,7 @@ func (h *Household) GetMoney() uint32 {
 }
 
 func (h *Household) Destroy(m navigation.IMap) {
-	dstH := &h.Town.Townhall.Household
+	dstH := h.Town.Townhall.Household
 	for _, person := range h.People {
 		dstH.AssignPerson(person, m)
 	}

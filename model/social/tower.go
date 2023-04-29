@@ -27,7 +27,7 @@ func (l PatrolLand) Context() string {
 }
 
 type Tower struct {
-	Household Household
+	Household *Household
 	Land      []PatrolLand
 }
 
@@ -43,7 +43,7 @@ var Sword = artifacts.GetArtifact("sword")
 var Shield = artifacts.GetArtifact("shield")
 
 func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	h := &t.Household
+	h := t.Household
 	h.ElapseTime(Calendar, m)
 	mp := h.Town.Marketplace
 
@@ -121,5 +121,5 @@ func (t *Tower) FieldWithinDistance(field *navigation.Field) bool {
 }
 
 func (t *Tower) GetHousehold() *Household {
-	return &t.Household
+	return t.Household
 }

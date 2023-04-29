@@ -28,7 +28,7 @@ func (mc *MineController) SetUseType(ut uint8) {
 func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	mp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(cp, hp, &mine.Household)
+	HouseholdToControlPanel(cp, hp, mine.Household)
 	mc := &MineController{householdPanel: hp, minePanel: mp, mine: mine, UseType: economy.MineFieldUseTypeNone, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
@@ -76,7 +76,7 @@ func (mc *MineController) Clear() {}
 
 func (mc *MineController) Refresh() {
 	mc.householdPanel.Clear()
-	HouseholdToControlPanel(mc.cp, mc.householdPanel, &mc.mine.Household)
+	HouseholdToControlPanel(mc.cp, mc.householdPanel, mc.mine.Household)
 }
 
 func (mc *MineController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {

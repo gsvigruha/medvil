@@ -30,7 +30,7 @@ func (fc *FarmController) SetUseType(ut uint8) {
 func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(cp, hp, &farm.Household)
+	HouseholdToControlPanel(cp, hp, farm.Household)
 	fc := &FarmController{householdPanel: hp, farmPanel: fp, farm: farm, UseType: economy.FarmFieldUseTypeBarren, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
@@ -98,7 +98,7 @@ func (fc *FarmController) Clear() {}
 
 func (fc *FarmController) Refresh() {
 	fc.householdPanel.Clear()
-	HouseholdToControlPanel(fc.cp, fc.householdPanel, &fc.farm.Household)
+	HouseholdToControlPanel(fc.cp, fc.householdPanel, fc.farm.Household)
 }
 
 func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {

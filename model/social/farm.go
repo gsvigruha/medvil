@@ -43,7 +43,7 @@ func (l FarmLand) Context() string {
 }
 
 type Farm struct {
-	Household Household
+	Household *Household
 	Land      []FarmLand
 }
 
@@ -163,5 +163,5 @@ func (f *Farm) FieldWithinDistance(field *navigation.Field) bool {
 }
 
 func (f *Farm) GetHousehold() *Household {
-	return &f.Household
+	return f.Household
 }
