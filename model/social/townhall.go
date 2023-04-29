@@ -8,7 +8,7 @@ import (
 )
 
 type Townhall struct {
-	Household     Household
+	Household     *Household
 	StorageTarget map[*artifacts.Artifact]int
 	Traders       []*Trader
 }
@@ -43,7 +43,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					if t.Household.Money >= mp.Price(goods) && mp.HasTraded(a) {
 						t.Household.AddTask(&economy.BuyTask{
 							Exchange:        mp,
-							HouseholdWallet: &t.Household,
+							HouseholdWallet: t.Household,
 							Goods:           goods,
 							MaxPrice:        maxPrice,
 							TaskTag:         tag,

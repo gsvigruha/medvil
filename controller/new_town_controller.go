@@ -39,8 +39,8 @@ func (ntc *NewTownController) SetToState() {
 		ntc.bc = nil
 	} else if ntc.state == NewTownControllerStateStart {
 		ntc.cp.C.ClickHandler = nil
-		srcH := &ntc.sourceTH.Household
-		dstH := &ntc.newTown.Townhall.Household
+		srcH := ntc.sourceTH.Household
+		dstH := ntc.newTown.Townhall.Household
 		for a, q := range ntc.resources {
 			if q > 0 {
 				srcH.AddTask(&economy.TransportTask{
@@ -123,7 +123,7 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		resources[a] = n
 	}
 	newTown := &social.Town{Country: th.Household.Town.Country}
-	newTown.Townhall = &social.Townhall{Household: social.Household{Town: newTown}}
+	newTown.Townhall = &social.Townhall{Household: &social.Household{Town: newTown}}
 	newTown.Marketplace = &social.Marketplace{Town: newTown}
 	newTown.Init()
 	newTown.Marketplace.Init()

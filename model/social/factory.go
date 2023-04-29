@@ -60,7 +60,7 @@ func (o *VehicleOrder) CompleteBuild(f *navigation.Field) {
 }
 
 type Factory struct {
-	Household Household
+	Household *Household
 	Orders    []*VehicleOrder
 }
 
@@ -87,7 +87,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if f.Household.Money >= mp.Price(inputs) {
 				f.Household.AddTask(&economy.BuyTask{
 					Exchange:        mp,
-					HouseholdWallet: &f.Household,
+					HouseholdWallet: f.Household,
 					Goods:           inputs,
 					MaxPrice:        mp.Price(inputs) * 2,
 					TaskTag:         tag,
@@ -180,5 +180,5 @@ func (f *Factory) GetFields() []navigation.FieldWithContext {
 }
 
 func (f *Factory) GetHousehold() *Household {
-	return &f.Household
+	return f.Household
 }

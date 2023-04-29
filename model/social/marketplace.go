@@ -96,7 +96,7 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		price := mp.Price(allGold)
 		wallet := &mp.Town.Townhall.Household.Money
 		*wallet += price * 2
-		mp.Buy(allGold, &mp.Town.Townhall.Household)
+		mp.Buy(allGold, mp.Town.Townhall.Household)
 		sd := mp.pendingSupplyAndDemand()
 
 		for _, a := range artifacts.All {

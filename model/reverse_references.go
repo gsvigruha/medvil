@@ -43,7 +43,7 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 		for j := range country.Towns {
 			town := country.Towns[j]
 			BuildingToTownhall[town.Townhall.Household.Building] = town.Townhall
-			AddPeople(TravellerToPerson, &town.Townhall.Household)
+			AddPeople(TravellerToPerson, town.Townhall.Household)
 			for k := range town.Townhall.Traders {
 				t := town.Townhall.Traders[k]
 				TravellerToTrader[t.Person.Traveller] = t
@@ -51,23 +51,23 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 			BuildingToMarketplace[town.Marketplace.Building] = town.Marketplace
 			for k := range town.Farms {
 				BuildingToFarm[town.Farms[k].Household.Building] = town.Farms[k]
-				AddPeople(TravellerToPerson, &town.Farms[k].Household)
+				AddPeople(TravellerToPerson, town.Farms[k].Household)
 			}
 			for k := range town.Mines {
 				BuildingToMine[town.Mines[k].Household.Building] = town.Mines[k]
-				AddPeople(TravellerToPerson, &town.Mines[k].Household)
+				AddPeople(TravellerToPerson, town.Mines[k].Household)
 			}
 			for k := range town.Workshops {
 				BuildingToWorkshop[town.Workshops[k].Household.Building] = town.Workshops[k]
-				AddPeople(TravellerToPerson, &town.Workshops[k].Household)
+				AddPeople(TravellerToPerson, town.Workshops[k].Household)
 			}
 			for k := range town.Factories {
 				BuildingToFactory[town.Factories[k].Household.Building] = town.Factories[k]
-				AddPeople(TravellerToPerson, &town.Factories[k].Household)
+				AddPeople(TravellerToPerson, town.Factories[k].Household)
 			}
 			for k := range town.Towers {
 				BuildingToTower[town.Towers[k].Household.Building] = town.Towers[k]
-				AddPeople(TravellerToPerson, &town.Towers[k].Household)
+				AddPeople(TravellerToPerson, town.Towers[k].Household)
 			}
 			for k := range town.Constructions {
 				if town.Constructions[k].Building != nil {
