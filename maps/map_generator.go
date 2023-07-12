@@ -41,7 +41,7 @@ func setupTerrain(fields [][]navigation.Field) {
 			}
 			if fields[i][j].Terrain.T == terrain.Grass && rand.Intn(2) == 0 {
 				fields[i][j].Plant = &terrain.Plant{
-					T:             &terrain.AllTreeTypes[rand.Intn(2)],
+					T:             terrain.AllTreeTypes[rand.Intn(2)],
 					X:             uint16(i),
 					Y:             uint16(j),
 					BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),
@@ -50,7 +50,7 @@ func setupTerrain(fields [][]navigation.Field) {
 			}
 			if fields[i][j].Terrain.T == terrain.Dirt && rand.Intn(2) == 0 {
 				fields[i][j].Plant = &terrain.Plant{
-					T:             &terrain.AllCropTypes[0],
+					T:             terrain.AllCropTypes[0],
 					X:             uint16(i),
 					Y:             uint16(j),
 					BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),

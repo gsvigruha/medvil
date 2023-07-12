@@ -30,6 +30,27 @@ var IronBog = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water
 var Gold = &TerrainType{Walkable: false, Arable: false, Pasture: false, Water: true, Buildable: false, Name: "gold", Object: false}
 var Canal = &TerrainType{Walkable: true, Arable: false, Pasture: false, Water: false, Buildable: false, Name: "canal", Object: false}
 
+var TerrainTypes = [...]*TerrainType{
+	Water,
+	Grass,
+	Sand,
+	Dirt,
+	Rock,
+	Mud,
+	IronBog,
+	Gold,
+	Canal,
+}
+
+func GetTerrainType(name string) *TerrainType {
+	for _, t := range TerrainTypes {
+		if t.Name == name {
+			return t
+		}
+	}
+	return nil
+}
+
 type Terrain struct {
 	T         *TerrainType
 	Resources artifacts.Resources

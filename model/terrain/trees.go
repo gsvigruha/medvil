@@ -44,7 +44,7 @@ var Apple = TreeType{
 	LogYield:            5,
 }
 
-var AllTreeTypes = [...]PlantType{
-	PlantType{Name: "oak tree", MaturityAgeYears: 10, TreeT: &Oak, Habitat: Land},
-	PlantType{Name: "apple tree", MaturityAgeYears: 10, TreeT: &Apple, Yield: artifacts.Artifacts{A: artifacts.GetArtifact("fruit"), Quantity: 3}, Habitat: Cultivated},
+var AllTreeTypes = [...]*PlantType{
+	&PlantType{Name: "oak tree", MaturityAgeYears: 10, TreeT: &Oak, Habitat: Land},
+	&PlantType{Name: "apple tree", MaturityAgeYears: 10, TreeT: &Apple, Yield: artifacts.Artifacts{A: artifacts.GetArtifact("fruit"), Quantity: 3}, Habitat: Cultivated},
 }

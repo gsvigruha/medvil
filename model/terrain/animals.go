@@ -52,3 +52,16 @@ var Sheep = &AnimalType{
 	EndOfYearYield:   artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 1},
 	EndOfLifeYield:   artifacts.Artifacts{A: artifacts.GetArtifact("sheep"), Quantity: 1},
 }
+
+var AllAnimalTypes = [...]*AnimalType{
+	Sheep,
+}
+
+func GetAnimalType(name string) *AnimalType {
+	for _, t := range AllAnimalTypes {
+		if t.Name == name {
+			return t
+		}
+	}
+	return nil
+}

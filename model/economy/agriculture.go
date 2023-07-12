@@ -67,11 +67,11 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 		if t.Progress >= AgriculturalTaskDurationSowing {
 			var cropType *terrain.PlantType
 			if t.UseType == FarmFieldUseTypeWheat {
-				cropType = &terrain.AllCropTypes[0]
+				cropType = terrain.AllCropTypes[0]
 			} else if t.UseType == FarmFieldUseTypeVegetables {
-				cropType = &terrain.AllCropTypes[1]
+				cropType = terrain.AllCropTypes[1]
 			} else if t.UseType == FarmFieldUseTypeHerb {
-				cropType = &terrain.AllCropTypes[3]
+				cropType = terrain.AllCropTypes[3]
 			}
 			t.F.Plant = &terrain.Plant{
 				T:             cropType,
@@ -95,7 +95,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 	case AgriculturalTaskPlantingAppleTree:
 		if t.Progress >= AgriculturalTaskDurationPlanting {
 			t.F.Plant = &terrain.Plant{
-				T:             &terrain.AllTreeTypes[1],
+				T:             terrain.AllTreeTypes[1],
 				X:             t.F.X,
 				Y:             t.F.Y,
 				BirthDateDays: Calendar.DaysElapsed(),
@@ -106,7 +106,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 	case AgriculturalTaskPlantingOakTree:
 		if t.Progress >= AgriculturalTaskDurationPlanting {
 			t.F.Plant = &terrain.Plant{
-				T:             &terrain.AllTreeTypes[0],
+				T:             terrain.AllTreeTypes[0],
 				X:             t.F.X,
 				Y:             t.F.Y,
 				BirthDateDays: Calendar.DaysElapsed(),
@@ -125,7 +125,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 	case AgriculturalTaskPlantingReed:
 		if t.Progress >= AgriculturalTaskDurationPlanting {
 			t.F.Plant = &terrain.Plant{
-				T:             &terrain.AllCropTypes[2],
+				T:             terrain.AllCropTypes[2],
 				X:             t.F.X,
 				Y:             t.F.Y,
 				BirthDateDays: Calendar.DaysElapsed(),

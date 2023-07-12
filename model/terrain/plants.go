@@ -33,17 +33,17 @@ func (pt *PlantType) UnmarshalJSON(data []byte) error {
 	s := bytes.NewBuffer(data).String()
 	switch s {
 	case "grain":
-		*pt = AllCropTypes[0]
+		*pt = *AllCropTypes[0]
 	case "vegetables":
-		*pt = AllCropTypes[1]
+		*pt = *AllCropTypes[1]
 	case "reed":
-		*pt = AllCropTypes[2]
+		*pt = *AllCropTypes[2]
 	case "herb":
-		*pt = AllCropTypes[3]
+		*pt = *AllCropTypes[3]
 	case "oak tree":
-		*pt = AllTreeTypes[0]
+		*pt = *AllTreeTypes[0]
 	case "apple tree":
-		*pt = AllTreeTypes[1]
+		*pt = *AllTreeTypes[1]
 	}
 	return nil
 }
@@ -83,4 +83,18 @@ func (p *Plant) ElapseTime(Calendar *time.CalendarType) {
 
 func (p *PlantType) IsAnnual() bool {
 	return p.TreeT == nil && p.MaturityAgeYears <= 1.0
+}
+
+func GetPlantType(name string) *PlantType {
+	for _, t := range AllCropTypes {
+		if t.Name == name {
+			return t
+		}
+	}
+	for _, t := range AllTreeTypes {
+		if t.Name == name {
+			return t
+		}
+	}
+	return nil
 }

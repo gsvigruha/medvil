@@ -96,6 +96,9 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		if key == glfw.KeyS {
 			c.Save()
 		}
+		if key == glfw.KeyL {
+			c.Load()
+		}
 	}
 }
 
@@ -311,4 +314,8 @@ func (c *Controller) AddRenderedTraveller(rt *renderer.RenderedTraveller) {
 
 func (c *Controller) Save() {
 	maps.Serialize(c.Map, "samples/map/coast_3")
+}
+
+func (c *Controller) Load() {
+	c.Map = maps.Deserialize("samples/map/coast_3/2023-04-25T10:22:57-04:00").(*model.Map)
 }

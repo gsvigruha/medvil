@@ -62,6 +62,15 @@ var AllVehicleConstruction = [...]*VehicleConstruction{
 	TradingCartConstruction,
 }
 
+func GetVehicleConstruction(name string) *VehicleConstruction {
+	for _, t := range AllVehicleConstruction {
+		if t.Name == name {
+			return t
+		}
+	}
+	return nil
+}
+
 func ConstructionCompatible(vc *VehicleConstruction, extensions []*building.BuildingExtension) bool {
 	if vc.BuildingExtensionType == nil {
 		return true
