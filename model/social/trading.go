@@ -150,8 +150,8 @@ func (t *Trader) GetBuilding() *building.Building {
 	return nil
 }
 
-func (t *Trader) GetHeating() float64 {
-	return 1.0
+func (t *Trader) GetHeating() uint8 {
+	return 100
 }
 
 func (t *Trader) HasEnoughTextile() bool {
