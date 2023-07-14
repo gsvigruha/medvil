@@ -23,7 +23,7 @@ type Home interface {
 	NextTask(navigation.IMap, *economy.EquipmentType) economy.Task
 	GetResources() *artifacts.Resources
 	GetBuilding() *building.Building
-	GetHeating() float64
+	GetHeating() uint8
 	HasEnoughTextile() bool
 	AddVehicle(*vehicles.Vehicle)
 	GetVehicle() *vehicles.Vehicle

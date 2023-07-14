@@ -273,7 +273,7 @@ func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
 func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
 }
 
-func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, Map *model.Map) *Controller {
+func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, m *model.Map) *Controller {
 	W, H := wnd.GetFramebufferSize()
 	Calendar := &time.CalendarType{
 		Year:  1000,
@@ -282,7 +282,7 @@ func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, Map *model.Map) *Control
 		Hour:  0,
 	}
 	controlPanel := &ControlPanel{}
-	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: Map, Country: Map.Countries[0], TimeSpeed: 1, ActiveTown: Map.Countries[0].Towns[0]}
+	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: m, Country: m.Countries[0], TimeSpeed: 1, ActiveTown: m.Countries[0].Towns[0]}
 	controlPanel.Setup(C, ctx)
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
@@ -317,5 +317,6 @@ func (c *Controller) Save() {
 }
 
 func (c *Controller) Load() {
-	c.Map = maps.Deserialize("samples/map/coast_3/2023-04-25T10:22:57-04:00").(*model.Map)
+	c.Map = maps.Deserialize("samples/map/coast_3/2023-07-13T20:09:29-04:00").(*model.Map)
+	c.Refresh()
 }

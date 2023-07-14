@@ -46,7 +46,7 @@ func main() {
 
 	wnd.MainLoop(func() {
 		start := time.Now()
-		view.Render(ic, cv, m, c)
+		view.Render(ic, cv, *c.Map, c)
 		elapsed := time.Since(start)
 
 		if elapsed.Nanoseconds() < PlantFrameRenderTimeNs {
@@ -61,7 +61,7 @@ func main() {
 		}
 		for i := 0; i < c.TimeSpeed; i++ {
 			c.Calendar.Tick()
-			m.ElapseTime(c.Calendar)
+			c.Map.ElapseTime(c.Calendar)
 		}
 		c.RenderTick()
 	})

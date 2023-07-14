@@ -1,7 +1,6 @@
 package social
 
 import (
-	"math"
 	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
@@ -34,7 +33,7 @@ type Household struct {
 	Tasks           []economy.Task
 	Vehicles        []*vehicles.Vehicle
 	Resources       artifacts.Resources
-	Heating         float64
+	Heating         uint8
 }
 
 func (h *Household) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.Task {
@@ -151,14 +150,15 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if Calendar.Day == 1 && Calendar.Hour == 0 {
 		if Calendar.Season() == time.Winter {
 			wood := h.Resources.Remove(Firewood, h.heatingFuelNeededPerMonth())
-			heating := float64(wood) / float64(h.heatingFuelNeededPerMonth())
-			if h.HasEnoughTextile() {
-				h.Heating = heating
+			if wood > 0 {
+				h.Heating = 100
+			} else if h.HasEnoughTextile() {
+				h.Heating = 50
 			} else {
-				h.Heating = math.Max(heating, 0.5)
+				h.Heating = 0
 			}
 		} else {
-			h.Heating = 1.0
+			h.Heating = 100
 		}
 	}
 }
@@ -464,7 +464,7 @@ func (h *Household) GetBuilding() *building.Building {
 	return h.Building
 }
 
-func (h *Household) GetHeating() float64 {
+func (h *Household) GetHeating() uint8 {
 	return h.Heating
 }
 
@@ -490,5 +490,5 @@ func (h *Household) Destroy(m navigation.IMap) {
 }
 
 func (h *Household) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
-	return navigation.BuildingDestination{B: h.Building, ET: extensionType}
+	return &navigation.BuildingDestination{B: h.Building, ET: extensionType}
 }

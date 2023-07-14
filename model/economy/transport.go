@@ -66,7 +66,7 @@ func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) string
 	if f, ok := dest.(*navigation.Field); ok {
 		return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y)) + "#" + a.Name
 	}
-	if l, ok := dest.(navigation.Location); ok {
+	if l, ok := dest.(*navigation.Location); ok {
 		return strconv.Itoa(int(l.X)) + "#" + strconv.Itoa(int(l.Y)) + "#" + strconv.Itoa(int(l.Z)) + "#" + a.Name
 	}
 	return a.Name

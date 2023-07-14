@@ -93,6 +93,16 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 		} else {
 			writer.WriteString("null")
 		}
+	case reflect.Interface:
+		if !v.IsNil() {
+			if StaticType(t) {
+				writer.WriteString("\"" + v.Elem().FieldByName("Name").String() + "\"")
+			} else {
+				writer.WriteString("\"" + fmt.Sprint(v.Pointer()) + "\"")
+			}
+		} else {
+			writer.WriteString("null")
+		}
 	case reflect.Struct:
 		writer.WriteString("{")
 		writer.WriteString("\"$pkg\": \"" + t.PkgPath() + "\", ")
@@ -150,6 +160,14 @@ func CollectObjects(o interface{}, objects map[string]interface{}) {
 			CollectObjects(v.MapIndex(key).Interface(), objects)
 		}
 	case reflect.Ptr:
+		if !v.IsNil() && !StaticType(t) {
+			objKey := fmt.Sprint(v.Pointer())
+			if _, ok := objects[objKey]; !ok {
+				objects[objKey] = v.Elem().Interface()
+				CollectObjects(v.Elem().Interface(), objects)
+			}
+		}
+	case reflect.Interface:
 		if !v.IsNil() && !StaticType(t) {
 			objKey := fmt.Sprint(v.Pointer())
 			if _, ok := objects[objKey]; !ok {
