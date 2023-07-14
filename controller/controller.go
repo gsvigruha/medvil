@@ -317,7 +317,7 @@ func (c *Controller) Save() {
 }
 
 func (c *Controller) Load() {
-	c.Map = maps.Deserialize("samples/map/coast_3/2023-07-13T21:54:12-04:00").(*model.Map)
+	c.Map = maps.Deserialize("samples/map/coast_3/2023-07-13T22:12:27-04:00").(*model.Map)
 	c.Country = c.Map.Countries[0]
 	c.ActiveTown = c.Map.Countries[0].Towns[0]
 	c.Refresh()
