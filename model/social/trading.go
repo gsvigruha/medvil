@@ -151,7 +151,7 @@ func (t *Trader) GetBuilding() *building.Building {
 }
 
 func (t *Trader) GetHeating() uint8 {
-	return 1
+	return 100
 }
 
 func (t *Trader) HasEnoughTextile() bool {
