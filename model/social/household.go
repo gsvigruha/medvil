@@ -490,5 +490,5 @@ func (h *Household) Destroy(m navigation.IMap) {
 }
 
 func (h *Household) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
-	return navigation.BuildingDestination{B: h.Building, ET: extensionType}
+	return &navigation.BuildingDestination{B: h.Building, ET: extensionType}
 }

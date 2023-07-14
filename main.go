@@ -38,6 +38,7 @@ func main() {
 	ic := view.NewImageCache(ctx)
 
 	m := maps.LoadMap("samples/map/coast_1")
+	//m := maps.Deserialize("samples/map/coast_3/2023-07-13T19:53:53-04:00").(*model.Map)
 
 	c := controller.Link(wnd.Window, ctx, &m)
 
@@ -46,7 +47,7 @@ func main() {
 
 	wnd.MainLoop(func() {
 		start := time.Now()
-		view.Render(ic, cv, m, c)
+		view.Render(ic, cv, *c.Map, c)
 		elapsed := time.Since(start)
 
 		if elapsed.Nanoseconds() < PlantFrameRenderTimeNs {
@@ -61,7 +62,7 @@ func main() {
 		}
 		for i := 0; i < c.TimeSpeed; i++ {
 			c.Calendar.Tick()
-			m.ElapseTime(c.Calendar)
+			c.Map.ElapseTime(c.Calendar)
 		}
 		c.RenderTick()
 	})

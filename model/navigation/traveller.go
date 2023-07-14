@@ -25,10 +25,10 @@ const PathTypePedestrian PathType = 0
 const PathTypeBoat PathType = 1
 
 type PathComp struct {
-	path      *Path
-	pe        PathElement
-	computing bool
-	pc        chan *Path
+	Path      *Path
+	PE        PathElement
+	computing bool       `ser:"false"`
+	pc        chan *Path `ser:"false"`
 }
 
 type Traveller struct {
@@ -43,19 +43,19 @@ type Traveller struct {
 	Visible   bool
 	T         uint8
 	Vehicle   Vehicle
-	pc        PathComp `ser:"false"`
+	PathComp  PathComp
 	Lane      uint8
 	StuckCntr uint8
 }
 
 func (t *Traveller) consumePathElement() {
-	if t.pc.path != nil {
-		path, removed := t.pc.path.ConsumeElement()
-		t.pc.path = path
-		t.pc.pe = removed
-		if t.pc.pe != nil {
-			t.FZ = t.pc.pe.GetLocation().Z
-			t.Visible = t.pc.pe.TravellerVisible()
+	if t.PathComp.Path != nil {
+		path, removed := t.PathComp.Path.ConsumeElement()
+		t.PathComp.Path = path
+		t.PathComp.PE = removed
+		if t.PathComp.PE != nil {
+			t.FZ = t.PathComp.PE.GetLocation().Z
+			t.Visible = t.PathComp.PE.TravellerVisible()
 		}
 	}
 }
@@ -179,8 +179,8 @@ func (t *Traveller) Move(m IMap) {
 		}
 	}
 	for i := 0; i < steps; i++ {
-		if t.pc.path != nil {
-			pe := t.pc.path.P[0]
+		if t.PathComp.Path != nil {
+			pe := t.PathComp.Path.P[0]
 			l := pe.GetLocation()
 			var dirToLane uint8 = DirectionNone
 			var dirToNextField uint8 = DirectionNone
@@ -251,29 +251,29 @@ func (t *Traveller) IncPhase() {
 }
 
 func (t *Traveller) IsAtDestination(dest Destination) bool {
-	return dest.Check(t.pc.pe)
+	return dest.Check(t.PathComp.PE)
 }
 
 func (t *Traveller) EnsurePath(dest Destination, m IMap) (bool, bool) {
-	if t.pc.path == nil || !dest.Check(t.pc.path.LastElement()) {
-		if t.pc.pc == nil {
-			t.pc.pc = make(chan *Path)
+	if t.PathComp.Path == nil || !dest.Check(t.PathComp.Path.LastElement()) {
+		if t.PathComp.pc == nil {
+			t.PathComp.pc = make(chan *Path)
 		}
-		if !t.pc.computing {
-			t.pc.computing = true
+		if !t.PathComp.computing {
+			t.PathComp.computing = true
 			go func(c chan *Path) {
 				c <- m.ShortPath(Location{X: t.FX, Y: t.FY, Z: t.FZ}, dest, t.PathType())
-			}(t.pc.pc)
+			}(t.PathComp.pc)
 		} else {
 			select {
-			case t.pc.path = <-t.pc.pc:
-				t.pc.computing = false
+			case t.PathComp.Path = <-t.PathComp.pc:
+				t.PathComp.computing = false
 				t.Lane = uint8(rand.Intn(3) + 1)
 				t.StuckCntr = 0
 			}
 		}
 	}
-	return t.pc.path != nil, t.pc.computing
+	return t.PathComp.Path != nil, t.PathComp.computing
 }
 
 func (t *Traveller) PathType() PathType {
@@ -304,7 +304,7 @@ func (t *Traveller) MoveWith(m IMap, ot *Traveller) {
 	t.FX = ot.FX
 	t.FY = ot.FY
 	t.FZ = ot.FZ
-	t.pc.pe = ot.pc.pe
+	t.PathComp.PE = ot.PathComp.PE
 	if oFX != t.FX || oFY != t.FY {
 		m.GetField(oFX, oFY).UnregisterTraveller(t)
 		m.GetField(t.FX, t.FY).RegisterTraveller(t)
@@ -333,12 +333,12 @@ func (t *Traveller) SetHome(home bool) {
 
 func (t *Traveller) GetPathFields(m IMap) []FieldWithContext {
 	var fs []FieldWithContext
-	if t.pc.pe != nil {
-		l := t.pc.pe.GetLocation()
+	if t.PathComp.PE != nil {
+		l := t.PathComp.PE.GetLocation()
 		fs = append(fs, m.GetField(l.X, l.Y))
 	}
-	if t.pc.path != nil {
-		for _, pe := range t.pc.path.P {
+	if t.PathComp.Path != nil {
+		for _, pe := range t.PathComp.Path.P {
 			l := pe.GetLocation()
 			fs = append(fs, m.GetField(l.X, l.Y))
 		}
@@ -347,9 +347,9 @@ func (t *Traveller) GetPathFields(m IMap) []FieldWithContext {
 }
 
 func (t *Traveller) GetPathElement() PathElement {
-	return t.pc.pe
+	return t.PathComp.PE
 }
 
 func (t *Traveller) InitPathElement(pe PathElement) {
-	t.pc.pe = pe
+	t.PathComp.PE = pe
 }

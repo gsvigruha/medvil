@@ -75,8 +75,8 @@ func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 		goodsDestToSource := t.GetGoodsToTrade(artifactDestToSource, t.TargetExchange)
 		if len(goodsSourceToDest) > 0 || len(goodsDestToSource) > 0 {
 			return &economy.TradeTask{
-				SourceMarketD:     navigation.BuildingDestination{B: t.SourceExchange.Building, ET: t.Vehicle.T.BuildingExtensionType},
-				TargetMarketD:     navigation.BuildingDestination{B: t.TargetExchange.Building, ET: t.Vehicle.T.BuildingExtensionType},
+				SourceMarketD:     &navigation.BuildingDestination{B: t.SourceExchange.Building, ET: t.Vehicle.T.BuildingExtensionType},
+				TargetMarketD:     &navigation.BuildingDestination{B: t.TargetExchange.Building, ET: t.Vehicle.T.BuildingExtensionType},
 				SourceExchange:    t.SourceExchange,
 				TargetExchange:    t.TargetExchange,
 				TraderR:           &t.Resources,
@@ -151,7 +151,7 @@ func (t *Trader) GetBuilding() *building.Building {
 }
 
 func (t *Trader) GetHeating() uint8 {
-	return 100
+	return 1
 }
 
 func (t *Trader) HasEnoughTextile() bool {

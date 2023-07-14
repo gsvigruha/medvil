@@ -12,6 +12,10 @@ type Location struct {
 	Z uint8
 }
 
+func (l *Location) Check(pe PathElement) bool {
+	return *l == pe.GetLocation()
+}
+
 type FieldWithContext interface {
 	Field() *Field
 	Context() string
@@ -227,6 +231,6 @@ func (f *Field) TravellerVisible() bool {
 	return true
 }
 
-func (f *Field) TopLocation() Location {
-	return Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
+func (f *Field) TopLocation() *Location {
+	return &Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
 }

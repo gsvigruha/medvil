@@ -4,10 +4,6 @@ import (
 	"medvil/model/building"
 )
 
-func (l Location) Check(pe PathElement) bool {
-	return l == pe.GetLocation()
-}
-
 type Destination interface {
 	Check(PathElement) bool
 }
@@ -17,7 +13,7 @@ type BuildingDestination struct {
 	ET *building.BuildingExtensionType
 }
 
-func (bd BuildingDestination) extensionMatch(bc building.BuildingComponent) bool {
+func (bd *BuildingDestination) extensionMatch(bc building.BuildingComponent) bool {
 	unit, ok := bc.(*building.ExtensionUnit)
 	if !ok {
 		return bd.ET == nil
@@ -26,7 +22,7 @@ func (bd BuildingDestination) extensionMatch(bc building.BuildingComponent) bool
 	}
 }
 
-func (bd BuildingDestination) Check(pe PathElement) bool {
+func (bd *BuildingDestination) Check(pe PathElement) bool {
 	if bpe, ok := pe.(*BuildingPathElement); ok {
 		if bpe.BC.Building() == bd.B {
 			return bd.extensionMatch(bpe.BC)

@@ -219,6 +219,10 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(economy.BuildingTask{})
 	case "Field":
 		return reflect.TypeOf(navigation.Field{})
+	case "Location":
+		return reflect.TypeOf(navigation.Location{})
+	case "BuildingDestination":
+		return reflect.TypeOf(navigation.BuildingDestination{})
 	}
 	panic("Invalid type " + typeName)
 }
