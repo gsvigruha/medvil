@@ -38,7 +38,6 @@ func main() {
 	ic := view.NewImageCache(ctx)
 
 	m := maps.LoadMap("samples/map/coast_1")
-	//m := maps.Deserialize("samples/map/coast_3/2023-07-13T19:53:53-04:00").(*model.Map)
 
 	c := controller.Link(wnd.Window, ctx, &m)
 

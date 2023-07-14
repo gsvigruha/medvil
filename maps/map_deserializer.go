@@ -22,16 +22,16 @@ import (
 func Deserialize(file string) interface{} {
 	jsonFile, err := os.Open(file)
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	defer jsonFile.Close()
 	byteValue, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	var jsonData map[string]json.RawMessage
 	if err := json.Unmarshal(byteValue, &jsonData); err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	var objects map[string]reflect.Value = make(map[string]reflect.Value)
 	log.Printf("Objects to load %d", len(jsonData))
@@ -40,7 +40,6 @@ func Deserialize(file string) interface{} {
 }
 
 func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]json.RawMessage, objects map[string]reflect.Value, objKey *string) reflect.Value {
-	//fmt.Println(t.Kind(), t.Name())
 	switch t.Kind() {
 	case reflect.Slice:
 		var mData []json.RawMessage
