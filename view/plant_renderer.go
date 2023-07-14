@@ -13,7 +13,7 @@ import (
 )
 
 func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float64, sy float64, width float64, length float64, angle float64, i uint8, prevSeasonPhase uint8, c *controller.Controller) {
-	maturity := plant.Maturity(c.Calendar)
+	maturity := plant.Maturity(c.Map.Calendar)
 	ex := sx + math.Cos(angle)*length
 	ey := sy + math.Sin(angle)*length
 
@@ -34,13 +34,13 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 		seasonPhase = prevSeasonPhase - seasonPhase
 	}
 
-	if c.Calendar.Season() != time.Winter {
+	if c.Map.Calendar.Season() != time.Winter {
 		if i > plant.T.TreeT.LeavesMinIterarion {
 			dxL := math.Cos(angle+math.Pi/2) * plant.T.TreeT.LeavesSize
 			dyL := math.Sin(angle+math.Pi/2) * plant.T.TreeT.LeavesSize
 			var draw = false
-			if (c.Calendar.Month == 3 && seasonPhase <= c.Calendar.Day) ||
-				(c.Calendar.Month == 4 && seasonPhase > c.Calendar.Day) {
+			if (c.Map.Calendar.Month == 3 && seasonPhase <= c.Map.Calendar.Day) ||
+				(c.Map.Calendar.Month == 4 && seasonPhase > c.Map.Calendar.Day) {
 				if plant.T.TreeT.Blooms {
 					cv.SetFillStyle("texture/terrain/leaves_blooming.png")
 				} else {
@@ -48,15 +48,15 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 				}
 				draw = true
 			}
-			if (c.Calendar.Month == 4 && seasonPhase <= c.Calendar.Day) ||
-				(c.Calendar.Month > 4 && c.Calendar.Month < 9) ||
-				(c.Calendar.Month == 9 && seasonPhase > c.Calendar.Day) {
+			if (c.Map.Calendar.Month == 4 && seasonPhase <= c.Map.Calendar.Day) ||
+				(c.Map.Calendar.Month > 4 && c.Map.Calendar.Month < 9) ||
+				(c.Map.Calendar.Month == 9 && seasonPhase > c.Map.Calendar.Day) {
 				cv.SetFillStyle("texture/terrain/leaves_v2.png")
 				draw = true
 			}
-			if (c.Calendar.Month == 9 && seasonPhase <= c.Calendar.Day) ||
-				(c.Calendar.Month == 10) ||
-				(c.Calendar.Month == 11 && seasonPhase > c.Calendar.Day) {
+			if (c.Map.Calendar.Month == 9 && seasonPhase <= c.Map.Calendar.Day) ||
+				(c.Map.Calendar.Month == 10) ||
+				(c.Map.Calendar.Month == 11 && seasonPhase > c.Map.Calendar.Day) {
 				cv.SetFillStyle("texture/terrain/leaves_colored.png")
 				draw = true
 			}
@@ -70,9 +70,9 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 				cv.Fill()
 			}
 			if plant.T.TreeT.Blooms {
-				if (c.Calendar.Month == 6 && seasonPhase <= c.Calendar.Day) ||
-					(c.Calendar.Month == 7) ||
-					(c.Calendar.Month == 8 && seasonPhase > c.Calendar.Day) {
+				if (c.Map.Calendar.Month == 6 && seasonPhase <= c.Map.Calendar.Day) ||
+					(c.Map.Calendar.Month == 7) ||
+					(c.Map.Calendar.Month == 8 && seasonPhase > c.Map.Calendar.Day) {
 					cv.SetFillStyle("texture/terrain/fruit.png")
 					cv.BeginPath()
 					cv.LineTo(sx-dxL, sy-dyL)
@@ -87,9 +87,9 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 		}
 	}
 
-	if (c.Calendar.Month == 12 && seasonPhase < c.Calendar.Day) ||
-		(c.Calendar.Month == 1) ||
-		(c.Calendar.Month == 2 && seasonPhase > c.Calendar.Day) {
+	if (c.Map.Calendar.Month == 12 && seasonPhase < c.Map.Calendar.Day) ||
+		(c.Map.Calendar.Month == 1) ||
+		(c.Map.Calendar.Month == 2 && seasonPhase > c.Map.Calendar.Day) {
 		if angle < -math.Pi/2-math.Pi/4 || angle > -math.Pi/2+math.Pi/4 {
 			cv.SetFillStyle("texture/terrain/snow_patches.png")
 			cv.BeginPath()

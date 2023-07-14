@@ -33,7 +33,6 @@ type Controller struct {
 	CenterY                   int
 	Perspective               uint8
 	Map                       *model.Map
-	Calendar                  *time.CalendarType
 	RenderedFields            []*renderer.RenderedField
 	RenderedBuildingParts     []renderer.RenderedBuildingPart
 	RenderedTravellers        []*renderer.RenderedTraveller
@@ -275,14 +274,15 @@ func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64)
 
 func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, m *model.Map) *Controller {
 	W, H := wnd.GetFramebufferSize()
-	Calendar := &time.CalendarType{
+	calendar := &time.CalendarType{
 		Year:  1000,
 		Month: 1,
 		Day:   1,
 		Hour:  0,
 	}
+	m.Calendar = calendar
 	controlPanel := &ControlPanel{}
-	C := &Controller{H: H, W: W, Calendar: Calendar, ControlPanel: controlPanel, Map: m, Country: m.Countries[0], TimeSpeed: 1, ActiveTown: m.Countries[0].Towns[0]}
+	C := &Controller{H: H, W: W, ControlPanel: controlPanel, Map: m, Country: m.Countries[0], TimeSpeed: 1, ActiveTown: m.Countries[0].Towns[0]}
 	controlPanel.Setup(C, ctx)
 	wnd.SetKeyCallback(C.KeyboardCallback)
 	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
@@ -317,6 +317,8 @@ func (c *Controller) Save() {
 }
 
 func (c *Controller) Load() {
-	c.Map = maps.Deserialize("samples/map/coast_3/2023-07-13T20:09:29-04:00").(*model.Map)
+	c.Map = maps.Deserialize("samples/map/coast_3/2023-07-13T21:54:12-04:00").(*model.Map)
+	c.Country = c.Map.Countries[0]
+	c.ActiveTown = c.Map.Countries[0].Towns[0]
 	c.Refresh()
 }

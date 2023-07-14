@@ -57,11 +57,11 @@ func main() {
 		ic.Clean()
 		if os.Getenv("MEDVIL_VERBOSE") == "1" {
 			log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
-			log.Printf("%s", c.Calendar)
+			log.Printf("%s", c.Map.Calendar)
 		}
 		for i := 0; i < c.TimeSpeed; i++ {
-			c.Calendar.Tick()
-			c.Map.ElapseTime(c.Calendar)
+			c.Map.Calendar.Tick()
+			c.Map.ElapseTime()
 		}
 		c.RenderTick()
 	})
