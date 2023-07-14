@@ -81,6 +81,7 @@ func LoadFields(dir string, m *model.Map) {
 		scanner.Scan()
 		fieldTypes := scanner.Text()
 		for i := uint16(0); i < m.SX; i++ {
+			m.Fields[i][j] = &navigation.Field{}
 			switch fieldTypes[i*2+1 : i*2+2] {
 			case "G":
 				m.Fields[i][j].Terrain.T = terrain.Grass
@@ -182,7 +183,7 @@ func LoadSociety(dir string, m *model.Map) {
 				AddBuilding(farm.Household.Building, m)
 				for l := range farm.Land {
 					land := farm.Land[l]
-					farm.Land[l].F = &m.Fields[land.X][land.Y]
+					farm.Land[l].F = m.Fields[land.X][land.Y]
 					farm.Land[l].F.Allocated = true
 				}
 				farm.Household.People = []*social.Person{farm.Household.NewPerson(m), farm.Household.NewPerson(m)}
@@ -215,9 +216,9 @@ func LoadMap(dir string) model.Map {
 	sx := meta["SX"]
 	sy := meta["SY"]
 
-	fields := make([][]navigation.Field, sx)
+	fields := make([][]*navigation.Field, sx)
 	for i := range fields {
-		fields[i] = make([]navigation.Field, sy)
+		fields[i] = make([]*navigation.Field, sy)
 	}
 	m := model.Map{SX: sx, SY: sy, Fields: fields}
 

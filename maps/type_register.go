@@ -54,6 +54,8 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(economy.AgriculturalTask{})
 	case "BuildingTask":
 		return reflect.TypeOf(economy.BuildingTask{})
+	case "ManufactureTask":
+		return reflect.TypeOf(economy.ManufactureTask{})
 	case "Field":
 		return reflect.TypeOf(navigation.Field{})
 	case "Location":

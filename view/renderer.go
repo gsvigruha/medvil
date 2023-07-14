@@ -43,7 +43,7 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			if pi < 0 || pj < 0 || pi >= int(m.SX) || pj >= int(m.SY) {
 				continue
 			}
-			var f = &m.Fields[pi][pj]
+			var f = m.Fields[pi][pj]
 			var t = uint8(0)
 			var r = uint8(0)
 			var b = uint8(0)

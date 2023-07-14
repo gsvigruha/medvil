@@ -11,7 +11,7 @@ import (
 	"medvil/util"
 )
 
-func setupTerrain(fields [][]navigation.Field) {
+func setupTerrain(fields [][]*navigation.Field) {
 	for i := range fields {
 		for j := range fields[i] {
 			switch rand.Intn(5) {
@@ -74,9 +74,9 @@ func addHouse(name string, x int, y int, m model.Map) {
 */
 
 func NewMap(sizeX uint16, sizeY uint16) model.Map {
-	fields := make([][]navigation.Field, sizeX)
+	fields := make([][]*navigation.Field, sizeX)
 	for i := range fields {
-		fields[i] = make([]navigation.Field, sizeY)
+		fields[i] = make([]*navigation.Field, sizeY)
 	}
 	setupTerrain(fields)
 	m := model.Map{SX: sizeX, SY: sizeY, Fields: fields}

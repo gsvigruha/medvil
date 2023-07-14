@@ -81,7 +81,10 @@ func CPActionTimeScaleChange(c *Controller) {
 }
 
 func (p *ControlPanel) Refresh() {
-	p.dateLabel.Text = strconv.Itoa(int(p.C.Calendar.Day)) + ", " + strconv.Itoa(int(p.C.Calendar.Month)) + ", " + strconv.Itoa(int(p.C.Calendar.Year))
+	p.dateLabel.Text = strconv.Itoa(
+		int(p.C.Map.Calendar.Day)) + ", " +
+		strconv.Itoa(int(p.C.Map.Calendar.Month)) + ", " +
+		strconv.Itoa(int(p.C.Map.Calendar.Year))
 	stats := p.C.Country.Stats()
 	p.moneyLabel.Text = strconv.Itoa(int(stats.Money))
 	p.peopleLabel.Text = strconv.Itoa(int(stats.People))

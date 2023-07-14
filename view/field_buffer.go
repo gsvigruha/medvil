@@ -19,7 +19,7 @@ type FieldImageCache struct {
 
 func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField) {
 	if f.Terrain.T == terrain.Grass || f.Terrain.T.Object {
-		if c.Calendar.Season() == 3 {
+		if c.Map.Calendar.Season() == 3 {
 			cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		} else {
 			cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
@@ -51,7 +51,7 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 }
 
 func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
-	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(c.Calendar.Season()))
+	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(c.Map.Calendar.Season()))
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[key]; ok {
 		return ce.cv

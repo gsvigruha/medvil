@@ -17,8 +17,9 @@ const GrassGrowRate = 0.0001
 type Map struct {
 	SX        uint16
 	SY        uint16
-	Fields    [][]navigation.Field
+	Fields    [][]*navigation.Field
 	Countries []*social.Country
+	Calendar  *time.CalendarType
 }
 
 func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.CalendarType) {
@@ -35,37 +36,37 @@ func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.Calendar
 	}
 }
 
-func (m *Map) ElapseTime(Calendar *time.CalendarType) {
+func (m *Map) ElapseTime() {
 	for i := range m.Countries {
 		country := m.Countries[i]
 		for j := range country.Towns {
-			country.Towns[j].ElapseTime(Calendar, m)
+			country.Towns[j].ElapseTime(m.Calendar, m)
 		}
 	}
 	for i := uint16(0); i < m.SX; i++ {
 		for j := uint16(0); j < m.SY; j++ {
-			f := &m.Fields[i][j]
+			f := m.Fields[i][j]
 			if f.Plant != nil {
-				f.Plant.ElapseTime(Calendar)
-				if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(Calendar) {
-					m.SpreadPlant(i-1, j, f.Plant, Calendar)
-					m.SpreadPlant(i, j-1, f.Plant, Calendar)
-					m.SpreadPlant(i+1, j, f.Plant, Calendar)
-					m.SpreadPlant(i, j+1, f.Plant, Calendar)
+				f.Plant.ElapseTime(m.Calendar)
+				if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(m.Calendar) {
+					m.SpreadPlant(i-1, j, f.Plant, m.Calendar)
+					m.SpreadPlant(i, j-1, f.Plant, m.Calendar)
+					m.SpreadPlant(i+1, j, f.Plant, m.Calendar)
+					m.SpreadPlant(i, j+1, f.Plant, m.Calendar)
 				}
 				if f.Plant.T.IsAnnual() {
-					if Calendar.Season() == time.Winter {
+					if m.Calendar.Season() == time.Winter {
 						f.Plant = nil
 					}
 				} else {
-					if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(Calendar) && rand.Float64() < PlantDeathRate {
+					if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(m.Calendar) && rand.Float64() < PlantDeathRate {
 						f.Plant = nil
 					}
 				}
 			}
 			if f.Animal != nil {
-				f.Animal.ElapseTime(Calendar)
-				if Calendar.Season() == time.Winter && !f.Animal.Corralled {
+				f.Animal.ElapseTime(m.Calendar)
+				if m.Calendar.Season() == time.Winter && !f.Animal.Corralled {
 					f.Animal = nil
 				}
 			}
@@ -76,7 +77,7 @@ func (m *Map) ElapseTime(Calendar *time.CalendarType) {
 				navigation.SetRoadConnectionsForNeighbors(m, f)
 				navigation.SetBuildingDeckForNeighbors(m, f)
 			}
-			if f.Plant == nil && f.Terrain.T == terrain.Dirt && rand.Float64() < GrassGrowRate && Calendar.Season() == time.Winter {
+			if f.Plant == nil && f.Terrain.T == terrain.Dirt && rand.Float64() < GrassGrowRate && m.Calendar.Season() == time.Winter {
 				f.Terrain.T = terrain.Grass
 			}
 		}
@@ -91,7 +92,7 @@ func (m *Map) GetField(x uint16, y uint16) *navigation.Field {
 	if x >= m.SX || y >= m.SY {
 		return nil
 	}
-	return &m.Fields[x][y]
+	return m.Fields[x][y]
 }
 
 func (m *Map) ReverseReferences() *ReverseReferences {
@@ -174,7 +175,7 @@ func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan, dire
 			by := int(y+j) - 2
 			if bp.BaseShape[i][j] != nil {
 				if bx >= 0 && by >= 0 && bx < int(m.SX) && by < int(m.SY) {
-					f := &m.Fields[bx][by]
+					f := m.Fields[bx][by]
 					if m.CheckBuildingBaseField(bp.BaseShape[i][j], bp.BuildingType, f, direction) {
 						fields = append(fields, f)
 					} else {

@@ -93,7 +93,7 @@ func (ic *BuildingImageCache) RenderBuildingExtensionOnBuffer(
 	c *controller.Controller) (*canvas.Canvas, float64, float64) {
 
 	t := time.Now().UnixNano()
-	phase := c.Calendar.Hour % buildings.BuildingAnimationMaxPhase
+	phase := c.Map.Calendar.Hour % buildings.BuildingAnimationMaxPhase
 	key := extension.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(phase))
 	z := BuildingExtensionBufferH / 2
 	xMin, yMin, _, _ := rf.BoundingBox()
