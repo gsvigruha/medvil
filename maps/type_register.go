@@ -40,6 +40,10 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(economy.EatTask{})
 	case "DrinkTask":
 		return reflect.TypeOf(economy.DrinkTask{})
+	case "HealTask":
+		return reflect.TypeOf(economy.HealTask{})
+	case "RelaxTask":
+		return reflect.TypeOf(economy.RelaxTask{})
 	case "GoHomeTask":
 		return reflect.TypeOf(economy.GoHomeTask{})
 	case "TransportTask":
@@ -54,8 +58,20 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(economy.AgriculturalTask{})
 	case "BuildingTask":
 		return reflect.TypeOf(economy.BuildingTask{})
+	case "DemolishTask":
+		return reflect.TypeOf(economy.DemolishTask{})
 	case "ManufactureTask":
 		return reflect.TypeOf(economy.ManufactureTask{})
+	case "MiningTask":
+		return reflect.TypeOf(economy.MiningTask{})
+	case "FactoryPickupTask":
+		return reflect.TypeOf(economy.FactoryPickupTask{})
+	case "VehicleConstructionTask":
+		return reflect.TypeOf(economy.VehicleConstructionTask{})
+	case "TradeTask":
+		return reflect.TypeOf(economy.TradeTask{})
+	case "TerraformTask":
+		return reflect.TypeOf(economy.TerraformTask{})
 	case "Field":
 		return reflect.TypeOf(navigation.Field{})
 	case "Location":
