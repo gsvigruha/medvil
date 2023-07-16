@@ -36,6 +36,8 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(building.RoofUnit{})
 	case "ExtensionUnit":
 		return reflect.TypeOf(building.ExtensionUnit{})
+	case "BuildingPathElement":
+		return reflect.TypeOf(navigation.BuildingPathElement{})
 	case "EatTask":
 		return reflect.TypeOf(economy.EatTask{})
 	case "DrinkTask":
@@ -78,6 +80,10 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(navigation.Location{})
 	case "BuildingDestination":
 		return reflect.TypeOf(navigation.BuildingDestination{})
+	case "VehicleOrder":
+		return reflect.TypeOf(social.VehicleOrder{})
+	case "Vehicle":
+		return reflect.TypeOf(vehicles.Vehicle{})
 	}
 	panic("Invalid type " + typeName)
 }

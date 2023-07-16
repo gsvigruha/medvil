@@ -92,18 +92,17 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		if key == glfw.KeyRight {
 			c.MoveCenter(2, 0)
 		}
-		if key == glfw.KeyS {
-			c.Save()
-		}
-		if key == glfw.KeyL {
-			c.Load()
-		}
 	}
 }
 
 func (c *Controller) ShowBuildingController(bt building.BuildingType) {
 	c.Reset()
 	BuildingsToControlPanel(c.ControlPanel, bt)
+}
+
+func (c *Controller) ShowLibraryController() {
+	c.Reset()
+	LibraryToControlPanel(c.ControlPanel)
 }
 
 func (c *Controller) ShowInfraController() {
@@ -312,12 +311,12 @@ func (c *Controller) AddRenderedTraveller(rt *renderer.RenderedTraveller) {
 	c.TempRenderedTravellers = append(c.TempRenderedTravellers, rt)
 }
 
-func (c *Controller) Save() {
-	maps.Serialize(c.Map, "samples/map/coast_3")
+func (c *Controller) Save(fileName string) {
+	maps.Serialize(c.Map, "saved/"+fileName)
 }
 
-func (c *Controller) Load() {
-	c.Map = maps.Deserialize("samples/map/coast_3/2023-07-13T21:54:12-04:00").(*model.Map)
+func (c *Controller) Load(fileName string) {
+	c.Map = maps.Deserialize("saved/" + fileName).(*model.Map)
 	c.Country = c.Map.Countries[0]
 	c.ActiveTown = c.Map.Countries[0].Towns[0]
 	c.Refresh()

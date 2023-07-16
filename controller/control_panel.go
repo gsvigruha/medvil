@@ -167,6 +167,10 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(10 + IconW*5), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS},
 		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },
 		ClickImpl: func() { c.ShowDemolishController() }})
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "library", X: float64(10 + IconW*4), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS},
+		Highlight: func() bool { return p.IsDynamicPanelType("LibraryController") },
+		ClickImpl: func() { c.ShowLibraryController() }})
 	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*6), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionCancel})
 	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: float64(10 + IconW*6), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)

@@ -16,11 +16,11 @@ type FactoryPickupTask struct {
 	PickupD  navigation.Destination
 	DropoffD navigation.Destination
 	Order    VehicleOrder
-	dropoff  bool
+	Dropoff  bool
 }
 
 func (t *FactoryPickupTask) Destination() navigation.Destination {
-	if t.dropoff {
+	if t.Dropoff {
 		return t.DropoffD
 	} else {
 		return t.PickupD
@@ -28,20 +28,20 @@ func (t *FactoryPickupTask) Destination() navigation.Destination {
 }
 
 func (t *FactoryPickupTask) Complete(Calendar *time.CalendarType, tool bool) bool {
-	if t.dropoff {
+	if t.Dropoff {
 		t.Traveller.ExitVehicle()
 		return true
 	} else {
 		v := t.Order.PickupVehicle()
 		t.Household.AddVehicle(v)
 		t.Traveller.UseVehicle(v)
-		t.dropoff = true
+		t.Dropoff = true
 	}
 	return false
 }
 
 func (t *FactoryPickupTask) Blocked() bool {
-	if !t.dropoff {
+	if !t.Dropoff {
 		return !t.Order.IsBuilt()
 	}
 	return false
@@ -68,7 +68,7 @@ func (t *FactoryPickupTask) Motion() uint8 {
 }
 
 func (t *FactoryPickupTask) IsFieldCenter() bool {
-	if t.dropoff {
+	if t.Dropoff {
 		return t.FieldCenter
 	} else {
 		return false

@@ -9,7 +9,7 @@ import (
 	"medvil/model/time"
 )
 
-const StorageToSoldRatio = 6
+const StorageToSoldRatio = 12
 
 type Marketplace struct {
 	Town      *Town `json:"-"`
