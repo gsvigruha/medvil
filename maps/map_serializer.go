@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
 	"reflect"
 	"strconv"
-	"time"
 )
 
 const Version = "0.1"
 
-func Serialize(o interface{}, dir string) {
+func Serialize(o interface{}, file string) {
 	var writer bytes.Buffer
 	var objects map[string]interface{} = make(map[string]interface{})
 	CollectObjects(o, objects)
@@ -31,8 +29,7 @@ func Serialize(o interface{}, dir string) {
 		SerializeObject(obj, &writer)
 	}
 	writer.WriteString("}")
-	os.MkdirAll(dir, os.ModePerm)
-	err := ioutil.WriteFile(dir+"/"+time.Now().Format(time.RFC3339), writer.Bytes(), 0644)
+	err := ioutil.WriteFile(file, writer.Bytes(), 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
