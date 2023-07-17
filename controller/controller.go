@@ -95,9 +95,9 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 	}
 }
 
-func (c *Controller) ShowBuildingController(bt building.BuildingType) {
+func (c *Controller) ShowBuildingController() {
 	c.Reset()
-	BuildingsToControlPanel(c.ControlPanel, bt)
+	BuildingsToControlPanel(c.ControlPanel)
 }
 
 func (c *Controller) ShowLibraryController() {

@@ -109,70 +109,67 @@ func (p *ControlPanel) GetHelperPanel() *gui.Panel {
 func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.C = c
 	if c.W < 2000 {
-		ControlPanelSX = 300.0
+		ControlPanelSX = 400.0
 		ControlPanelSY = float64(c.H)
 		IconS = 32.0
 		IconW = 40
 		IconH = 40
-		gui.FontSize = 12.0
+		LargeIconS = 48.0
+		LargeIconD = 60.0
+		gui.FontSize = 16.0
 		ScaleBuildingControllerElements(1.0)
 	} else {
-		ControlPanelSX = 450.0
+		ControlPanelSX = 600.0
 		ControlPanelSY = float64(c.H)
 		IconS = 48.0
 		IconW = 60
 		IconH = 60
-		gui.FontSize = 18.0
+		LargeIconS = 72.0
+		LargeIconD = 80.0
+		gui.FontSize = 24.0
 		ScaleBuildingControllerElements(1.5)
 	}
 
-	iconS2 := IconS / 2.0
+	ih := 4.0
+	th := IconS/2 - gui.FontSize/2
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
-	p.dateLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.03, 8+gui.FontSize)
-	p.topPanel.AddImageLabel("coin", ControlPanelSX*0.25, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.moneyLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.25+iconS2, 8+gui.FontSize)
-	p.topPanel.AddImageLabel("person", ControlPanelSX*0.5, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.peopleLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.5+iconS2, 8+gui.FontSize)
-	p.topPanel.AddImageLabel("barrel", ControlPanelSX*0.65, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.artifactsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.65+iconS2, 8+gui.FontSize)
-	p.topPanel.AddImageLabel("workshop", ControlPanelSX*0.85, 8, iconS2, iconS2, gui.ImageLabelStyleRegular)
-	p.buildingsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.85+iconS2, 8+gui.FontSize)
+	p.dateLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.03, th+gui.FontSize)
+	p.topPanel.AddImageLabel("coin", ControlPanelSX*0.25, ih, IconS, IconS, gui.ImageLabelStyleRegular)
+	p.moneyLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.25+IconS, th+gui.FontSize)
+	p.topPanel.AddImageLabel("person", ControlPanelSX*0.5, ih, IconS, IconS, gui.ImageLabelStyleRegular)
+	p.peopleLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.5+IconS, th+gui.FontSize)
+	p.topPanel.AddImageLabel("barrel", ControlPanelSX*0.65, ih, IconS, IconS, gui.ImageLabelStyleRegular)
+	p.artifactsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.65+IconS, th+gui.FontSize)
+	p.topPanel.AddImageLabel("house", ControlPanelSX*0.85, ih, IconS, IconS, gui.ImageLabelStyleRegular)
+	p.buildingsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.85+IconS, th+gui.FontSize)
 
-	iconTop := 15 + iconS2
+	iconTop := 15 + IconS
 	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "farm", X: float64(10 + IconW*0), Y: iconTop, SX: IconS, SY: IconS},
-		Highlight: func() bool { return p.IsBuildingType(building.BuildingTypeFarm) },
-		ClickImpl: func() { c.ShowBuildingController(building.BuildingTypeFarm) }})
+		ButtonGUI: gui.ButtonGUI{Icon: "house", X: float64(10 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return p.IsDynamicPanelType("BuildingsController") },
+		ClickImpl: func() { c.ShowBuildingController() }})
 	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "mine", X: float64(10 + IconW*1), Y: iconTop, SX: IconS, SY: IconS},
-		Highlight: func() bool { return p.IsBuildingType(building.BuildingTypeMine) },
-		ClickImpl: func() { c.ShowBuildingController(building.BuildingTypeMine) }})
-	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "workshop", X: float64(10 + IconW*2), Y: iconTop, SX: IconS, SY: IconS},
-		Highlight: func() bool { return p.IsBuildingType(building.BuildingTypeWorkshop) },
-		ClickImpl: func() { c.ShowBuildingController(building.BuildingTypeWorkshop) }})
-	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(10 + IconW*3), Y: iconTop, SX: IconS, SY: IconS},
-		Highlight: func() bool { return p.IsBuildingType(building.BuildingTypeFactory) },
-		ClickImpl: func() { c.ShowBuildingController(building.BuildingTypeFactory) }})
-	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "infra", X: float64(10 + IconW*4), Y: iconTop, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "infra", X: float64(10 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsInfraType() },
 		ClickImpl: func() { c.ShowInfraController() }})
 	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*5), Y: iconTop, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "town", X: float64(10 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsDynamicPanelType("NewTownController") },
 		ClickImpl: func() { c.ShowNewTownController() }})
 	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(10 + IconW*5), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(10 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },
 		ClickImpl: func() { c.ShowDemolishController() }})
 	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "library", X: float64(10 + IconW*4), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "library", X: float64(10 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsDynamicPanelType("LibraryController") },
 		ClickImpl: func() { c.ShowLibraryController() }})
-	p.topPanel.AddButton(ControlPanelButton{b: gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*6), Y: iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionCancel})
-	p.timeButton = &ControlPanelButton{b: gui.ButtonGUI{Icon: "time", X: float64(10 + IconW*6), Y: float64(IconH) + iconTop, SX: IconS, SY: IconS}, c: c, action: CPActionTimeScaleChange}
+	p.topPanel.AddButton(ControlPanelButton{
+		b: gui.ButtonGUI{Icon: "cancel", X: float64(10 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		c: c, action: CPActionCancel})
+	p.timeButton = &ControlPanelButton{
+		b: gui.ButtonGUI{Icon: "time", X: float64(10 + LargeIconD*6), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
 
 	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}

@@ -10,11 +10,7 @@ import (
 	"strconv"
 )
 
-var IconH = 40
-var IconW = 40
-var IconS = 32.0
-
-const IconRowMax = 7
+const IconRowMax = 9
 
 var PersonGUIY = 0.15
 var ArtifactsGUIY = 0.45
