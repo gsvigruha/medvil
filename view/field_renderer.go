@@ -25,6 +25,11 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 	if f.Construction || f.Road != nil {
 		RenderRoad(cv, rf, f, c)
 	}
+	if f.Building.GetBuilding() != nil && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeMarket {
+		cv.SetFillStyle("texture/building/market.png")
+		rf.Draw(cv)
+		cv.Fill()
+	}
 
 	if f.Plant != nil && !f.Plant.IsTree() {
 		renderPlant(ic, cv, rf, f, c)
