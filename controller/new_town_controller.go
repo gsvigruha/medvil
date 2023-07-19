@@ -167,38 +167,38 @@ func SetupNewTownController(c *NewTownController) {
 		}
 	}
 
-	top := float64(IconH) + 50
+	top := float64(LargeIconD) + 50
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateBuildTownhall,
-		b: gui.ButtonGUI{Icon: "new_town", X: float64(10 + IconW*0), Y: top, SX: IconS, SY: IconS,
+		b: gui.ButtonGUI{Icon: "new_town", X: float64(10 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStateNone && c.state != NewTownControllerStateBuildTownhall
 			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateBuildMarket,
-		b: gui.ButtonGUI{Icon: "new_market", X: float64(10 + IconW*1), Y: top, SX: IconS, SY: IconS,
+		b: gui.ButtonGUI{Icon: "new_market", X: float64(10 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStateBuildMarket
 			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickTown,
-		b: gui.ButtonGUI{Icon: "town", X: float64(10 + IconW*0), Y: top + float64(IconH), SX: IconS, SY: IconS,
+		b: gui.ButtonGUI{Icon: "town", X: float64(10 + LargeIconD*0), Y: top + float64(LargeIconD), SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStateNone && c.state != NewTownControllerStatePickTown
 			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickResources,
-		b: gui.ButtonGUI{Icon: "barrel", X: float64(10 + IconW*2), Y: top + float64(IconH/2), SX: IconS, SY: IconS,
+		b: gui.ButtonGUI{Icon: "barrel", X: float64(10 + LargeIconD*2), Y: top + float64(LargeIconD/2), SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStatePickResources
 			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateStart,
-		b: gui.ButtonGUI{Icon: "start", X: float64(10 + IconW*3), Y: top + float64(IconH/2), SX: IconS, SY: IconS,
+		b: gui.ButtonGUI{Icon: "start", X: float64(10 + LargeIconD*3), Y: top + float64(LargeIconD/2), SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStatePickResources
 			}},
