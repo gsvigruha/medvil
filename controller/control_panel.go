@@ -146,7 +146,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	iconTop := 15 + IconS
 	p.topPanel.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "house", X: float64(10 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
-		Highlight: func() bool { return p.IsDynamicPanelType("BuildingsController") },
+		Highlight: func() bool { return p.IsBuildingType() },
 		ClickImpl: func() { c.ShowBuildingController() }})
 	p.topPanel.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "infra", X: float64(10 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
@@ -208,7 +208,7 @@ func (p *ControlPanel) IsDynamicPanelType(typeName string) bool {
 	return reflect.TypeOf(p.dynamicPanel).String() == ("*controller." + typeName)
 }
 
-func (p *ControlPanel) IsBuildingType(bt building.BuildingType) bool {
+func (p *ControlPanel) IsBuildingTypeOf(bt building.BuildingType) bool {
 	if p.C.ClickHandler == nil {
 		return false
 	}
@@ -216,6 +216,14 @@ func (p *ControlPanel) IsBuildingType(bt building.BuildingType) bool {
 		return bc.Plan.BuildingType == bt
 	}
 	return false
+}
+
+func (p *ControlPanel) IsBuildingType() bool {
+	if p.C.ClickHandler == nil {
+		return false
+	}
+	_, ok := p.C.ClickHandler.(*BuildingsController)
+	return ok
 }
 
 func (p *ControlPanel) IsInfraType() bool {

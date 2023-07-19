@@ -42,7 +42,7 @@ func MoneyToControlPanel(p *gui.Panel, town *social.Town, targetWallet *uint32, 
 	p.AddTextLabel("$ "+strconv.Itoa(int(*targetWallet)), x, y)
 	if town != nil {
 		p.AddButton(MoneyControllerButton{
-			b:            gui.ButtonGUI{Icon: "plus", X: x + 60, Y: y - 10, SX: 12, SY: 12},
+			b:            gui.ButtonGUI{Icon: "plus", X: x + gui.FontSize*4, Y: y - gui.FontSize*3/4, SX: gui.FontSize, SY: gui.FontSize},
 			sourceWallet: &town.Townhall.Household.Money,
 			targetWallet: targetWallet,
 			amount:       amount,

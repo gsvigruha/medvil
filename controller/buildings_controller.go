@@ -35,6 +35,7 @@ type BuildingsController struct {
 	Perspective *uint8
 	bt          building.BuildingType
 	p           *gui.Panel
+	cp          *ControlPanel
 	activeTown  *social.Town
 	del         bool
 }
@@ -337,6 +338,25 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 
 func (bc *BuildingsController) GenerateButtons() {
 	bc.p.Buttons = nil
+
+	iconTop := 15 + IconS + LargeIconD
+	bc.p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "farm", X: float64(10 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeFarm) },
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFarm) }})
+	bc.p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "mine", X: float64(10 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeMine) },
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMine) }})
+	bc.p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "workshop", X: float64(10 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeWorkshop) },
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeWorkshop) }})
+	bc.p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(10 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeFactory) },
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFactory) }})
+
 	roofPanelTop := BuildingButtonPanelTop * ControlPanelSY
 	bc.p.AddButton(RoofButton{
 		b:   gui.ButtonGUI{Icon: "cancel", X: float64(IconW*4 + 10), Y: roofPanelTop, SX: IconS, SY: IconS},
@@ -414,38 +434,21 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activ
 		Plan:        &building.BuildingPlan{BuildingType: bt},
 		bt:          bt,
 		p:           p,
+		cp:          cp,
 		activeTown:  activeTown,
 		Direction:   building.DirectionN,
 		Perspective: &cp.C.Perspective}
+
 	bc.GenerateButtons()
 	cp.SetDynamicPanel(p)
 	return bc
 }
 
 func BuildingsToControlPanel(cp *ControlPanel) {
-	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop * ControlPanelSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY * ControlPanelSY, SingleClick: true}
-
-	iconTop := 15 + IconS + LargeIconD
-	p.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "farm", X: float64(10 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
-		Highlight: func() bool { return cp.IsBuildingType(building.BuildingTypeFarm) },
-		ClickImpl: func() { SetupBuildingsController(cp, building.BuildingTypeFarm) }})
-	p.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "mine", X: float64(10 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
-		Highlight: func() bool { return cp.IsBuildingType(building.BuildingTypeMine) },
-		ClickImpl: func() { SetupBuildingsController(cp, building.BuildingTypeMine) }})
-	p.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "workshop", X: float64(10 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
-		Highlight: func() bool { return cp.IsBuildingType(building.BuildingTypeWorkshop) },
-		ClickImpl: func() { SetupBuildingsController(cp, building.BuildingTypeWorkshop) }})
-	p.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(10 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
-		Highlight: func() bool { return cp.IsBuildingType(building.BuildingTypeFactory) },
-		ClickImpl: func() { SetupBuildingsController(cp, building.BuildingTypeFactory) }})
-	cp.SetDynamicPanel(p)
+	SetupBuildingsController(cp, building.BuildingTypeFarm)
 }
 
 func SetupBuildingsController(cp *ControlPanel, bt building.BuildingType) {
-	bc := CreateBuildingsController(cp, building.BuildingTypeFarm, cp.C.ActiveTown)
+	bc := CreateBuildingsController(cp, bt, cp.C.ActiveTown)
 	cp.C.ClickHandler = bc
 }
