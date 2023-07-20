@@ -128,7 +128,7 @@ func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *
 	yI := i / IconRowMax
 	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
 	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*rowH+IconH+4))
-	p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*rowH+IconH+8), float64(IconW), gui.FontSize*1.5, 0, 250, 5, "%v",
+	p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*rowH+IconH+12), float64(IconW), gui.FontSize*1.5, 0, 250, 5, "%v",
 		func() int { return th.StorageTarget[a] },
 		func(v int) { th.StorageTarget[a] = v }).P)
 }

@@ -16,7 +16,7 @@ var PersonGUIY = 0.15
 var ArtifactsGUIY = 0.45
 var TaskGUIY = 0.6
 
-const MaxNumTasks = 20
+const MaxNumTasks = 24
 
 var VehicleGUIY = 0.7
 var HouseholdControllerSY = 0.7

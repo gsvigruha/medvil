@@ -187,13 +187,15 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			if h.Building.HasExtension(building.Deck) {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
-				h.AddTask(&economy.FactoryPickupTask{
-					// Factories need to be accessed via land even for boat pickups first
-					PickupD:  factory.Household.Destination(building.NonExtension),
-					DropoffD: h.Destination(building.Deck),
-					Order:    order,
-					TaskBase: economy.TaskBase{FieldCenter: true},
-				})
+				if order != nil {
+					h.AddTask(&economy.FactoryPickupTask{
+						// Factories need to be accessed via land even for boat pickups first
+						PickupD:  factory.Household.Destination(building.NonExtension),
+						DropoffD: h.Destination(building.Deck),
+						Order:    order,
+						TaskBase: economy.TaskBase{FieldCenter: true},
+					})
+				}
 			}
 		}
 	}
@@ -204,12 +206,14 @@ func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap)
 		factory := PickFactory(h.Town.Factories)
 		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			order := factory.CreateOrder(economy.CartConstruction, h)
-			h.AddTask(&economy.FactoryPickupTask{
-				PickupD:  factory.Household.Destination(building.NonExtension),
-				DropoffD: h.Destination(building.NonExtension),
-				Order:    order,
-				TaskBase: economy.TaskBase{FieldCenter: true},
-			})
+			if order != nil {
+				h.AddTask(&economy.FactoryPickupTask{
+					PickupD:  factory.Household.Destination(building.NonExtension),
+					DropoffD: h.Destination(building.NonExtension),
+					Order:    order,
+					TaskBase: economy.TaskBase{FieldCenter: true},
+				})
+			}
 		}
 	}
 }

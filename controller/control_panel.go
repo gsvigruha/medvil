@@ -233,3 +233,7 @@ func (p *ControlPanel) IsInfraType() bool {
 	_, ok := p.C.ClickHandler.(*InfraController)
 	return ok
 }
+
+func (p *ControlPanel) HelperMessage(msg string) {
+	p.GetHelperPanel().AddTextLabel(msg, ControlPanelSX*0.03, ControlPanelSY*0.95)
+}
