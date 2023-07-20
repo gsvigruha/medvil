@@ -51,9 +51,7 @@ func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		}
 		t.state = TradeTaskStateDropoffAtDest
 	case TradeTaskStateDropoffAtDest:
-		if t.TargetExchange.CanSell(t.Goods) {
-			t.TargetExchange.Sell(t.Goods, t.TraderWallet)
-		}
+		t.TargetExchange.SellAsManyAsPossible(t.Goods, t.TraderWallet)
 		t.state = TradeTaskStatePickupAtDest
 	case TradeTaskStatePickupAtDest:
 		t.Goods = []artifacts.Artifacts{}
@@ -62,22 +60,14 @@ func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		}
 		t.state = TradeTaskStateDropoffAtSource
 	case TradeTaskStateDropoffAtSource:
-		if t.SourceExchange.CanSell(t.Goods) {
-			t.SourceExchange.Sell(t.Goods, t.TraderWallet)
-		}
+		t.SourceExchange.SellAsManyAsPossible(t.Goods, t.TraderWallet)
 		return true
 	}
 	return false
 }
 
 func (t *TradeTask) Blocked() bool {
-	switch t.state {
-	case TradeTaskStatePickupAtSource:
-		return !t.SourceExchange.HasAny(t.GoodsSourceToDest)
-	case TradeTaskStatePickupAtDest:
-		return !t.TargetExchange.HasAny(t.GoodsDestToSource)
-	}
-	return false
+	return !t.SourceExchange.HasAny(t.GoodsSourceToDest) && !t.TargetExchange.HasAny(t.GoodsDestToSource)
 }
 
 func (t *TradeTask) Name() string {

@@ -88,6 +88,9 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	town.Townhall.Household.Filter(Calendar, m)
 	town.Townhall.Filter(Calendar, m)
 	s.Add(town.Townhall.Household.Stats())
+	for _, trader := range town.Townhall.Traders {
+		s.Add(trader.Stats())
+	}
 	for k := range town.Farms {
 		farm := town.Farms[k]
 		for l := range farm.Household.People {
