@@ -173,6 +173,24 @@ func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet economy.Wallet) {
 	}
 }
 
+func (mp *Marketplace) SellAsManyAsPossible(as []artifacts.Artifacts, wallet economy.Wallet) {
+	for _, a := range as {
+		var price uint32
+		var quantity uint16
+		if mp.Prices[a.A]*uint32(a.Quantity) <= mp.Money {
+			price = mp.Prices[a.A] * uint32(a.Quantity)
+			quantity = a.Quantity
+		} else {
+			quantity = uint16(mp.Money / mp.Prices[a.A])
+			price = mp.Prices[a.A] * uint32(quantity)
+		}
+		wallet.Earn(price)
+		mp.Money -= price
+		mp.Storage.Add(a.A, quantity)
+		mp.Sold[a.A] += uint32(quantity)
+	}
+}
+
 func (mp *Marketplace) CanBuy(as []artifacts.Artifacts) bool {
 	return mp.Storage.Has(as)
 }

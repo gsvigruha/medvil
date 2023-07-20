@@ -122,6 +122,7 @@ func (t *Townhall) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 			field := m.GetField(trader.Person.Traveller.FX, trader.Person.Traveller.FY)
 			field.UnregisterTraveller(trader.Person.Traveller)
 			field.UnregisterTraveller(trader.Vehicle.Traveller)
+			t.Household.Money += trader.Money
 		} else {
 			newTraders = append(newTraders, trader)
 		}

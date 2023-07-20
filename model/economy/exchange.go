@@ -17,6 +17,7 @@ type Exchange interface {
 	Buy([]artifacts.Artifacts, Wallet)
 	BuyAsManyAsPossible([]artifacts.Artifacts, Wallet) []artifacts.Artifacts
 	Sell([]artifacts.Artifacts, Wallet)
+	SellAsManyAsPossible([]artifacts.Artifacts, Wallet)
 	CanBuy([]artifacts.Artifacts) bool
 	CanSell([]artifacts.Artifacts) bool
 	Price([]artifacts.Artifacts) uint32

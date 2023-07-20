@@ -5,6 +5,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/stats"
 	"medvil/model/time"
 	"medvil/model/vehicles"
 	"medvil/util"
@@ -56,9 +57,14 @@ func (t *Trader) GetArtifactToTrade(pickupMP, dropoffMP *Marketplace) *artifacts
 	return nil
 }
 
-func (t *Trader) GetGoodsToTrade(a *artifacts.Artifact, mp *Marketplace) []artifacts.Artifacts {
+func (t *Trader) GetGoodsToTrade(a *artifacts.Artifact, src *Marketplace, dst *Marketplace) []artifacts.Artifacts {
 	if a != nil {
-		quantity := uint16(float64(t.Money) * TradingCapitalRatio / float64(mp.Prices[a]))
+		buyQuantity := uint16(float64(t.Money) * TradingCapitalRatio / float64(src.Prices[a]))
+		sellQuantity := uint16(float64(dst.Money) / float64(dst.Prices[a]))
+		var quantity = buyQuantity
+		if sellQuantity < buyQuantity {
+			quantity = sellQuantity
+		}
 		return []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: quantity}}
 	}
 	return []artifacts.Artifacts{}
@@ -71,8 +77,8 @@ func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 	artifactSourceToDest := t.GetArtifactToTrade(t.SourceExchange, t.TargetExchange)
 	artifactDestToSource := t.GetArtifactToTrade(t.TargetExchange, t.SourceExchange)
 	if artifactSourceToDest != nil || artifactDestToSource != nil {
-		goodsSourceToDest := t.GetGoodsToTrade(artifactSourceToDest, t.SourceExchange)
-		goodsDestToSource := t.GetGoodsToTrade(artifactDestToSource, t.TargetExchange)
+		goodsSourceToDest := t.GetGoodsToTrade(artifactSourceToDest, t.SourceExchange, t.TargetExchange)
+		goodsDestToSource := t.GetGoodsToTrade(artifactDestToSource, t.TargetExchange, t.SourceExchange)
 		if len(goodsSourceToDest) > 0 || len(goodsDestToSource) > 0 {
 			return &economy.TradeTask{
 				SourceMarketD:     &navigation.BuildingDestination{B: t.SourceExchange.Building, ET: t.Vehicle.T.BuildingExtensionType},
@@ -190,4 +196,13 @@ func (t *Trader) GetMoney() uint32 {
 
 func (t *Trader) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
 	return navigation.TravellerDestination{T: t.Person.Traveller}
+}
+
+func (t *Trader) Stats() *stats.Stats {
+	return &stats.Stats{
+		Money:     t.Money,
+		People:    1,
+		Buildings: 0,
+		Artifacts: t.Resources.NumArtifacts(),
+	}
 }
