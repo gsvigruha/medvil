@@ -115,10 +115,10 @@ func RefreshSubPanels(tc *TownhallController) {
 	}
 
 	for i, t := range th.Traders {
-		tc.traderPanel.AddButton(CreateTraderButton(float64(10+i*IconW), top+float64(IconH*2), tc, t))
+		tc.traderPanel.AddButton(CreateTraderButton(float64(10+i*IconW), top+float64(IconH), tc, t))
 	}
 	if tc.activeTrader != nil {
-		MoneyToControlPanel(tc.traderPanel, th.Household.Town, &tc.activeTrader.Money, 10, 10, top+float64(IconH*3)+IconS)
+		MoneyToControlPanel(tc.traderPanel, th.Household.Town, &tc.activeTrader.Money, 10, 10, top+float64(IconH*2)+IconS)
 		for i, task := range tc.activeTrader.Tasks {
 			TaskToControlPanel(tc.cp, tc.traderPanel, i, top+float64(IconH*4)+IconS, task, IconW)
 		}
