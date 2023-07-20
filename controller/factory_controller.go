@@ -60,14 +60,16 @@ func (b OrderButton) Click() {
 	factory := b.factories[rand.Intn(len(b.factories))]
 	h := factory.Household.Town.Townhall.Household
 	order := factory.CreateOrder(b.vc, h)
-	hx, hy, _ := social.GetRandomBuildingXY(h.Building, b.m, navigation.Field.BuildingNonExtension)
-	fx, fy, _ := social.GetRandomBuildingXY(factory.Household.Building, b.m, navigation.Field.BuildingNonExtension)
-	h.AddTask(&economy.FactoryPickupTask{
-		PickupD:  b.m.GetField(fx, fy),
-		DropoffD: b.m.GetField(hx, hy),
-		Order:    order,
-		TaskBase: economy.TaskBase{FieldCenter: true},
-	})
+	if order != nil {
+		hx, hy, _ := social.GetRandomBuildingXY(h.Building, b.m, navigation.Field.BuildingNonExtension)
+		fx, fy, _ := social.GetRandomBuildingXY(factory.Household.Building, b.m, navigation.Field.BuildingNonExtension)
+		h.AddTask(&economy.FactoryPickupTask{
+			PickupD:  b.m.GetField(fx, fy),
+			DropoffD: b.m.GetField(hx, hy),
+			Order:    order,
+			TaskBase: economy.TaskBase{FieldCenter: true},
+		})
+	}
 }
 
 func (b OrderButton) NumOrders() int {
