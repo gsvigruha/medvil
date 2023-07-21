@@ -93,17 +93,19 @@ var AllManufacture = [...]*Manufacture{
 		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("grain"), Quantity: 1}},
 		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1}}},
 	&Manufacture{
-		Name:  "baking",
-		Time:  10 * 24,
-		Power: 1000,
+		Name:                  "baking",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Cooker,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("flour"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("bread"), Quantity: 2}}},
 	&Manufacture{
-		Name:  "brewing",
-		Time:  60 * 24,
-		Power: 1000,
+		Name:                  "brewing",
+		Time:                  60 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Cooker,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("grain"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("pot"), Quantity: 2},
@@ -143,9 +145,10 @@ var AllManufacture = [...]*Manufacture{
 		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 2}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 1}}},
 	&Manufacture{
-		Name:  "medicine",
-		Time:  120 * 24,
-		Power: 1000,
+		Name:                  "medicine",
+		Time:                  120 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Cooker,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("herb"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("pot"), Quantity: 1}},

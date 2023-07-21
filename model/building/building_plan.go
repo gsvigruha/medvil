@@ -225,6 +225,9 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 						boards += 2
 					case Forge:
 						cubes += 2
+					case Cooker:
+						boards += 1
+						bricks += 2
 					}
 				}
 			}
