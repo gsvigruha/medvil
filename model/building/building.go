@@ -129,7 +129,7 @@ func (b *Building) ToBuildingUnits(x uint8, y uint8, construction bool) []Buildi
 	p := b.Plan.BaseShape[x][y]
 	numFloors := uint8(len(p.Floors))
 	units := make([]BuildingComponent, numFloors)
-	if p.Extension != nil {
+	if p.Extension != nil && !p.Extension.T.InUnit {
 		units = append(units, &ExtensionUnit{
 			T:                     p.Extension.T,
 			Direction:             GetExtensionDirection(p.Extension.T, x, y, b.Plan),

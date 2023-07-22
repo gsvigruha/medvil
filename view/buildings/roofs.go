@@ -171,11 +171,17 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			}
 		}
 	}
+	if !roof.Construction && roof.B.HasExtension(building.Cooker) && cv != nil {
+		RenderChimney(cv, rf, k, roof.Roof.RoofType == building.RoofTypeFlat, 255)
+	}
 	return &renderer.RenderedBuildingRoof{B: roof.Building(), Ps: roofPolygons}
 }
 
-func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, phase uint8) {
+func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof bool, phase uint8) {
 	z := math.Min(math.Min(math.Min(rf.Z[0], rf.Z[1]), rf.Z[2]), rf.Z[3]) + float64(k*BuildingUnitHeight)*DZ
+	if flatRoof {
+		z -= float64(BuildingUnitHeight) * DZ
+	}
 	midX := (rf.X[0] + rf.X[2]) / 2
 	midY := (rf.Y[0] + rf.Y[2]) / 2
 	h := 8.0
@@ -208,5 +214,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, phase ui
 	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 224})
 	util.RenderPolygon(cv, rp3, true)
 
-	cv.DrawImage("texture/building/smoke_"+strconv.Itoa(int(phase/3))+".png", midX-16, midY-z-BuildingUnitHeight*DZ-h-52, 32, 48)
+	if phase != 255 {
+		cv.DrawImage("texture/building/smoke_"+strconv.Itoa(int(phase/3))+".png", midX-16, midY-z-BuildingUnitHeight*DZ-h-52, 32, 48)
+	}
 }
