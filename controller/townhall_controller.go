@@ -57,10 +57,10 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 	tc := &TownhallController{cp: cp, th: th, householdPanel: hp, taxPanel: mp, storagePanel: sp, factoryPanel: fp, traderPanel: tp}
 	tc.buttons = []*TownhallControllerButton{
-		&TownhallControllerButton{tc: tc, subPanel: mp, b: gui.ButtonGUI{Icon: "taxes", X: float64(10 + IconW*0), Y: top, SX: IconS, SY: IconS}},
-		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(10 + IconW*1), Y: top, SX: IconS, SY: IconS}},
-		&TownhallControllerButton{tc: tc, subPanel: fp, b: gui.ButtonGUI{Icon: "factory", X: float64(10 + IconW*2), Y: top, SX: IconS, SY: IconS}},
-		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(10 + IconW*3), Y: top, SX: IconS, SY: IconS}},
+		&TownhallControllerButton{tc: tc, subPanel: mp, b: gui.ButtonGUI{Icon: "taxes", X: float64(24 + IconW*0), Y: top, SX: IconS, SY: IconS}},
+		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(24 + IconW*1), Y: top, SX: IconS, SY: IconS}},
+		&TownhallControllerButton{tc: tc, subPanel: fp, b: gui.ButtonGUI{Icon: "factory", X: float64(24 + IconW*2), Y: top, SX: IconS, SY: IconS}},
+		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(24 + IconW*3), Y: top, SX: IconS, SY: IconS}},
 	}
 
 	HouseholdToControlPanel(cp, hp, th.Household)
@@ -80,24 +80,29 @@ func RefreshSubPanels(tc *TownhallController) {
 	tpw := (ControlPanelSX - 30) / 2
 	s := IconS / 2
 	h := float64(IconH / 2)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10, top+h*2, tpw-s, s, 0, 100, 10, "farm tax rate %v", &th.Household.Town.Transfers.Farm.TaxRate).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10, top+h*3, tpw-s, s, 0, 1000, 50, "farm threshold %v", &th.Household.Town.Transfers.Farm.TaxThreshold).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10, top+h*4, tpw-s, s, 0, 1000, 50, "farm subsidy %v", &th.Household.Town.Transfers.Farm.Subsidy).P)
+	tw := 24 + LargeIconD
+	tp.AddImageLabel("farm", 24, top+h*2, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*2, tpw-tw, s, 0, 100, 10, "tax rate %v", &th.Household.Town.Transfers.Farm.TaxRate).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*3, tpw-tw, s, 0, 1000, 50, "threshold %v", &th.Household.Town.Transfers.Farm.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*4, tpw-tw, s, 0, 1000, 50, "subsidy %v", &th.Household.Town.Transfers.Farm.Subsidy).P)
 
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10, top+h*5, tpw-s, s, 0, 100, 10, "shop tax rate %v", &th.Household.Town.Transfers.Workshop.TaxRate).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10, top+h*6, tpw-s, s, 0, 1000, 50, "shop threshold %v", &th.Household.Town.Transfers.Workshop.TaxThreshold).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10, top+h*7, tpw-s, s, 0, 1000, 50, "shop subsidy %v", &th.Household.Town.Transfers.Workshop.Subsidy).P)
+	tp.AddImageLabel("workshop", 24, top+h*5, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*5, tpw-tw, s, 0, 100, 10, "tax rate %v", &th.Household.Town.Transfers.Workshop.TaxRate).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*6, tpw-tw, s, 0, 1000, 50, "threshold %v", &th.Household.Town.Transfers.Workshop.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*7, tpw-tw, s, 0, 1000, 50, "subsidy %v", &th.Household.Town.Transfers.Workshop.Subsidy).P)
 
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10+tpw, top+h*2, tpw-s, s, 0, 100, 10, "mine tax rate %v", &th.Household.Town.Transfers.Mine.TaxRate).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10+tpw, top+h*3, tpw-s, s, 0, 1000, 50, "mine threshold %v", &th.Household.Town.Transfers.Mine.TaxThreshold).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10+tpw, top+h*4, tpw-s, s, 0, 1000, 50, "mine subsidy %v", &th.Household.Town.Transfers.Mine.Subsidy).P)
+	tp.AddImageLabel("mine", 24+tpw, top+h*2, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*2, tpw-tw, s, 0, 100, 10, "tax rate %v", &th.Household.Town.Transfers.Mine.TaxRate).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*3, tpw-tw, s, 0, 1000, 50, "threshold %v", &th.Household.Town.Transfers.Mine.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*4, tpw-tw, s, 0, 1000, 50, "subsidy %v", &th.Household.Town.Transfers.Mine.Subsidy).P)
 
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10+tpw, top+h*5, tpw-s, s, 0, 100, 10, "factory tax rate %v", &th.Household.Town.Transfers.Factory.TaxRate).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10+tpw, top+h*6, tpw-s, s, 0, 1000, 50, "factory threshold %v", &th.Household.Town.Transfers.Factory.TaxThreshold).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10+tpw, top+h*7, tpw-s, s, 0, 1000, 50, "factory subsidy %v", &th.Household.Town.Transfers.Factory.Subsidy).P)
+	tp.AddImageLabel("factory", 24+tpw, top+h*5, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*5, tpw-tw, s, 0, 100, 10, "tax rate %v", &th.Household.Town.Transfers.Factory.TaxRate).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*6, tpw-tw, s, 0, 1000, 50, "threshold %v", &th.Household.Town.Transfers.Factory.TaxThreshold).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*7, tpw-tw, s, 0, 1000, 50, "subsidy %v", &th.Household.Town.Transfers.Factory.Subsidy).P)
 
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10, top+h*8, tpw-s, s, 0, 100, 50, "military funding %v", &th.Household.Town.Transfers.Tower.Subsidy).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(10+tpw, top+h*8, tpw-s, s, 0, 100, 10, "market funding %v", &th.Household.Town.Transfers.MarketFundingRate).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(24, top+h*8, tpw-s, s, 0, 100, 50, "military funding %v", &th.Household.Town.Transfers.Tower.Subsidy).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(24+tpw, top+h*8, tpw-s, s, 0, 100, 10, "market funding %v", &th.Household.Town.Transfers.MarketFundingRate).P)
 
 	var aI = 0
 	for _, a := range artifacts.All {
@@ -108,17 +113,17 @@ func RefreshSubPanels(tc *TownhallController) {
 	}
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
-		fp.AddPanel(CreateOrderPanelForTownhall(10, float64(i+2)*IconS+top, gui.FontSize*8, s, th, vc, tc.cp.C.Map))
+		fp.AddPanel(CreateOrderPanelForTownhall(24, float64(i+2)*IconS+top, gui.FontSize*8, s, th, vc, tc.cp.C.Map))
 		if vc.Output.Trader {
-			fp.AddButton(CreateTraderButtonForTownhall(10+tpw, float64(i+2)*IconS+top, float64(IconH), s, th, tc.cp.C.Map))
+			fp.AddButton(CreateTraderButtonForTownhall(24+tpw, float64(i+2)*IconS+top, float64(IconH), s, th, tc.cp.C.Map))
 		}
 	}
 
 	for i, t := range th.Traders {
-		tc.traderPanel.AddButton(CreateTraderButton(float64(10+i*IconW), top+float64(IconH), tc, t))
+		tc.traderPanel.AddButton(CreateTraderButton(float64(24+i*IconW), top+float64(IconH), tc, t))
 	}
 	if tc.activeTrader != nil {
-		MoneyToControlPanel(tc.traderPanel, th.Household.Town, &tc.activeTrader.Money, 10, 10, top+float64(IconH*2)+IconS)
+		MoneyToControlPanel(tc.traderPanel, th.Household.Town, &tc.activeTrader.Money, 24, 10, top+float64(IconH*2)+IconS)
 		for i, task := range tc.activeTrader.Tasks {
 			TaskToControlPanel(tc.cp, tc.traderPanel, i, top+float64(IconH*4)+IconS, task, IconW)
 		}
@@ -129,9 +134,9 @@ func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *
 	rowH := IconH + int(IconS)
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*rowH+IconH+4))
-	p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*rowH+IconH+12), float64(IconW), gui.FontSize*1.5, 0, 250, 5, "%v",
+	p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*IconW), top+float64(yI*rowH+IconH+4))
+	p.AddPanel(gui.CreateNumberPanel(float64(24+xI*IconW), top+float64(yI*rowH+IconH+12), float64(IconW), gui.FontSize*1.5, 0, 250, 5, "%v",
 		func() int { return th.StorageTarget[a] },
 		func(v int) { th.StorageTarget[a] = v }).P)
 }

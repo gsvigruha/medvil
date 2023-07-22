@@ -150,13 +150,13 @@ func SetupNewTownController(c *NewTownController) {
 	}
 	resTop := 0.15 * ControlPanelSY
 	if c.state == NewTownControllerStatePickResources {
-		c.p.AddImageLabel("person", 10, resTop, IconS, IconS, gui.ImageLabelStyleRegular)
-		c.p.AddTextLabel(strconv.Itoa(len(c.sourceTH.Household.People)), 10, resTop+float64(IconH+4))
-		c.p.AddPanel(gui.CreateNumberPaneFromVal(10, resTop+float64(IconH+12), IconS, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
+		c.p.AddImageLabel("person", 24, resTop, IconS, IconS, gui.ImageLabelStyleRegular)
+		c.p.AddTextLabel(strconv.Itoa(len(c.sourceTH.Household.People)), 24, resTop+float64(IconH+4))
+		c.p.AddPanel(gui.CreateNumberPaneFromVal(24, resTop+float64(IconH+12), IconS, 20, 0, len(c.sourceTH.Household.People), 1, "%v", c.numPeople).P)
 
-		c.p.AddImageLabel("coin", float64(10+IconW), resTop, IconS, IconS, gui.ImageLabelStyleRegular)
-		c.p.AddTextLabel(strconv.Itoa(int(c.sourceTH.Household.Money)), float64(10+IconW), resTop+float64(IconH+4))
-		c.p.AddPanel(gui.CreateNumberPaneFromVal(float64(10+IconW), resTop+float64(IconH+12), IconS, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
+		c.p.AddImageLabel("coin", float64(24+IconW), resTop, IconS, IconS, gui.ImageLabelStyleRegular)
+		c.p.AddTextLabel(strconv.Itoa(int(c.sourceTH.Household.Money)), float64(24+IconW), resTop+float64(IconH+4))
+		c.p.AddPanel(gui.CreateNumberPaneFromVal(float64(24+IconW), resTop+float64(IconH+12), IconS, 20, 0, int(c.sourceTH.Household.Money), 100, "%v", c.money).P)
 
 		var aI = 2
 		for _, a := range artifacts.All {
@@ -170,35 +170,35 @@ func SetupNewTownController(c *NewTownController) {
 	top := float64(LargeIconD) + 50
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateBuildTownhall,
-		b: gui.ButtonGUI{Icon: "new_town", X: float64(10 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS,
+		b: gui.ButtonGUI{Icon: "new_town", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStateNone && c.state != NewTownControllerStateBuildTownhall
 			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateBuildMarket,
-		b: gui.ButtonGUI{Icon: "new_market", X: float64(10 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS,
+		b: gui.ButtonGUI{Icon: "new_market", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStateBuildMarket
 			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickTown,
-		b: gui.ButtonGUI{Icon: "town", X: float64(10 + LargeIconD*0), Y: top + float64(LargeIconD), SX: LargeIconS, SY: LargeIconS,
+		b: gui.ButtonGUI{Icon: "town", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD), SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStateNone && c.state != NewTownControllerStatePickTown
 			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStatePickResources,
-		b: gui.ButtonGUI{Icon: "barrel", X: float64(10 + LargeIconD*2), Y: top + float64(LargeIconD/2), SX: LargeIconS, SY: LargeIconS,
+		b: gui.ButtonGUI{Icon: "barrel", X: float64(24 + LargeIconD*2), Y: top + float64(LargeIconD/2), SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStatePickResources
 			}},
 	})
 	c.p.AddButton(&NewTownControllerButton{
 		c: c, state: NewTownControllerStateStart,
-		b: gui.ButtonGUI{Icon: "start", X: float64(10 + LargeIconD*3), Y: top + float64(LargeIconD/2), SX: LargeIconS, SY: LargeIconS,
+		b: gui.ButtonGUI{Icon: "start", X: float64(24 + LargeIconD*3), Y: top + float64(LargeIconD/2), SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool {
 				return c.state != NewTownControllerStatePickResources
 			}},
@@ -209,9 +209,9 @@ func ArtifactsPickerToControlPanel(c *NewTownController, i int, a *artifacts.Art
 	rowH := IconH * 2
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	c.p.AddImageLabel("artifacts/"+a.Name, float64(10+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
-	c.p.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*IconW), top+float64(yI*rowH+IconH+4))
-	c.p.AddPanel(gui.CreateNumberPanel(float64(10+xI*IconW), top+float64(yI*rowH+IconH+12), IconS, 20, 0, int(q), 5, "%v",
+	c.p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
+	c.p.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*IconW), top+float64(yI*rowH+IconH+4))
+	c.p.AddPanel(gui.CreateNumberPanel(float64(24+xI*IconW), top+float64(yI*rowH+IconH+12), IconS, 20, 0, int(q), 5, "%v",
 		func() int { return c.resources[a] },
 		func(v int) { c.resources[a] = v }).P)
 }
