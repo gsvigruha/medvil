@@ -13,7 +13,7 @@ import (
 
 var BuildingBufferW = DX * 2
 var BuildingBufferH = DY*3 + buildings.DZ*buildings.BuildingUnitHeight
-var BuildingExtensionBufferH = 20.0
+var BuildingExtensionBufferH = 200.0
 
 type BuildingImageCache struct {
 	unitEntries      map[string]*CacheEntry
@@ -30,7 +30,7 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 
 	t := time.Now().UnixNano()
 	key := roof.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.F.CacheKey()
-	z := float64((numUnits+2)*buildings.BuildingUnitHeight) * buildings.DZ
+	z := float64((numUnits+1)*buildings.BuildingUnitHeight) * buildings.DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
 	bufferedRF := rf.Move(-xMin, -yMin+z)
 
