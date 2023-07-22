@@ -32,7 +32,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	tasks := economy.GetManufactureNames(workshop.Household.Building.Plan.GetExtensions())
 	wc.manufactureDropDown = &gui.DropDown{
-		X:        float64(10),
+		X:        float64(24),
 		Y:        hcy,
 		SX:       IconS + gui.FontSize*16,
 		SY:       IconS,
@@ -46,7 +46,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	wp.AddDropDown(wc.manufactureDropDown)
 
 	wp.AddLabel(&gui.DynamicImageLabel{
-		X:  IconS + gui.FontSize*16 + 16,
+		X:  IconS + gui.FontSize*16 + 32,
 		Y:  hcy,
 		SX: IconS,
 		SY: IconS,

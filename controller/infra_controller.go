@@ -48,7 +48,7 @@ func (b InfraBuildButton) Render(cv *canvas.Canvas) {
 	b.b.Render(cv)
 	if b.ic.it != b.it {
 		cv.SetFillStyle(color.RGBA{R: 64, G: 0, B: 0, A: 128})
-		cv.FillRect(b.b.X, b.b.Y, IconS, IconS)
+		cv.FillRect(b.b.X, b.b.Y, LargeIconS, LargeIconS)
 	}
 }
 
@@ -137,86 +137,86 @@ func InfraToControlPanel(cp *ControlPanel) {
 
 	top := InfraPanelTop * ControlPanelSY
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Texture: "terrain/grass", X: float64(10 + IconW*0), Y: top, SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Texture: "terrain/grass", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeNone,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Texture: "infra/dirt_road", X: float64(10 + IconW*1), Y: top, SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/dirt_road", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeDirtRoad,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Texture: "infra/cobble_road", X: float64(10 + IconW*2), Y: top, SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/cobble_road", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeCobbleRoad,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Texture: "infra/canal", X: float64(10 + IconW*3), Y: top, SX: IconS, SY: IconS},
-		it: InfraTypeCanal,
-		ic: ic,
-	})
-
-	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/bridge", X: float64(10 + IconW*4), Y: top, SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/bridge", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeBridge,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/tower_1", X: float64(10 + IconW*0), Y: top + float64(IconH*1), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/wall_small", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeStoneWall1,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/tower_2", X: float64(10 + IconW*1), Y: top + float64(IconH*1), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/wall_large", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeStoneWall2,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/tower_1", X: float64(10 + IconW*2), Y: top + float64(IconH*1), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/tower_1", X: float64(24 + LargeIconD*2), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeStoneTower1,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/tower_2", X: float64(10 + IconW*3), Y: top + float64(IconH*1), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/tower_2", X: float64(24 + LargeIconD*3), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeStoneTower2,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/ramp", X: float64(10 + IconW*4), Y: top + float64(IconH*1), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/ramp", X: float64(24 + LargeIconD*4), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeStoneWallRamp,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/gate_ns", X: float64(10 + IconW*0), Y: top + float64(IconH*2), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/gate_ns", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*2), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeGateNS,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/gate_ew", X: float64(10 + IconW*1), Y: top + float64(IconH*2), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/gate_ew", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*2), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeGateEW,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/terraform", X: float64(10 + IconW*0), Y: top + float64(IconH*3), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/terraform", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeLevelForBuilding,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/terraform", X: float64(10 + IconW*1), Y: top + float64(IconH*3), SX: IconS, SY: IconS},
+		b:  gui.ButtonGUI{Icon: "infra/terraform", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeLevelForRoad,
+		ic: ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:  gui.ButtonGUI{Texture: "infra/canal", X: float64(24 + LargeIconD*2), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
+		it: InfraTypeCanal,
 		ic: ic,
 	})
 

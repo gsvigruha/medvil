@@ -33,27 +33,27 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	mp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(24), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeNone,
 	})
 	mp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/stone", X: float64(10 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/stone", X: float64(24 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeStone,
 	})
 	mp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/clay", X: float64(10 + IconW*2), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/clay", X: float64(24 + IconW*2), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeClay,
 	})
 	mp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/iron_ore", X: float64(10 + IconW*3), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/iron_ore", X: float64(24 + IconW*3), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeIron,
 	})
 	mp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/gold_ore", X: float64(10 + IconW*4), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/gold_ore", X: float64(24 + IconW*4), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeGold,
 	})

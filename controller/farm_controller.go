@@ -35,47 +35,47 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(24 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeBarren,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/grain", X: float64(10 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/grain", X: float64(24 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeWheat,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/vegetable", X: float64(10 + IconW*2), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/vegetable", X: float64(24 + IconW*2), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeVegetables,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/fruit", X: float64(10 + IconW*3), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/fruit", X: float64(24 + IconW*3), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeOrchard,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/sheep", X: float64(10 + IconW*0), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/sheep", X: float64(24 + IconW*0), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypePasture,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/log", X: float64(10 + IconW*1), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/log", X: float64(24 + IconW*1), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeForestry,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/reed", X: float64(10 + IconW*2), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/reed", X: float64(24 + IconW*2), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeReed,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/herb", X: float64(10 + IconW*3), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/herb", X: float64(24 + IconW*3), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeHerb,
 	})
 	fp.AddButton(LandUseButton{
-		b:       gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*0), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "cancel", X: float64(24 + IconW*0), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: FarmFieldUseTypeDisallocate,
 	})
