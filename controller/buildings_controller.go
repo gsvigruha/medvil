@@ -97,7 +97,7 @@ func (b BuildingBaseButton) Click() {
 }
 
 func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
-	if b.ET == nil || b.ET == building.Forge || b.ET == building.Workshop {
+	if b.ET == nil || b.ET == building.Forge {
 		if b.M != nil {
 			cv.SetFillStyle("texture/building/" + b.M.Name + ".png")
 		} else if b.ET == building.Forge {
@@ -117,7 +117,7 @@ func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
 	} else {
 		if b.ET == building.WaterMillWheel {
 			img := "icon/gui/building/" + b.ET.Name + ".png"
-			cv.DrawImage(img, b.p.Points[0].X-LargeIconS/2, b.p.Points[0].Y+4, LargeIconS, LargeIconS)
+			cv.DrawImage(img, b.p.Points[0].X-IconS/2, b.p.Points[0].Y+4, IconS, IconS)
 		}
 	}
 }
