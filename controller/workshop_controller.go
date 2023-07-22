@@ -46,7 +46,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	wp.AddDropDown(wc.manufactureDropDown)
 
 	wp.AddLabel(&gui.DynamicImageLabel{
-		X:  IconS + gui.FontSize*16 + 16,
+		X:  IconS + gui.FontSize*16 + 32,
 		Y:  hcy,
 		SX: IconS,
 		SY: IconS,

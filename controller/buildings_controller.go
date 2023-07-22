@@ -430,7 +430,6 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activ
 		Perspective: &cp.C.Perspective}
 
 	bc.GenerateButtons()
-	bc.GenerateBuildingTypebuttons()
 
 	var helperMsg string
 	switch bt {
@@ -470,6 +469,7 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 
 func SetupBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
 	bc := CreateBuildingsController(cp, bt, activeTown)
+	bc.GenerateBuildingTypebuttons()
 
 	cp.SetDynamicPanel(bc.p)
 	cp.C.ClickHandler = bc
