@@ -185,7 +185,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, phase ui
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
-	cv.SetFillStyle("texture/building/stone.png")
+	cv.SetFillStyle("texture/building/stone_dark.png")
 	util.RenderPolygon(cv, rp1, true)
 
 	rp2 := renderer.Polygon{Points: []renderer.Point{
@@ -194,7 +194,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, phase ui
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
-	cv.SetFillStyle("texture/building/stone_flipped.png")
+	cv.SetFillStyle("texture/building/stone_dark_flipped.png")
 	util.RenderPolygon(cv, rp2, true)
 
 	rp3 := renderer.Polygon{Points: []renderer.Point{

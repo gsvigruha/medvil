@@ -121,14 +121,14 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			cv.Stroke()
 		}
 	} else if extension.T == building.Forge {
-		RenderBuildingUnit(cv, building.ForgeBuildingUnit(extension.B, materials.GetMaterial("stone_forge"), extension.Construction), rf, 0, c)
+		RenderBuildingUnit(cv, building.ForgeBuildingUnit(extension.B, materials.GetMaterial("stone"), extension.Construction), rf, 0, c)
 		if !extension.Construction {
 			cv.SetFillStyle("texture/building/fire_" + strconv.Itoa(int(phase/3)) + ".png")
 			cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 192})
 			RenderFactoryWindows(cv, rf, 1, 2, 0, false)
 			RenderFactoryWindows(cv, rf, 2, 3, 0, false)
 		}
-		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile_dark"), extension.Construction), rf, 1, c)
+		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("shingle"), extension.Construction), rf, 1, c)
 		if !extension.Construction {
 			RenderChimney(cv, rf, 1, phase)
 		}
@@ -139,7 +139,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			RenderFactoryWindows(cv, rf, 1, 2, 0, false)
 			RenderFactoryWindows(cv, rf, 2, 3, 0, false)
 		}
-		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile_dark"), extension.Construction), rf, 1, c)
+		RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("shingle"), extension.Construction), rf, 1, c)
 		if !extension.Construction {
 			RenderChimney(cv, rf, 1, phase)
 		}
