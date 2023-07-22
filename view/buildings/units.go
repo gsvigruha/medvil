@@ -30,6 +30,9 @@ func WallMaterialName(t building.BuildingType, m *materials.Material, shape uint
 	if m == materials.GetMaterial("brick") {
 		return BrickMaterialName(shape)
 	}
+	if t == building.BuildingTypeWorkshop && m == materials.GetMaterial("stone") {
+		return "stone_dark"
+	}
 	if t == building.BuildingTypeWall && m == materials.GetMaterial("stone") {
 		if shape == 0 {
 			return "stone_1"
