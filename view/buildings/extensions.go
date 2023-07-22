@@ -130,7 +130,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		if !extension.Construction {
 			RenderChimney(cv, rf, 1, phase)
 		}
-	} else if extension.T == building.Cooker {
+	} else if extension.T == building.Cooker || extension.T == building.Workshop {
 		RenderBuildingUnit(cv, building.ForgeBuildingUnit(extension.B, materials.GetMaterial("brick"), extension.Construction), rf, 0, c)
 		if !extension.Construction {
 			cv.SetFillStyle("texture/building/fire_" + strconv.Itoa(int(phase/3)) + ".png")

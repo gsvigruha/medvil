@@ -16,11 +16,12 @@ type Manufacture struct {
 
 var AllManufacture = [...]*Manufacture{
 	&Manufacture{
-		Name:    "sawing",
-		Time:    30 * 24,
-		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
+		Name:                  "sawing",
+		Time:                  30 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Workshop,
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
+		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "sawmill",
 		Time:                  10 * 24,
@@ -29,11 +30,12 @@ var AllManufacture = [...]*Manufacture{
 		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
 	&Manufacture{
-		Name:    "stonecutting",
-		Time:    10 * 24,
-		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
+		Name:                  "stonecutting",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Workshop,
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 1}},
+		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "tiling",
 		Time:                  10 * 24,
@@ -62,11 +64,12 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("pot"), Quantity: 3}}},
 	&Manufacture{
-		Name:    "thatching",
-		Time:    10 * 24,
-		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("reed"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("thatch"), Quantity: 1}}},
+		Name:                  "thatching",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Workshop,
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("reed"), Quantity: 1}},
+		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("thatch"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "iron_smelting",
 		Time:                  10 * 24,
@@ -112,10 +115,11 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 2}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("beer"), Quantity: 2}}},
 	&Manufacture{
-		Name:   "butchering",
-		Time:   90 * 24,
-		Power:  1000,
-		Inputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("sheep"), Quantity: 1}},
+		Name:                  "butchering",
+		Time:                  90 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Workshop,
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("sheep"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("meat"), Quantity: 7},
 			artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 1}}},
@@ -139,11 +143,12 @@ var AllManufacture = [...]*Manufacture{
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("paper"), Quantity: 1}}},
 	&Manufacture{
-		Name:    "sewing",
-		Time:    30 * 24,
-		Power:   1000,
-		Inputs:  []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 2}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 1}}},
+		Name:                  "sewing",
+		Time:                  30 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.Workshop,
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 2}},
+		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "medicine",
 		Time:                  120 * 24,

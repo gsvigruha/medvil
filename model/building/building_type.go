@@ -92,6 +92,7 @@ func ExtensionTypes(bt BuildingType) []*BuildingExtensionType {
 			WaterMillWheel,
 			Forge,
 			Cooker,
+			Workshop,
 		}
 	}
 	return nil
