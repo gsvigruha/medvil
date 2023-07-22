@@ -25,11 +25,11 @@ type TradeTask struct {
 	GoodsDestToSource []artifacts.Artifacts
 	TaskTag           string
 	Goods             []artifacts.Artifacts
-	state             uint8
+	State             uint8
 }
 
 func (t *TradeTask) Destination() navigation.Destination {
-	switch t.state {
+	switch t.State {
 	case TradeTaskStatePickupAtSource:
 		return t.SourceMarketD
 	case TradeTaskStateDropoffAtDest:
@@ -43,22 +43,22 @@ func (t *TradeTask) Destination() navigation.Destination {
 }
 
 func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
-	switch t.state {
+	switch t.State {
 	case TradeTaskStatePickupAtSource:
 		t.Goods = []artifacts.Artifacts{}
 		if t.SourceExchange.Price(t.GoodsSourceToDest) <= t.TraderWallet.GetMoney() {
 			t.Goods = t.SourceExchange.BuyAsManyAsPossible(t.GoodsSourceToDest, t.TraderWallet)
 		}
-		t.state = TradeTaskStateDropoffAtDest
+		t.State = TradeTaskStateDropoffAtDest
 	case TradeTaskStateDropoffAtDest:
 		t.TargetExchange.SellAsManyAsPossible(t.Goods, t.TraderWallet)
-		t.state = TradeTaskStatePickupAtDest
+		t.State = TradeTaskStatePickupAtDest
 	case TradeTaskStatePickupAtDest:
 		t.Goods = []artifacts.Artifacts{}
 		if t.TargetExchange.Price(t.GoodsDestToSource) <= t.TraderWallet.GetMoney() {
 			t.Goods = t.TargetExchange.BuyAsManyAsPossible(t.GoodsDestToSource, t.TraderWallet)
 		}
-		t.state = TradeTaskStateDropoffAtSource
+		t.State = TradeTaskStateDropoffAtSource
 	case TradeTaskStateDropoffAtSource:
 		t.SourceExchange.SellAsManyAsPossible(t.Goods, t.TraderWallet)
 		return true

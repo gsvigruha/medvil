@@ -7,17 +7,22 @@ import (
 type BuildingExtensionType struct {
 	Name    string
 	OnWater bool
+	InUnit  bool
 }
 
-var WaterMillWheel = &BuildingExtensionType{Name: "water_mill_wheel", OnWater: true}
-var Forge = &BuildingExtensionType{Name: "forge", OnWater: false}
-var Deck = &BuildingExtensionType{Name: "deck", OnWater: true}
+var WaterMillWheel = &BuildingExtensionType{Name: "water_mill_wheel", OnWater: true, InUnit: false}
+var Forge = &BuildingExtensionType{Name: "forge", OnWater: false, InUnit: false}
+var Cooker = &BuildingExtensionType{Name: "cooker", OnWater: false, InUnit: true}
+var Workshop = &BuildingExtensionType{Name: "workshop", OnWater: false, InUnit: true}
+var Deck = &BuildingExtensionType{Name: "deck", OnWater: true, InUnit: false}
 var NonExtension *BuildingExtensionType = nil
 
 var BuildingExtensionTypes = [...]*BuildingExtensionType{
 	WaterMillWheel,
 	Forge,
 	Deck,
+	Cooker,
+	Workshop,
 }
 
 func GetBuildingExtensionType(name string) *BuildingExtensionType {

@@ -26,9 +26,11 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		RenderRoad(cv, rf, f, c)
 	}
 	if f.Building.GetBuilding() != nil && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeMarket {
-		cv.SetFillStyle("texture/building/market.png")
-		rf.Draw(cv)
-		cv.Fill()
+		if _, ok := f.Building.BuildingComponents[0].(*building.ExtensionUnit); !ok {
+			cv.SetFillStyle("texture/building/market.png")
+			rf.Draw(cv)
+			cv.Fill()
+		}
 	}
 
 	if f.Plant != nil && !f.Plant.IsTree() {
