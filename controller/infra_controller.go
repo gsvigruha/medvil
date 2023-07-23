@@ -203,13 +203,13 @@ func InfraToControlPanel(cp *ControlPanel) {
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/terraform", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
+		b:  gui.ButtonGUI{Icon: "infra/terraform_building", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeLevelForBuilding,
 		ic: ic,
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Icon: "infra/terraform", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
+		b:  gui.ButtonGUI{Icon: "infra/terraform_road", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
 		it: InfraTypeLevelForRoad,
 		ic: ic,
 	})
