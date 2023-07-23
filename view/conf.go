@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-var PlantRenderBufferTimeMs = 10000
+var PlantRenderBufferTimeMs = 1000
 var RenderBufferTimeMs = 10000
 
 func init() {
