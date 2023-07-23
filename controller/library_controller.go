@@ -58,7 +58,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	cp.SetDynamicPanel(p)
 }
 
-func GetLatestFile() string{
+func GetLatestFile() string {
 	files, err := ioutil.ReadDir("saved/")
 	if err != nil {
 		fmt.Println(err)

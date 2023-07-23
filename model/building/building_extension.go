@@ -12,6 +12,7 @@ type BuildingExtensionType struct {
 
 var WaterMillWheel = &BuildingExtensionType{Name: "water_mill_wheel", OnWater: true, InUnit: false}
 var Forge = &BuildingExtensionType{Name: "forge", OnWater: false, InUnit: false}
+var Kiln = &BuildingExtensionType{Name: "kiln", OnWater: false, InUnit: false}
 var Cooker = &BuildingExtensionType{Name: "cooker", OnWater: false, InUnit: true}
 var Workshop = &BuildingExtensionType{Name: "workshop", OnWater: false, InUnit: true}
 var Deck = &BuildingExtensionType{Name: "deck", OnWater: true, InUnit: false}
@@ -20,6 +21,7 @@ var NonExtension *BuildingExtensionType = nil
 var BuildingExtensionTypes = [...]*BuildingExtensionType{
 	WaterMillWheel,
 	Forge,
+	Kiln,
 	Deck,
 	Cooker,
 	Workshop,

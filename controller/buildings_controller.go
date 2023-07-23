@@ -97,11 +97,13 @@ func (b BuildingBaseButton) Click() {
 }
 
 func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
-	if b.ET == nil || b.ET == building.Forge {
+	if b.ET == nil || b.ET == building.Forge || b.ET == building.Kiln {
 		if b.M != nil {
 			cv.SetFillStyle("texture/building/" + b.M.Name + ".png")
 		} else if b.ET == building.Forge {
 			cv.SetFillStyle("texture/building/stone.png")
+		} else if b.ET == building.Kiln {
+			cv.SetFillStyle("texture/building/brick.png")
 		}
 		cv.SetStrokeStyle("#666")
 		cv.SetLineWidth(2)
@@ -110,7 +112,7 @@ func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
 			cv.LineTo(p.X, p.Y)
 		}
 		cv.ClosePath()
-		if b.M != nil || b.ET == building.Forge {
+		if b.M != nil || b.ET == building.Forge || b.ET == building.Kiln {
 			cv.Fill()
 		}
 		cv.Stroke()
