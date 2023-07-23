@@ -98,6 +98,12 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		if key == glfw.KeyRight || key == glfw.KeyD {
 			c.MoveCenter(2, 0)
 		}
+		if key == glfw.KeyTab {
+			CPActionTimeScaleChange(c)
+		}
+		if key == glfw.KeyL {
+			c.Load(GetLatestFile())
+		}
 	}
 }
 

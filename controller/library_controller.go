@@ -57,3 +57,19 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	cp.SetDynamicPanel(p)
 }
+
+func GetLatestFile() string{
+	files, err := ioutil.ReadDir("saved/")
+	if err != nil {
+		fmt.Println(err)
+	}
+	var latestModTime time.Time
+	var latestFile string
+	for _, file := range files {
+		if !file.IsDir() && filepath.Ext(file.Name()) == ".mdvl" && file.ModTime().After(latestModTime) {
+			latestModTime = file.ModTime()
+			latestFile = file.Name()
+		}
+	}
+	return latestFile
+}
