@@ -30,27 +30,35 @@ type PlantImageCache struct {
 }
 
 func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
-	key := p.CacheKey(c.Map.Calendar) + "#" + strconv.Itoa(int(c.Map.Calendar.Month)) + "#" + strconv.Itoa(int(c.Map.Calendar.Day))
+	keyByShape := p.CacheKey() + "#" + strconv.Itoa(int(c.Map.Calendar.Month)) + "#" + strconv.Itoa(int(c.Map.Calendar.Day))
+	keyByLoc := strconv.Itoa(int(rf.F.X)) + "#" + strconv.Itoa(int(rf.F.Y))
 	t := time.Now().UnixNano()
 	nt := t - int64(rand.Intn(PlantRenderBufferTimeMs/2)*1000*1000) + int64(PlantRenderBufferTimeMs/4*1000*1000)
 	plantBufferW, plantBufferH := getPlantBufferSize(p)
-	if ce, ok := ic.entries[key]; ok {
+	if ce, ok := ic.entries[keyByShape]; ok && p.IsMature(c.Map.Calendar) {
+		ic.entries[keyByLoc] = ce
+		return ce.cv
+	}
+	if ce, ok := ic.entries[keyByLoc]; ok {
 		if t-ce.createdTime > int64(PlantRenderBufferTimeMs)*1000*1000 {
 			ce.cv.ClearRect(0, 0, plantBufferW, plantBufferH)
 			RenderPlant(ce.cv, p, rf, c)
 			ce.createdTime = nt
 		}
 		return ce.cv
-	} else {
-		offscreen, _ := goglbackend.NewOffscreen(int(plantBufferW), int(plantBufferH), true, ic.ctx)
-		cv := canvas.New(offscreen)
-		cv.ClearRect(0, 0, plantBufferW, plantBufferH)
-		RenderPlant(cv, p, rf, c)
-		ic.entries[key] = &CacheEntry{
-			offscreen:   offscreen,
-			cv:          cv,
-			createdTime: nt,
-		}
-		return cv
 	}
+	offscreen, _ := goglbackend.NewOffscreen(int(plantBufferW), int(plantBufferH), true, ic.ctx)
+	cv := canvas.New(offscreen)
+	cv.ClearRect(0, 0, plantBufferW, plantBufferH)
+	RenderPlant(cv, p, rf, c)
+	e := &CacheEntry{
+		offscreen:   offscreen,
+		cv:          cv,
+		createdTime: nt,
+	}
+	if p.IsMature(c.Map.Calendar) {
+		ic.entries[keyByShape] = e
+	}
+	ic.entries[keyByLoc] = e
+	return cv
 }

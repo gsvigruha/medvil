@@ -100,6 +100,6 @@ func GetPlantType(name string) *PlantType {
 	return nil
 }
 
-func (p *Plant) CacheKey(Calendar *time.CalendarType) string {
-	return p.T.Name + "#" + strconv.Itoa(int(p.Shape)) + "#" + strconv.Itoa(int(p.Maturity(Calendar)*float64(p.T.MaturityAgeYears)))
+func (p *Plant) CacheKey() string {
+	return p.T.Name + "#" + strconv.Itoa(int(p.Shape))
 }
