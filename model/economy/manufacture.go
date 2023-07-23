@@ -40,7 +40,7 @@ var AllManufacture = [...]*Manufacture{
 		Name:                  "tiling",
 		Time:                  10 * 24,
 		Power:                 1000,
-		BuildingExtensionType: building.Forge,
+		BuildingExtensionType: building.Kiln,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
@@ -49,7 +49,7 @@ var AllManufacture = [...]*Manufacture{
 		Name:                  "brickmaking",
 		Time:                  10 * 24,
 		Power:                 1000,
-		BuildingExtensionType: building.Forge,
+		BuildingExtensionType: building.Kiln,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
@@ -58,7 +58,7 @@ var AllManufacture = [...]*Manufacture{
 		Name:                  "pottery",
 		Time:                  10 * 24,
 		Power:                 1000,
-		BuildingExtensionType: building.Forge,
+		BuildingExtensionType: building.Kiln,
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},

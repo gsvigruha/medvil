@@ -97,11 +97,13 @@ func (b BuildingBaseButton) Click() {
 }
 
 func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
-	if b.ET == nil || b.ET == building.Forge {
+	if b.ET == nil || b.ET == building.Forge || b.ET == building.Kiln {
 		if b.M != nil {
 			cv.SetFillStyle("texture/building/" + b.M.Name + ".png")
 		} else if b.ET == building.Forge {
 			cv.SetFillStyle("texture/building/stone.png")
+		} else if b.ET == building.Kiln {
+			cv.SetFillStyle("texture/building/brick.png")
 		}
 		cv.SetStrokeStyle("#666")
 		cv.SetLineWidth(2)
@@ -110,7 +112,7 @@ func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
 			cv.LineTo(p.X, p.Y)
 		}
 		cv.ClosePath()
-		if b.M != nil || b.ET == building.Forge {
+		if b.M != nil || b.ET == building.Forge || b.ET == building.Kiln {
 			cv.Fill()
 		}
 		cv.Stroke()
@@ -258,6 +260,7 @@ type ExtensionButton struct {
 	b   gui.ButtonGUI
 	t   *building.BuildingExtensionType
 	bc  *BuildingsController
+	msg string
 	del bool
 }
 
@@ -266,6 +269,7 @@ func (b ExtensionButton) Click() {
 	b.bc.RoofM = nil
 	b.bc.ExtensionT = b.t
 	b.bc.del = b.del
+	b.bc.cp.HelperMessage(b.msg)
 }
 
 func (b ExtensionButton) Render(cv *canvas.Canvas) {
@@ -369,9 +373,10 @@ func (bc *BuildingsController) GenerateButtons() {
 	extensionPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD*2)
 	for i, e := range building.ExtensionTypes(bc.bt) {
 		bc.p.AddButton(ExtensionButton{
-			b:  gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i)*LargeIconD + 24, Y: extensionPanelTop, SX: LargeIconS, SY: LargeIconS},
-			t:  e,
-			bc: bc,
+			b:   gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i)*LargeIconD + 24, Y: extensionPanelTop, SX: LargeIconS, SY: LargeIconS},
+			t:   e,
+			bc:  bc,
+			msg: e.Description,
 		})
 	}
 

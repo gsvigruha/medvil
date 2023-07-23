@@ -65,11 +65,11 @@ func (c *Controller) MoveCenter(dViewX, dViewY int) {
 	case PerspectiveNE:
 		dCenterX, dCenterY = -dViewX+dViewY, -dViewX-dViewY
 	case PerspectiveSE:
-		dCenterX, dCenterY = -dViewX+dViewY, dViewX+dViewY
+		dCenterX, dCenterY = dViewX+dViewY, -dViewX+dViewY
 	case PerspectiveSW:
 		dCenterX, dCenterY = dViewX-dViewY, dViewX+dViewY
 	case PerspectiveNW:
-		dCenterX, dCenterY = dViewX-dViewY, -dViewX-dViewY
+		dCenterX, dCenterY = -dViewX-dViewY, dViewX-dViewY
 	}
 	c.CenterX += dCenterX
 	c.CenterY += dCenterY
@@ -80,17 +80,29 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		c.Perspective = (c.Perspective + 1) % 4
 	}
 	if action == glfw.Press {
-		if key == glfw.KeyUp {
+		if key == glfw.KeyQ {
+			c.Perspective = (c.Perspective + 1) % 4
+		}
+		if key == glfw.KeyE {
+			c.Perspective = (c.Perspective - 1) % 4
+		}
+		if key == glfw.KeyUp || key == glfw.KeyW {
 			c.MoveCenter(0, -2)
 		}
-		if key == glfw.KeyDown {
+		if key == glfw.KeyDown || key == glfw.KeyS {
 			c.MoveCenter(0, 2)
 		}
-		if key == glfw.KeyLeft {
+		if key == glfw.KeyLeft || key == glfw.KeyA {
 			c.MoveCenter(-2, 0)
 		}
-		if key == glfw.KeyRight {
+		if key == glfw.KeyRight || key == glfw.KeyD {
 			c.MoveCenter(2, 0)
+		}
+		if key == glfw.KeyTab {
+			CPActionTimeScaleChange(c)
+		}
+		if key == glfw.KeyL {
+			c.Load(GetLatestFile())
 		}
 	}
 }

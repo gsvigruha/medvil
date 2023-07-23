@@ -5,21 +5,24 @@ import (
 )
 
 type BuildingExtensionType struct {
-	Name    string
-	OnWater bool
-	InUnit  bool
+	Name        string
+	OnWater     bool
+	InUnit      bool
+	Description string
 }
 
-var WaterMillWheel = &BuildingExtensionType{Name: "water_mill_wheel", OnWater: true, InUnit: false}
-var Forge = &BuildingExtensionType{Name: "forge", OnWater: false, InUnit: false}
-var Cooker = &BuildingExtensionType{Name: "cooker", OnWater: false, InUnit: true}
-var Workshop = &BuildingExtensionType{Name: "workshop", OnWater: false, InUnit: true}
+var WaterMillWheel = &BuildingExtensionType{Name: "water_mill_wheel", OnWater: true, InUnit: false, Description: "Water wheels are needed milling."}
+var Forge = &BuildingExtensionType{Name: "forge", OnWater: false, InUnit: false, Description: "Forges are used to work metals."}
+var Kiln = &BuildingExtensionType{Name: "kiln", OnWater: false, InUnit: false, Description: "Kilns are needed to burn clay."}
+var Cooker = &BuildingExtensionType{Name: "cooker", OnWater: false, InUnit: true, Description: "Cookers are used to make food and chemicals."}
+var Workshop = &BuildingExtensionType{Name: "workshop", OnWater: false, InUnit: true, Description: "Workshops are used to work raw materials."}
 var Deck = &BuildingExtensionType{Name: "deck", OnWater: true, InUnit: false}
 var NonExtension *BuildingExtensionType = nil
 
 var BuildingExtensionTypes = [...]*BuildingExtensionType{
 	WaterMillWheel,
 	Forge,
+	Kiln,
 	Deck,
 	Cooker,
 	Workshop,
