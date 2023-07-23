@@ -1,8 +1,6 @@
 package maps
 
 import (
-	//"math"
-	//"fmt"
 	"math"
 	"math/rand"
 	"medvil/model"
@@ -11,11 +9,15 @@ import (
 	"medvil/model/social"
 	"medvil/model/terrain"
 	"medvil/model/time"
-	//"medvil/util"
-	"fmt"
 )
 
-func setupTerrain(fields [][]*navigation.Field, sizeX uint16, sizeY uint16) {
+type MapConfig struct {
+	SizeX, SizeY int
+	NumHills     int
+	HillSize     int
+}
+
+func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 	for i := range fields {
 		for j := range fields[i] {
 			fields[i][j] = &navigation.Field{X: uint16(i), Y: uint16(j)}
@@ -33,15 +35,14 @@ func setupTerrain(fields [][]*navigation.Field, sizeX uint16, sizeY uint16) {
 		}
 	}
 
-	sx, sy := int(sizeX), int(sizeY)
-	for k := 0; k < 5; k++ {
-		peak := rand.Intn(int((sizeX + sizeY) / 5))
+	sx, sy := config.SizeX, config.SizeY
+	for k := 0; k < config.NumHills; k++ {
+		peak := rand.Intn((sx + sy) / 5)
 		x, y := rand.Intn(sx), rand.Intn(sy)
-		for l := 0; l < 10; l++ {
-			x, y := x+rand.Intn(sx/2)-sx/4, y+rand.Intn(sy/2)-sy/4
+		for l := 0; l < config.HillSize; l++ {
+			x, y := x+rand.Intn(sx/3)-sx/6, y+rand.Intn(sy/3)-sy/6
 			peak := peak + rand.Intn(10) - 5
 			slope := rand.Float64() + 1.0
-			fmt.Println(x, y, peak, slope)
 			for i := range fields {
 				for j := range fields[i] {
 					h0 := float64(peak) - slope*math.Sqrt(float64((x-i)*(x-i))+float64((y-j)*(y-j)))
@@ -62,13 +63,13 @@ func setupTerrain(fields [][]*navigation.Field, sizeX uint16, sizeY uint16) {
 	}
 }
 
-func NewMap(sizeX uint16, sizeY uint16) *model.Map {
-	fields := make([][]*navigation.Field, sizeX)
+func NewMap(config MapConfig) *model.Map {
+	fields := make([][]*navigation.Field, config.SizeX)
 	for i := range fields {
-		fields[i] = make([]*navigation.Field, sizeY)
+		fields[i] = make([]*navigation.Field, config.SizeY)
 	}
-	setupTerrain(fields, sizeX, sizeY)
-	m := &model.Map{SX: sizeX, SY: sizeY, Fields: fields}
+	setupTerrain(fields, config)
+	m := &model.Map{SX: uint16(config.SizeX), SY: uint16(config.SizeY), Fields: fields}
 	calendar := &time.CalendarType{
 		Year:  1000,
 		Month: 1,

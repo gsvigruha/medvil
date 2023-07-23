@@ -38,7 +38,7 @@ func main() {
 	ic := view.NewImageCache(ctx)
 
 	c := controller.Link(wnd.Window, ctx)
-	c.Map = maps.NewMap(50, 50)
+	c.Map = maps.NewMap(maps.MapConfig{SizeX: 50, SizeY: 50, NumHills: 5, HillSize: 5})
 	c.LinkMap()
 
 	fmt.Println("Init done")
