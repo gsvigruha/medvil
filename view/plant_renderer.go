@@ -125,7 +125,7 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 
 func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {
 	r := rand.New(rand.NewSource(int64(plant.Shape)))
-	midX, midY := DX, float64(cv.Height())
+	midX, midY := float64(cv.Width()) / 2, float64(cv.Height())
 	DrawBranch(cv, plant, r, midX, midY, plant.T.TreeT.BranchWidth0, plant.T.TreeT.BranchLength0, -math.Pi/2, 0, 30, c)
 }
 
