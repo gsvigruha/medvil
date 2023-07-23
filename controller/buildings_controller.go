@@ -260,6 +260,7 @@ type ExtensionButton struct {
 	b   gui.ButtonGUI
 	t   *building.BuildingExtensionType
 	bc  *BuildingsController
+	msg string
 	del bool
 }
 
@@ -268,6 +269,7 @@ func (b ExtensionButton) Click() {
 	b.bc.RoofM = nil
 	b.bc.ExtensionT = b.t
 	b.bc.del = b.del
+	b.bc.cp.HelperMessage(b.msg)
 }
 
 func (b ExtensionButton) Render(cv *canvas.Canvas) {
@@ -371,9 +373,10 @@ func (bc *BuildingsController) GenerateButtons() {
 	extensionPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD*2)
 	for i, e := range building.ExtensionTypes(bc.bt) {
 		bc.p.AddButton(ExtensionButton{
-			b:  gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i)*LargeIconD + 24, Y: extensionPanelTop, SX: LargeIconS, SY: LargeIconS},
-			t:  e,
-			bc: bc,
+			b:   gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i)*LargeIconD + 24, Y: extensionPanelTop, SX: LargeIconS, SY: LargeIconS},
+			t:   e,
+			bc:  bc,
+			msg: e.Description,
 		})
 	}
 
