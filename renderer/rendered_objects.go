@@ -88,3 +88,9 @@ func (rf RenderedField) MidPoint() (float64, float64) {
 	midY := (rf.Y[0] + rf.Y[1] + rf.Y[2] + rf.Y[3]) / 4
 	return midX, midY
 }
+
+func (rf RenderedField) MidScreenPoint() (float64, float64) {
+	midX := (rf.X[0] + rf.X[1] + rf.X[2] + rf.X[3]) / 4
+	midY := (rf.Y[0] - rf.Z[0] + rf.Y[1] - rf.Z[1] + rf.Y[2] - rf.Z[2] + rf.Y[3] - rf.Z[3]) / 4
+	return midX, midY
+}

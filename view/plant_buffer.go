@@ -15,7 +15,9 @@ const DefaultPlantBufferW = 200
 const DefaultPlantBufferH = 300
 
 func getPlantBufferSize(p *terrain.Plant) (float64, float64) {
-	if p.T.TreeT == &terrain.Oak {
+	if !p.IsTree() {
+		return DX * 2, DY*2 + 50
+	} else if p.T.TreeT == &terrain.Oak {
 		return 150, 200
 	} else if p.T.TreeT == &terrain.Apple {
 		return 120, 150
@@ -35,6 +37,8 @@ func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.Ren
 	t := time.Now().UnixNano()
 	nt := t - int64(rand.Intn(PlantRenderBufferTimeMs/2)*1000*1000) + int64(PlantRenderBufferTimeMs/4*1000*1000)
 	plantBufferW, plantBufferH := getPlantBufferSize(p)
+	xMin, yMin, _, _ := rf.BoundingBox()
+	bufferedRF := rf.Move(-xMin, -yMin+plantBufferH)
 	if ce, ok := ic.entries[keyByShape]; ok && p.IsMature(c.Map.Calendar) {
 		ic.entries[keyByLoc] = ce
 		return ce.cv
@@ -42,7 +46,7 @@ func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.Ren
 	if ce, ok := ic.entries[keyByLoc]; ok {
 		if t-ce.createdTime > int64(PlantRenderBufferTimeMs)*1000*1000 {
 			ce.cv.ClearRect(0, 0, plantBufferW, plantBufferH)
-			RenderPlant(ce.cv, p, rf, c)
+			RenderPlant(ce.cv, p, bufferedRF, c)
 			ce.createdTime = nt
 		}
 		return ce.cv
@@ -50,7 +54,7 @@ func (ic *PlantImageCache) RenderPlantOnBuffer(p *terrain.Plant, rf renderer.Ren
 	offscreen, _ := goglbackend.NewOffscreen(int(plantBufferW), int(plantBufferH), true, ic.ctx)
 	cv := canvas.New(offscreen)
 	cv.ClearRect(0, 0, plantBufferW, plantBufferH)
-	RenderPlant(cv, p, rf, c)
+	RenderPlant(cv, p, bufferedRF, c)
 	e := &CacheEntry{
 		offscreen:   offscreen,
 		cv:          cv,

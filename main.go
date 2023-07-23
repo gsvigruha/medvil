@@ -37,9 +37,9 @@ func main() {
 	}
 	ic := view.NewImageCache(ctx)
 
-	m := maps.LoadMap("samples/map/coast_1")
-
-	c := controller.Link(wnd.Window, ctx, &m)
+	c := controller.Link(wnd.Window, ctx)
+	c.Map = maps.NewMap(50, 50)
+	c.LinkMap()
 
 	fmt.Println("Init done")
 	fmt.Println("CPUs: " + strconv.Itoa(runtime.NumCPU()))
