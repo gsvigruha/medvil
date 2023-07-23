@@ -4,7 +4,6 @@ import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"log"
-	"medvil/model/terrain"
 	"os"
 	"time"
 )
@@ -28,7 +27,7 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 			ctx:     ctx,
 		},
 		Pic: &PlantImageCache{
-			entries: make(map[*terrain.Plant]*CacheEntry),
+			entries: make(map[string]*CacheEntry),
 			ctx:     ctx,
 		},
 		Bic: &BuildingImageCache{

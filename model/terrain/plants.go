@@ -6,6 +6,7 @@ import (
 	"math"
 	"medvil/model/artifacts"
 	"medvil/model/time"
+	"strconv"
 )
 
 type PlantHabitatType uint8
@@ -97,4 +98,8 @@ func GetPlantType(name string) *PlantType {
 		}
 	}
 	return nil
+}
+
+func (p *Plant) CacheKey() string {
+	return p.T.Name + "#" + strconv.Itoa(int(p.Shape))
 }
