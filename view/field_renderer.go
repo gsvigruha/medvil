@@ -11,9 +11,13 @@ import (
 
 func renderPlant(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	plantBufferW, plantBufferH := getPlantBufferSize(f.Plant)
-	tx := rf.X[0] - plantBufferW/2
-	ty := rf.Y[2] - plantBufferH
-	img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf.Move(-tx, -ty), c)
+	midX, midY := rf.MidScreenPoint()
+	tx := midX - plantBufferW/2
+	ty := midY - plantBufferH
+	if !f.Plant.IsTree() {
+		ty += DY
+	}
+	img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf, c)
 	cv.DrawImage(img, tx, ty, plantBufferW, plantBufferH)
 }
 

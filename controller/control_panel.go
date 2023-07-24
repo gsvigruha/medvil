@@ -130,9 +130,18 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 		ScaleBuildingControllerElements(1.5)
 	}
 
+	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
+	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
+
+	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, ctx)
+	p.buffer = canvas.New(offscreen)
+}
+
+func (p *ControlPanel) GenerateButtons() {
+	p.topPanel.Clear()
+	c := p.C
 	ih := 4.0
 	th := IconS/2 - gui.FontSize/2
-	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.dateLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.03, th+gui.FontSize)
 	p.topPanel.AddImageLabel("coin", ControlPanelSX*0.25, ih, IconS, IconS, gui.ImageLabelStyleRegular)
 	p.moneyLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.25+IconS, th+gui.FontSize)
@@ -171,11 +180,6 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 		b: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		c: c, action: CPActionTimeScaleChange}
 	p.topPanel.AddButton(p.timeButton)
-
-	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
-
-	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, ctx)
-	p.buffer = canvas.New(offscreen)
 }
 
 func (p *ControlPanel) SetDynamicPanel(dp Panel) {

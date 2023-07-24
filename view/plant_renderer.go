@@ -125,12 +125,12 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand, sx float6
 
 func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {
 	r := rand.New(rand.NewSource(int64(plant.Shape)))
-	midX, midY := rf.MidPoint()
+	midX, midY := float64(cv.Width())/2, float64(cv.Height())
 	DrawBranch(cv, plant, r, midX, midY, plant.T.TreeT.BranchWidth0, plant.T.TreeT.BranchLength0, -math.Pi/2, 0, 30, c)
 }
 
 func RenderRegularPlant(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {
-	cv.DrawImage("texture/terrain/"+plant.T.Name+".png", rf.X[1], rf.Y[2]-108, 120, 108)
+	cv.DrawImage("texture/terrain/"+plant.T.Name+".png", 0, float64(cv.Height())-108, 120, 108)
 }
 
 func RenderPlant(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {

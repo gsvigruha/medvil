@@ -8,7 +8,6 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/social"
-	"medvil/model/time"
 	"medvil/renderer"
 )
 
@@ -283,23 +282,16 @@ func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
 func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
 }
 
-func Link(wnd *glfw.Window, ctx *goglbackend.GLContext, m *model.Map) *Controller {
+func Link(wnd *glfw.Window, ctx *goglbackend.GLContext) *Controller {
 	W, H := wnd.GetFramebufferSize()
-	calendar := &time.CalendarType{
-		Year:  1000,
-		Month: 1,
-		Day:   1,
-		Hour:  0,
-	}
-	m.Calendar = calendar
 	controlPanel := &ControlPanel{}
-	C := &Controller{H: H, W: W, ControlPanel: controlPanel, Map: m, Country: m.Countries[0], TimeSpeed: 1, ActiveTown: m.Countries[0].Towns[0]}
-	controlPanel.Setup(C, ctx)
-	wnd.SetKeyCallback(C.KeyboardCallback)
-	wnd.SetMouseButtonCallback(C.MouseButtonCallback)
-	wnd.SetCursorPosCallback(C.MouseMoveCallback)
-	wnd.SetScrollCallback(C.MouseScrollCallback)
-	return C
+	c := &Controller{H: H, W: W, ControlPanel: controlPanel, TimeSpeed: 1}
+	controlPanel.Setup(c, ctx)
+	wnd.SetKeyCallback(c.KeyboardCallback)
+	wnd.SetMouseButtonCallback(c.MouseButtonCallback)
+	wnd.SetCursorPosCallback(c.MouseMoveCallback)
+	wnd.SetScrollCallback(c.MouseScrollCallback)
+	return c
 }
 
 func (c *Controller) SwapRenderedObjects() {
@@ -329,7 +321,14 @@ func (c *Controller) Save(fileName string) {
 
 func (c *Controller) Load(fileName string) {
 	c.Map = maps.Deserialize("saved/" + fileName).(*model.Map)
+	c.LinkMap()
+}
+
+func (c *Controller) LinkMap() {
 	c.Country = c.Map.Countries[0]
 	c.ActiveTown = c.Map.Countries[0].Towns[0]
+	c.CenterX = int(c.Map.SX) / 2
+	c.CenterY = int(c.Map.SY) / 2
+	c.ControlPanel.GenerateButtons()
 	c.Refresh()
 }

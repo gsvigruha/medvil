@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/profile"
 	"log"
 	"medvil/controller"
-	"medvil/maps"
+	//"medvil/maps"
 	"medvil/view"
 	"os"
 	"runtime"
@@ -37,31 +37,35 @@ func main() {
 	}
 	ic := view.NewImageCache(ctx)
 
-	m := maps.LoadMap("samples/map/coast_1")
-
-	c := controller.Link(wnd.Window, ctx, &m)
+	c := controller.Link(wnd.Window, ctx)
+	controller.LibraryToControlPanel(c.ControlPanel)
 
 	fmt.Println("Init done")
 	fmt.Println("CPUs: " + strconv.Itoa(runtime.NumCPU()))
 
 	wnd.MainLoop(func() {
 		start := time.Now()
-		view.Render(ic, cv, *c.Map, c)
-		elapsed := time.Since(start)
+		if c.Map != nil {
+			view.Render(ic, cv, *c.Map, c)
+			elapsed := time.Since(start)
 
-		if elapsed.Nanoseconds() < PlantFrameRenderTimeNs {
-			time.Sleep(time.Duration(PlantFrameRenderTimeNs-elapsed.Nanoseconds()) * time.Nanosecond)
-		}
+			if elapsed.Nanoseconds() < PlantFrameRenderTimeNs {
+				time.Sleep(time.Duration(PlantFrameRenderTimeNs-elapsed.Nanoseconds()) * time.Nanosecond)
+			}
 
-		c.Refresh()
-		ic.Clean()
-		if os.Getenv("MEDVIL_VERBOSE") == "1" {
-			log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
-			log.Printf("%s", c.Map.Calendar)
-		}
-		for i := 0; i < c.TimeSpeed; i++ {
-			c.Map.Calendar.Tick()
-			c.Map.ElapseTime()
+			c.Refresh()
+			ic.Clean()
+			if os.Getenv("MEDVIL_VERBOSE") == "1" {
+				log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
+				log.Printf("%s", c.Map.Calendar)
+			}
+			for i := 0; i < c.TimeSpeed; i++ {
+				c.Map.Calendar.Tick()
+				c.Map.ElapseTime()
+			}
+		} else {
+			c.ControlPanel.Render(cv, c)
+			cv.DrawImage("icon/gui/background.png", controller.ControlPanelSX, 0, float64(cv.Width())-controller.ControlPanelSX, float64(cv.Height()))
 		}
 		c.RenderTick()
 	})
