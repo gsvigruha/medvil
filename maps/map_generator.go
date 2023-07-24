@@ -1,7 +1,7 @@
 package maps
 
 import (
-	//"fmt"
+	"fmt"
 	"math"
 	"math/rand"
 	"medvil/model"
@@ -45,7 +45,7 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 		for l := 0; l < 5; l++ {
 			x, y := x+rand.Intn(sx/3)-sx/6, y+rand.Intn(sy/3)-sy/6
 			peak := peak + rand.Intn(10) - 5
-			slope := rand.Float64() + 1.0
+			slope := rand.Float64()*2.0 + 1.0
 			for i := range fields {
 				for j := range fields[i] {
 					h0 := float64(peak) - slope*math.Sqrt(float64((x-i)*(x-i))+float64((y-j)*(y-j)))
@@ -68,9 +68,10 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 	for k := 0; k < config.Lakes; k++ {
 		size := float64(rand.Intn((sx + sy) / 10))
 		x, y := rand.Intn(sx), rand.Intn(sy)
-		for l := 0; l < 15; l++ {
-			size := (0.9 + rand.Float64()/5) * size
+		for l := 0; l < int((sx+sy)/int(size)); l++ {
+			size := (0.75 + rand.Float64()/2) * size
 			sint := int(size)
+			fmt.Println(l, sint)
 			if sint > 0 {
 				x, y := x+rand.Intn(sint)-sint/2, y+rand.Intn(sint)-sint/2
 				for i := range fields {
@@ -103,6 +104,7 @@ func NewMap(config MapConfig) *model.Map {
 		Hour:  0,
 	}
 	m.Calendar = calendar
+
 	townhall := &building.Building{
 		Plan: building.BuildingPlanFromJSON("samples/building/townhouse_1.building.json"),
 		X:    m.SX / 2,
