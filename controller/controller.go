@@ -329,5 +329,6 @@ func (c *Controller) LinkMap() {
 	c.ActiveTown = c.Map.Countries[0].Towns[0]
 	c.CenterX = int(c.Map.SX) / 2
 	c.CenterY = int(c.Map.SY) / 2
+	c.ControlPanel.GenerateButtons()
 	c.Refresh()
 }

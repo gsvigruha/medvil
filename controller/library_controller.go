@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"io/ioutil"
+	"medvil/maps"
 	"medvil/view/gui"
 	"path/filepath"
 	"time"
@@ -10,6 +11,26 @@ import (
 
 func LibraryToControlPanel(cp *ControlPanel) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
+
+	p.AddTextLabel("New", 24, ControlPanelSY*0.15)
+	nTop := ControlPanelSY * 0.15
+	config := &maps.MapConfig{SizeX: 100, SizeY: 100, Hills: 5, Lakes: 5, Trees: 5, Resources: 5}
+
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*1), 200, gui.FontSize, 50, 250, 25, "Map width %v", &config.SizeX).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*2), 200, gui.FontSize, 50, 250, 25, "Map height %v", &config.SizeY).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*3), 200, gui.FontSize, 0, 10, 1, "Hills %v", &config.Hills).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*4), 200, gui.FontSize, 3, 10, 1, "Lakes %v", &config.Lakes).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*5), 200, gui.FontSize, 0, 10, 1, "Trees %v", &config.Trees).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*6), 200, gui.FontSize, 3, 10, 1, "Resources %v", &config.Resources).P)
+
+	p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: 24, Y: nTop + float64(IconS*7), SX: IconS, SY: IconS},
+		ClickImpl: func() {
+			cp.C.Map = maps.NewMap(*config)
+			cp.C.LinkMap()
+		}})
+
+	p.AddTextLabel("Load and save", 24, ControlPanelSY*0.4)
 
 	files, err := ioutil.ReadDir("saved/")
 	if err != nil {
@@ -28,9 +49,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		icons = append(icons, "library")
 	}
 
-	p.AddTextLabel("Load and save", 24, ControlPanelSY*0.15)
-
-	lasTop := ControlPanelSY*0.15 + LargeIconD
+	lasTop := ControlPanelSY*0.4 + LargeIconD
 	filesDropdown := &gui.DropDown{
 		X:        24,
 		Y:        lasTop,

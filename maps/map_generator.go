@@ -1,6 +1,7 @@
 package maps
 
 import (
+	//"fmt"
 	"math"
 	"math/rand"
 	"medvil/model"
@@ -13,8 +14,10 @@ import (
 
 type MapConfig struct {
 	SizeX, SizeY int
-	NumHills     int
-	HillSize     int
+	Hills        int
+	Lakes        int
+	Trees        int
+	Resources    int
 }
 
 func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
@@ -23,7 +26,7 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 			fields[i][j] = &navigation.Field{X: uint16(i), Y: uint16(j)}
 			fields[i][j].Terrain.T = terrain.Grass
 			fields[i][j].Terrain.Shape = uint8(rand.Intn(4))
-			if fields[i][j].Terrain.T == terrain.Grass && rand.Intn(5) == 0 {
+			if fields[i][j].Terrain.T == terrain.Grass && rand.Intn(30) < config.Trees {
 				fields[i][j].Plant = &terrain.Plant{
 					T:             terrain.AllTreeTypes[rand.Intn(2)],
 					X:             uint16(i),
@@ -36,10 +39,10 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 	}
 
 	sx, sy := config.SizeX, config.SizeY
-	for k := 0; k < config.NumHills; k++ {
+	for k := 0; k < config.Hills; k++ {
 		peak := rand.Intn((sx + sy) / 5)
 		x, y := rand.Intn(sx), rand.Intn(sy)
-		for l := 0; l < config.HillSize; l++ {
+		for l := 0; l < 5; l++ {
 			x, y := x+rand.Intn(sx/3)-sx/6, y+rand.Intn(sy/3)-sy/6
 			peak := peak + rand.Intn(10) - 5
 			slope := rand.Float64() + 1.0
@@ -58,6 +61,29 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 					}
 					fields[i][j].NW = uint8(h)
 				}
+			}
+		}
+	}
+
+	for k := 0; k < config.Lakes; k++ {
+		size := float64(rand.Intn((sx + sy) / 10))
+		x, y := rand.Intn(sx), rand.Intn(sy)
+		for l := 0; l < 15; l++ {
+			size := (0.9 + rand.Float64()/5) * size
+			sint := int(size)
+			if sint > 0 {
+				x, y := x+rand.Intn(sint)-sint/2, y+rand.Intn(sint)-sint/2
+				for i := range fields {
+					for j := range fields[i] {
+						dist := math.Sqrt(float64((x-i)*(x-i)) + float64((y-j)*(y-j)))
+						if dist < size && fields[i][j].NW == 0 && fields[i][j].SW == 0 && fields[i][j].NE == 0 && fields[i][j].SE == 0 {
+							fields[i][j].Terrain.T = terrain.Water
+							fields[i][j].Plant = nil
+						}
+					}
+				}
+			} else {
+				break
 			}
 		}
 	}
