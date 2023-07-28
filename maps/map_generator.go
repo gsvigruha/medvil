@@ -67,22 +67,24 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 	for k := 0; k < config.Lakes; k++ {
 		size := float64(rand.Intn((sx + sy) / 10))
 		x, y := rand.Intn(sx), rand.Intn(sy)
-		for l := 0; l < int((sx+sy)/int(size)); l++ {
-			size := (0.75 + rand.Float64()/2) * size
-			sint := int(size)
-			if sint > 0 {
-				x, y := x+rand.Intn(sint)-sint/2, y+rand.Intn(sint)-sint/2
-				for i := range fields {
-					for j := range fields[i] {
-						dist := math.Sqrt(float64((x-i)*(x-i)) + float64((y-j)*(y-j)))
-						if dist < size && fields[i][j].NW == 0 && fields[i][j].SW == 0 && fields[i][j].NE == 0 && fields[i][j].SE == 0 {
-							fields[i][j].Terrain.T = terrain.Water
-							fields[i][j].Plant = nil
+		if size > 0 {
+			for l := 0; l < int((sx+sy)/int(size)); l++ {
+				size := (0.75 + rand.Float64()/2) * size
+				sint := int(size)
+				if sint > 0 {
+					x, y := x+rand.Intn(sint)-sint/2, y+rand.Intn(sint)-sint/2
+					for i := range fields {
+						for j := range fields[i] {
+							dist := math.Sqrt(float64((x-i)*(x-i)) + float64((y-j)*(y-j)))
+							if dist < size && fields[i][j].NW == 0 && fields[i][j].SW == 0 && fields[i][j].NE == 0 && fields[i][j].SE == 0 {
+								fields[i][j].Terrain.T = terrain.Water
+								fields[i][j].Plant = nil
+							}
 						}
 					}
+				} else {
+					break
 				}
-			} else {
-				break
 			}
 		}
 	}

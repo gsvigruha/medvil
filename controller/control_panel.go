@@ -179,6 +179,10 @@ func (p *ControlPanel) GenerateButtons() {
 	p.timeButton = &ControlPanelButton{
 		b: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		c: c, action: CPActionTimeScaleChange}
+	p.topPanel.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "map", X: float64(24 + LargeIconD*6), Y: iconTop + LargeIconD, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return p.IsDynamicPanelType("MapController") },
+		ClickImpl: func() { c.ShowMapController() }})
 	p.topPanel.AddButton(p.timeButton)
 }
 
