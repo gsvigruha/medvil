@@ -1,7 +1,6 @@
 package maps
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 	"medvil/model"
@@ -71,7 +70,6 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 		for l := 0; l < int((sx+sy)/int(size)); l++ {
 			size := (0.75 + rand.Float64()/2) * size
 			sint := int(size)
-			fmt.Println(l, sint)
 			if sint > 0 {
 				x, y := x+rand.Intn(sint)-sint/2, y+rand.Intn(sint)-sint/2
 				for i := range fields {
