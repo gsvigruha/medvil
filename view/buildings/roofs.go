@@ -1,7 +1,6 @@
 package buildings
 
 import (
-	"fmt"
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"math"
@@ -216,8 +215,6 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 	util.RenderPolygon(cv, rp3, true)
 
 	if phase != 255 {
-		fmt.Println(rf.F.Building.GetBuilding().Shape)
-		phase2 := (phase + rf.F.Building.GetBuilding().Shape*3) % BuildingAnimationMaxPhase
-		cv.DrawImage("texture/building/smoke_"+strconv.Itoa(int(phase2/3))+".png", midX-16, midY-z-BuildingUnitHeight*DZ-h-52, 32, 48)
+		cv.DrawImage("texture/building/smoke_"+strconv.Itoa(int(phase/3))+".png", midX-16, midY-z-BuildingUnitHeight*DZ-h-52, 32, 48)
 	}
 }
