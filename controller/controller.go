@@ -56,6 +56,7 @@ type Controller struct {
 	ClickHandler              ClickHandler
 	TimeSpeed                 int
 	RenderCnt                 int
+	ctx                       *goglbackend.GLContext
 }
 
 func (c *Controller) MoveCenter(dViewX, dViewY int) {
@@ -114,6 +115,11 @@ func (c *Controller) ShowBuildingController() {
 func (c *Controller) ShowLibraryController() {
 	c.Reset()
 	LibraryToControlPanel(c.ControlPanel)
+}
+
+func (c *Controller) ShowMapController() {
+	c.Reset()
+	MapToControlPanel(c.ControlPanel)
 }
 
 func (c *Controller) ShowInfraController() {
@@ -291,6 +297,7 @@ func Link(wnd *glfw.Window, ctx *goglbackend.GLContext) *Controller {
 	wnd.SetMouseButtonCallback(c.MouseButtonCallback)
 	wnd.SetCursorPosCallback(c.MouseMoveCallback)
 	wnd.SetScrollCallback(c.MouseScrollCallback)
+	c.ctx = ctx
 	return c
 }
 
