@@ -136,7 +136,7 @@ func (r *RoofUnit) CacheKey() string {
 }
 
 func (e *ExtensionUnit) CacheKey() string {
-	return fmt.Sprintf("%v#%v#%v", e.T, e.Direction, e.Construction)
+	return fmt.Sprintf("%v#%v#%v#%v", e.T, e.Direction, e.Construction, e.B.Shape)
 }
 
 func (u *BuildingUnit) CacheKey() string {

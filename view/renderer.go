@@ -14,7 +14,7 @@ const (
 	DZ      float64 = 15.0
 	ViewSX  uint8   = 12
 	ViewSY  uint8   = 10
-	RadiusI int     = 20
+	RadiusI int     = 25
 )
 
 func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
@@ -43,7 +43,14 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 			if pi < 0 || pj < 0 || pi >= int(m.SX) || pj >= int(m.SY) {
 				continue
 			}
+
 			var f = m.Fields[pi][pj]
+			x := w/2 - float64(i)*DX + float64(j)*DX
+			y := float64(i)*DY + float64(j)*DY - float64(RadiusI)*DY*2 + h/2
+			if x < controller.ControlPanelSX-DX || x > w+DX || y < -DY*2 || y-float64(f.NE)*DZ > h+DY {
+				continue
+			}
+
 			var t = uint8(0)
 			var r = uint8(0)
 			var b = uint8(0)
@@ -69,11 +76,6 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 				r = f.SW
 				b = f.NW
 				l = f.NE
-			}
-			x := w/2 - float64(i)*DX + float64(j)*DX
-			y := float64(i)*DY + float64(j)*DY - float64(RadiusI)*DY*2 + h/2
-			if x < controller.ControlPanelSX-DX || x > w+DX || y < -DY*2 || y > h+DY {
-				continue
 			}
 
 			rf := renderer.RenderedField{
