@@ -5,6 +5,7 @@ import (
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"image/color"
 	"medvil/model"
+	"medvil/model/building"
 	"medvil/model/terrain"
 	"medvil/view/gui"
 )
@@ -44,9 +45,28 @@ func MapToControlPanel(cp *ControlPanel) {
 				cv.SetFillStyle(color.RGBA{R: 0, G: 128 - field.NW, B: 0, A: 255})
 			}
 			if field.Building.GetBuilding() != nil {
-				cv.SetFillStyle("#D00")
+				bt := field.Building.GetBuilding().Plan.BuildingType
+				if bt == building.BuildingTypeWall || bt == building.BuildingTypeGate || bt == building.BuildingTypeTower {
+					cv.SetFillStyle("#888")
+				} else {
+					cv.SetFillStyle("#800")
+				}
+			}
+			if field.Road != nil {
+				cv.SetFillStyle("#445")
+			}
+			if field.Plant != nil && !field.Plant.IsTree() {
+				cv.SetFillStyle("#A80")
 			}
 			cv.FillRect(float64(i)*d, float64(j)*d, d, d)
+			if field.Animal != nil {
+				cv.SetFillStyle("#BBB")
+				cv.FillRect(float64(i)*d+d/3, float64(j)*d+d/3, d*2/3, d*2/3)
+			}
+			if field.Plant != nil && field.Plant.IsTree() {
+				cv.SetFillStyle(color.RGBA{R: 0, G: 64 - field.NW/2, B: 0, A: 255})
+				cv.FillRect(float64(i)*d+d/3, float64(j)*d+d/3, d*2/3, d*2/3)
+			}
 		}
 	}
 	mb := MapButton{m: cp.C.Map, img: cv}
