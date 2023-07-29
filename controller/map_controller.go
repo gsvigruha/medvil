@@ -10,25 +10,22 @@ import (
 	"medvil/view/gui"
 )
 
-type MapButton struct {
+type MapLabel struct {
+	cp  *ControlPanel
 	m   *model.Map
 	img *canvas.Canvas
+	d   float64
 }
 
-func (b MapButton) Click() {
-
+func (l MapLabel) Render(cv *canvas.Canvas) {
+	cv.DrawImage(l.img, 24, ControlPanelSY*0.15, float64(l.img.Width()), float64(l.img.Height()))
 }
 
-func (b MapButton) Render(cv *canvas.Canvas) {
-	cv.DrawImage(b.img, 24, ControlPanelSY*0.15, float64(b.img.Width()), float64(b.img.Height()))
-}
-
-func (b MapButton) Contains(x float64, y float64) bool {
-	return x >= 24 && x <= float64(24+b.m.SX*2) && y >= ControlPanelSY*0.15 && y <= ControlPanelSY*0.15+float64(b.m.SY*2)
-}
-
-func (b MapButton) Enabled() bool {
-	return true
+func (l MapLabel) CaptureClick(x float64, y float64) {
+	if x >= 24 && x <= float64(24+l.img.Width()) && y >= ControlPanelSY*0.15 && y <= ControlPanelSY*0.15+float64(l.img.Height()) {
+		l.cp.C.CenterX = int((x - 24) / l.d)
+		l.cp.C.CenterY = int((y - ControlPanelSY*0.15) / l.d)
+	}
 }
 
 func MapToControlPanel(cp *ControlPanel) {
@@ -69,7 +66,7 @@ func MapToControlPanel(cp *ControlPanel) {
 			}
 		}
 	}
-	mb := MapButton{m: cp.C.Map, img: cv}
-	p.AddButton(mb)
+	mb := MapLabel{cp: cp, m: cp.C.Map, img: cv, d: d}
+	p.AddLabel(mb)
 	cp.SetDynamicPanel(p)
 }
