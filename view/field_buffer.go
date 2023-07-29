@@ -48,6 +48,36 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 		rf.Draw(cv)
 		cv.Fill()
 	}
+
+	for i := uint8(0); i < 4; i++ {
+		idx1 := (3 - (-c.Perspective + i)) % 4
+		idx2 := (2 - (-c.Perspective + i)) % 4
+		//idx3 := (1 - (-c.Perspective + i)) % 4
+		idx4 := (0 - (-c.Perspective + i)) % 4
+		if f.Surroundings[(i-1)%4] == navigation.SurroundingGrass {
+			if c.Map.Calendar.Season() == 3 {
+				cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+			} else {
+				cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+			}
+		} else if f.Surroundings[(i-1)%4] == navigation.SurroundingWater {
+			cv.SetFillStyle("texture/terrain/water.png")
+		} else if f.Surroundings[(i-1)%4] == navigation.SurroundingDarkSlope {
+			cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 8})
+		} else {
+			continue
+		}
+		cv.BeginPath()
+		cv.LineTo(rf.X[idx1], rf.Y[idx1]-rf.Z[idx1])
+		cv.LineTo((rf.X[idx1]+rf.X[idx2])/2, (rf.Y[idx1]-rf.Z[idx1]+rf.Y[idx2]-rf.Z[idx2])/2)
+		cv.QuadraticCurveTo(
+			(4*rf.X[idx1]+rf.X[idx2]+rf.X[idx4])/6,
+			(4*rf.Y[idx1]-4*rf.Z[idx1]+rf.Y[idx2]-rf.Z[idx2]+rf.Y[idx4]-rf.Z[idx4])/6,
+			(rf.X[idx1]+rf.X[idx4])/2,
+			(rf.Y[idx1]-rf.Z[idx1]+rf.Y[idx4]-rf.Z[idx4])/2)
+		cv.ClosePath()
+		cv.Fill()
+	}
 }
 
 func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
