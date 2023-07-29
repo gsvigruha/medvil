@@ -9,6 +9,7 @@ var FontSize = 12.0
 
 type Label interface {
 	Render(cv *canvas.Canvas)
+	CaptureClick(x float64, y float64)
 }
 
 type TextLabel struct {
@@ -24,6 +25,8 @@ func (l *TextLabel) Render(cv *canvas.Canvas) {
 	cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
 	cv.FillText(l.Text, l.X, l.Y)
 }
+
+func (l *TextLabel) CaptureClick(x float64, y float64) {}
 
 const ImageLabelStyleRegular = 0
 const ImageLabelStyleHighlight = 1
@@ -50,6 +53,8 @@ func (l *ImageLabel) Render(cv *canvas.Canvas) {
 	}
 }
 
+func (l *ImageLabel) CaptureClick(x float64, y float64) {}
+
 type DoubleImageLabel struct {
 	X       float64
 	Y       float64
@@ -72,6 +77,8 @@ func (l *DoubleImageLabel) Render(cv *canvas.Canvas) {
 		cv.FillRect(l.X, l.Y, l.SX, l.SY)
 	}
 }
+
+func (l *DoubleImageLabel) CaptureClick(x float64, y float64) {}
 
 type ScaleLabel struct {
 	X       float64
@@ -105,6 +112,8 @@ func (l *ScaleLabel) Render(cv *canvas.Canvas) {
 	}
 }
 
+func (l *ScaleLabel) CaptureClick(x float64, y float64) {}
+
 type TextureLabel struct {
 	X       float64
 	Y       float64
@@ -118,6 +127,8 @@ func (l *TextureLabel) Render(cv *canvas.Canvas) {
 	cv.FillRect(l.X, l.Y, l.SX, l.SY)
 }
 
+func (l *TextureLabel) CaptureClick(x float64, y float64) {}
+
 type DynamicImageLabel struct {
 	X    float64
 	Y    float64
@@ -129,3 +140,5 @@ type DynamicImageLabel struct {
 func (l *DynamicImageLabel) Render(cv *canvas.Canvas) {
 	cv.DrawImage("icon/gui/"+l.Icon()+".png", l.X, l.Y, l.SX, l.SY)
 }
+
+func (l *DynamicImageLabel) CaptureClick(x float64, y float64) {}

@@ -5,6 +5,8 @@ import (
 	"medvil/model/artifacts"
 )
 
+const TreeNumShapes = 8
+
 type TreeType struct {
 	BranchWidth0        float64
 	BranchLength0       float64

@@ -26,6 +26,8 @@ type ClickHandler interface {
 type Controller struct {
 	X                         float64
 	Y                         float64
+	DX                        int
+	DY                        int
 	W                         int
 	H                         int
 	CenterX                   int
@@ -87,22 +89,36 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 			c.Perspective = (c.Perspective - 1) % 4
 		}
 		if key == glfw.KeyUp || key == glfw.KeyW {
-			c.MoveCenter(0, -2)
+			c.DY = -1
 		}
 		if key == glfw.KeyDown || key == glfw.KeyS {
-			c.MoveCenter(0, 2)
+			c.DY = 1
 		}
 		if key == glfw.KeyLeft || key == glfw.KeyA {
-			c.MoveCenter(-2, 0)
+			c.DX = -1
 		}
 		if key == glfw.KeyRight || key == glfw.KeyD {
-			c.MoveCenter(2, 0)
+			c.DX = 1
 		}
 		if key == glfw.KeyTab {
 			CPActionTimeScaleChange(c)
 		}
 		if key == glfw.KeyL {
 			c.Load(GetLatestFile())
+		}
+	}
+	if action == glfw.Release {
+		if key == glfw.KeyUp || key == glfw.KeyW {
+			c.DY = 0
+		}
+		if key == glfw.KeyDown || key == glfw.KeyS {
+			c.DY = 0
+		}
+		if key == glfw.KeyLeft || key == glfw.KeyA {
+			c.DX = 0
+		}
+		if key == glfw.KeyRight || key == glfw.KeyD {
+			c.DX = 0
 		}
 	}
 }
@@ -276,6 +292,7 @@ func (c *Controller) RenderTick() {
 	if c.RenderCnt >= MaxRenderCnt {
 		c.RenderCnt = 0
 	}
+	c.MoveCenter(c.DX, c.DY)
 }
 
 func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {

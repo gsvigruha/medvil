@@ -30,7 +30,7 @@ func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.Calendar
 				X:             uint16(i),
 				Y:             uint16(j),
 				BirthDateDays: Calendar.DaysElapsed(),
-				Shape:         uint8(rand.Intn(10)),
+				Shape:         uint8(rand.Intn(terrain.TreeNumShapes)),
 			}
 		}
 	}

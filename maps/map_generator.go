@@ -11,6 +11,10 @@ import (
 	"medvil/model/time"
 )
 
+const HillAreaRatio = 10000
+const LakeAreaRatio = 10000
+const LakeLength = 150
+
 type MapConfig struct {
 	SizeX, SizeY int
 	Hills        int
@@ -31,18 +35,19 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 					X:             uint16(i),
 					Y:             uint16(j),
 					BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),
-					Shape:         uint8(rand.Intn(10)),
+					Shape:         uint8(rand.Intn(terrain.TreeNumShapes)),
 				}
 			}
 		}
 	}
 
 	sx, sy := config.SizeX, config.SizeY
-	for k := 0; k < config.Hills; k++ {
-		peak := rand.Intn((sx + sy) / 5)
+	area := sx * sy
+	for k := 0; k < area*config.Hills/HillAreaRatio; k++ {
+		peak := rand.Intn(30) + 10
 		x, y := rand.Intn(sx), rand.Intn(sy)
-		for l := 0; l < 5; l++ {
-			x, y := x+rand.Intn(sx/3)-sx/6, y+rand.Intn(sy/3)-sy/6
+		for l := 0; l < 10; l++ {
+			x, y := x+rand.Intn(peak/4)-peak/2, y+rand.Intn(peak/4)-peak/2
 			peak := peak + rand.Intn(10) - 5
 			slope := rand.Float64()*2.0 + 1.0
 			for i := range fields {
@@ -64,12 +69,12 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 		}
 	}
 
-	for k := 0; k < config.Lakes; k++ {
-		size := float64(rand.Intn((sx + sy) / 10))
+	for k := 0; k < area*config.Lakes/LakeAreaRatio; k++ {
+		size := float64(rand.Intn(30))
 		x, y := rand.Intn(sx), rand.Intn(sy)
 		if size > 0 {
-			for l := 0; l < int((sx+sy)/int(size)); l++ {
-				size := (0.75 + rand.Float64()/2) * size
+			for l := 0; l < int(LakeLength/int(size)); l++ {
+				size := (0.9 + rand.Float64()/5) * size
 				sint := int(size)
 				if sint > 0 {
 					x, y := x+rand.Intn(sint)-sint/2, y+rand.Intn(sint)-sint/2

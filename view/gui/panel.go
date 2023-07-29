@@ -53,6 +53,9 @@ func (p *Panel) CaptureClick(x float64, y float64) {
 	for i := range p.DropDowns {
 		p.DropDowns[i].CaptureClick(x, y)
 	}
+	for i := range p.Labels {
+		p.Labels[i].CaptureClick(x, y)
+	}
 }
 
 func (p *Panel) Clear() {

@@ -78,7 +78,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 				X:             t.F.X,
 				Y:             t.F.Y,
 				BirthDateDays: Calendar.DaysElapsed(),
-				Shape:         uint8(rand.Intn(10)),
+				Shape:         uint8(rand.Intn(terrain.TreeNumShapes)),
 			}
 			return true
 		}
@@ -99,7 +99,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 				X:             t.F.X,
 				Y:             t.F.Y,
 				BirthDateDays: Calendar.DaysElapsed(),
-				Shape:         uint8(rand.Intn(10)),
+				Shape:         uint8(rand.Intn(terrain.TreeNumShapes)),
 			}
 			return true
 		}
@@ -110,7 +110,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 				X:             t.F.X,
 				Y:             t.F.Y,
 				BirthDateDays: Calendar.DaysElapsed(),
-				Shape:         uint8(rand.Intn(10)),
+				Shape:         uint8(rand.Intn(terrain.TreeNumShapes)),
 			}
 			return true
 		}
@@ -129,7 +129,7 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 				X:             t.F.X,
 				Y:             t.F.Y,
 				BirthDateDays: Calendar.DaysElapsed(),
-				Shape:         uint8(rand.Intn(10)),
+				Shape:         uint8(rand.Intn(terrain.TreeNumShapes)),
 			}
 			return true
 		}
