@@ -52,7 +52,6 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 	for i := uint8(0); i < 4; i++ {
 		idx1 := (3 - (-c.Perspective + i)) % 4
 		idx2 := (2 - (-c.Perspective + i)) % 4
-		//idx3 := (1 - (-c.Perspective + i)) % 4
 		idx4 := (0 - (-c.Perspective + i)) % 4
 		if f.Surroundings[(i-1)%4] == navigation.SurroundingGrass {
 			if c.Map.Calendar.Season() == 3 {
