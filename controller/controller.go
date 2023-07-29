@@ -108,8 +108,18 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		}
 	}
 	if action == glfw.Release {
-		c.DX = 0
-		c.DY = 0
+		if key == glfw.KeyUp || key == glfw.KeyW {
+			c.DY = 0
+		}
+		if key == glfw.KeyDown || key == glfw.KeyS {
+			c.DY = 0
+		}
+		if key == glfw.KeyLeft || key == glfw.KeyA {
+			c.DX = 0
+		}
+		if key == glfw.KeyRight || key == glfw.KeyD {
+			c.DX = 0
+		}
 	}
 }
 

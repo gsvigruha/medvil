@@ -46,7 +46,7 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 	for k := 0; k < area*config.Hills/HillAreaRatio; k++ {
 		peak := rand.Intn(30) + 10
 		x, y := rand.Intn(sx), rand.Intn(sy)
-		for l := 0; l < 5; l++ {
+		for l := 0; l < 10; l++ {
 			x, y := x+rand.Intn(peak/4)-peak/2, y+rand.Intn(peak/4)-peak/2
 			peak := peak + rand.Intn(10) - 5
 			slope := rand.Float64()*2.0 + 1.0
