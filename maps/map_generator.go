@@ -35,7 +35,7 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 					X:             uint16(i),
 					Y:             uint16(j),
 					BirthDateDays: uint32(1000*12*30 - rand.Intn(20*12*30)),
-					Shape:         uint8(rand.Intn(10)),
+					Shape:         uint8(rand.Intn(terrain.TreeNumShapes)),
 				}
 			}
 		}

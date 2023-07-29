@@ -14,7 +14,7 @@ const (
 	DZ      float64 = 15.0
 	ViewSX  uint8   = 12
 	ViewSY  uint8   = 10
-	RadiusI int     = 25
+	RadiusI int     = 30
 )
 
 func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
