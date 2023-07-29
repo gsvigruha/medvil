@@ -101,20 +101,22 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 				dj1 := navigation.DirectionOrthogonalXY[k][1]
 				di2 := navigation.DirectionOrthogonalXY[(k+1)%4][0]
 				dj2 := navigation.DirectionOrthogonalXY[(k+1)%4][1]
+				di3 := navigation.DirectionDiagonalXY[k][0]
+				dj3 := navigation.DirectionDiagonalXY[k][1]
 				if i > 0 && j > 0 && i < sx-1 && j < sy-1 {
-					fields[i][j].Surroundings[k] = GetSurroundingType(fields[i][j], fields[i+di1][j+dj1], fields[i+di2][j+dj2])
+					fields[i][j].Surroundings[k] = GetSurroundingType(fields[i][j], fields[i+di1][j+dj1], fields[i+di2][j+dj2], fields[i+di3][j+dj3])
 				}
 			}
 		}
 	}
 }
 
-func GetSurroundingType(f *navigation.Field, of1 *navigation.Field, of2 *navigation.Field) uint8 {
-	if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Water && of2.Terrain.T == terrain.Water {
+func GetSurroundingType(f *navigation.Field, of1 *navigation.Field, of2 *navigation.Field, of3 *navigation.Field) uint8 {
+	if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Water && of2.Terrain.T == terrain.Water && of3.Terrain.T == terrain.Water {
 		return navigation.SurroundingWater
-	} else if f.Terrain.T == terrain.Water && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass {
+	} else if f.Terrain.T == terrain.Water && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
 		return navigation.SurroundingGrass
-	} else if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass {
+	} else if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
 		if !f.DarkSlope() && of1.DarkSlope() && of2.DarkSlope() {
 			return navigation.SurroundingDarkSlope
 		}
