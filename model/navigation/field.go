@@ -21,6 +21,11 @@ type FieldWithContext interface {
 	Context() string
 }
 
+const SurroundingSame uint8 = 0
+const SurroundingWater uint8 = 1
+const SurroundingGrass uint8 = 2
+const SurroundingDarkSlope uint8 = 3
+
 type Field struct {
 	X uint16
 	Y uint16
@@ -29,6 +34,8 @@ type Field struct {
 	SE uint8
 	SW uint8
 	NW uint8
+
+	Surroundings [4]uint8
 
 	Terrain      terrain.Terrain
 	Building     FieldBuildingObjects `json:"-"`
@@ -211,6 +218,14 @@ func (f *Field) UnregisterTraveller(t *Traveller) {
 	}
 }
 
+func (f *Field) DarkSlope() bool {
+	return (f.SE + f.SW) < (f.NE + f.NW)
+}
+
+func (f *Field) LightSlope() bool {
+	return (f.SE + f.SW) > (f.NE + f.NW)
+}
+
 func (f *Field) Check(pe PathElement) bool {
 	if f2, ok := pe.(*Field); ok {
 		return f2 == f
@@ -223,6 +238,10 @@ func (f *Field) CacheKey() string {
 		strconv.Itoa(int(f.SE)) + "#" +
 		strconv.Itoa(int(f.SW)) + "#" +
 		strconv.Itoa(int(f.NW)) + "#" +
+		strconv.Itoa(int(f.Surroundings[0])) + "#" +
+		strconv.Itoa(int(f.Surroundings[1])) + "#" +
+		strconv.Itoa(int(f.Surroundings[2])) + "#" +
+		strconv.Itoa(int(f.Surroundings[3])) + "#" +
 		f.Terrain.T.Name + "#" +
 		strconv.Itoa(int(f.Terrain.Shape)))
 }
