@@ -14,6 +14,9 @@ import (
 const HillAreaRatio = 10000
 const LakeAreaRatio = 10000
 const LakeLength = 150
+const MaxIter = 6
+const HillBranching = 2
+const LakeBranching = 4
 
 type MapConfig struct {
 	SizeX, SizeY int
@@ -44,54 +47,15 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 	sx, sy := config.SizeX, config.SizeY
 	area := sx * sy
 	for k := 0; k < area*config.Hills/HillAreaRatio; k++ {
-		peak := rand.Intn(30) + 10
 		x, y := rand.Intn(sx), rand.Intn(sy)
-		for l := 0; l < 10; l++ {
-			x, y := x+rand.Intn(peak/4)-peak/2, y+rand.Intn(peak/4)-peak/2
-			peak := peak + rand.Intn(10) - 5
-			slope := rand.Float64()*2.0 + 1.0
-			for i := range fields {
-				for j := range fields[i] {
-					h0 := float64(peak) - slope*math.Sqrt(float64((x-i)*(x-i))+float64((y-j)*(y-j)))
-					h := uint8(math.Max(math.Max(h0, 0), float64(fields[i][j].NW)))
-					if i > 0 && j > 0 {
-						fields[i-1][j-1].SE = uint8(h)
-					}
-					if j > 0 {
-						fields[i][j-1].SW = uint8(h)
-					}
-					if i > 0 {
-						fields[i-1][j].NE = uint8(h)
-					}
-					fields[i][j].NW = uint8(h)
-				}
-			}
-		}
+		peak := rand.Intn(30) + 10
+		GenerateHills(x, y, peak, 1, fields)
 	}
 
 	for k := 0; k < area*config.Lakes/LakeAreaRatio; k++ {
-		size := float64(rand.Intn(30))
+		size := float64(rand.Intn(20))
 		x, y := rand.Intn(sx), rand.Intn(sy)
-		if size > 0 {
-			for l := 0; l < int(LakeLength/int(size)); l++ {
-				size := (0.9 + rand.Float64()/5) * size
-				sint := int(size)
-				if sint > 0 {
-					x, y := x+rand.Intn(sint)-sint/2, y+rand.Intn(sint)-sint/2
-					for i := range fields {
-						for j := range fields[i] {
-							dist := math.Sqrt(float64((x-i)*(x-i)) + float64((y-j)*(y-j)))
-							if dist < size && fields[i][j].NW == 0 && fields[i][j].SW == 0 && fields[i][j].NE == 0 && fields[i][j].SE == 0 {
-								fields[i][j].Terrain.T = terrain.Water
-								fields[i][j].Plant = nil
-							}
-						}
-					}
-				} else {
-					break
-				}
-			}
-		}
+		GenerateLakes(x, y, size, 1, fields, terrain.Water)
 	}
 
 	for i := range fields {
@@ -107,6 +71,58 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 					fields[i][j].Surroundings[k] = GetSurroundingType(fields[i][j], fields[i+di1][j+dj1], fields[i+di2][j+dj2], fields[i+di3][j+dj3])
 				}
 			}
+		}
+	}
+}
+
+func GenerateLakes(x, y int, size float64, n int, fields [][]*navigation.Field, t *terrain.TerrainType) {
+	sint := int(size)
+	if sint < 6 {
+		return
+	}
+	for i := range fields {
+		for j := range fields[i] {
+			dist := math.Sqrt(float64((x-i)*(x-i)) + float64((y-j)*(y-j)))
+			if dist < size && fields[i][j].NW == 0 && fields[i][j].SW == 0 && fields[i][j].NE == 0 && fields[i][j].SE == 0 {
+				fields[i][j].Terrain.T = t
+				fields[i][j].Plant = nil
+			}
+		}
+	}
+
+	for l := 0; l < LakeBranching; l++ {
+		nx, ny := x+rand.Intn(sint)-sint/2, y+rand.Intn(sint)-sint/2
+		nsize := (0.9 + rand.Float64()/10) * size
+		if n < MaxIter && nsize > 0 && rand.Float64() < 0.75 {
+			GenerateLakes(nx, ny, nsize, n+1, fields, t)
+		}
+	}
+}
+
+func GenerateHills(x, y, peak, n int, fields [][]*navigation.Field) {
+	slope := rand.Float64()*2.0 + 1.0
+	rad := int(float64(peak) / slope)
+	for i := range fields {
+		for j := range fields[i] {
+			h0 := float64(peak) - slope*math.Sqrt(float64((x-i)*(x-i))+float64((y-j)*(y-j)))
+			h := uint8(math.Max(math.Max(h0, 0), float64(fields[i][j].NW)))
+			if i > 0 && j > 0 {
+				fields[i-1][j-1].SE = uint8(h)
+			}
+			if j > 0 {
+				fields[i][j-1].SW = uint8(h)
+			}
+			if i > 0 {
+				fields[i-1][j].NE = uint8(h)
+			}
+			fields[i][j].NW = uint8(h)
+		}
+	}
+	if n < MaxIter && peak > 4 && rad > 4 {
+		for l := 0; l < HillBranching; l++ {
+			nx, ny := x+rand.Intn(rad/4)-rad/2, y+rand.Intn(rad/4)-rad/2
+			npeak := rand.Intn(peak/2) + peak/2
+			GenerateHills(nx, ny, npeak, n+1, fields)
 		}
 	}
 }
