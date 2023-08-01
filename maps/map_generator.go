@@ -158,6 +158,52 @@ func GetSurroundingType(f *navigation.Field, of1 *navigation.Field, of2 *navigat
 	return navigation.SurroundingSame
 }
 
+func findStartingLocation(m *model.Map) (int, int) {
+	var x, y = 0, 0
+	var maxScore = 0
+	for i := range m.Fields {
+		for j := range m.Fields[i] {
+			dx := float64(int(m.SX/2) - i)
+			dy := float64(int(m.SY/2) - j)
+			var score = int(m.SX+m.SY)/2 - int(math.Sqrt(dx*dx+dy*dy))
+			var suitable = true
+			for di := -10; di <= 10; di++ {
+				for dj := -10; dj <= 10; dj++ {
+					if i+dj >= 0 && j+dj >= 0 {
+						f := m.GetField(uint16(i+di), uint16(j+dj))
+						if f != nil {
+							if dj >= -5 && dj <= 5 && di >= -5 && di <= 5 {
+								if !f.Flat() || f.Terrain.T != terrain.Grass {
+									suitable = false
+								}
+							}
+							if f.Terrain.T == terrain.Water {
+								score++
+							} else if f.Terrain.T == terrain.Rock {
+								score++
+							} else if f.Terrain.T == terrain.Gold {
+								score++
+							} else if f.Terrain.T == terrain.IronBog {
+								score++
+							} else if f.Terrain.T == terrain.Mud {
+								score++
+							}
+						} else {
+							suitable = false
+						}
+					}
+				}
+			}
+			if suitable && score > maxScore {
+				maxScore = score
+				x = i
+				y = j
+			}
+		}
+	}
+	return x, y
+}
+
 func NewMap(config MapConfig) *model.Map {
 	fields := make([][]*navigation.Field, config.Size)
 	for i := range fields {
@@ -173,16 +219,18 @@ func NewMap(config MapConfig) *model.Map {
 	}
 	m.Calendar = calendar
 
+	tx, ty := findStartingLocation(m)
+
 	townhall := &building.Building{
 		Plan: building.BuildingPlanFromJSON("samples/building/townhouse_1.building.json"),
-		X:    m.SX / 2,
-		Y:    m.SY / 2,
+		X:    uint16(tx - 2),
+		Y:    uint16(ty),
 	}
 	AddBuilding(townhall, m)
 	marketplace := &building.Building{
 		Plan: building.BuildingPlanFromJSON("samples/building/marketplace_1.building.json"),
-		X:    m.SX/2 + 5,
-		Y:    m.SY / 2,
+		X:    uint16(tx + 2),
+		Y:    uint16(ty),
 	}
 	AddBuilding(marketplace, m)
 
