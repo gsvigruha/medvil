@@ -12,7 +12,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const TextileConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
+const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 50
 const ExtrasBudgetRatio = 0.25
 
@@ -20,6 +20,8 @@ var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
 var Tools = artifacts.GetArtifact("tools")
 var Textile = artifacts.GetArtifact("textile")
+var Leather = artifacts.GetArtifact("leather")
+var Clothes = artifacts.GetArtifact("clothes")
 
 const LogToFirewood = 5
 const MinLog = 1
@@ -132,7 +134,11 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	h.MaybeBuyExtras(Log, MinLog, "heating_fuel_shopping")
 	h.MaybeBuyExtras(economy.Medicine, numP, "medicine_shopping")
 	h.MaybeBuyExtras(economy.Beer, numP, "beer_shopping")
-	h.MaybeBuyExtras(Textile, h.textileNeeded(), "textile_shopping")
+	if mp.Prices[Textile] < mp.Prices[Leather] {
+		h.MaybeBuyExtras(Textile, h.clothesNeeded(), "textile_shopping")
+	} else {
+		h.MaybeBuyExtras(Leather, h.clothesNeeded(), "leather_shopping")
+	}
 
 	if Calendar.Hour == 0 {
 		for i := 0; i < len(h.Tasks); i++ {
@@ -144,15 +150,22 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if h.Resources.Get(Firewood) < h.heatingFuelNeeded() && h.Resources.Remove(Log, 1) > 0 {
 		h.Resources.Add(Firewood, LogToFirewood)
 	}
-	if h.Resources.Get(Textile) > 0 && rand.Float64() < TextileConsumptionRate*float64(numP) {
-		h.Resources.Remove(Textile, 1)
+	if !h.HasEnoughClothes() {
+		if h.Resources.Remove(Textile, 1) > 0 {
+			h.Resources.Add(Clothes, 1)
+		} else if h.Resources.Remove(Leather, 1) > 0 {
+			h.Resources.Add(Clothes, 1)
+		}
+	}
+	if h.Resources.Get(Clothes) > 0 && rand.Float64() < ClothesConsumptionRate*float64(numP) {
+		h.Resources.Remove(Clothes, 1)
 	}
 	if Calendar.Day == 1 && Calendar.Hour == 0 {
 		if Calendar.Season() == time.Winter {
 			wood := h.Resources.Remove(Firewood, h.heatingFuelNeededPerMonth())
 			if wood > 0 {
 				h.Heating = 100
-			} else if h.HasEnoughTextile() {
+			} else if h.HasEnoughClothes() {
 				h.Heating = 50
 			} else {
 				h.Heating = 0
@@ -228,12 +241,12 @@ func (h *Household) numVehicles(t *vehicles.VehicleType) int {
 	return n
 }
 
-func (h *Household) textileNeeded() uint16 {
+func (h *Household) clothesNeeded() uint16 {
 	return uint16(len(h.People)) + 1
 }
 
-func (h *Household) HasEnoughTextile() bool {
-	return uint16(len(h.People)) <= h.Resources.Get(Textile)
+func (h *Household) HasEnoughClothes() bool {
+	return uint16(len(h.People)) <= h.Resources.Get(Clothes)
 }
 
 func (h *Household) heatingFuelNeededPerMonth() uint16 {
@@ -284,7 +297,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 		return 0
 	}
 	p := uint16(len(h.People))
-	if a.Name == "water" || a == Firewood {
+	if a.Name == "water" || a == Firewood || a == Clothes {
 		return 0
 	}
 	if a == Tools && !isProduct {
@@ -311,10 +324,10 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 			return 0
 		}
 	}
-	if a == Textile {
-		textile := h.textileNeeded() + ProductTransportQuantity(Textile)
-		if q > textile {
-			result = q - textile
+	if a == Textile || a == Leather {
+		needed := h.clothesNeeded() + ProductTransportQuantity(Clothes)
+		if q > needed {
+			result = q - needed
 		} else {
 			return 0
 		}

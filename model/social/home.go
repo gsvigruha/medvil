@@ -24,7 +24,7 @@ type Home interface {
 	GetResources() *artifacts.Resources
 	GetBuilding() *building.Building
 	GetHeating() uint8
-	HasEnoughTextile() bool
+	HasEnoughClothes() bool
 	AddVehicle(*vehicles.Vehicle)
 	GetVehicle() *vehicles.Vehicle
 	NumTasks(name string, tag string) int

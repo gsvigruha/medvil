@@ -14,14 +14,13 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	p.AddTextLabel("New", 24, ControlPanelSY*0.15)
 	nTop := ControlPanelSY * 0.15
-	config := &maps.MapConfig{SizeX: 100, SizeY: 100, Hills: 5, Lakes: 5, Trees: 5, Resources: 5}
+	config := &maps.MapConfig{Size: 100, Hills: 5, Lakes: 5, Trees: 5, Resources: 5}
 
-	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*1), 200, gui.FontSize, 50, 250, 25, "Map width %v", &config.SizeX).P)
-	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*2), 200, gui.FontSize, 50, 250, 25, "Map height %v", &config.SizeY).P)
-	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*3), 200, gui.FontSize, 3, 10, 1, "Hills %v", &config.Hills).P)
-	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*4), 200, gui.FontSize, 3, 10, 1, "Lakes %v", &config.Lakes).P)
-	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*5), 200, gui.FontSize, 3, 10, 1, "Trees %v", &config.Trees).P)
-	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*6), 200, gui.FontSize, 3, 10, 1, "Resources %v", &config.Resources).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*1), 200, gui.FontSize, 100, 200, 50, "Map size %v", &config.Size).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*2), 200, gui.FontSize, 3, 10, 1, "Hills %v", &config.Hills).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*3), 200, gui.FontSize, 3, 10, 1, "Lakes %v", &config.Lakes).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*4), 200, gui.FontSize, 3, 10, 1, "Trees %v", &config.Trees).P)
+	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*5), 200, gui.FontSize, 3, 10, 1, "Resources %v", &config.Resources).P)
 
 	p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: 24, Y: nTop + float64(IconS*7), SX: IconS, SY: IconS},
