@@ -40,6 +40,14 @@ func MapToControlPanel(cp *ControlPanel) {
 				cv.SetFillStyle("#48D")
 			} else if field.Terrain.T == terrain.Grass {
 				cv.SetFillStyle(color.RGBA{R: 0, G: 128 - field.NW, B: 0, A: 255})
+			} else if field.Terrain.T == terrain.IronBog {
+				cv.SetFillStyle("#A22")
+			} else if field.Terrain.T == terrain.Gold {
+				cv.SetFillStyle("#EA2")
+			} else if field.Terrain.T == terrain.Mud {
+				cv.SetFillStyle("#862")
+			} else if field.Terrain.T == terrain.Rock {
+				cv.SetFillStyle("#BBB")
 			}
 			if field.Building.GetBuilding() != nil {
 				bt := field.Building.GetBuilding().Plan.BuildingType
