@@ -6,6 +6,7 @@ import (
 	"log"
 	"medvil/controller"
 	//"medvil/maps"
+	"math/rand"
 	"medvil/view"
 	"os"
 	"runtime"
@@ -31,6 +32,7 @@ func init() {
 func main() {
 	defer profile.Start(profile.ProfilePath(".")).Stop()
 
+	rand.Seed(time.Now().UnixNano())
 	wnd, cv, ctx, err := view.CreateWindow(1920, 1080, "Medvil")
 	if err != nil {
 		panic(err)

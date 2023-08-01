@@ -17,6 +17,8 @@ const LakeLength = 150
 const MaxIter = 6
 const HillBranching = 2
 const LakeBranching = 4
+const TreeProb = 30
+const ResourcesProb = 1000
 
 type MapConfig struct {
 	SizeX, SizeY int
@@ -26,13 +28,14 @@ type MapConfig struct {
 	Resources    int
 }
 
-func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
+func setupTerrain(m *model.Map, config MapConfig) {
+	fields := m.Fields
 	for i := range fields {
 		for j := range fields[i] {
 			fields[i][j] = &navigation.Field{X: uint16(i), Y: uint16(j)}
 			fields[i][j].Terrain.T = terrain.Grass
 			fields[i][j].Terrain.Shape = uint8(rand.Intn(4))
-			if fields[i][j].Terrain.T == terrain.Grass && rand.Intn(30) < config.Trees {
+			if fields[i][j].Terrain.T == terrain.Grass && rand.Intn(TreeProb) < config.Trees {
 				fields[i][j].Plant = &terrain.Plant{
 					T:             terrain.AllTreeTypes[rand.Intn(2)],
 					X:             uint16(i),
@@ -69,6 +72,21 @@ func setupTerrain(fields [][]*navigation.Field, config MapConfig) {
 				dj3 := navigation.DirectionDiagonalXY[k][1]
 				if i > 0 && j > 0 && i < sx-1 && j < sy-1 {
 					fields[i][j].Surroundings[k] = GetSurroundingType(fields[i][j], fields[i+di1][j+dj1], fields[i+di2][j+dj2], fields[i+di3][j+dj3])
+				}
+			}
+			if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil {
+				if !m.Shore(uint16(i), uint16(j)) {
+					if fields[i][j].Terrain.T == terrain.Grass && fields[i][j].Flat() {
+						fields[i][j].Terrain.T = terrain.Mud
+					} else if fields[i][j].Terrain.T == terrain.Grass && !fields[i][j].Flat() {
+						if rand.Float64() < 0.5 {
+							fields[i][j].Terrain.T = terrain.Rock
+						} else {
+							fields[i][j].Terrain.T = terrain.IronBog
+						}
+					}
+				} else {
+					fields[i][j].Terrain.T = terrain.Gold
 				}
 			}
 		}
@@ -145,8 +163,8 @@ func NewMap(config MapConfig) *model.Map {
 	for i := range fields {
 		fields[i] = make([]*navigation.Field, config.SizeY)
 	}
-	setupTerrain(fields, config)
 	m := &model.Map{SX: uint16(config.SizeX), SY: uint16(config.SizeY), Fields: fields}
+	setupTerrain(m, config)
 	calendar := &time.CalendarType{
 		Year:  1000,
 		Month: 1,
