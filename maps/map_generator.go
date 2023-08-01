@@ -21,11 +21,11 @@ const TreeProb = 30
 const ResourcesProb = 1000
 
 type MapConfig struct {
-	SizeX, SizeY int
-	Hills        int
-	Lakes        int
-	Trees        int
-	Resources    int
+	Size      int
+	Hills     int
+	Lakes     int
+	Trees     int
+	Resources int
 }
 
 func setupTerrain(m *model.Map, config MapConfig) {
@@ -47,7 +47,7 @@ func setupTerrain(m *model.Map, config MapConfig) {
 		}
 	}
 
-	sx, sy := config.SizeX, config.SizeY
+	sx, sy := config.Size, config.Size
 	area := sx * sy
 	for k := 0; k < area*config.Hills/HillAreaRatio; k++ {
 		x, y := rand.Intn(sx), rand.Intn(sy)
@@ -159,11 +159,11 @@ func GetSurroundingType(f *navigation.Field, of1 *navigation.Field, of2 *navigat
 }
 
 func NewMap(config MapConfig) *model.Map {
-	fields := make([][]*navigation.Field, config.SizeX)
+	fields := make([][]*navigation.Field, config.Size)
 	for i := range fields {
-		fields[i] = make([]*navigation.Field, config.SizeY)
+		fields[i] = make([]*navigation.Field, config.Size)
 	}
-	m := &model.Map{SX: uint16(config.SizeX), SY: uint16(config.SizeY), Fields: fields}
+	m := &model.Map{SX: uint16(config.Size), SY: uint16(config.Size), Fields: fields}
 	setupTerrain(m, config)
 	calendar := &time.CalendarType{
 		Year:  1000,
