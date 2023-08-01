@@ -12,7 +12,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const TextileConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
+const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 50
 const ExtrasBudgetRatio = 0.25
 
@@ -137,7 +137,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if mp.Prices[Textile] < mp.Prices[Leather] {
 		h.MaybeBuyExtras(Textile, h.clothesNeeded(), "textile_shopping")
 	} else {
-		h.MaybeBuyExtras(Leather, h.clothesNeeded(), "textile_shopping")
+		h.MaybeBuyExtras(Leather, h.clothesNeeded(), "leather_shopping")
 	}
 
 	if Calendar.Hour == 0 {
@@ -157,7 +157,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			h.Resources.Add(Clothes, 1)
 		}
 	}
-	if h.Resources.Get(Clothes) > 0 && rand.Float64() < TextileConsumptionRate*float64(numP) {
+	if h.Resources.Get(Clothes) > 0 && rand.Float64() < ClothesConsumptionRate*float64(numP) {
 		h.Resources.Remove(Clothes, 1)
 	}
 	if Calendar.Day == 1 && Calendar.Hour == 0 {
