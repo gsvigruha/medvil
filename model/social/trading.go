@@ -160,7 +160,7 @@ func (t *Trader) GetHeating() uint8 {
 	return 100
 }
 
-func (t *Trader) HasEnoughTextile() bool {
+func (t *Trader) HasEnoughClothes() bool {
 	return true
 }
 
