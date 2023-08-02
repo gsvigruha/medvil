@@ -172,8 +172,12 @@ func findStartingLocation(m *model.Map) (int, int) {
 			var score = int(m.SX+m.SY)/4 - int(math.Sqrt(dx*dx+dy*dy))
 			var suitable = true
 			var water = false
-			for di := -10; di <= 10; di++ {
-				for dj := -10; dj <= 10; dj++ {
+			var rock = 0
+			var gold = 0
+			var iron = 0
+			var mud = 0
+			for di := -15; di <= 15; di++ {
+				for dj := -15; dj <= 15; dj++ {
 					if i+dj >= 0 && j+dj >= 0 {
 						f := m.GetField(uint16(i+di), uint16(j+dj))
 						if f != nil {
@@ -185,13 +189,13 @@ func findStartingLocation(m *model.Map) (int, int) {
 							if f.Terrain.T == terrain.Water {
 								water = true
 							} else if f.Terrain.T == terrain.Rock {
-								score++
+								rock++
 							} else if f.Terrain.T == terrain.Gold {
-								score++
+								gold++
 							} else if f.Terrain.T == terrain.IronBog {
-								score++
+								iron++
 							} else if f.Terrain.T == terrain.Mud {
-								score++
+								mud++
 							}
 						} else {
 							suitable = false
@@ -199,6 +203,7 @@ func findStartingLocation(m *model.Map) (int, int) {
 					}
 				}
 			}
+			score += 10*int(math.Log2(float64(rock+1))) + 10*int(math.Log2(float64(gold+1))) + 10*int(math.Log2(float64(iron+1))) + 10*int(math.Log2(float64(mud+1)))
 			if water && suitable && score > maxScore {
 				maxScore = score
 				x = i
