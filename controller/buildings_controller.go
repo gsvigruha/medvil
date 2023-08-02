@@ -326,6 +326,9 @@ func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.Rende
 	if bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
 		return nil
 	}
+	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
+		return nil
+	}
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
 
