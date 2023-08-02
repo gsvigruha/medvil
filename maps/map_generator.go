@@ -172,8 +172,12 @@ func findStartingLocation(m *model.Map) (int, int) {
 			var score = int(m.SX+m.SY)/4 - int(math.Sqrt(dx*dx+dy*dy))
 			var suitable = true
 			var water = false
-			for di := -10; di <= 10; di++ {
-				for dj := -10; dj <= 10; dj++ {
+			var rock = 0
+			var gold = 0
+			var iron = 0
+			var mud = 0
+			for di := -15; di <= 15; di++ {
+				for dj := -15; dj <= 15; dj++ {
 					if i+dj >= 0 && j+dj >= 0 {
 						f := m.GetField(uint16(i+di), uint16(j+dj))
 						if f != nil {
@@ -182,16 +186,19 @@ func findStartingLocation(m *model.Map) (int, int) {
 									suitable = false
 								}
 							}
-							if f.Terrain.T == terrain.Water {
-								water = true
-							} else if f.Terrain.T == terrain.Rock {
-								score++
+							if dj >= -10 && dj <= 10 && di >= -10 && di <= 10 {
+								if f.Terrain.T == terrain.Water {
+									water = true
+								}
+							}
+							if f.Terrain.T == terrain.Rock {
+								rock++
 							} else if f.Terrain.T == terrain.Gold {
-								score++
+								gold++
 							} else if f.Terrain.T == terrain.IronBog {
-								score++
+								iron++
 							} else if f.Terrain.T == terrain.Mud {
-								score++
+								mud++
 							}
 						} else {
 							suitable = false
@@ -199,6 +206,7 @@ func findStartingLocation(m *model.Map) (int, int) {
 					}
 				}
 			}
+			score += 10*int(math.Log2(float64(rock+1))) + 10*int(math.Log2(float64(gold+1))) + 10*int(math.Log2(float64(iron+1))) + 10*int(math.Log2(float64(mud+1)))
 			if water && suitable && score > maxScore {
 				maxScore = score
 				x = i
@@ -254,18 +262,28 @@ func NewMap(config MapConfig) *model.Map {
 	for i := range town.Townhall.Household.People {
 		town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
 	}
-	res := &town.Townhall.Household.Resources
-	res.Add(artifacts.GetArtifact("fruit"), 50)
-	res.Add(artifacts.GetArtifact("vegetable"), 50)
-	res.Add(artifacts.GetArtifact("bread"), 20)
-	res.Add(artifacts.GetArtifact("cube"), 50)
-	res.Add(artifacts.GetArtifact("brick"), 50)
-	res.Add(artifacts.GetArtifact("board"), 40)
-	res.Add(artifacts.GetArtifact("tile"), 20)
-	res.Add(artifacts.GetArtifact("thatch"), 10)
-	res.Add(artifacts.GetArtifact("log"), 20)
-	res.Add(artifacts.GetArtifact("textile"), 30)
-	town.Init()
-	town.Marketplace.Init()
+	{
+		res := &town.Townhall.Household.Resources
+		res.Add(artifacts.GetArtifact("fruit"), 50)
+		res.Add(artifacts.GetArtifact("vegetable"), 50)
+		res.Add(artifacts.GetArtifact("bread"), 20)
+		res.Add(artifacts.GetArtifact("cube"), 50)
+		res.Add(artifacts.GetArtifact("brick"), 50)
+		res.Add(artifacts.GetArtifact("board"), 40)
+		res.Add(artifacts.GetArtifact("tile"), 20)
+		res.Add(artifacts.GetArtifact("thatch"), 10)
+		res.Add(artifacts.GetArtifact("log"), 20)
+		res.Add(artifacts.GetArtifact("textile"), 30)
+		town.Init()
+	}
+	{
+		town.Marketplace.Init()
+		res := &town.Marketplace.Storage
+		res.Add(artifacts.GetArtifact("vegetable"), 50)
+		res.Add(artifacts.GetArtifact("bread"), 20)
+		res.Add(artifacts.GetArtifact("log"), 20)
+		res.Add(artifacts.GetArtifact("textile"), 30)
+	}
+
 	return m
 }
