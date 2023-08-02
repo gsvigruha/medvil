@@ -4,6 +4,7 @@ import (
 	"math"
 	"math/rand"
 	"medvil/model"
+	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/social"
@@ -89,6 +90,9 @@ func setupTerrain(m *model.Map, config MapConfig) {
 					fields[i][j].Terrain.T = terrain.Gold
 				}
 			}
+			if fields[i][j].Terrain.T == terrain.Water {
+				fields[i][j].Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
+			}
 		}
 	}
 }
@@ -167,6 +171,7 @@ func findStartingLocation(m *model.Map) (int, int) {
 			dy := float64(int(m.SY/2) - j)
 			var score = int(m.SX+m.SY)/4 - int(math.Sqrt(dx*dx+dy*dy))
 			var suitable = true
+			var water = false
 			for di := -10; di <= 10; di++ {
 				for dj := -10; dj <= 10; dj++ {
 					if i+dj >= 0 && j+dj >= 0 {
@@ -178,15 +183,15 @@ func findStartingLocation(m *model.Map) (int, int) {
 								}
 							}
 							if f.Terrain.T == terrain.Water {
-								score++
+								water = true
 							} else if f.Terrain.T == terrain.Rock {
-								score += 5
+								score++
 							} else if f.Terrain.T == terrain.Gold {
-								score += 5
+								score++
 							} else if f.Terrain.T == terrain.IronBog {
-								score += 5
+								score++
 							} else if f.Terrain.T == terrain.Mud {
-								score += 5
+								score++
 							}
 						} else {
 							suitable = false
@@ -194,7 +199,7 @@ func findStartingLocation(m *model.Map) (int, int) {
 					}
 				}
 			}
-			if suitable && score > maxScore {
+			if water && suitable && score > maxScore {
 				maxScore = score
 				x = i
 				y = j
@@ -239,6 +244,27 @@ func NewMap(config MapConfig) *model.Map {
 	town.Country = m.Countries[0]
 	town.Townhall = &social.Townhall{Household: &social.Household{Building: townhall, Town: town}}
 	town.Marketplace = &social.Marketplace{Building: marketplace, Town: town}
+	town.Townhall.Household.People = make([]*social.Person, 5)
+	town.Townhall.Household.TargetNumPeople = 5
+	town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
+	town.Townhall.Household.Building.Plan.BuildingType = building.BuildingTypeTownhall
+	town.Marketplace.Building.Plan.BuildingType = building.BuildingTypeMarket
+	town.Townhall.Household.Money = 2000
+	town.Marketplace.Money = 2000
+	for i := range town.Townhall.Household.People {
+		town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
+	}
+	res := &town.Townhall.Household.Resources
+	res.Add(artifacts.GetArtifact("fruit"), 50)
+	res.Add(artifacts.GetArtifact("vegetable"), 50)
+	res.Add(artifacts.GetArtifact("bread"), 20)
+	res.Add(artifacts.GetArtifact("cube"), 50)
+	res.Add(artifacts.GetArtifact("brick"), 50)
+	res.Add(artifacts.GetArtifact("board"), 40)
+	res.Add(artifacts.GetArtifact("tile"), 20)
+	res.Add(artifacts.GetArtifact("thatch"), 10)
+	res.Add(artifacts.GetArtifact("log"), 20)
+	res.Add(artifacts.GetArtifact("textile"), 30)
 	town.Init()
 	town.Marketplace.Init()
 	return m

@@ -424,7 +424,13 @@ func (bc *BuildingsController) GenerateButtons() {
 }
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
-	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop * ControlPanelSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY * ControlPanelSY, SingleClick: true}
+	p := &gui.Panel{
+		X:           0,
+		Y:           ControlPanelDynamicPanelTop * ControlPanelSY,
+		SX:          ControlPanelSX - LargeIconD*2,
+		SY:          ControlPanelDynamicPanelSY * ControlPanelSY,
+		SingleClick: true,
+	}
 	bc := &BuildingsController{
 		Plan:        &building.BuildingPlan{BuildingType: bt},
 		bt:          bt,
