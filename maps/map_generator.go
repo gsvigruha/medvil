@@ -186,9 +186,12 @@ func findStartingLocation(m *model.Map) (int, int) {
 									suitable = false
 								}
 							}
-							if f.Terrain.T == terrain.Water {
-								water = true
-							} else if f.Terrain.T == terrain.Rock {
+							if dj >= -10 && dj <= 10 && di >= -10 && di <= 10 {
+								if f.Terrain.T == terrain.Water {
+									water = true
+								}
+							}
+							if f.Terrain.T == terrain.Rock {
 								rock++
 							} else if f.Terrain.T == terrain.Gold {
 								gold++
