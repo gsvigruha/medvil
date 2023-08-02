@@ -27,11 +27,19 @@ func (w *Workshop) IsManufactureProfitable() bool {
 func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.ElapseTime(Calendar, m)
 	home := m.GetField(w.Household.Building.X, w.Household.Building.Y)
-	if w.AutoSwitch {
-
+	mp := w.Household.Town.Marketplace
+	if w.AutoSwitch && Calendar.Day == 30 && Calendar.Hour == 0 {
+		var maxProfit = 0.0
+		for _, mName := range economy.GetManufactureNames(w.Household.Building.Plan.GetExtensions()) {
+			manufacture := economy.GetManufacture(mName)
+			profit := float64(mp.Price(manufacture.Outputs)) / float64(mp.Price(artifacts.Purchasable(manufacture.Inputs)))
+			if profit > maxProfit {
+				maxProfit = profit
+				w.Manufacture = manufacture
+			}
+		}
 	}
 	if w.Manufacture != nil {
-		mp := w.Household.Town.Marketplace
 		purchasableInputs := artifacts.Purchasable(w.Manufacture.Inputs)
 		maxUnitCost := float64(mp.Price(w.Manufacture.Outputs)) / ProfitCostRatio
 		if float64(mp.Price(purchasableInputs)) < maxUnitCost {
