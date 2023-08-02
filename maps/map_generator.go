@@ -262,18 +262,28 @@ func NewMap(config MapConfig) *model.Map {
 	for i := range town.Townhall.Household.People {
 		town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
 	}
-	res := &town.Townhall.Household.Resources
-	res.Add(artifacts.GetArtifact("fruit"), 50)
-	res.Add(artifacts.GetArtifact("vegetable"), 50)
-	res.Add(artifacts.GetArtifact("bread"), 20)
-	res.Add(artifacts.GetArtifact("cube"), 50)
-	res.Add(artifacts.GetArtifact("brick"), 50)
-	res.Add(artifacts.GetArtifact("board"), 40)
-	res.Add(artifacts.GetArtifact("tile"), 20)
-	res.Add(artifacts.GetArtifact("thatch"), 10)
-	res.Add(artifacts.GetArtifact("log"), 20)
-	res.Add(artifacts.GetArtifact("textile"), 30)
-	town.Init()
-	town.Marketplace.Init()
+	{
+		res := &town.Townhall.Household.Resources
+		res.Add(artifacts.GetArtifact("fruit"), 50)
+		res.Add(artifacts.GetArtifact("vegetable"), 50)
+		res.Add(artifacts.GetArtifact("bread"), 20)
+		res.Add(artifacts.GetArtifact("cube"), 50)
+		res.Add(artifacts.GetArtifact("brick"), 50)
+		res.Add(artifacts.GetArtifact("board"), 40)
+		res.Add(artifacts.GetArtifact("tile"), 20)
+		res.Add(artifacts.GetArtifact("thatch"), 10)
+		res.Add(artifacts.GetArtifact("log"), 20)
+		res.Add(artifacts.GetArtifact("textile"), 30)
+		town.Init()
+	}
+	{
+		town.Marketplace.Init()
+		res := &town.Marketplace.Storage
+		res.Add(artifacts.GetArtifact("vegetable"), 50)
+		res.Add(artifacts.GetArtifact("bread"), 20)
+		res.Add(artifacts.GetArtifact("log"), 20)
+		res.Add(artifacts.GetArtifact("textile"), 30)
+	}
+
 	return m
 }

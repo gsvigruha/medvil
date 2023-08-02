@@ -11,6 +11,7 @@ import (
 type Workshop struct {
 	Household   *Household
 	Manufacture *economy.Manufacture
+	AutoSwitch  bool
 }
 
 const ProfitCostRatio = 2.0
@@ -26,6 +27,9 @@ func (w *Workshop) IsManufactureProfitable() bool {
 func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.ElapseTime(Calendar, m)
 	home := m.GetField(w.Household.Building.X, w.Household.Building.Y)
+	if w.AutoSwitch {
+
+	}
 	if w.Manufacture != nil {
 		mp := w.Household.Town.Marketplace
 		purchasableInputs := artifacts.Purchasable(w.Manufacture.Inputs)
