@@ -4,6 +4,7 @@ import (
 	"math"
 	"math/rand"
 	"medvil/model"
+	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/social"
@@ -89,6 +90,9 @@ func setupTerrain(m *model.Map, config MapConfig) {
 					fields[i][j].Terrain.T = terrain.Gold
 				}
 			}
+			if fields[i][j].Terrain.T == terrain.Water {
+				fields[i][j].Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
+			}
 		}
 	}
 }
@@ -158,6 +162,53 @@ func GetSurroundingType(f *navigation.Field, of1 *navigation.Field, of2 *navigat
 	return navigation.SurroundingSame
 }
 
+func findStartingLocation(m *model.Map) (int, int) {
+	var x, y = 0, 0
+	var maxScore = 0
+	for i := range m.Fields {
+		for j := range m.Fields[i] {
+			dx := float64(int(m.SX/2) - i)
+			dy := float64(int(m.SY/2) - j)
+			var score = int(m.SX+m.SY)/4 - int(math.Sqrt(dx*dx+dy*dy))
+			var suitable = true
+			var water = false
+			for di := -10; di <= 10; di++ {
+				for dj := -10; dj <= 10; dj++ {
+					if i+dj >= 0 && j+dj >= 0 {
+						f := m.GetField(uint16(i+di), uint16(j+dj))
+						if f != nil {
+							if dj >= -5 && dj <= 5 && di >= -5 && di <= 5 {
+								if !f.Flat() || f.Terrain.T != terrain.Grass {
+									suitable = false
+								}
+							}
+							if f.Terrain.T == terrain.Water {
+								water = true
+							} else if f.Terrain.T == terrain.Rock {
+								score++
+							} else if f.Terrain.T == terrain.Gold {
+								score++
+							} else if f.Terrain.T == terrain.IronBog {
+								score++
+							} else if f.Terrain.T == terrain.Mud {
+								score++
+							}
+						} else {
+							suitable = false
+						}
+					}
+				}
+			}
+			if water && suitable && score > maxScore {
+				maxScore = score
+				x = i
+				y = j
+			}
+		}
+	}
+	return x, y
+}
+
 func NewMap(config MapConfig) *model.Map {
 	fields := make([][]*navigation.Field, config.Size)
 	for i := range fields {
@@ -173,16 +224,18 @@ func NewMap(config MapConfig) *model.Map {
 	}
 	m.Calendar = calendar
 
+	tx, ty := findStartingLocation(m)
+
 	townhall := &building.Building{
 		Plan: building.BuildingPlanFromJSON("samples/building/townhouse_1.building.json"),
-		X:    m.SX / 2,
-		Y:    m.SY / 2,
+		X:    uint16(tx - 2),
+		Y:    uint16(ty),
 	}
 	AddBuilding(townhall, m)
 	marketplace := &building.Building{
 		Plan: building.BuildingPlanFromJSON("samples/building/marketplace_1.building.json"),
-		X:    m.SX/2 + 5,
-		Y:    m.SY / 2,
+		X:    uint16(tx + 2),
+		Y:    uint16(ty),
 	}
 	AddBuilding(marketplace, m)
 
@@ -191,6 +244,27 @@ func NewMap(config MapConfig) *model.Map {
 	town.Country = m.Countries[0]
 	town.Townhall = &social.Townhall{Household: &social.Household{Building: townhall, Town: town}}
 	town.Marketplace = &social.Marketplace{Building: marketplace, Town: town}
+	town.Townhall.Household.People = make([]*social.Person, 5)
+	town.Townhall.Household.TargetNumPeople = 5
+	town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
+	town.Townhall.Household.Building.Plan.BuildingType = building.BuildingTypeTownhall
+	town.Marketplace.Building.Plan.BuildingType = building.BuildingTypeMarket
+	town.Townhall.Household.Money = 2000
+	town.Marketplace.Money = 2000
+	for i := range town.Townhall.Household.People {
+		town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
+	}
+	res := &town.Townhall.Household.Resources
+	res.Add(artifacts.GetArtifact("fruit"), 50)
+	res.Add(artifacts.GetArtifact("vegetable"), 50)
+	res.Add(artifacts.GetArtifact("bread"), 20)
+	res.Add(artifacts.GetArtifact("cube"), 50)
+	res.Add(artifacts.GetArtifact("brick"), 50)
+	res.Add(artifacts.GetArtifact("board"), 40)
+	res.Add(artifacts.GetArtifact("tile"), 20)
+	res.Add(artifacts.GetArtifact("thatch"), 10)
+	res.Add(artifacts.GetArtifact("log"), 20)
+	res.Add(artifacts.GetArtifact("textile"), 30)
 	town.Init()
 	town.Marketplace.Init()
 	return m

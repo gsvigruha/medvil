@@ -351,8 +351,8 @@ func (c *Controller) Load(fileName string) {
 func (c *Controller) LinkMap() {
 	c.Country = c.Map.Countries[0]
 	c.ActiveTown = c.Map.Countries[0].Towns[0]
-	c.CenterX = int(c.Map.SX) / 2
-	c.CenterY = int(c.Map.SY) / 2
+	c.CenterX = int(c.ActiveTown.Townhall.Household.Building.X)
+	c.CenterY = int(c.ActiveTown.Townhall.Household.Building.Y)
 	c.ControlPanel.GenerateButtons()
 	c.Refresh()
 }

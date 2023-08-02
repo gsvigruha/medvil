@@ -326,6 +326,9 @@ func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.Rende
 	if bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
 		return nil
 	}
+	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
+		return nil
+	}
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
 
@@ -424,7 +427,13 @@ func (bc *BuildingsController) GenerateButtons() {
 }
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
-	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop * ControlPanelSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY * ControlPanelSY, SingleClick: true}
+	p := &gui.Panel{
+		X:           0,
+		Y:           ControlPanelDynamicPanelTop * ControlPanelSY,
+		SX:          ControlPanelSX - LargeIconD*2,
+		SY:          ControlPanelDynamicPanelSY * ControlPanelSY,
+		SingleClick: true,
+	}
 	bc := &BuildingsController{
 		Plan:        &building.BuildingPlan{BuildingType: bt},
 		bt:          bt,
