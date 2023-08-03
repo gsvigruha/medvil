@@ -62,8 +62,12 @@ func (p *Plant) IsTree() bool {
 	return p.T.TreeT != nil
 }
 
+func (p *Plant) MaturityYears(Calendar *time.CalendarType) float64 {
+	return math.Min(float64(p.AgeYears(Calendar)), float64(p.T.MaturityAgeYears))
+}
+
 func (p *Plant) Maturity(Calendar *time.CalendarType) float64 {
-	return math.Min(float64(p.AgeYears(Calendar)), float64(p.T.MaturityAgeYears)) / float64(p.T.MaturityAgeYears)
+	return p.MaturityYears(Calendar) / float64(p.T.MaturityAgeYears)
 }
 
 func (p *Plant) IsMature(Calendar *time.CalendarType) bool {
@@ -100,6 +104,10 @@ func GetPlantType(name string) *PlantType {
 	return nil
 }
 
-func (p *Plant) CacheKey() string {
-	return p.T.Name + "#" + strconv.Itoa(int(p.Shape))
+func (p *Plant) CacheKey(Calendar *time.CalendarType) string {
+	if p.IsTree() {
+		return p.T.Name + "#" + strconv.Itoa(int(p.Shape)) + "#" + strconv.Itoa(int(p.MaturityYears(Calendar)))
+	} else {
+		return p.T.Name + "#" + strconv.Itoa(int(p.Shape))
+	}
 }
