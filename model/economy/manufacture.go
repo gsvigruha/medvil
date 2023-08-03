@@ -141,7 +141,7 @@ var AllManufacture = [...]*Manufacture{
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("reed"), Quantity: 1},
 			artifacts.Artifacts{A: artifacts.GetArtifact("water"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("paper"), Quantity: 1}}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("paper"), Quantity: 3}}},
 	&Manufacture{
 		Name:                  "sewing",
 		Time:                  30 * 24,

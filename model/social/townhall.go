@@ -15,6 +15,7 @@ type Townhall struct {
 
 const StorageRefillBudgetPercentage = 0.5
 const ConstructionStorageCapacity = 0.7
+const PaperBudgetRatio = 0.1
 
 const TownhallMaxDistance = 25
 
@@ -51,6 +52,19 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					}
 				}
 			}
+		}
+	}
+
+	if t.Household.Resources.Get(Paper) < ProductTransportQuantity(Paper) && t.Household.NumTasks("exchange", "paper_purchase") == 0 {
+		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Paper, Quantity: ProductTransportQuantity(Paper)}}
+		if t.Household.Money >= mp.Price(needs) && mp.HasTraded(Paper) {
+			t.Household.AddTask(&economy.BuyTask{
+				Exchange:        mp,
+				HouseholdWallet: t.Household,
+				Goods:           needs,
+				MaxPrice:        uint32(float64(t.Household.Money) * PaperBudgetRatio),
+				TaskTag:         "paper_purchase",
+			})
 		}
 	}
 

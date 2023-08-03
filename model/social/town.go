@@ -210,18 +210,20 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	town.Constructions = constructions
 	town.Stats = s
-	for _, road := range town.Roads {
-		if road.Road.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(road)) == 0 {
-			c := &building.Construction{
-				Road:    road.Road,
-				X:       road.X,
-				Y:       road.Y,
-				Cost:    road.Road.T.Cost,
-				T:       building.BuildingTypeRoad,
-				Storage: &artifacts.Resources{},
+	if Calendar.Day == 30 && Calendar.Hour == 0 && town.Townhall.Household.Resources.Remove(Paper, 1) > 0 {
+		for _, road := range town.Roads {
+			if road.Road.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(road)) == 0 {
+				c := &building.Construction{
+					Road:    road.Road,
+					X:       road.X,
+					Y:       road.Y,
+					Cost:    road.Road.T.Cost,
+					T:       building.BuildingTypeRoad,
+					Storage: &artifacts.Resources{},
+				}
+				town.Constructions = append(town.Constructions, c)
+				town.AddConstructionTasks(c, road, m)
 			}
-			town.Constructions = append(town.Constructions, c)
-			town.AddConstructionTasks(c, road, m)
 		}
 	}
 }

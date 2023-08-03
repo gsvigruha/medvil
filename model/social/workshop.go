@@ -16,6 +16,8 @@ type Workshop struct {
 
 const ProfitCostRatio = 2.0
 
+var Paper = artifacts.GetArtifact("paper")
+
 func (w *Workshop) IsManufactureProfitable() bool {
 	if w.Manufacture != nil {
 		mp := w.Household.Town.Marketplace
@@ -28,7 +30,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.ElapseTime(Calendar, m)
 	home := m.GetField(w.Household.Building.X, w.Household.Building.Y)
 	mp := w.Household.Town.Marketplace
-	if w.AutoSwitch && Calendar.Day == 30 && Calendar.Hour == 0 {
+	if w.AutoSwitch && Calendar.Day == 30 && Calendar.Hour == 0 && Calendar.Month%3 == 0 && w.Household.Resources.Remove(Paper, 1) > 0 {
 		var maxProfit = 0.0
 		for _, mName := range economy.GetManufactureNames(w.Household.Building.Plan.GetExtensions()) {
 			manufacture := economy.GetManufacture(mName)
@@ -87,6 +89,20 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 		w.Household.SellArtifacts(w.Manufacture.IsInput, w.Manufacture.IsOutput)
 	}
+
+	if w.AutoSwitch && w.Household.Resources.Get(Paper) < ProductTransportQuantity(Paper) && w.Household.NumTasks("exchange", "paper_purchase") == 0 {
+		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Paper, Quantity: ProductTransportQuantity(Paper)}}
+		if w.Household.Money >= mp.Price(needs) && mp.HasTraded(Paper) {
+			w.Household.AddTask(&economy.BuyTask{
+				Exchange:        mp,
+				HouseholdWallet: w.Household,
+				Goods:           needs,
+				MaxPrice:        uint32(float64(w.Household.Money) * ExtrasBudgetRatio),
+				TaskTag:         "paper_purchase",
+			})
+		}
+	}
+
 	w.Household.MaybeBuyBoat(Calendar, m)
 	w.Household.MaybeBuyCart(Calendar, m)
 }
