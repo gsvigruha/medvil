@@ -12,6 +12,13 @@ import (
 	"medvil/renderer"
 )
 
+const PhaseBark = 0
+const PhaseSnowPatches = 1
+const PhaseLeaves = 2
+const PhaseBlooming = 3
+const PhaseColored = 4
+const PhaseFruit = 5
+
 func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 	sx float64, sy float64, width float64, length float64, angle float64,
 	i uint8, prevSeasonPhase uint8, c *controller.Controller, phase int) {
@@ -28,7 +35,7 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 		seasonPhase = prevSeasonPhase - seasonPhase
 	}
 
-	if phase == 0 {
+	if phase == PhaseBark {
 		cv.MoveTo(sx-dx, sy-dy)
 		cv.LineTo(ex-dx, ey-dy)
 		cv.LineTo(ex+dx, ey+dy)
@@ -41,23 +48,23 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 				var draw = false
 				if (c.Map.Calendar.Month == 3 && seasonPhase <= c.Map.Calendar.Day) ||
 					(c.Map.Calendar.Month == 4 && seasonPhase > c.Map.Calendar.Day) {
-					if plant.T.TreeT.Blooms && phase == 3 {
+					if plant.T.TreeT.Blooms && phase == PhaseBlooming {
 						draw = true
-					} else if !plant.T.TreeT.Blooms && phase == 2 {
+					} else if !plant.T.TreeT.Blooms && phase == PhaseLeaves {
 						draw = true
 					}
 				}
 				if (c.Map.Calendar.Month == 4 && seasonPhase <= c.Map.Calendar.Day) ||
 					(c.Map.Calendar.Month > 4 && c.Map.Calendar.Month < 9) ||
 					(c.Map.Calendar.Month == 9 && seasonPhase > c.Map.Calendar.Day) {
-					if phase == 2 {
+					if phase == PhaseLeaves {
 						draw = true
 					}
 				}
 				if (c.Map.Calendar.Month == 9 && seasonPhase <= c.Map.Calendar.Day) ||
 					(c.Map.Calendar.Month == 10) ||
 					(c.Map.Calendar.Month == 11 && seasonPhase > c.Map.Calendar.Day) {
-					if phase == 4 {
+					if phase == PhaseColored {
 						draw = true
 					}
 				}
@@ -71,7 +78,7 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 					if (c.Map.Calendar.Month == 6 && seasonPhase <= c.Map.Calendar.Day) ||
 						(c.Map.Calendar.Month == 7) ||
 						(c.Map.Calendar.Month == 8 && seasonPhase > c.Map.Calendar.Day) {
-						if phase == 5 {
+						if phase == PhaseFruit {
 							cv.MoveTo(sx-dxL, sy-dyL)
 							cv.LineTo(ex-dxL+dyL, ey-dyL-dxL)
 							cv.LineTo(ex+dxL+dyL, ey+dyL-dxL)
@@ -82,7 +89,7 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 			}
 		}
 
-		if phase == 1 {
+		if PhaseSnowPatches == 1 {
 			if (c.Map.Calendar.Month == 12 && seasonPhase < c.Map.Calendar.Day) ||
 				(c.Map.Calendar.Month == 1) ||
 				(c.Map.Calendar.Month == 2 && seasonPhase > c.Map.Calendar.Day) {
@@ -127,12 +134,21 @@ func DrawBranchPhase(cv *canvas.Canvas, plant *terrain.Plant, phase int, fill st
 }
 
 func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {
-	DrawBranchPhase(cv, plant, 0, "texture/terrain/tree_bark.png", c)
-	DrawBranchPhase(cv, plant, 1, "texture/terrain/snow_patches.png", c)
-	DrawBranchPhase(cv, plant, 2, "texture/terrain/leaves_v2.png", c)
-	DrawBranchPhase(cv, plant, 3, "texture/terrain/leaves_blooming.png", c)
-	DrawBranchPhase(cv, plant, 4, "texture/terrain/leaves_colored.png", c)
-	DrawBranchPhase(cv, plant, 5, "texture/terrain/fruit.png", c)
+	DrawBranchPhase(cv, plant, PhaseBark, "texture/terrain/tree_bark.png", c)
+	if c.Map.Calendar.Season() == time.Winter {
+		DrawBranchPhase(cv, plant, PhaseSnowPatches, "texture/terrain/snow_patches.png", c)
+	} else {
+		DrawBranchPhase(cv, plant, PhaseLeaves, "texture/terrain/leaves_v2.png", c)
+	}
+	if c.Map.Calendar.Season() == time.Spring {
+		DrawBranchPhase(cv, plant, PhaseBlooming, "texture/terrain/leaves_blooming.png", c)
+	}
+	if c.Map.Calendar.Season() == time.Autumn {
+		DrawBranchPhase(cv, plant, PhaseColored, "texture/terrain/leaves_colored.png", c)
+	}
+	if c.Map.Calendar.Season() == time.Summer {
+		DrawBranchPhase(cv, plant, PhaseFruit, "texture/terrain/fruit.png", c)
+	}
 }
 
 func RenderRegularPlant(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {
