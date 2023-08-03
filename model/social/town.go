@@ -34,6 +34,7 @@ type Town struct {
 	Mines         []*Mine
 	Factories     []*Factory
 	Towers        []*Tower
+	Walls         []*Wall
 	Constructions []*building.Construction
 	Stats         *stats.Stats
 	Transfers     *MoneyTransfers
@@ -183,6 +184,9 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				t := &Tower{Household: &Household{Building: b, Town: town}}
 				t.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 				town.Towers = append(town.Towers, t)
+			case building.BuildingTypeWall:
+				w := &Wall{Building: b, Town: town, F: field}
+				town.Walls = append(town.Walls, w)
 			case building.BuildingTypeRoad:
 				if construction.Road.Construction {
 					construction.Road.Construction = false
@@ -223,6 +227,20 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				}
 				town.Constructions = append(town.Constructions, c)
 				town.AddConstructionTasks(c, road, m)
+			}
+		}
+		for _, wall := range town.Walls {
+			if wall.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(wall)) == 0 {
+				c := &building.Construction{
+					Building: wall.Building,
+					X:        wall.F.X,
+					Y:        wall.F.Y,
+					Cost:     wall.Building.Plan.ConstructionCost(),
+					T:        building.BuildingTypeWall,
+					Storage:  &artifacts.Resources{},
+				}
+				town.Constructions = append(town.Constructions, c)
+				town.AddConstructionTasks(c, m.GetField(wall.F.X, wall.F.Y), m)
 			}
 		}
 	}
