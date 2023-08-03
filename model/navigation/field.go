@@ -243,10 +243,10 @@ func min(x, y uint8) uint8 {
 
 func (f *Field) CacheKey() string {
 	base := min(f.SW, min(f.NW, min(f.NE, f.SE)))
-	return (strconv.Itoa(int(f.NE - base)) + "#" +
-		strconv.Itoa(int(f.SE - base)) + "#" +
-		strconv.Itoa(int(f.SW - base)) + "#" +
-		strconv.Itoa(int(f.NW - base)) + "#" +
+	return (strconv.Itoa(int(f.NE-base)) + "#" +
+		strconv.Itoa(int(f.SE-base)) + "#" +
+		strconv.Itoa(int(f.SW-base)) + "#" +
+		strconv.Itoa(int(f.NW-base)) + "#" +
 		strconv.Itoa(int(f.Surroundings[0])) + "#" +
 		strconv.Itoa(int(f.Surroundings[1])) + "#" +
 		strconv.Itoa(int(f.Surroundings[2])) + "#" +

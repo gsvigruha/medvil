@@ -53,7 +53,6 @@ func (ic *ImageCache) Clean() {
 			delete(ic.Fic.entries, k)
 		}
 	}
-	log.Printf("%s", len(ic.Fic.entries))
 	for k, v := range ic.Bic.roofEntries {
 		if t-v.createdTime > int64(RenderBufferTimeMs)*1000*1000 {
 			v.offscreen.Delete()
