@@ -62,7 +62,10 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	wp.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24, Y: hcy + LargeIconD, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return workshop.AutoSwitch },
-		ClickImpl: func() { workshop.AutoSwitch = !workshop.AutoSwitch }})
+		ClickImpl: func() {
+			workshop.AutoSwitch = !workshop.AutoSwitch
+			cp.HelperMessage("Switch to the most profitable task. Needs paper.")
+		}})
 	wp.AddTextLabel("pick most profitable", 24+LargeIconD, hcy+LargeIconD*1.5)
 
 	cp.SetDynamicPanel(wc)
