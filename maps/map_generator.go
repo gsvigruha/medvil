@@ -154,10 +154,6 @@ func GetSurroundingType(f *navigation.Field, of1 *navigation.Field, of2 *navigat
 		return navigation.SurroundingWater
 	} else if f.Terrain.T == terrain.Water && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
 		return navigation.SurroundingGrass
-	} else if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
-		if !f.DarkSlope() && of1.DarkSlope() && of2.DarkSlope() {
-			return navigation.SurroundingDarkSlope
-		}
 	}
 	return navigation.SurroundingSame
 }
