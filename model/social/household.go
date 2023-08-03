@@ -339,6 +339,13 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 			return 0
 		}
 	}
+	if a == Paper {
+		if isProduct {
+			result = q
+		} else {
+			return 0
+		}
+	}
 	if result >= ProductTransportQuantity(a) || h.Resources.Full() {
 		return result
 	}
