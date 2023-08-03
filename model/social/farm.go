@@ -123,6 +123,8 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 			if l.F.Plant != nil && l.F.Plant.IsTree() && l.F.Plant.IsMature(Calendar) && l.UseType != economy.FarmFieldUseTypeOrchard {
 				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskTreeCutting, F: l.F, UseType: l.UseType, Start: *Calendar})
+			} else if l.F.Plant != nil && l.F.Plant.IsTree() && l.UseType != economy.FarmFieldUseTypeForestry && l.UseType != economy.FarmFieldUseTypeOrchard {
+				f.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskTreeCutting, F: l.F, UseType: l.UseType, Start: *Calendar})
 			}
 		}
 	}

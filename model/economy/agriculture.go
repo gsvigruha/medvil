@@ -117,7 +117,8 @@ func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool
 	case AgriculturalTaskTreeCutting:
 		if t.Progress >= AgriculturalTaskDurationTreeCutting {
 			if t.F.Plant != nil && t.F.Plant.T.TreeT != nil {
-				t.F.Terrain.Resources.Add(artifacts.GetArtifact("log"), t.F.Plant.T.TreeT.LogYield)
+				yield := uint16(float64(t.F.Plant.T.TreeT.LogYield) * float64(t.F.Plant.Maturity(Calendar)))
+				t.F.Terrain.Resources.Add(artifacts.GetArtifact("log"), yield)
 				t.F.Plant = nil
 			}
 			return true
