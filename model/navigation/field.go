@@ -76,9 +76,8 @@ func (f *Field) GetNeighbors(m IMap) []PathElement {
 				// Ground level connections
 				if nbc == nil || nbc.IsConstruction() {
 					n = append(n, nf)
-				} else if nbc.Building().Plan.BuildingType != building.BuildingTypeWall &&
-					nbc.Building().Plan.BuildingType != building.BuildingTypeGate {
-					// Regular (not wall, gate) buildings can be final ground destinations
+				} else if nbc.Building().Plan.BuildingType != building.BuildingTypeGate {
+					// Regular (not gate) buildings can be final ground destinations
 					n = append(n, nf)
 				} else if nbc != nil && nbc.Connection(building.OppDir(uint8(dir))) == building.ConnectionTypeGround {
 					// Some buildings (gate) passable through the ground

@@ -15,6 +15,7 @@ import (
 func RoofMaterialName(r *building.RoofUnit) string {
 	m := r.Roof.M
 	shape := r.B.Shape
+	broken := r.B.Broken
 	if m == materials.GetMaterial("tile") {
 		switch shape % 2 {
 		case 0:
@@ -22,6 +23,9 @@ func RoofMaterialName(r *building.RoofUnit) string {
 		case 1:
 			return "tile_darkred"
 		}
+	}
+	if m == materials.GetMaterial("stone") && broken {
+		return "stone_broken"
 	}
 	if m == materials.GetMaterial("brick") {
 		return BrickMaterialName(shape)
