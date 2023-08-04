@@ -89,11 +89,11 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 			}
 		}
 
-		if PhaseSnowPatches == 1 {
-			if (c.Map.Calendar.Month == 12 && seasonPhase < c.Map.Calendar.Day) ||
-				(c.Map.Calendar.Month == 1) ||
-				(c.Map.Calendar.Month == 2 && seasonPhase > c.Map.Calendar.Day) {
-				if angle < -math.Pi/2-math.Pi/4 || angle > -math.Pi/2+math.Pi/4 {
+		if (c.Map.Calendar.Month == 12 && seasonPhase < c.Map.Calendar.Day) ||
+			(c.Map.Calendar.Month == 1) ||
+			(c.Map.Calendar.Month == 2 && seasonPhase > c.Map.Calendar.Day) {
+			if angle < -math.Pi/2-math.Pi/4 || angle > -math.Pi/2+math.Pi/4 {
+				if PhaseSnowPatches == 1 {
 					cv.MoveTo(sx-dx, sy-dy)
 					cv.LineTo(ex-dx, ey-dy)
 					cv.LineTo(ex+dx, ey+dy)
