@@ -74,9 +74,12 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 }
 
 func (t *Townhall) GetFields() []navigation.FieldWithContext {
-	fields := make([]navigation.FieldWithContext, len(t.Household.Town.Roads))
+	fields := make([]navigation.FieldWithContext, len(t.Household.Town.Roads)+len(t.Household.Town.Walls))
 	for i := range t.Household.Town.Roads {
 		fields[i] = t.Household.Town.Roads[i]
+	}
+	for i := range t.Household.Town.Walls {
+		fields[i+len(t.Household.Town.Roads)] = t.Household.Town.Walls[i]
 	}
 	return fields
 }

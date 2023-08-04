@@ -26,7 +26,7 @@ func BrickMaterialName(shape uint8) string {
 	return "painted"
 }
 
-func WallMaterialName(t building.BuildingType, m *materials.Material, shape uint8) string {
+func WallMaterialName(t building.BuildingType, m *materials.Material, shape uint8, broken bool) string {
 	if m == materials.GetMaterial("brick") {
 		return BrickMaterialName(shape)
 	}
@@ -34,6 +34,9 @@ func WallMaterialName(t building.BuildingType, m *materials.Material, shape uint
 		return "stone_dark"
 	}
 	if t == building.BuildingTypeWall && m == materials.GetMaterial("stone") {
+		if broken {
+			return "stone_broken"
+		}
 		if shape == 0 {
 			return "stone_1"
 		} else if shape == 1 {
@@ -64,7 +67,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		}
 		if cv != nil {
 			if !unit.Construction {
-				cv.SetFillStyle("texture/building/" + WallMaterialName(unit.B.Plan.BuildingType, wall.M, unit.B.Shape) + suffix + ".png")
+				cv.SetFillStyle("texture/building/" + WallMaterialName(unit.B.Plan.BuildingType, wall.M, unit.B.Shape, unit.B.Broken) + suffix + ".png")
 			} else {
 				cv.SetFillStyle("texture/building/construction" + suffix + ".png")
 			}

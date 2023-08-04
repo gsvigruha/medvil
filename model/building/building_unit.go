@@ -132,7 +132,7 @@ func (b BuildingUnit) LiftS() int8    { return 0 }
 func (b BuildingUnit) LiftW() int8    { return 0 }
 
 func (r *RoofUnit) CacheKey() string {
-	return fmt.Sprintf("%v#%v#%v#%v#%v#%v", r.Roof.M.Name, r.Connected, r.Roof.RoofType, r.Construction, r.B.Shape, r.B.Plan.BuildingType)
+	return fmt.Sprintf("%v#%v#%v#%v#%v#%v#%s", r.Roof.M.Name, r.Connected, r.Roof.RoofType, r.Construction, r.B.Shape, r.B.Plan.BuildingType, r.B.Broken)
 }
 
 func (e *ExtensionUnit) CacheKey() string {
@@ -144,7 +144,7 @@ func (u *BuildingUnit) CacheKey() string {
 	for i := range u.Walls {
 		w := u.Walls[i]
 		if w != nil {
-			s += fmt.Sprintf("[%v#%v#%v#%v#%v#%v#%v]", w.M.Name, w.Windows, w.Door, u.B.Shape, u.B.Plan.BuildingType, w.Arch)
+			s += fmt.Sprintf("[%v#%v#%v#%v#%v#%v#%v#%v]", w.M.Name, w.Windows, w.Door, u.B.Shape, u.B.Plan.BuildingType, w.Arch, u.B.Broken)
 		} else {
 			s += "[]"
 		}

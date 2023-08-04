@@ -10,6 +10,7 @@ type Building struct {
 	Y         uint16
 	Shape     uint8
 	Direction uint8
+	Broken    bool
 }
 
 func (b *Building) UnmarshalJSON(data []byte) error {
