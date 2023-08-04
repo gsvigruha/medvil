@@ -18,8 +18,7 @@ func RenderActiveFields(cv *canvas.Canvas, c *controller.Controller) {
 					rf.Draw(cv)
 					cv.Stroke()
 					if f.Context() != "" {
-						midX := (rf.X[0] + rf.X[2]) / 2
-						midY := (rf.Y[0] + rf.Y[2]) / 2
+						midX, midY := rf.MidScreenPoint()
 						a := artifacts.GetArtifact(f.Context())
 						cv.DrawImage("icon/gui/artifacts/"+a.Name+".png", midX-16, midY-32, 32, 32)
 					}

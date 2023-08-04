@@ -24,7 +24,7 @@ type Map struct {
 
 func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.CalendarType, r *rand.Rand) {
 	if r.Float64() < PlantSpreadRate && i >= 0 && j >= 0 && i < m.SX && j < m.SY && m.Fields[i][j].Empty() && !m.Fields[i][j].Allocated {
-		if (p.T.Habitat == terrain.Shore && m.Shore(i, j)) || (p.T.Habitat == terrain.Land && m.Fields[i][j].Terrain.T == terrain.Grass) {
+		if (p.T.Habitat == terrain.Shore && m.Shore(i, j)) || (p.T.Habitat == terrain.Land && m.Fields[i][j].Plantable()) {
 			m.Fields[i][j].Plant = &terrain.Plant{
 				T:             p.T,
 				X:             uint16(i),
@@ -37,7 +37,7 @@ func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.Calendar
 }
 
 func (m *Map) ElapseTime() {
-	r := rand.New(rand.NewSource(0))
+	r := rand.New(rand.NewSource(int64(m.Calendar.DaysElapsed())))
 	for i := range m.Countries {
 		country := m.Countries[i]
 		for j := range country.Towns {
