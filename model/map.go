@@ -22,21 +22,22 @@ type Map struct {
 	Calendar  *time.CalendarType
 }
 
-func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.CalendarType) {
-	if rand.Float64() < PlantSpreadRate && i >= 0 && j >= 0 && i < m.SX && j < m.SY && m.Fields[i][j].Empty() && !m.Fields[i][j].Allocated {
+func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.CalendarType, r *rand.Rand) {
+	if r.Float64() < PlantSpreadRate && i >= 0 && j >= 0 && i < m.SX && j < m.SY && m.Fields[i][j].Empty() && !m.Fields[i][j].Allocated {
 		if (p.T.Habitat == terrain.Shore && m.Shore(i, j)) || (p.T.Habitat == terrain.Land && m.Fields[i][j].Terrain.T == terrain.Grass) {
 			m.Fields[i][j].Plant = &terrain.Plant{
 				T:             p.T,
 				X:             uint16(i),
 				Y:             uint16(j),
 				BirthDateDays: Calendar.DaysElapsed(),
-				Shape:         uint8(rand.Intn(terrain.TreeNumShapes)),
+				Shape:         uint8(r.Intn(terrain.TreeNumShapes)),
 			}
 		}
 	}
 }
 
 func (m *Map) ElapseTime() {
+	r := rand.New(rand.NewSource(0))
 	for i := range m.Countries {
 		country := m.Countries[i]
 		for j := range country.Towns {
@@ -49,17 +50,17 @@ func (m *Map) ElapseTime() {
 			if f.Plant != nil {
 				f.Plant.ElapseTime(m.Calendar)
 				if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(m.Calendar) {
-					m.SpreadPlant(i-1, j, f.Plant, m.Calendar)
-					m.SpreadPlant(i, j-1, f.Plant, m.Calendar)
-					m.SpreadPlant(i+1, j, f.Plant, m.Calendar)
-					m.SpreadPlant(i, j+1, f.Plant, m.Calendar)
+					m.SpreadPlant(i-1, j, f.Plant, m.Calendar, r)
+					m.SpreadPlant(i, j-1, f.Plant, m.Calendar, r)
+					m.SpreadPlant(i+1, j, f.Plant, m.Calendar, r)
+					m.SpreadPlant(i, j+1, f.Plant, m.Calendar, r)
 				}
 				if f.Plant.T.IsAnnual() {
 					if m.Calendar.Season() == time.Winter {
 						f.Plant = nil
 					}
 				} else {
-					if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(m.Calendar) && rand.Float64() < PlantDeathRate {
+					if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(m.Calendar) && r.Float64() < PlantDeathRate {
 						f.Plant = nil
 					}
 				}
@@ -77,7 +78,7 @@ func (m *Map) ElapseTime() {
 				navigation.SetRoadConnectionsForNeighbors(m, f)
 				navigation.SetBuildingDeckForNeighbors(m, f)
 			}
-			if f.Plant == nil && f.Terrain.T == terrain.Dirt && rand.Float64() < GrassGrowRate && m.Calendar.Season() == time.Winter {
+			if f.Plant == nil && f.Terrain.T == terrain.Dirt && r.Float64() < GrassGrowRate && m.Calendar.Season() == time.Winter {
 				f.Terrain.T = terrain.Grass
 			}
 		}
