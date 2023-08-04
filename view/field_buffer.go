@@ -3,6 +3,7 @@ package view
 import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
+	//"github.com/tfriedel6/canvas/backend/goglbackend/gl"
 	"image/color"
 	"medvil/controller"
 	"medvil/model/navigation"
@@ -37,14 +38,9 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 		cv.Fill()
 	}
 
-	if (f.SE + f.SW) > (f.NE + f.NW) {
-		slope := (f.SE + f.SW) - (f.NE + f.NW)
-		cv.SetFillStyle(color.RGBA{R: 255, G: 255, B: 255, A: slope * 4})
-		rf.Draw(cv)
-		cv.Fill()
-	} else if (f.SE + f.SW) < (f.NE + f.NW) {
-		slope := (f.NE + f.NW) - (f.SE + f.SW)
-		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: slope * 16})
+	if !f.Flat() && (f.SE+f.SW) < (f.NE+f.NW)+4 {
+		slope := 4 + (f.NE + f.NW) - (f.SE + f.SW)
+		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: slope * 4})
 		rf.Draw(cv)
 		cv.Fill()
 	}
