@@ -33,6 +33,7 @@ type Controller struct {
 	CenterX                   int
 	CenterY                   int
 	Perspective               uint8
+	ShowHouseIcons            bool
 	Map                       *model.Map
 	RenderedFields            []*renderer.RenderedField
 	RenderedBuildingParts     []renderer.RenderedBuildingPart
@@ -308,7 +309,7 @@ func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64)
 func Link(wnd *glfw.Window, ctx *goglbackend.GLContext) *Controller {
 	W, H := wnd.GetFramebufferSize()
 	controlPanel := &ControlPanel{}
-	c := &Controller{H: H, W: W, ControlPanel: controlPanel, TimeSpeed: 1}
+	c := &Controller{H: H, W: W, ControlPanel: controlPanel, TimeSpeed: 1, ShowHouseIcons: true}
 	controlPanel.Setup(c, ctx)
 	wnd.SetKeyCallback(c.KeyboardCallback)
 	wnd.SetMouseButtonCallback(c.MouseButtonCallback)

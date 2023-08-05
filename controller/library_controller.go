@@ -12,7 +12,7 @@ import (
 func LibraryToControlPanel(cp *ControlPanel) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 
-	p.AddTextLabel("New", 24, ControlPanelSY*0.15)
+	p.AddLargeTextLabel("New", 24, ControlPanelSY*0.15)
 	nTop := ControlPanelSY * 0.15
 	config := &maps.MapConfig{Size: 100, Hills: 5, Lakes: 5, Trees: 5, Resources: 5}
 
@@ -29,7 +29,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			cp.C.LinkMap()
 		}})
 
-	p.AddTextLabel("Load and save", 24, ControlPanelSY*0.4)
+	p.AddLargeTextLabel("Load and save", 24, ControlPanelSY*0.45)
 
 	files, err := ioutil.ReadDir("saved/")
 	if err != nil {
@@ -48,7 +48,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		icons = append(icons, "library")
 	}
 
-	lasTop := ControlPanelSY*0.4 + LargeIconD
+	lasTop := ControlPanelSY*0.45 + float64(IconH)
 	filesDropdown := &gui.DropDown{
 		X:        24,
 		Y:        lasTop,
@@ -81,6 +81,12 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}}
 	plusButton.Disabled = func() bool { return cp.C.Map == nil }
 	p.AddButton(plusButton)
+
+	p.AddLargeTextLabel("Settings", 24, ControlPanelSY*0.7)
+	p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24, Y: ControlPanelSY*0.7 + float64(IconH), SX: IconS, SY: IconS},
+		Highlight: func() bool { return cp.C.ShowHouseIcons },
+		ClickImpl: func() { cp.C.ShowHouseIcons = !cp.C.ShowHouseIcons }})
 
 	cp.SetDynamicPanel(p)
 }
