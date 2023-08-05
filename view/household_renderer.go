@@ -9,8 +9,8 @@ import (
 	"medvil/view/buildings"
 )
 
-func iconsFromHousehold(h *social.Household, transfers social.TransferCategories, icons *[]string) {
-	if int(h.Money) < transfers.Subsidy {
+func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string) {
+	if int(h.Money) < moneyThreshold {
 		*icons = append(*icons, "icon/gui/profitable.png")
 	}
 
@@ -52,11 +52,23 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 
 	farm := c.ReverseReferences.BuildingToFarm[f.Building.GetBuilding()]
 	if farm != nil {
-		iconsFromHousehold(farm.Household, farm.Household.Town.Transfers.Farm, &icons)
+		iconsFromHousehold(farm.Household, farm.Household.Town.Transfers.Farm.Subsidy, &icons)
 	}
 	workshop := c.ReverseReferences.BuildingToWorkshop[f.Building.GetBuilding()]
 	if workshop != nil {
-		iconsFromHousehold(workshop.Household, workshop.Household.Town.Transfers.Workshop, &icons)
+		iconsFromHousehold(workshop.Household, workshop.Household.Town.Transfers.Workshop.Subsidy, &icons)
+	}
+	mine := c.ReverseReferences.BuildingToMine[f.Building.GetBuilding()]
+	if mine != nil {
+		iconsFromHousehold(mine.Household, mine.Household.Town.Transfers.Mine.Subsidy, &icons)
+	}
+	factory := c.ReverseReferences.BuildingToFactory[f.Building.GetBuilding()]
+	if factory != nil {
+		iconsFromHousehold(factory.Household, factory.Household.Town.Transfers.Factory.Subsidy, &icons)
+	}
+	townhall := c.ReverseReferences.BuildingToTownhall[f.Building.GetBuilding()]
+	if townhall != nil {
+		iconsFromHousehold(townhall.Household, int(townhall.Household.Town.Stats.Money)/10, &icons)
 	}
 
 	for i, icon := range icons {
