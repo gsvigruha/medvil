@@ -13,16 +13,21 @@ type Label interface {
 }
 
 type TextLabel struct {
-	X    float64
-	Y    float64
-	SX   float64
-	SY   float64
-	Text string
+	X     float64
+	Y     float64
+	SX    float64
+	SY    float64
+	Text  string
+	Large bool
 }
 
 func (l *TextLabel) Render(cv *canvas.Canvas) {
 	cv.SetFillStyle("#FED")
-	cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
+	if l.Large {
+		cv.SetFont("texture/font/Go-Regular.ttf", FontSize*1.5)
+	} else {
+		cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
+	}
 	cv.FillText(l.Text, l.X, l.Y)
 }
 

@@ -79,7 +79,9 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 				cv.DrawImage(extensionImg, x, y, float64(extensionImg.Width()), float64(extensionImg.Height()))
 			}
 		}
-		DrawHouseholdIcons(cv, rf, f, len(components), c)
+		if c.ShowHouseIcons {
+			DrawHouseholdIcons(cv, rf, f, len(components), c)
+		}
 	}
 
 	if f.Travellers != nil {
