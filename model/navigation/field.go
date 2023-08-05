@@ -138,7 +138,7 @@ func (f Field) Walkable() bool {
 	if f.Road != nil && !f.Road.Construction {
 		return true
 	}
-	return f.Terrain.T.Walkable && ((f.NE == f.NW && f.SE == f.SW) || (f.NE == f.SE && f.NW == f.SW))
+	return f.Terrain.T.Walkable
 }
 
 func (f Field) BuildingNonExtension() bool {
@@ -191,10 +191,26 @@ func (f Field) RoadCompatible() bool {
 	if !f.Walkable() {
 		return false
 	}
+	if !((f.NE == f.NW && f.SE == f.SW) || (f.NE == f.SE && f.NW == f.SW)) {
+		return false
+	}
 	return f.Terrain.T.Buildable
 }
 
 func (f Field) Arable() bool {
+	if !f.Building.Empty() {
+		return false
+	}
+	if f.Road != nil {
+		return false
+	}
+	if !f.Flat() {
+		return false
+	}
+	return f.Terrain.T.Arable
+}
+
+func (f Field) Plantable() bool {
 	if !f.Building.Empty() {
 		return false
 	}

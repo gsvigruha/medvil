@@ -157,6 +157,9 @@ func (f *Farm) FieldUsableFor(m navigation.IMap, field *navigation.Field, useTyp
 	if useType == economy.FarmFieldUseTypeReed {
 		return m.Shore(field.X, field.Y)
 	}
+	if useType == economy.FarmFieldUseTypeOrchard || useType == economy.FarmFieldUseTypeForestry {
+		return field.Plantable()
+	}
 	return field.Arable()
 }
 

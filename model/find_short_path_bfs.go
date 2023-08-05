@@ -34,6 +34,7 @@ func CheckField(pe navigation.PathElement, pathType navigation.PathType) bool {
 
 func FindShortPathBFS(m *Map, start navigation.Location, dest navigation.Destination, pathType navigation.PathType) []navigation.PathElement {
 	var iter = 0
+	r := rand.New(rand.NewSource(int64(start.X*599 + start.Y)))
 	visited := make(map[navigation.Location]*[]navigation.PathElement, capacity)
 	se := &BFSElement{PE: m.GetField(start.X, start.Y).GetPathElement(start.Z), prev: nil, d: 1}
 	var toVisit = []*BFSElement{se}
@@ -62,7 +63,7 @@ func FindShortPathBFS(m *Map, start navigation.Location, dest navigation.Destina
 		}
 
 		neighbors := e.PE.GetNeighbors(m)
-		order := rand.Perm(len(neighbors))
+		order := r.Perm(len(neighbors))
 		for _, idx := range order {
 			pe := neighbors[idx]
 			if pe.GetSpeed() > 1.0 {
