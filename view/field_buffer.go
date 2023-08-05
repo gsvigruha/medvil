@@ -18,10 +18,12 @@ type FieldImageCache struct {
 	ctx     *goglbackend.GLContext
 }
 
-func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField) {
+func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField, season uint8) {
 	if f.Terrain.T == terrain.Grass || f.Terrain.T.Object {
-		if c.Map.Calendar.Season() == 3 {
+		if season == 3 {
 			cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+		} else if season == 2 {
+			cv.SetFillStyle("texture/terrain/grass_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		} else {
 			cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		}
@@ -50,8 +52,10 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 		idx2 := (2 - (-c.Perspective + i)) % 4
 		idx4 := (0 - (-c.Perspective + i)) % 4
 		if f.Surroundings[(i-1)%4] == navigation.SurroundingGrass {
-			if c.Map.Calendar.Season() == 3 {
+			if season == 3 {
 				cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+			} else if season == 2 {
+				cv.SetFillStyle("texture/terrain/grass_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 			} else {
 				cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 			}
@@ -76,7 +80,11 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 }
 
 func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
-	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(c.Map.Calendar.Season()))
+	season := c.Map.Calendar.Season()
+	if c.Map.Calendar.Month%3 == 0 && (uint16(c.Map.Calendar.Day)*30+uint16(c.Map.Calendar.Hour)) < f.X+(f.Y*13)%3 {
+		season = (season - 1) % 4
+	}
+	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(season))
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[key]; ok {
 		return ce.cv
@@ -89,7 +97,7 @@ func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.
 		offscreen, _ := goglbackend.NewOffscreen(int(w), int(h), true, ic.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, w, h)
-		renderField(cv, c, f, bufferedRF)
+		renderField(cv, c, f, bufferedRF, season)
 		ic.entries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
