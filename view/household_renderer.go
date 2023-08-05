@@ -70,6 +70,12 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 	if townhall != nil {
 		iconsFromHousehold(townhall.Household, int(townhall.Household.Town.Stats.Money)/10, &icons)
 	}
+	market := c.ReverseReferences.BuildingToMarketplace[f.Building.GetBuilding()]
+	if market != nil {
+		if int(market.Money) < int(market.Town.Stats.Money)/10 {
+			icons = append(icons, "icon/gui/profitable.png")
+		}
+	}
 
 	for i, icon := range icons {
 		cv.DrawImage(icon, midX-float64(len(icons))*24/2+float64(i)*24, midY-z, 24, 24)
