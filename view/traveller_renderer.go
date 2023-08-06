@@ -9,21 +9,11 @@ import (
 	"medvil/model/navigation"
 	"medvil/renderer"
 	"medvil/view/animation"
-	"medvil/view/buildings"
 	"medvil/view/vehicles"
 )
 
 const MaxPX = navigation.MaxPX
 const MaxPY = navigation.MaxPY
-
-func getZByDir(bpe *navigation.BuildingPathElement, dir uint8) float64 {
-	if bpe.BC.Connection(dir) == building.ConnectionTypeUpperLevel {
-		return float64(bpe.GetLocation().Z) * buildings.DZ * buildings.BuildingUnitHeight
-	} else if bpe.BC.Connection(dir) == building.ConnectionTypeLowerLevel {
-		return float64(bpe.GetLocation().Z-1) * buildings.DZ * buildings.BuildingUnitHeight
-	}
-	return 0
-}
 
 func GetScreenY(t *navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) float64 {
 	_, y := GetScreenXY(t, rf, c)
@@ -50,40 +40,6 @@ func GetScreenXY(t *navigation.Traveller, rf renderer.RenderedField, c *controll
 		NEPY*px*(MaxPY-py) +
 		SEPY*px*py) / (MaxPX * MaxPY)
 	return x, y
-}
-
-func RenderTravellers(cv *canvas.Canvas, travellers []*navigation.Traveller, show func(*navigation.Traveller) bool, rf renderer.RenderedField, c *controller.Controller) {
-	for i := range travellers {
-		t := travellers[i]
-		px := float64(t.PX)
-		py := float64(t.PY)
-		x, y := GetScreenXY(t, rf, c)
-		if !show(t) {
-			continue
-		}
-		if t.GetPathElement() != nil && t.GetPathElement().GetLocation().Z > 0 {
-			if bpe, ok := t.GetPathElement().(*navigation.BuildingPathElement); ok {
-				z1 := getZByDir(bpe, t.Direction)
-				z2 := getZByDir(bpe, building.OppDir(t.Direction))
-				var z = 0.0
-				switch t.Direction {
-				case navigation.DirectionN:
-					z = (z1*(MaxPY-py) + z2*py) / MaxPY
-				case navigation.DirectionS:
-					z = (z1*py + z2*(MaxPY-py)) / MaxPY
-				case navigation.DirectionW:
-					z = (z1*(MaxPX-px) + z2*px) / MaxPX
-				case navigation.DirectionE:
-					z = (z1*px + z2*(MaxPX-px)) / MaxPX
-				}
-				DrawTraveller(cv, t, x, y-5-z, rf.F, c)
-			} else {
-				DrawTraveller(cv, t, x, y-5, rf.F, c)
-			}
-		} else {
-			DrawTraveller(cv, t, x, y-5, rf.F, c)
-		}
-	}
 }
 
 func DrawLimb(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, w1, w2 float64, c1, c2 [3]float64) {
@@ -178,20 +134,22 @@ func tallPlant(f *navigation.Field) bool {
 }
 
 func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, f *navigation.Field, c *controller.Controller) {
-	if t.T == navigation.TravellerTypePedestrian {
-		inBoat := t.Vehicle != nil && t.Vehicle.Water()
-		if inBoat {
-			y += 5
+	if cv != nil {
+		if t.T == navigation.TravellerTypePedestrian {
+			inBoat := t.Vehicle != nil && t.Vehicle.Water()
+			if inBoat {
+				y += 5
+			}
+			DrawPerson(cv, t, x, y, !inBoat && !tallPlant(f), c)
+		} else if t.T == navigation.TravellerTypeBoat {
+			vehicles.DrawBoat(cv, t, x, y, c)
+		} else if t.T == navigation.TravellerTypeTradingBoat {
+			vehicles.DrawTradingBoat(cv, t, x, y, c)
+		} else if t.T == navigation.TravellerTypeCart {
+			vehicles.DrawCart(cv, t, x, y, c)
+		} else if t.T == navigation.TravellerTypeTradingCart {
+			vehicles.DrawTradingCart(cv, t, x, y, c)
 		}
-		DrawPerson(cv, t, x, y, !inBoat && !tallPlant(f), c)
-	} else if t.T == navigation.TravellerTypeBoat {
-		vehicles.DrawBoat(cv, t, x, y, c)
-	} else if t.T == navigation.TravellerTypeTradingBoat {
-		vehicles.DrawTradingBoat(cv, t, x, y, c)
-	} else if t.T == navigation.TravellerTypeCart {
-		vehicles.DrawCart(cv, t, x, y, c)
-	} else if t.T == navigation.TravellerTypeTradingCart {
-		vehicles.DrawTradingCart(cv, t, x, y, c)
 	}
 	c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y, H: 32, W: 8, Traveller: t})
 }

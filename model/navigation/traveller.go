@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"math/rand"
+	"strconv"
 )
 
 const MaxPX = 100
@@ -352,4 +353,15 @@ func (t *Traveller) GetPathElement() PathElement {
 
 func (t *Traveller) InitPathElement(pe PathElement) {
 	t.PathComp.PE = pe
+}
+
+func (t *Traveller) CacheKey() string {
+	key := strconv.Itoa(int(t.Direction)) + "#" +
+		strconv.Itoa(int(t.Motion)) + "#" +
+		strconv.Itoa(int(t.Phase)) + "#" +
+		strconv.Itoa(int(t.T))
+	if t.Vehicle != nil {
+		key = key + "#" + strconv.FormatBool(t.Vehicle.Water())
+	}
+	return key
 }

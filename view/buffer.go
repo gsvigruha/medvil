@@ -18,6 +18,7 @@ type ImageCache struct {
 	Pic *PlantImageCache
 	Fic *FieldImageCache
 	Bic *BuildingImageCache
+	Tic *TravellerImageCache
 }
 
 func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
@@ -35,6 +36,10 @@ func NewImageCache(ctx *goglbackend.GLContext) *ImageCache {
 			roofEntries:      make(map[string]*CacheEntry),
 			extensionEntries: make(map[string]*CacheEntry),
 			ctx:              ctx,
+		},
+		Tic: &TravellerImageCache{
+			entries: make(map[string]*CacheEntry),
+			ctx:     ctx,
 		},
 	}
 }
