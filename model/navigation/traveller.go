@@ -361,7 +361,7 @@ func (t *Traveller) CacheKey() string {
 		strconv.Itoa(int(t.Phase)) + "#" +
 		strconv.Itoa(int(t.T))
 	if t.Vehicle != nil {
-		key = key + "#" + strconv.FormatBool(t.Vehicle.Water())
+		key = key + "#v" + strconv.FormatBool(t.Vehicle.Water())
 	}
 	return key
 }
