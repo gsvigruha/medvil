@@ -18,14 +18,13 @@ type TravellerImageCache struct {
 }
 
 func (tc *TravellerImageCache) RenderTravellerOnBuffer(
-	cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, f *navigation.Field, c *controller.Controller) *canvas.Canvas {
+	cv *canvas.Canvas, t *navigation.Traveller, f *navigation.Field, c *controller.Controller) *canvas.Canvas {
 	key := t.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.FormatBool(tallPlant(f))
 	person := c.ReverseReferences.TravellerToPerson[t]
 	if person != nil {
 		key = key + "#" + strconv.Itoa(int(person.Home.GetBuilding().Plan.BuildingType))
 	}
 	if ce, ok := tc.entries[key]; ok {
-		DrawTraveller(nil, t, 24, 32, f, c)
 		return ce.cv
 	} else {
 		offscreen, _ := goglbackend.NewOffscreen(48, 48, true, tc.ctx)
@@ -59,6 +58,9 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 		if !show(t) {
 			continue
 		}
+		if !t.Visible {
+			continue
+		}
 		var z = 0.0
 		if t.GetPathElement() != nil && t.GetPathElement().GetLocation().Z > 0 {
 			if bpe, ok := t.GetPathElement().(*navigation.BuildingPathElement); ok {
@@ -76,7 +78,8 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 				}
 			}
 		}
-		travellerImg := ic.Tic.RenderTravellerOnBuffer(cv, t, x, y-z-5, rf.F, c)
+		travellerImg := ic.Tic.RenderTravellerOnBuffer(cv, t, rf.F, c)
 		cv.DrawImage(travellerImg, x-24, y-z-32-5, 48, 48)
+		c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y - z - 5, H: 32, W: 8, Traveller: t})
 	}
 }

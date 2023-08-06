@@ -151,13 +151,9 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 			vehicles.DrawTradingCart(cv, t, x, y, c)
 		}
 	}
-	c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y, H: 32, W: 8, Traveller: t})
 }
 
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, drawLeg bool, c *controller.Controller) {
-	if !t.Visible {
-		return
-	}
 	var m animation.PersonMotion
 	switch t.Motion {
 	case navigation.MotionWalk:
