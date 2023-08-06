@@ -13,7 +13,7 @@ import (
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
 const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
-const StoragePerArea = 50
+const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 
 var Log = artifacts.GetArtifact("log")
@@ -325,7 +325,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 		}
 	}
 	if a == Textile || a == Leather {
-		needed := h.clothesNeeded() + ProductTransportQuantity(Clothes)
+		needed := h.clothesNeeded()
 		if q > needed {
 			result = q - needed
 		} else {
@@ -515,4 +515,8 @@ func (h *Household) Destroy(m navigation.IMap) {
 
 func (h *Household) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
 	return &navigation.BuildingDestination{B: h.Building, ET: extensionType}
+}
+
+func (h *Household) PendingCosts() uint32 {
+	return PendingCosts(h.Tasks)
 }

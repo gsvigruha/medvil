@@ -206,3 +206,7 @@ func (t *Trader) Stats() *stats.Stats {
 		Artifacts: t.Resources.NumArtifacts(),
 	}
 }
+
+func (t *Trader) PendingCosts() uint32 {
+	return PendingCosts(t.Tasks)
+}

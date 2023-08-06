@@ -27,8 +27,9 @@ type Exchange interface {
 }
 
 const ExchangeTaskStatePickupAtHome uint8 = 0
-const ExchangeTaskStateMarket uint8 = 1
-const ExchangeTaskStateDropoffAtHome uint8 = 2
+const ExchangeTaskStateMarketSell uint8 = 1
+const ExchangeTaskStateMarketBuy uint8 = 2
+const ExchangeTaskStateDropoffAtHome uint8 = 3
 const MaxWaitTime = 24 * 10
 
 type ExchangeTask struct {
@@ -44,14 +45,15 @@ type ExchangeTask struct {
 	TaskTag         string
 	Goods           []artifacts.Artifacts
 	State           uint8
-	Waittime        uint16
 }
 
 func (t *ExchangeTask) Destination() navigation.Destination {
 	switch t.State {
 	case ExchangeTaskStatePickupAtHome:
 		return t.HomeD
-	case ExchangeTaskStateMarket:
+	case ExchangeTaskStateMarketSell:
+		return t.MarketD
+	case ExchangeTaskStateMarketBuy:
 		return t.MarketD
 	case ExchangeTaskStateDropoffAtHome:
 		return t.HomeD
@@ -66,22 +68,16 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		if t.Vehicle != nil {
 			t.Traveller.UseVehicle(t.Vehicle)
 		}
-		t.State = ExchangeTaskStateMarket
-	case ExchangeTaskStateMarket:
-		if t.Exchange.CanSell(t.Goods) && t.Exchange.Price(t.GoodsToBuy) <= t.HouseholdWallet.GetMoney() {
-			t.Exchange.Sell(t.Goods, t.HouseholdWallet)
+		t.State = ExchangeTaskStateMarketSell
+	case ExchangeTaskStateMarketSell:
+		t.Exchange.SellAsManyAsPossible(t.Goods, t.HouseholdWallet)
+		t.Goods = nil
+		t.State = ExchangeTaskStateMarketBuy
+	case ExchangeTaskStateMarketBuy:
+		if t.Exchange.Price(t.GoodsToBuy) <= t.HouseholdWallet.GetMoney() {
 			t.Goods = t.Exchange.BuyAsManyAsPossible(t.GoodsToBuy, t.HouseholdWallet)
-			t.State = ExchangeTaskStateDropoffAtHome
-		} else {
-			t.Waittime++
 		}
-		if t.Waittime > MaxWaitTime {
-			if t.Exchange.CanSell(t.Goods) {
-				t.Exchange.Sell(t.Goods, t.HouseholdWallet)
-				t.Goods = []artifacts.Artifacts{}
-			}
-			t.State = ExchangeTaskStateDropoffAtHome
-		}
+		t.State = ExchangeTaskStateDropoffAtHome
 	case ExchangeTaskStateDropoffAtHome:
 		t.HouseholdR.AddAll(t.Goods)
 		t.Traveller.ExitVehicle()
@@ -91,14 +87,6 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 }
 
 func (t *ExchangeTask) Blocked() bool {
-	switch t.State {
-	case ExchangeTaskStatePickupAtHome:
-		return !t.Exchange.CanSell(t.Goods) || t.Exchange.Price(t.GoodsToBuy) > t.HouseholdWallet.GetMoney() || !t.Exchange.CanBuy(t.GoodsToBuy)
-	case ExchangeTaskStateMarket:
-		return !t.Exchange.CanSell(t.Goods) || t.Exchange.Price(t.GoodsToBuy) > t.HouseholdWallet.GetMoney() || !t.Exchange.CanBuy(t.GoodsToBuy)
-	case ExchangeTaskStateDropoffAtHome:
-		return false
-	}
 	return false
 }
 
