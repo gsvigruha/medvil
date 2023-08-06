@@ -76,10 +76,11 @@ func numFoodBatchesNeeded(h Home, numP uint16, a *artifacts.Artifact) int {
 }
 
 func GetFoodTasks(h Home, numP uint16, mp *Marketplace) {
+	budget := int(h.GetMoney()) - int(h.PendingCosts())
 	var foodBatches []*artifacts.Artifact
 	for _, a := range economy.Foods {
 		batch := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
-		if mp.Price(batch) < h.GetMoney() && mp.HasTraded(a) {
+		if int(mp.Price(batch)) < budget && mp.HasTraded(a) {
 			for i := 0; i < numFoodBatchesNeeded(h, numP, a); i++ {
 				foodBatches = append(foodBatches, a)
 			}
@@ -87,7 +88,6 @@ func GetFoodTasks(h Home, numP uint16, mp *Marketplace) {
 	}
 	sort.Slice(foodBatches, func(i, j int) bool { return mp.Prices[foodBatches[i]] < mp.Prices[foodBatches[j]] })
 
-	budget := int(h.GetMoney()) - int(h.PendingCosts())
 	var totalCost = 0
 	for _, a := range foodBatches {
 		needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
@@ -101,6 +101,8 @@ func GetFoodTasks(h Home, numP uint16, mp *Marketplace) {
 				TaskTag:         "food_shopping#" + a.Name,
 			})
 			totalCost += int(price)
+		} else {
+			break
 		}
 	}
 }
