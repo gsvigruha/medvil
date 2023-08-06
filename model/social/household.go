@@ -516,3 +516,7 @@ func (h *Household) Destroy(m navigation.IMap) {
 func (h *Household) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
 	return &navigation.BuildingDestination{B: h.Building, ET: extensionType}
 }
+
+func (h *Household) PendingCosts() uint32 {
+	return PendingCosts(h.Tasks)
+}

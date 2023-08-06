@@ -30,6 +30,7 @@ type Home interface {
 	GetVehicle() *vehicles.Vehicle
 	NumTasks(name string, tag string) int
 	Destination(extensionType *building.BuildingExtensionType) navigation.Destination
+	PendingCosts() uint32
 }
 
 var water = artifacts.GetArtifact("water")
@@ -86,11 +87,12 @@ func GetFoodTasks(h Home, numP uint16, mp *Marketplace) {
 	}
 	sort.Slice(foodBatches, func(i, j int) bool { return mp.Prices[foodBatches[i]] < mp.Prices[foodBatches[j]] })
 
-	var totalCost = uint32(0)
+	budget := int(h.GetMoney()) - int(h.PendingCosts())
+	var totalCost = 0
 	for _, a := range foodBatches {
 		needs := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
 		price := mp.Price(needs)
-		if h.GetMoney() > totalCost+price {
+		if budget > totalCost+int(price) {
 			h.AddPriorityTask(&economy.BuyTask{
 				Exchange:        mp,
 				HouseholdWallet: h,
@@ -98,7 +100,20 @@ func GetFoodTasks(h Home, numP uint16, mp *Marketplace) {
 				MaxPrice:        price * 2,
 				TaskTag:         "food_shopping#" + a.Name,
 			})
-			totalCost += price
+			totalCost += int(price)
 		}
 	}
+}
+
+func PendingCosts(tasks []economy.Task) uint32 {
+	var costs uint32
+	for _, task := range tasks {
+		if buyTask, ok := task.(*economy.BuyTask); ok {
+			costs += buyTask.Exchange.Price(buyTask.Goods)
+		}
+		if exchangeTask, ok := task.(*economy.ExchangeTask); ok {
+			costs += exchangeTask.Exchange.Price(exchangeTask.GoodsToBuy)
+		}
+	}
+	return costs
 }
