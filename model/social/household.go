@@ -38,13 +38,13 @@ type Household struct {
 	Heating         uint8
 }
 
-func (h *Household) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.Task {
-	return h.getNextTaskCombineExchange(m, e)
+func (h *Household) NextTask(m navigation.IMap, e *economy.EquipmentType, calendar *time.CalendarType) economy.Task {
+	return h.getNextTaskCombineExchange(m, e, calendar)
 }
 
-func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e *economy.EquipmentType) economy.Task {
+func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e *economy.EquipmentType, calendar *time.CalendarType) economy.Task {
 	firstTask := FirstUnblockedTask(h, e)
-	if firstTask != nil && IsExchangeBaseTask(firstTask) {
+	if firstTask != nil && IsExchangeBaseTask(firstTask) && calendar.Hour == 0 && calendar.Day == 15 {
 		vehicle := h.GetVehicle()
 		et := GetExchangeTask(h, h.Town.Marketplace, m, vehicle)
 		if et == nil && vehicle != nil {

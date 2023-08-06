@@ -137,7 +137,7 @@ func (t *Trader) RandomField(m navigation.IMap, check func(navigation.Field) boo
 	return t.Field(m)
 }
 
-func (t *Trader) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.Task {
+func (t *Trader) NextTask(m navigation.IMap, e *economy.EquipmentType, calendar *time.CalendarType) economy.Task {
 	if len(t.Tasks) == 0 {
 		return nil
 	}
