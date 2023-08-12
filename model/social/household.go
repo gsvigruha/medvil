@@ -546,3 +546,7 @@ func (h *Household) Destination(extensionType *building.BuildingExtensionType) n
 func (h *Household) PendingCosts() uint32 {
 	return PendingCosts(h.Tasks)
 }
+
+func (h *Household) Broken() bool {
+	return h.Building.Broken
+}

@@ -31,6 +31,7 @@ type Home interface {
 	NumTasks(name string, tag string) int
 	Destination(extensionType *building.BuildingExtensionType) navigation.Destination
 	PendingCosts() uint32
+	Broken() bool
 }
 
 var water = artifacts.GetArtifact("water")
