@@ -43,14 +43,12 @@ type Town struct {
 
 func (town *Town) Init() {
 	defaultTransfers := TransferCategories{
-		TaxRate:      30,
-		TaxThreshold: 300,
-		Subsidy:      200,
+		Rate:      30,
+		Threshold: 200,
 	}
 	militaryTransfers := TransferCategories{
-		TaxRate:      0,
-		TaxThreshold: 0,
-		Subsidy:      100,
+		Rate:      0,
+		Threshold: 100,
 	}
 	town.Transfers = &MoneyTransfers{
 		Farm:              defaultTransfers,
