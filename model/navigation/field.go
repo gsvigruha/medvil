@@ -131,6 +131,10 @@ func (f Field) Empty() bool {
 	return true
 }
 
+func (f Field) Crowded() bool {
+	return len(f.Travellers) > 8
+}
+
 func (f Field) Walkable() bool {
 	if !f.Building.Empty() && f.Building.GetBuilding().Plan.BuildingType != building.BuildingTypeGate {
 		return false

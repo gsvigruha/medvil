@@ -99,6 +99,10 @@ func (bpe *BuildingPathElement) GetSpeed() float64 {
 	return 1.0
 }
 
+func (bpe *BuildingPathElement) Crowded() bool {
+	return false
+}
+
 func (bpe *BuildingPathElement) Walkable() bool {
 	if bpe.BC.IsConstruction() {
 		return false
