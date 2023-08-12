@@ -103,8 +103,12 @@ func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
 			batchStart = true
 		}
 	}
-	if et != nil && (artifacts.GetVolume(et.GoodsToSell) > 0 || artifacts.GetVolume(et.GoodsToBuy) > 0) {
-		tasks = append([]economy.Task{et}, tasks...)
+	if et != nil {
+		if artifacts.GetVolume(et.GoodsToSell) > 0 || artifacts.GetVolume(et.GoodsToBuy) > 0 {
+			tasks = append([]economy.Task{et}, tasks...)
+		} else if vehicle != nil {
+			vehicle.SetInUse(false)
+		}
 	}
 	h.SetTasks(tasks)
 }
