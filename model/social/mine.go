@@ -103,7 +103,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 			m.AddTransportTask(land, imap)
 			tag := economy.MiningTaskTag(land.F, land.UseType)
 			if m.Household.NumTasks("mining", tag) == 0 {
-				if CheckMineUseType(land.UseType, land.F) {
+				if CheckMineUseType(land.UseType, land.F) && land.F.Terrain.Resources.IsEmpty() {
 					m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
 				}
 			}

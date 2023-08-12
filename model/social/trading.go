@@ -27,6 +27,9 @@ type Trader struct {
 func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Person.ElapseTime(Calendar, m)
 	t.Person.Traveller.UseVehicle(t.Vehicle)
+	if Calendar.Hour == 0 && Calendar.Day == 15 {
+		CombineExchangeTasks(t, t.SourceExchange, m)
+	}
 	if t.Person.IsHome {
 		FindWaterTask(t, 1, m)
 		GetFoodTasks(t, 1, t.SourceExchange)
@@ -138,13 +141,6 @@ func (t *Trader) RandomField(m navigation.IMap, check func(navigation.Field) boo
 }
 
 func (t *Trader) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.Task {
-	if len(t.Tasks) == 0 {
-		return nil
-	}
-	et := GetExchangeTask(t, t.SourceExchange, m, t.Vehicle)
-	if et != nil {
-		return et
-	}
 	return GetNextTask(t, e)
 }
 
@@ -167,8 +163,8 @@ func (t *Trader) HasEnoughClothes() bool {
 func (t *Trader) AddVehicle(v *vehicles.Vehicle) {
 }
 
-func (t *Trader) GetVehicle() *vehicles.Vehicle {
-	return nil
+func (t *Trader) AllocateVehicle(waterOk bool) *vehicles.Vehicle {
+	return t.Vehicle
 }
 
 func (t *Trader) NumTasks(name string, tag string) int {

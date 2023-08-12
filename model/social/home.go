@@ -27,7 +27,7 @@ type Home interface {
 	GetHeating() uint8
 	HasEnoughClothes() bool
 	AddVehicle(*vehicles.Vehicle)
-	GetVehicle() *vehicles.Vehicle
+	AllocateVehicle(waterOk bool) *vehicles.Vehicle
 	NumTasks(name string, tag string) int
 	Destination(extensionType *building.BuildingExtensionType) navigation.Destination
 	PendingCosts() uint32

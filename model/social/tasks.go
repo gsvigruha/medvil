@@ -38,38 +38,51 @@ func IsExchangeBaseTask(t economy.Task) bool {
 	return sok || bok
 }
 
-func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicles.Vehicle) *economy.ExchangeTask {
-	var maxVolume uint16 = ExchangeTaskMaxVolumePedestrian
-	var buildingCheckFn = navigation.Field.BuildingNonExtension
-	var buildingExtension = building.NonExtension
+func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
 	sailableMP := mp.Building.HasExtension(building.Deck)
 	sailableH := h.RandomField(m, navigation.Field.BoatDestination) != nil
-	if vehicle != nil {
-		if vehicle.T.Water && sailableMP && sailableH {
-			buildingCheckFn = navigation.Field.BoatDestination
-			buildingExtension = building.Deck
-		}
-		maxVolume = vehicle.T.MaxVolume
-	}
+	waterOk := sailableMP && sailableH
 
-	hf := h.RandomField(m, buildingCheckFn)
-	if hf == nil {
-		return nil
-	}
-	et := &economy.ExchangeTask{
-		HomeD:           hf,
-		MarketD:         &navigation.BuildingDestination{B: mp.Building, ET: buildingExtension},
-		Exchange:        mp,
-		HouseholdR:      h.GetResources(),
-		HouseholdWallet: h,
-		Vehicle:         vehicle,
-		GoodsToBuy:      nil,
-		GoodsToSell:     nil,
-		TaskTag:         "",
-	}
-	var empty = true
+	var vehicle *vehicles.Vehicle
+	var buildingCheckFn = navigation.Field.BuildingNonExtension
+	var buildingExtension = building.NonExtension
+	var et *economy.ExchangeTask
+	var maxVolume uint16 = 0
+	var batchStart = true
+
 	var tasks []economy.Task
 	for _, ot := range h.GetTasks() {
+		if batchStart {
+			vehicle = h.AllocateVehicle(waterOk)
+			if vehicle != nil {
+				if vehicle.T.Water {
+					buildingCheckFn = navigation.Field.BoatDestination
+					buildingExtension = building.Deck
+				} else {
+					buildingCheckFn = navigation.Field.BuildingNonExtension
+					buildingExtension = building.NonExtension
+				}
+				maxVolume = vehicle.T.MaxVolume
+			} else {
+				buildingCheckFn = navigation.Field.BuildingNonExtension
+				buildingExtension = building.NonExtension
+				maxVolume = ExchangeTaskMaxVolumePedestrian
+			}
+			hf := h.RandomField(m, buildingCheckFn)
+			et = &economy.ExchangeTask{
+				HomeD:           hf,
+				MarketD:         &navigation.BuildingDestination{B: mp.Building, ET: buildingExtension},
+				Exchange:        mp,
+				HouseholdR:      h.GetResources(),
+				HouseholdWallet: h,
+				Vehicle:         vehicle,
+				GoodsToBuy:      nil,
+				GoodsToSell:     nil,
+				TaskTag:         "market",
+			}
+			batchStart = false
+		}
+
 		var combined = false
 		bt, bok := ot.(*economy.BuyTask)
 		if bok && !bt.Blocked() && !bt.IsPaused() && artifacts.GetVolume(et.GoodsToBuy) < maxVolume {
@@ -83,15 +96,21 @@ func GetExchangeTask(h Home, mp *Marketplace, m navigation.IMap, vehicle *vehicl
 		}
 		if !combined {
 			tasks = append(tasks, ot)
-		} else {
-			empty = false
+		} else if artifacts.GetVolume(et.GoodsToBuy) >= maxVolume || artifacts.GetVolume(et.GoodsToSell) >= maxVolume {
+			tasks = append([]economy.Task{et}, tasks...)
+			et = nil
+			vehicle = nil
+			batchStart = true
 		}
 	}
-	if !empty {
-		h.SetTasks(tasks)
-		return et
+	if et != nil {
+		if artifacts.GetVolume(et.GoodsToSell) > 0 || artifacts.GetVolume(et.GoodsToBuy) > 0 {
+			tasks = append([]economy.Task{et}, tasks...)
+		} else if vehicle != nil {
+			vehicle.SetInUse(false)
+		}
 	}
-	return nil
+	h.SetTasks(tasks)
 }
 
 func FirstUnblockedTask(h Home, e *economy.EquipmentType) economy.Task {

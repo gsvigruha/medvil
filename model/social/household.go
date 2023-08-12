@@ -39,21 +39,6 @@ type Household struct {
 }
 
 func (h *Household) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.Task {
-	return h.getNextTaskCombineExchange(m, e)
-}
-
-func (h *Household) getNextTaskCombineExchange(m navigation.IMap, e *economy.EquipmentType) economy.Task {
-	firstTask := FirstUnblockedTask(h, e)
-	if firstTask != nil && IsExchangeBaseTask(firstTask) {
-		vehicle := h.GetVehicle()
-		et := GetExchangeTask(h, h.Town.Marketplace, m, vehicle)
-		if et == nil && vehicle != nil {
-			vehicle.SetInUse(false)
-		}
-		if et != nil {
-			return et
-		}
-	}
 	return GetNextTask(h, e)
 }
 
@@ -112,6 +97,9 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if h.HasSurplusPeople() && h.Town.Townhall.Household.HasRoomForPeople() {
 			h.ReassignFirstPerson(h.Town.Townhall.Household, m)
 		}
+	}
+	if h.NumTasks("exchange", "market") <= len(h.People)/3 {
+		CombineExchangeTasks(h, h.Town.Marketplace, m)
 	}
 	numP := uint16(len(h.People))
 	FindWaterTask(h, numP, m)
@@ -433,9 +421,9 @@ func (h *Household) AddVehicle(v *vehicles.Vehicle) {
 	h.Vehicles = append(h.Vehicles, v)
 }
 
-func (h *Household) GetVehicle() *vehicles.Vehicle {
+func (h *Household) AllocateVehicle(waterOk bool) *vehicles.Vehicle {
 	for _, v := range h.Vehicles {
-		if !v.InUse {
+		if !v.InUse && (!v.T.Water || waterOk) {
 			v.SetInUse(true)
 			return v
 		}
@@ -450,6 +438,15 @@ func (h *Household) Stats() *stats.Stats {
 		Buildings: 1,
 		Artifacts: h.Resources.NumArtifacts(),
 	}
+}
+
+func (h *Household) HasFreePerson() bool {
+	for _, person := range h.People {
+		if person.Task == nil {
+			return true
+		}
+	}
+	return false
 }
 
 func (srcH *Household) ReassignFirstPerson(dstH *Household, m navigation.IMap) {

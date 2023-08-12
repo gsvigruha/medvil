@@ -8,7 +8,7 @@ import (
 
 type Household interface {
 	AddVehicle(*vehicles.Vehicle)
-	GetVehicle() *vehicles.Vehicle
+	AllocateVehicle(waterOk bool) *vehicles.Vehicle
 }
 
 type FactoryPickupTask struct {
