@@ -111,6 +111,9 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if !p.Home.HasEnoughClothes() && p.Happiness > 0 {
 			p.Happiness--
 		}
+		if p.Home.Broken() && p.Happiness > 0 {
+			p.Happiness--
+		}
 	}
 }
 

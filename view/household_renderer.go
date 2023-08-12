@@ -43,6 +43,9 @@ func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string
 		if h.GetHeating() < 100 {
 			*icons = append(*icons, "icon/gui/heating.png")
 		}
+		if h.Building.Broken {
+			*icons = append(*icons, "icon/gui/tasks/repair.png")
+		}
 	}
 }
 

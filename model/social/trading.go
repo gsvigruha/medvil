@@ -206,3 +206,7 @@ func (t *Trader) Stats() *stats.Stats {
 func (t *Trader) PendingCosts() uint32 {
 	return PendingCosts(t.Tasks)
 }
+
+func (t *Trader) Broken() bool {
+	return false
+}
