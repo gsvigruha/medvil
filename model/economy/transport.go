@@ -14,9 +14,9 @@ type TransportTask struct {
 	PickupR          *artifacts.Resources
 	DropoffR         *artifacts.Resources
 	A                *artifacts.Artifact
-	Quantity         uint16
+	TargetQuantity   uint16
 	CompleteQuantity bool
-	Q                uint16
+	ActualQuantity   uint16
 	Dropoff          bool
 }
 
@@ -30,15 +30,15 @@ func (t *TransportTask) Destination() navigation.Destination {
 
 func (t *TransportTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.Dropoff {
-		t.DropoffR.Add(t.A, t.Q)
-		if t.Quantity == 0 || !t.CompleteQuantity {
+		t.DropoffR.Add(t.A, t.ActualQuantity)
+		if t.TargetQuantity == 0 || !t.CompleteQuantity {
 			return true
 		}
 		t.Dropoff = false
 		return false
 	} else {
-		t.Q = t.PickupR.Remove(t.A, t.Quantity)
-		t.Quantity -= t.Q
+		t.ActualQuantity = t.PickupR.Remove(t.A, t.TargetQuantity)
+		t.TargetQuantity -= t.ActualQuantity
 		t.Dropoff = true
 	}
 	return false
@@ -49,7 +49,7 @@ func (t *TransportTask) Blocked() bool {
 		return true
 	}
 	if !t.Dropoff {
-		return t.PickupR.Get(t.A) < t.Quantity
+		return t.PickupR.Get(t.A) < t.TargetQuantity
 	}
 	return false
 }

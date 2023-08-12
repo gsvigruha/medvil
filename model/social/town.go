@@ -328,7 +328,7 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 				PickupR:          &town.Townhall.Household.Resources,
 				DropoffR:         c.Storage,
 				A:                a.A,
-				Quantity:         q,
+				TargetQuantity:   q,
 				CompleteQuantity: true,
 			})
 		}
@@ -384,7 +384,7 @@ func AddTransportTasksForField(field *navigation.Field, th *Townhall, m navigati
 				PickupR:          &field.Terrain.Resources,
 				DropoffR:         &th.Household.Resources,
 				A:                a,
-				Quantity:         q,
+				TargetQuantity:   q,
 				CompleteQuantity: true,
 			})
 		}
