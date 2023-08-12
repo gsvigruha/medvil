@@ -78,7 +78,7 @@ func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
 				Vehicle:         vehicle,
 				GoodsToBuy:      nil,
 				GoodsToSell:     nil,
-				TaskTag:         "",
+				TaskTag:         "market",
 			}
 			batchStart = false
 		}

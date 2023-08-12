@@ -98,7 +98,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			h.ReassignFirstPerson(h.Town.Townhall.Household, m)
 		}
 	}
-	if Calendar.Hour == 0 && Calendar.Day == 15 {
+	if h.NumTasks("exchange", "market") == 0 {
 		CombineExchangeTasks(h, h.Town.Marketplace, m)
 	}
 	numP := uint16(len(h.People))
@@ -438,6 +438,15 @@ func (h *Household) Stats() *stats.Stats {
 		Buildings: 1,
 		Artifacts: h.Resources.NumArtifacts(),
 	}
+}
+
+func (h *Household) HasFreePerson() bool {
+	for _, person := range h.People {
+		if person.Task == nil {
+			return true
+		}
+	}
+	return false
 }
 
 func (srcH *Household) ReassignFirstPerson(dstH *Household, m navigation.IMap) {
