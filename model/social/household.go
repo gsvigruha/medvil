@@ -38,7 +38,7 @@ type Household struct {
 	Heating         uint8
 }
 
-func (h *Household) NextTask(m navigation.IMap, e *economy.EquipmentType, calendar *time.CalendarType) economy.Task {
+func (h *Household) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.Task {
 	return GetNextTask(h, e)
 }
 

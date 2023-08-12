@@ -5,7 +5,6 @@ import (
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
-	"medvil/model/time"
 	"medvil/model/vehicles"
 	"sort"
 )
@@ -22,7 +21,7 @@ type Home interface {
 	HasMedicine() bool
 	Field(navigation.IMap) *navigation.Field
 	RandomField(navigation.IMap, func(navigation.Field) bool) *navigation.Field
-	NextTask(navigation.IMap, *economy.EquipmentType, *time.CalendarType) economy.Task
+	NextTask(navigation.IMap, *economy.EquipmentType) economy.Task
 	GetResources() *artifacts.Resources
 	GetBuilding() *building.Building
 	GetHeating() uint8
