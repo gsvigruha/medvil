@@ -28,6 +28,10 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 		sellSX := float64((len(v.GoodsToBuy)+1)*IconW + 10)
 		p.AddImageLabel("tasks/sell", sellSX, y, IconS, IconS, style)
 		ArtifactsToHelperPanel(p, v.GoodsToSell, sellSX)
+		sellSX = sellSX + float64((len(v.GoodsToSell)+1)*IconW+10)
+		if v.Vehicle != nil {
+			p.AddImageLabel("vehicles/"+v.Vehicle.T.Name, sellSX, y, IconS, IconS, style)
+		}
 	case *economy.TransportTask:
 		x := float64(10 + IconW)
 		p.AddImageLabel("artifacts/"+v.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)

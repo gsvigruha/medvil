@@ -98,7 +98,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			h.ReassignFirstPerson(h.Town.Townhall.Household, m)
 		}
 	}
-	if h.NumTasks("exchange", "market") == 0 {
+	if h.NumTasks("exchange", "market") <= len(h.People)/3 {
 		CombineExchangeTasks(h, h.Town.Marketplace, m)
 	}
 	numP := uint16(len(h.People))
