@@ -345,10 +345,11 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 	}
 }
 
-func (town *Town) CreateDemolishTask(b *building.Building, m navigation.IMap) {
+func (town *Town) CreateDemolishTask(b *building.Building, r *building.Road, f *navigation.Field, m navigation.IMap) {
 	town.Townhall.Household.AddTask(&economy.DemolishTask{
 		Building: b,
-		F:        m.GetField(b.X, b.Y),
+		Road:     r,
+		F:        f,
 		Town:     town,
 		M:        m,
 	})
@@ -394,6 +395,20 @@ func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMa
 	return newHouses
 }
 
+func (town *Town) DestroyRoad(r *building.Road, m navigation.IMap) {
+	var newRoads []*navigation.Field
+	for _, road := range town.Roads {
+		if road.Road == r {
+			f := m.GetField(road.X, road.Y)
+			f.Road = nil
+			f.Allocated = false
+		} else {
+			newRoads = append(newRoads, road)
+		}
+	}
+	town.Roads = newRoads
+}
+
 func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 	switch b.Plan.BuildingType {
 	case building.BuildingTypeFarm:
@@ -406,5 +421,17 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 		town.Factories = DestroyBuilding(town.Factories, b, m)
 	case building.BuildingTypeTower:
 		town.Towers = DestroyBuilding(town.Towers, b, m)
+	case building.BuildingTypeWall:
+		var newWalls []*Wall
+		for _, wall := range town.Walls {
+			if wall.Building == b {
+				f := m.GetField(wall.Building.X, wall.Building.Y)
+				f.Building = navigation.FieldBuildingObjects{}
+				f.Allocated = false
+			} else {
+				newWalls = append(newWalls, wall)
+			}
+		}
+		town.Walls = newWalls
 	}
 }
