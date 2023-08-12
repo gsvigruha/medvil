@@ -58,19 +58,19 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 
 	farm := c.ReverseReferences.BuildingToFarm[f.Building.GetBuilding()]
 	if farm != nil {
-		iconsFromHousehold(farm.Household, farm.Household.Town.Transfers.Farm.Subsidy, &icons)
+		iconsFromHousehold(farm.Household, farm.Household.Town.Transfers.Farm.Threshold, &icons)
 	}
 	workshop := c.ReverseReferences.BuildingToWorkshop[f.Building.GetBuilding()]
 	if workshop != nil {
-		iconsFromHousehold(workshop.Household, workshop.Household.Town.Transfers.Workshop.Subsidy, &icons)
+		iconsFromHousehold(workshop.Household, workshop.Household.Town.Transfers.Workshop.Threshold, &icons)
 	}
 	mine := c.ReverseReferences.BuildingToMine[f.Building.GetBuilding()]
 	if mine != nil {
-		iconsFromHousehold(mine.Household, mine.Household.Town.Transfers.Mine.Subsidy, &icons)
+		iconsFromHousehold(mine.Household, mine.Household.Town.Transfers.Mine.Threshold, &icons)
 	}
 	factory := c.ReverseReferences.BuildingToFactory[f.Building.GetBuilding()]
 	if factory != nil {
-		iconsFromHousehold(factory.Household, factory.Household.Town.Transfers.Factory.Subsidy, &icons)
+		iconsFromHousehold(factory.Household, factory.Household.Town.Transfers.Factory.Threshold, &icons)
 	}
 	townhall := c.ReverseReferences.BuildingToTownhall[f.Building.GetBuilding()]
 	if townhall != nil {

@@ -1,9 +1,8 @@
 package social
 
 type TransferCategories struct {
-	TaxRate      int
-	TaxThreshold int
-	Subsidy      int
+	Rate      int
+	Threshold int
 }
 
 type MoneyTransfers struct {
@@ -16,12 +15,12 @@ type MoneyTransfers struct {
 }
 
 func (t *TransferCategories) Transfer(townMoney, householdMoney *uint32) {
-	if int(*householdMoney) > t.TaxThreshold {
-		tax := (*householdMoney - uint32(t.TaxThreshold)) * uint32(t.TaxRate) / 100
+	if int(*householdMoney) > t.Threshold {
+		tax := (*householdMoney - uint32(t.Threshold)) * uint32(t.Rate) / 100
 		*householdMoney -= tax
 		*townMoney += tax
-	} else if int(*householdMoney) < t.Subsidy {
-		subsidy := uint32(t.Subsidy) - *householdMoney
+	} else if int(*householdMoney) < t.Threshold {
+		subsidy := uint32(t.Threshold) - *householdMoney
 		if *townMoney >= subsidy {
 			*householdMoney += subsidy
 			*townMoney -= subsidy

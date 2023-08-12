@@ -78,12 +78,16 @@ func setupTerrain(m *model.Map, config MapConfig) {
 			if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil {
 				if !m.Shore(uint16(i), uint16(j)) {
 					if fields[i][j].Terrain.T == terrain.Grass && fields[i][j].Flat() {
-						fields[i][j].Terrain.T = terrain.Mud
-					} else if fields[i][j].Terrain.T == terrain.Grass && !fields[i][j].Flat() {
-						if rand.Float64() < 0.5 {
-							fields[i][j].Terrain.T = terrain.Rock
+						if rand.Float64() < 0.66 {
+							fields[i][j].Terrain.T = terrain.Mud
 						} else {
+							fields[i][j].Terrain.T = terrain.Rock
+						}
+					} else if fields[i][j].Terrain.T == terrain.Grass && !fields[i][j].Flat() {
+						if rand.Float64() < 0.66 {
 							fields[i][j].Terrain.T = terrain.IronBog
+						} else {
+							fields[i][j].Terrain.T = terrain.Rock
 						}
 					}
 				} else {
