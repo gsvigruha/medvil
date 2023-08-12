@@ -22,8 +22,8 @@ type DemolishController struct {
 }
 
 func (dc *DemolishController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	if rf.F.Building.GetBuilding() != nil {
-		dc.th.Household.Town.CreateDemolishTask(rf.F.Building.GetBuilding(), c.Map)
+	if rf.F.Building.GetBuilding() != nil || rf.F.Road != nil {
+		dc.th.Household.Town.CreateDemolishTask(rf.F.Building.GetBuilding(), rf.F.Road, rf.F, c.Map)
 		return true
 	}
 	return false
@@ -35,6 +35,12 @@ func (dc *DemolishController) GetActiveFields(c *Controller, rf *renderer.Render
 		for _, coords := range h.Building.GetBuildingXYs(true) {
 			fields = append(fields, c.Map.GetField(coords[0], coords[1]))
 		}
+	}
+	for _, w := range dc.th.Household.Town.Walls {
+		fields = append(fields, c.Map.GetField(w.Building.X, w.Building.Y))
+	}
+	for _, r := range dc.th.Household.Town.Roads {
+		fields = append(fields, c.Map.GetField(r.X, r.Y))
 	}
 	return fields
 }

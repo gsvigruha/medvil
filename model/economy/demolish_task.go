@@ -11,6 +11,7 @@ const DemolishTaskMaxProgress = 30 * 24
 type DemolishTask struct {
 	TaskBase
 	Building *building.Building
+	Road     *building.Road
 	F        *navigation.Field
 	Town     ITown
 	M        navigation.IMap
@@ -25,7 +26,13 @@ func (t *DemolishTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.Progress < DemolishTaskMaxProgress {
 		t.Progress++
 	} else {
-		t.Town.DestroyBuilding(t.Building, t.M)
+		if t.Building != nil {
+			t.Town.DestroyBuilding(t.Building, t.M)
+		}
+		if t.Road != nil {
+			t.Town.DestroyRoad(t.Road, t.M)
+		}
+		t.F.Allocated = false
 		return true
 	}
 	return false

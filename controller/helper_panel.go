@@ -35,7 +35,7 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 	case *economy.TransportTask:
 		x := float64(10 + IconW)
 		p.AddImageLabel("artifacts/"+v.A.Name, x, y, IconS, IconS, gui.ImageLabelStyleRegular)
-		p.AddTextLabel(strconv.Itoa(int(v.Quantity)), x+IconS*0.75, y+IconS)
+		p.AddTextLabel(strconv.Itoa(int(v.ActualQuantity))+"/"+strconv.Itoa(int(v.ActualQuantity+v.TargetQuantity)), x+IconS*0.75, y+IconS)
 	}
 }
 

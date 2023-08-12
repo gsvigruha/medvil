@@ -328,7 +328,7 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 				PickupR:          &town.Townhall.Household.Resources,
 				DropoffR:         c.Storage,
 				A:                a.A,
-				Quantity:         q,
+				TargetQuantity:   q,
 				CompleteQuantity: true,
 			})
 		}
@@ -345,10 +345,11 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 	}
 }
 
-func (town *Town) CreateDemolishTask(b *building.Building, m navigation.IMap) {
+func (town *Town) CreateDemolishTask(b *building.Building, r *building.Road, f *navigation.Field, m navigation.IMap) {
 	town.Townhall.Household.AddTask(&economy.DemolishTask{
 		Building: b,
-		F:        m.GetField(b.X, b.Y),
+		Road:     r,
+		F:        f,
 		Town:     town,
 		M:        m,
 	})
@@ -374,6 +375,22 @@ func (town *Town) GetHouseholds() []*Household {
 	return households
 }
 
+func AddTransportTasksForField(field *navigation.Field, th *Townhall, m navigation.IMap) {
+	for a, q := range field.Terrain.Resources.Artifacts {
+		if q > 0 {
+			th.Household.AddTask(&economy.TransportTask{
+				PickupD:          field,
+				DropoffD:         m.GetField(th.Household.Building.X, th.Household.Building.Y),
+				PickupR:          &field.Terrain.Resources,
+				DropoffR:         &th.Household.Resources,
+				A:                a,
+				TargetQuantity:   q,
+				CompleteQuantity: true,
+			})
+		}
+	}
+}
+
 func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMap) []H {
 	var newHouses []H
 	for _, house := range houses {
@@ -387,11 +404,24 @@ func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMa
 				field.Field().Allocated = false
 			}
 			house.GetHousehold().Destroy(m)
+			AddTransportTasksForField(m.GetField(b.X, b.Y), house.GetHousehold().Town.Townhall, m)
 		} else {
 			newHouses = append(newHouses, house)
 		}
 	}
 	return newHouses
+}
+
+func (town *Town) DestroyRoad(r *building.Road, m navigation.IMap) {
+	var newRoads []*navigation.Field
+	for _, road := range town.Roads {
+		if road.Road == r {
+			m.GetField(road.X, road.Y).Road = nil
+		} else {
+			newRoads = append(newRoads, road)
+		}
+	}
+	town.Roads = newRoads
 }
 
 func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
@@ -406,5 +436,18 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 		town.Factories = DestroyBuilding(town.Factories, b, m)
 	case building.BuildingTypeTower:
 		town.Towers = DestroyBuilding(town.Towers, b, m)
+	case building.BuildingTypeWall:
+		var newWalls []*Wall
+		for _, wall := range town.Walls {
+			if wall.Building == b {
+				f := m.GetField(wall.Building.X, wall.Building.Y)
+				f.Building = navigation.FieldBuildingObjects{}
+				f.Terrain.Resources.AddAll(b.Plan.RepairCost())
+				AddTransportTasksForField(f, town.Townhall, m)
+			} else {
+				newWalls = append(newWalls, wall)
+			}
+		}
+		town.Walls = newWalls
 	}
 }

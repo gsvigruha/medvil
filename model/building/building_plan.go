@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/materials"
@@ -170,6 +171,15 @@ var brick = artifacts.GetArtifact("brick")
 var thatch = artifacts.GetArtifact("thatch")
 var tile = artifacts.GetArtifact("tile")
 var textile = artifacts.GetArtifact("textile")
+
+func (b BuildingPlan) RepairCost() []artifacts.Artifacts {
+	cc := b.ConstructionCost()
+	var rc = make([]artifacts.Artifacts, len(cc))
+	for i, as := range cc {
+		rc[i] = artifacts.Artifacts{A: as.A, Quantity: uint16(math.Ceil(float64(as.Quantity) / 2))}
+	}
+	return rc
+}
 
 func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 	var cubes uint16 = 0
