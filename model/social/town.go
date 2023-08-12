@@ -375,6 +375,22 @@ func (town *Town) GetHouseholds() []*Household {
 	return households
 }
 
+func AddTransportTasksForField(field *navigation.Field, th *Townhall, m navigation.IMap) {
+	for a, q := range field.Terrain.Resources.Artifacts {
+		if q > 0 {
+			th.Household.AddTask(&economy.TransportTask{
+				PickupD:          field,
+				DropoffD:         m.GetField(th.Household.Building.X, th.Household.Building.Y),
+				PickupR:          &field.Terrain.Resources,
+				DropoffR:         &th.Household.Resources,
+				A:                a,
+				Quantity:         q,
+				CompleteQuantity: true,
+			})
+		}
+	}
+}
+
 func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMap) []H {
 	var newHouses []H
 	for _, house := range houses {
@@ -388,6 +404,7 @@ func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMa
 				field.Field().Allocated = false
 			}
 			house.GetHousehold().Destroy(m)
+			AddTransportTasksForField(m.GetField(b.X, b.Y), house.GetHousehold().Town.Townhall, m)
 		} else {
 			newHouses = append(newHouses, house)
 		}
@@ -423,7 +440,10 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 		var newWalls []*Wall
 		for _, wall := range town.Walls {
 			if wall.Building == b {
-				m.GetField(wall.Building.X, wall.Building.Y).Building = navigation.FieldBuildingObjects{}
+				f := m.GetField(wall.Building.X, wall.Building.Y)
+				f.Building = navigation.FieldBuildingObjects{}
+				f.Terrain.Resources.AddAll(b.Plan.RepairCost())
+				AddTransportTasksForField(f, town.Townhall, m)
 			} else {
 				newWalls = append(newWalls, wall)
 			}
