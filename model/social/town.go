@@ -399,9 +399,7 @@ func (town *Town) DestroyRoad(r *building.Road, m navigation.IMap) {
 	var newRoads []*navigation.Field
 	for _, road := range town.Roads {
 		if road.Road == r {
-			f := m.GetField(road.X, road.Y)
-			f.Road = nil
-			f.Allocated = false
+			m.GetField(road.X, road.Y).Road = nil
 		} else {
 			newRoads = append(newRoads, road)
 		}
@@ -425,9 +423,7 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 		var newWalls []*Wall
 		for _, wall := range town.Walls {
 			if wall.Building == b {
-				f := m.GetField(wall.Building.X, wall.Building.Y)
-				f.Building = navigation.FieldBuildingObjects{}
-				f.Allocated = false
+				m.GetField(wall.Building.X, wall.Building.Y).Building = navigation.FieldBuildingObjects{}
 			} else {
 				newWalls = append(newWalls, wall)
 			}

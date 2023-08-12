@@ -32,6 +32,7 @@ func (t *DemolishTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		if t.Road != nil {
 			t.Town.DestroyRoad(t.Road, t.M)
 		}
+		t.F.Allocated = false
 		return true
 	}
 	return false
