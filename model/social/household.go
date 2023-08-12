@@ -15,6 +15,7 @@ const ReproductionRate = 1.0 / (24 * 30 * 12)
 const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
+const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 10)
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
@@ -161,6 +162,26 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		} else {
 			h.Heating = 100
 		}
+	}
+	if rand.Float64() < BuildingBrokenRate {
+		h.Building.Broken = true
+	}
+	if h.Building.Broken && h.NumTasks("repair", "") == 0 {
+		needs := h.Building.Plan.RepairCost()
+		if h.Money >= mp.Price(needs) {
+			h.AddTask(&economy.BuyTask{
+				Exchange:        mp,
+				HouseholdWallet: h,
+				Goods:           needs,
+				MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+				TaskTag:         "repair_shopping",
+			})
+		}
+		h.AddTask(&economy.RepairTask{
+			B: h.Building,
+			F: m.GetField(h.Building.X, h.Building.Y),
+			R: &h.Resources,
+		})
 	}
 }
 
