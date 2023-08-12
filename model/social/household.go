@@ -15,7 +15,7 @@ const ReproductionRate = 1.0 / (24 * 30 * 12)
 const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
-const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 10)
+const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 1)
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
@@ -166,22 +166,27 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if rand.Float64() < BuildingBrokenRate {
 		h.Building.Broken = true
 	}
-	if h.Building.Broken && h.NumTasks("repair", "") == 0 {
-		needs := h.Building.Plan.RepairCost()
-		if h.Money >= mp.Price(needs) {
-			h.AddTask(&economy.BuyTask{
-				Exchange:        mp,
-				HouseholdWallet: h,
-				Goods:           needs,
-				MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
-				TaskTag:         "repair_shopping",
+	if h.Building.Broken {
+		if h.NumTasks("repair", "") == 0 {
+			h.AddTask(&economy.RepairTask{
+				B: h.Building,
+				F: m.GetField(h.Building.X, h.Building.Y),
+				R: &h.Resources,
 			})
 		}
-		h.AddTask(&economy.RepairTask{
-			B: h.Building,
-			F: m.GetField(h.Building.X, h.Building.Y),
-			R: &h.Resources,
-		})
+
+		needs := h.Resources.Needs(h.Building.Plan.RepairCost())
+		if len(needs) > 0 && h.NumTasks("exchange", "repair_shopping") == 0 {
+			if h.Money >= mp.Price(needs) {
+				h.AddTask(&economy.BuyTask{
+					Exchange:        mp,
+					HouseholdWallet: h,
+					Goods:           needs,
+					MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+					TaskTag:         "repair_shopping",
+				})
+			}
+		}
 	}
 }
 
@@ -354,6 +359,9 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 		} else {
 			return 0
 		}
+	}
+	if h.Building.Broken && artifacts.ArtifactsContain(h.Building.Plan.RepairCost(), a) {
+		return 0
 	}
 	if result >= ProductTransportQuantity(a) || h.Resources.Full() {
 		return result

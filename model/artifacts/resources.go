@@ -22,6 +22,15 @@ func (a Artifacts) Multiply(n uint16) Artifacts {
 	return Artifacts{A: a.A, Quantity: a.Quantity * n}
 }
 
+func ArtifactsContain(as []Artifacts, oa *Artifact) bool {
+	for _, a := range as {
+		if a.A == oa && a.Quantity > 0 {
+			return true
+		}
+	}
+	return false
+}
+
 func Multiply(as []Artifacts, n uint16) []Artifacts {
 	r := make([]Artifacts, len(as))
 	for i := range as {
@@ -167,12 +176,14 @@ func (r *Resources) Remove(a *Artifact, q uint16) uint16 {
 func (r *Resources) Needs(as []Artifacts) []Artifacts {
 	var remaining []Artifacts = nil
 	for _, a := range as {
-		if v, ok := r.Artifacts[a.A]; ok {
-			if v < a.Quantity {
-				remaining = append(remaining, Artifacts{A: a.A, Quantity: a.Quantity - v})
+		if a.Quantity > 0 {
+			if v, ok := r.Artifacts[a.A]; ok {
+				if v < a.Quantity {
+					remaining = append(remaining, Artifacts{A: a.A, Quantity: a.Quantity - v})
+				}
+			} else {
+				remaining = append(remaining, Artifacts{A: a.A, Quantity: a.Quantity})
 			}
-		} else {
-			remaining = append(remaining, Artifacts{A: a.A, Quantity: a.Quantity})
 		}
 	}
 	return remaining
@@ -205,12 +216,14 @@ func (r *Resources) HasArtifact(a *Artifact) bool {
 
 func (r *Resources) Has(as []Artifacts) bool {
 	for _, a := range as {
-		if v, ok := r.Artifacts[a.A]; ok {
-			if v < a.Quantity {
+		if a.Quantity > 0 {
+			if v, ok := r.Artifacts[a.A]; ok {
+				if v < a.Quantity {
+					return false
+				}
+			} else {
 				return false
 			}
-		} else {
-			return false
 		}
 	}
 	return true
