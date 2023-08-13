@@ -192,7 +192,7 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	person := c.ReverseReferences.TravellerToPerson[t]
 	if person != nil {
 		if person.Home.GetTown().Country.T == social.CountryTypeOutlaw {
-			cv.SetFillStyle("#752")
+			cv.SetFillStyle("#952")
 		} else {
 			switch person.Home.GetBuilding().Plan.BuildingType {
 			case building.BuildingTypeFarm:

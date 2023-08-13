@@ -451,8 +451,10 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 					}
 				}
 			}
-			town.Townhall.Household.AssignPerson(p, m)
-			p.Task = &economy.GoHomeTask{F: m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y), P: p}
+			if town != nil {
+				town.Townhall.Household.AssignPerson(p, m)
+				p.Task = &economy.GoHomeTask{F: m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y), P: p}
+			}		
 		} else {
 			newPeople = append(newPeople, p)
 		}
