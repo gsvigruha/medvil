@@ -68,6 +68,34 @@ var OutlawConf = CountryConf{
 	Village: true,
 }
 
+func addFarm(conf CountryConf, town *social.Town, x, y int, m *model.Map) {
+	farmB := &building.Building{
+		Plan: building.BuildingPlanFromJSON(conf.FarmPlan),
+		X:    uint16(x),
+		Y:    uint16(y),
+	}
+	farmB.Plan.BuildingType = building.BuildingTypeFarm
+	AddBuilding(farmB, m)
+	farm := &social.Farm{Household: &social.Household{Building: farmB, Town: town}}
+	farm.Household.TargetNumPeople = 4
+	farm.Household.Resources.VolumeCapacity = farm.Household.Building.Plan.Area() * social.StoragePerArea
+	addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 0, m)
+	addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 1, m)
+	addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, -1, m)
+	addFarmLand(farm, economy.FarmFieldUseTypePasture, -2, 1, m)
+	addFarmLand(farm, economy.FarmFieldUseTypePasture, -2, 0, m)
+	addFarmLand(farm, economy.FarmFieldUseTypePasture, -2, -1, m)
+	addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, 0, m)
+	addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, 1, m)
+	addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, -1, m)
+	addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 0, 1, m)
+	addFarmLand(farm, economy.FarmFieldUseTypeForestry, 1, -2, m)
+	addFarmLand(farm, economy.FarmFieldUseTypeForestry, 0, -2, m)
+	addFarmLand(farm, economy.FarmFieldUseTypeOrchard, -1, -2, m)
+	addFarmLand(farm, economy.FarmFieldUseTypeOrchard, -2, -2, m)
+	town.Farms = append(town.Farms, farm)
+}
+
 func addFarmLand(farm *social.Farm, useType uint8, dx, dy int, m *model.Map) {
 	x := uint16(int(farm.Household.Building.X) + dx)
 	y := uint16(int(farm.Household.Building.Y) + dy)
@@ -81,20 +109,26 @@ func addFarmLand(farm *social.Farm, useType uint8, dx, dy int, m *model.Map) {
 	)
 }
 
-func GenerateCountry(conf CountryConf, m *model.Map) {
+func GenerateCountry(conf CountryConf, m *model.Map) bool {
 	tx, ty := findStartingLocation(m)
+	if tx == 0 && ty == 0 {
+		return false
+	}
 
 	townhall := &building.Building{
 		Plan: building.BuildingPlanFromJSON(conf.TownhallPlan),
 		X:    uint16(tx - 2),
 		Y:    uint16(ty),
 	}
+	townhall.Plan.BuildingType = building.BuildingTypeTownhall
+
 	AddBuilding(townhall, m)
 	marketplace := &building.Building{
 		Plan: building.BuildingPlanFromJSON(conf.MarketplacePlan),
 		X:    uint16(tx + 2),
 		Y:    uint16(ty),
 	}
+	marketplace.Plan.BuildingType = building.BuildingTypeMarket
 	AddBuilding(marketplace, m)
 
 	country := &social.Country{Towns: []*social.Town{&social.Town{}}}
@@ -106,8 +140,6 @@ func GenerateCountry(conf CountryConf, m *model.Map) {
 	town.Townhall.Household.People = make([]*social.Person, conf.People)
 	town.Townhall.Household.TargetNumPeople = conf.People
 	town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
-	town.Townhall.Household.Building.Plan.BuildingType = building.BuildingTypeTownhall
-	town.Marketplace.Building.Plan.BuildingType = building.BuildingTypeMarket
 	town.Townhall.Household.Money = conf.Money
 	town.Marketplace.Money = conf.Money
 	for i := range town.Townhall.Household.People {
@@ -129,28 +161,8 @@ func GenerateCountry(conf CountryConf, m *model.Map) {
 	}
 
 	if conf.Village {
-		farmB := &building.Building{
-			Plan: building.BuildingPlanFromJSON(conf.FarmPlan),
-			X:    uint16(tx + 2),
-			Y:    uint16(ty - 4),
-		}
-		farmB.Plan.BuildingType = building.BuildingTypeFarm
-		AddBuilding(farmB, m)
-		farm := &social.Farm{Household: &social.Household{Building: farmB, Town: town}}
-		farm.Household.TargetNumPeople = 4
-		farm.Household.Resources.VolumeCapacity = farm.Household.Building.Plan.Area() * social.StoragePerArea
-		addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 0, m)
-		addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 1, m)
-		addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, -1, m)
-		addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, 0, m)
-		addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, 1, m)
-		addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, -1, m)
-		addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 0, 1, m)
-		addFarmLand(farm, economy.FarmFieldUseTypeForestry, 1, -2, m)
-		addFarmLand(farm, economy.FarmFieldUseTypeForestry, 0, -2, m)
-		addFarmLand(farm, economy.FarmFieldUseTypeForestry, -1, -2, m)
-		town.Farms = append(town.Farms, farm)
-
+		addFarm(conf, town, tx+2, ty-4, m)
+		addFarm(conf, town, tx+2, ty+4, m)
 		{
 			workshopB := &building.Building{
 				Plan: building.BuildingPlanFromJSON(conf.WorkshopPlan),
@@ -182,6 +194,8 @@ func GenerateCountry(conf CountryConf, m *model.Map) {
 			town.Workshops = append(town.Workshops, workshop)
 		}
 
-		town.Townhall.Household.TargetNumPeople -= 6
+		town.Townhall.Household.TargetNumPeople = 2
 	}
+
+	return true
 }

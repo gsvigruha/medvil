@@ -174,18 +174,18 @@ func findStartingLocation(m *model.Map) (int, int) {
 			var gold = 0
 			var iron = 0
 			var mud = 0
-			for di := -15; di <= 15; di++ {
-				for dj := -15; dj <= 15; dj++ {
+			for di := -20; di <= 20; di++ {
+				for dj := -20; dj <= 20; dj++ {
 					if i+dj >= 0 && j+dj >= 0 {
 						f := m.GetField(uint16(i+di), uint16(j+dj))
+						if dj >= -6 && dj <= 6 && di >= -6 && di <= 6 {
+							if f == nil || !f.Flat() || f.Terrain.T != terrain.Grass {
+								suitable = false
+							}
+						}
 						if f != nil {
 							if f.Building.GetBuilding() != nil {
 								suitable = false
-							}
-							if dj >= -5 && dj <= 5 && di >= -5 && di <= 5 {
-								if !f.Flat() || f.Terrain.T != terrain.Grass {
-									suitable = false
-								}
 							}
 							if dj >= -10 && dj <= 10 && di >= -10 && di <= 10 {
 								if f.Terrain.T == terrain.Water {
@@ -201,10 +201,14 @@ func findStartingLocation(m *model.Map) (int, int) {
 							} else if f.Terrain.T == terrain.Mud {
 								mud++
 							}
-						} else {
-							suitable = false
 						}
 					}
+					if !suitable {
+						break
+					}
+				}
+				if !suitable {
+					break
 				}
 			}
 			score += 10*int(math.Log2(float64(rock+1))) + 10*int(math.Log2(float64(gold+1))) + 10*int(math.Log2(float64(iron+1))) + 10*int(math.Log2(float64(mud+1)))
@@ -219,22 +223,29 @@ func findStartingLocation(m *model.Map) (int, int) {
 }
 
 func NewMap(config MapConfig) *model.Map {
-	fields := make([][]*navigation.Field, config.Size)
-	for i := range fields {
-		fields[i] = make([]*navigation.Field, config.Size)
-	}
-	m := &model.Map{SX: uint16(config.Size), SY: uint16(config.Size), Fields: fields}
-	setupTerrain(m, config)
-	calendar := &time.CalendarType{
-		Year:  1000,
-		Month: 1,
-		Day:   1,
-		Hour:  0,
-	}
-	m.Calendar = calendar
+	for {
+		fields := make([][]*navigation.Field, config.Size)
+		for i := range fields {
+			fields[i] = make([]*navigation.Field, config.Size)
+		}
+		m := &model.Map{SX: uint16(config.Size), SY: uint16(config.Size), Fields: fields}
+		setupTerrain(m, config)
+		calendar := &time.CalendarType{
+			Year:  1000,
+			Month: 1,
+			Day:   1,
+			Hour:  0,
+		}
+		m.Calendar = calendar
 
-	GenerateCountry(PlayerConf, m)
-	GenerateCountry(OutlawConf, m)
+		var success = true
+		success = success && GenerateCountry(PlayerConf, m)
+		success = success && GenerateCountry(OutlawConf, m)
 
-	return m
+		if !success {
+			continue
+		}
+
+		return m
+	}
 }
