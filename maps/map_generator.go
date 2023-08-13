@@ -5,9 +5,7 @@ import (
 	"math/rand"
 	"medvil/model"
 	"medvil/model/artifacts"
-	"medvil/model/building"
 	"medvil/model/navigation"
-	"medvil/model/social"
 	"medvil/model/terrain"
 	"medvil/model/time"
 )
@@ -181,6 +179,9 @@ func findStartingLocation(m *model.Map) (int, int) {
 					if i+dj >= 0 && j+dj >= 0 {
 						f := m.GetField(uint16(i+di), uint16(j+dj))
 						if f != nil {
+							if f.Building.GetBuilding() != nil {
+								suitable = false
+							}
 							if dj >= -5 && dj <= 5 && di >= -5 && di <= 5 {
 								if !f.Flat() || f.Terrain.T != terrain.Grass {
 									suitable = false
@@ -232,58 +233,8 @@ func NewMap(config MapConfig) *model.Map {
 	}
 	m.Calendar = calendar
 
-	tx, ty := findStartingLocation(m)
-
-	townhall := &building.Building{
-		Plan: building.BuildingPlanFromJSON("samples/building/townhouse_1.building.json"),
-		X:    uint16(tx - 2),
-		Y:    uint16(ty),
-	}
-	AddBuilding(townhall, m)
-	marketplace := &building.Building{
-		Plan: building.BuildingPlanFromJSON("samples/building/marketplace_1.building.json"),
-		X:    uint16(tx + 2),
-		Y:    uint16(ty),
-	}
-	AddBuilding(marketplace, m)
-
-	m.Countries = []*social.Country{&social.Country{Towns: []*social.Town{&social.Town{}}}}
-	town := m.Countries[0].Towns[0]
-	town.Country = m.Countries[0]
-	town.Townhall = &social.Townhall{Household: &social.Household{Building: townhall, Town: town}}
-	town.Marketplace = &social.Marketplace{Building: marketplace, Town: town}
-	town.Townhall.Household.People = make([]*social.Person, 5)
-	town.Townhall.Household.TargetNumPeople = 5
-	town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
-	town.Townhall.Household.Building.Plan.BuildingType = building.BuildingTypeTownhall
-	town.Marketplace.Building.Plan.BuildingType = building.BuildingTypeMarket
-	town.Townhall.Household.Money = 2000
-	town.Marketplace.Money = 2000
-	for i := range town.Townhall.Household.People {
-		town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
-	}
-	{
-		res := &town.Townhall.Household.Resources
-		res.Add(artifacts.GetArtifact("fruit"), 50)
-		res.Add(artifacts.GetArtifact("vegetable"), 50)
-		res.Add(artifacts.GetArtifact("bread"), 20)
-		res.Add(artifacts.GetArtifact("cube"), 50)
-		res.Add(artifacts.GetArtifact("brick"), 50)
-		res.Add(artifacts.GetArtifact("board"), 40)
-		res.Add(artifacts.GetArtifact("tile"), 20)
-		res.Add(artifacts.GetArtifact("thatch"), 10)
-		res.Add(artifacts.GetArtifact("log"), 20)
-		res.Add(artifacts.GetArtifact("textile"), 30)
-		town.Init()
-	}
-	{
-		town.Marketplace.Init()
-		res := &town.Marketplace.Storage
-		res.Add(artifacts.GetArtifact("vegetable"), 50)
-		res.Add(artifacts.GetArtifact("bread"), 20)
-		res.Add(artifacts.GetArtifact("log"), 20)
-		res.Add(artifacts.GetArtifact("textile"), 30)
-	}
+	GenerateCountry(PlayerConf, m)
+	GenerateCountry(OutlawConf, m)
 
 	return m
 }

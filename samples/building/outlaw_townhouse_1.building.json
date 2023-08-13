@@ -1,0 +1,9 @@
+{
+	"baseShape": [
+		[null, null, null, null, null],
+		[null, null, null, null, null],
+		[null, ["wood", "reed"], ["wood", "reed"], ["wood", "reed"], null],
+		[null, null, null, null, null],
+		[null, null, null, null, null]
+	]
+}
