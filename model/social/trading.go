@@ -210,3 +210,7 @@ func (t *Trader) PendingCosts() uint32 {
 func (t *Trader) Broken() bool {
 	return false
 }
+
+func (t *Trader) GetTown() *Town {
+	return nil
+}

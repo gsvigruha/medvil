@@ -138,7 +138,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 	marketplace.Plan.BuildingType = building.BuildingTypeMarket
 	AddBuilding(marketplace, m)
 
-	country := &social.Country{Towns: []*social.Town{&social.Town{}}}
+	country := &social.Country{Towns: []*social.Town{&social.Town{}}, T: t}
 	m.Countries = append(m.Countries, country)
 	town := country.Towns[0]
 	town.Country = country

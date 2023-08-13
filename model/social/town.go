@@ -70,7 +70,7 @@ func (town *Town) Init() {
 	}
 }
 
-func (town *Town) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	s := &stats.Stats{}
 	eoYear := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
 	eoMonth := (Calendar.Hour == 0 && Calendar.Day == 1)
