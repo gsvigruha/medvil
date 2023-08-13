@@ -270,3 +270,13 @@ func (m *Map) Shore(x, y uint16) bool {
 	}
 	return false
 }
+
+func (m *Map) GetCountries(t uint8) []*social.Country {
+	var result []*social.Country
+	for _, country := range m.Countries {
+		if country.T == t {
+			result = append(result, country)
+		}
+	}
+	return result
+}

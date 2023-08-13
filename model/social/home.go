@@ -32,6 +32,7 @@ type Home interface {
 	Destination(extensionType *building.BuildingExtensionType) navigation.Destination
 	PendingCosts() uint32
 	Broken() bool
+	GetTown() *Town
 }
 
 var water = artifacts.GetArtifact("water")

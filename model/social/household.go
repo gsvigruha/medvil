@@ -1,6 +1,7 @@
 package social
 
 import (
+	"math"
 	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
@@ -16,6 +17,7 @@ const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 10)
+const FleeingRate = 1.0 / (24 * 30 * 12)
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
@@ -422,7 +424,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 	}
 }
 
-func (h *Household) Filter(Calendar *time.CalendarType, m navigation.IMap) {
+func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 	var newPeople = make([]*Person, 0, len(h.People))
 	for _, p := range h.People {
 		if p.Health == 0 {
@@ -431,6 +433,28 @@ func (h *Household) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 				h.AddTask(p.Task)
 			}
 			p.releaseTask()
+		} else if p.Happiness == 0 && rand.Float64() < FleeingRate {
+			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
+				h.AddTask(p.Task)
+			}
+			p.releaseTask()
+
+			var town *Town
+			var dist = 0.0
+			for _, countryI := range m.GetCountries(CountryTypeOutlaw) {
+				for _, townI := range countryI.Towns {
+					distI := math.Abs(float64(h.Town.Townhall.Household.Building.X)-float64(townI.Townhall.Household.Building.X)) +
+						math.Abs(float64(h.Town.Townhall.Household.Building.Y)-float64(townI.Townhall.Household.Building.Y))
+					if town == nil || dist > distI {
+						town = townI
+						dist = distI
+					}
+				}
+			}
+			if town != nil {
+				town.Townhall.Household.AssignPerson(p, m)
+				p.Task = &economy.GoHomeTask{F: m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y), P: p}
+			}		
 		} else {
 			newPeople = append(newPeople, p)
 		}
@@ -549,4 +573,8 @@ func (h *Household) PendingCosts() uint32 {
 
 func (h *Household) Broken() bool {
 	return h.Building.Broken
+}
+
+func (h *Household) GetTown() *Town {
+	return h.Town
 }

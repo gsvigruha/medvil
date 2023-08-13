@@ -102,7 +102,16 @@ func (fc *FarmController) Refresh() {
 }
 
 func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return fc.farm.GetFields()
+	fields := fc.farm.GetFields()
+	if fc.farm.FieldUsableFor(fc.cp.C.Map, rf.F, fc.UseType) {
+		fields = append(fields, social.FarmLand{
+			X:       rf.F.X,
+			Y:       rf.F.Y,
+			UseType: fc.UseType,
+			F:       rf.F,
+		})
+	}
+	return fields
 }
 
 func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {

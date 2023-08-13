@@ -80,7 +80,16 @@ func (mc *MineController) Refresh() {
 }
 
 func (mc *MineController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return mc.mine.GetFields()
+	fields := mc.mine.GetFields()
+	if social.CheckMineUseType(mc.UseType, rf.F) {
+		fields = append(fields, social.MineLand{
+			X:       rf.F.X,
+			Y:       rf.F.Y,
+			UseType: mc.UseType,
+			F:       rf.F,
+		})
+	}
+	return fields
 }
 
 func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {

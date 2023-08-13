@@ -7,6 +7,7 @@ import (
 	"medvil/controller"
 	"medvil/model/building"
 	"medvil/model/navigation"
+	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/animation"
 	"medvil/view/vehicles"
@@ -190,17 +191,21 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	cv.SetFillStyle("#BA6")
 	person := c.ReverseReferences.TravellerToPerson[t]
 	if person != nil {
-		switch person.Home.GetBuilding().Plan.BuildingType {
-		case building.BuildingTypeFarm:
-			cv.SetFillStyle("#BA6")
-		case building.BuildingTypeMine:
-			cv.SetFillStyle("#B42")
-		case building.BuildingTypeWorkshop:
-			cv.SetFillStyle("#B6D")
-		case building.BuildingTypeFactory:
-			cv.SetFillStyle("#B6D")
-		case building.BuildingTypeTownhall:
-			cv.SetFillStyle("#2AE")
+		if person.Home.GetTown().Country.T == social.CountryTypeOutlaw {
+			cv.SetFillStyle("#952")
+		} else {
+			switch person.Home.GetBuilding().Plan.BuildingType {
+			case building.BuildingTypeFarm:
+				cv.SetFillStyle("#BA6")
+			case building.BuildingTypeMine:
+				cv.SetFillStyle("#B42")
+			case building.BuildingTypeWorkshop:
+				cv.SetFillStyle("#B6D")
+			case building.BuildingTypeFactory:
+				cv.SetFillStyle("#B6D")
+			case building.BuildingTypeTownhall:
+				cv.SetFillStyle("#2AE")
+			}
 		}
 	}
 
