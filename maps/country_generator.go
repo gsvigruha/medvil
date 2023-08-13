@@ -109,7 +109,14 @@ func addFarmLand(farm *social.Farm, useType uint8, dx, dy int, m *model.Map) {
 	)
 }
 
-func GenerateCountry(conf CountryConf, m *model.Map) bool {
+func GenerateCountry(t uint8, m *model.Map) bool {
+	var conf CountryConf
+	switch t {
+	case social.CountryTypePlayer:
+		conf = PlayerConf
+	case social.CountryTypeOutlaw:
+		conf = OutlawConf
+	}
 	tx, ty := findStartingLocation(m)
 	if tx == 0 && ty == 0 {
 		return false

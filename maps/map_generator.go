@@ -6,6 +6,7 @@ import (
 	"medvil/model"
 	"medvil/model/artifacts"
 	"medvil/model/navigation"
+	"medvil/model/social"
 	"medvil/model/terrain"
 	"medvil/model/time"
 )
@@ -239,8 +240,8 @@ func NewMap(config MapConfig) *model.Map {
 		m.Calendar = calendar
 
 		var success = true
-		success = success && GenerateCountry(PlayerConf, m)
-		success = success && GenerateCountry(OutlawConf, m)
+		success = success && GenerateCountry(social.CountryTypePlayer, m)
+		success = success && GenerateCountry(social.CountryTypeOutlaw, m)
 
 		if !success {
 			continue
