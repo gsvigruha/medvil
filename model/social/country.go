@@ -4,8 +4,13 @@ import (
 	"medvil/model/stats"
 )
 
+const CountryTypePlayer uint8 = 0
+const CountryTypeOutlaw uint8 = 1
+const CountryTypeOtherCivilization uint8 = 2
+
 type Country struct {
 	Towns []*Town
+	T     uint8
 }
 
 func (c *Country) Stats() *stats.Stats {
