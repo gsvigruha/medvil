@@ -2,7 +2,7 @@
 	"baseShape": [
 		[null, null, null, null, null],
 		[null, null, null, null, null],
-		[null, ["wood", "reed"], ["wood", "wood", "reed"], ["wood", "reed"], null],
+		[null, null, ["wood", "wood", "reed"], null, null],
 		[null, null, null, null, null],
 		[null, null, null, null, null]
 	]

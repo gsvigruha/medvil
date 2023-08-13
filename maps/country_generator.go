@@ -4,20 +4,26 @@ import (
 	"medvil/model"
 	"medvil/model/artifacts"
 	"medvil/model/building"
+	"medvil/model/economy"
 	"medvil/model/social"
 )
 
 type CountryConf struct {
 	TownhallPlan    string
 	MarketplacePlan string
-	Res             map[string]uint16
+	FarmPlan        string
+	WorkshopPlan    string
+	TownhallRes     map[string]uint16
+	MarketplaceRes  map[string]uint16
 	People          uint16
+	Money           uint32
+	Village         bool
 }
 
 var PlayerConf = CountryConf{
 	TownhallPlan:    "samples/building/townhouse_1.building.json",
 	MarketplacePlan: "samples/building/marketplace_1.building.json",
-	Res: map[string]uint16{
+	TownhallRes: map[string]uint16{
 		"fruit":     50,
 		"vegetable": 50,
 		"bread":     20,
@@ -29,19 +35,50 @@ var PlayerConf = CountryConf{
 		"log":       20,
 		"textile":   30,
 	},
-	People: 5,
+	MarketplaceRes: map[string]uint16{
+		"vegetable": 50,
+		"bread":     20,
+		"log":       20,
+		"textile":   30,
+	},
+	People:  5,
+	Money:   2000,
+	Village: false,
 }
 
 var OutlawConf = CountryConf{
 	TownhallPlan:    "samples/building/outlaw_townhouse_1.building.json",
 	MarketplacePlan: "samples/building/outlaw_marketplace_1.building.json",
-	Res: map[string]uint16{
+	FarmPlan:        "samples/building/outlaw_farm_1.building.json",
+	WorkshopPlan:    "samples/building/outlaw_workshop_1.building.json",
+	TownhallRes: map[string]uint16{
 		"fruit":     20,
 		"vegetable": 20,
 		"bread":     20,
 		"log":       10,
 	},
-	People: 3,
+	MarketplaceRes: map[string]uint16{
+		"vegetable": 50,
+		"sheep":     5,
+		"log":       20,
+		"textile":   30,
+	},
+	People:  8,
+	Money:   1000,
+	Village: true,
+}
+
+func addFarmLand(farm *social.Farm, useType uint8, dx, dy int, m *model.Map) {
+	x := uint16(int(farm.Household.Building.X) + dx)
+	y := uint16(int(farm.Household.Building.Y) + dy)
+	farm.Land = append(farm.Land,
+		social.FarmLand{
+			X:       x,
+			Y:       y,
+			UseType: useType,
+			F:       m.GetField(x, y),
+		},
+	)
 }
 
 func GenerateCountry(conf CountryConf, m *model.Map) {
@@ -71,14 +108,14 @@ func GenerateCountry(conf CountryConf, m *model.Map) {
 	town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
 	town.Townhall.Household.Building.Plan.BuildingType = building.BuildingTypeTownhall
 	town.Marketplace.Building.Plan.BuildingType = building.BuildingTypeMarket
-	town.Townhall.Household.Money = 2000
-	town.Marketplace.Money = 2000
+	town.Townhall.Household.Money = conf.Money
+	town.Marketplace.Money = conf.Money
 	for i := range town.Townhall.Household.People {
 		town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
 	}
 	{
 		res := &town.Townhall.Household.Resources
-		for a, q := range conf.Res {
+		for a, q := range conf.TownhallRes {
 			res.Add(artifacts.GetArtifact(a), q)
 		}
 		town.Init()
@@ -86,9 +123,65 @@ func GenerateCountry(conf CountryConf, m *model.Map) {
 	{
 		town.Marketplace.Init()
 		res := &town.Marketplace.Storage
-		res.Add(artifacts.GetArtifact("vegetable"), 50)
-		res.Add(artifacts.GetArtifact("bread"), 20)
-		res.Add(artifacts.GetArtifact("log"), 20)
-		res.Add(artifacts.GetArtifact("textile"), 30)
+		for a, q := range conf.MarketplaceRes {
+			res.Add(artifacts.GetArtifact(a), q)
+		}
+	}
+
+	if conf.Village {
+		farmB := &building.Building{
+			Plan: building.BuildingPlanFromJSON(conf.FarmPlan),
+			X:    uint16(tx + 2),
+			Y:    uint16(ty - 4),
+		}
+		farmB.Plan.BuildingType = building.BuildingTypeFarm
+		AddBuilding(farmB, m)
+		farm := &social.Farm{Household: &social.Household{Building: farmB, Town: town}}
+		farm.Household.TargetNumPeople = 4
+		farm.Household.Resources.VolumeCapacity = farm.Household.Building.Plan.Area() * social.StoragePerArea
+		addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 0, m)
+		addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 1, m)
+		addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, -1, m)
+		addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, 0, m)
+		addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, 1, m)
+		addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 1, -1, m)
+		addFarmLand(farm, economy.FarmFieldUseTypeVegetables, 0, 1, m)
+		addFarmLand(farm, economy.FarmFieldUseTypeForestry, 1, -2, m)
+		addFarmLand(farm, economy.FarmFieldUseTypeForestry, 0, -2, m)
+		addFarmLand(farm, economy.FarmFieldUseTypeForestry, -1, -2, m)
+		town.Farms = append(town.Farms, farm)
+
+		{
+			workshopB := &building.Building{
+				Plan: building.BuildingPlanFromJSON(conf.WorkshopPlan),
+				X:    uint16(tx - 1),
+				Y:    uint16(ty - 4),
+			}
+			workshopB.Plan.BaseShape[2][2].Extension = &building.BuildingExtension{T: building.Workshop}
+			workshopB.Plan.BuildingType = building.BuildingTypeWorkshop
+			AddBuilding(workshopB, m)
+			workshop := &social.Workshop{Household: &social.Household{Building: workshopB, Town: town}}
+			workshop.Household.TargetNumPeople = 2
+			workshop.Household.Resources.VolumeCapacity = workshop.Household.Building.Plan.Area() * social.StoragePerArea
+			workshop.Manufacture = economy.GetManufacture("butchering")
+			town.Workshops = append(town.Workshops, workshop)
+		}
+		{
+			workshopB := &building.Building{
+				Plan: building.BuildingPlanFromJSON(conf.WorkshopPlan),
+				X:    uint16(tx - 1),
+				Y:    uint16(ty - 5),
+			}
+			workshopB.Plan.BaseShape[2][2].Extension = &building.BuildingExtension{T: building.Workshop}
+			workshopB.Plan.BuildingType = building.BuildingTypeWorkshop
+			AddBuilding(workshopB, m)
+			workshop := &social.Workshop{Household: &social.Household{Building: workshopB, Town: town}}
+			workshop.Household.TargetNumPeople = 2
+			workshop.Household.Resources.VolumeCapacity = workshop.Household.Building.Plan.Area() * social.StoragePerArea
+			workshop.Manufacture = economy.GetManufacture("sewing")
+			town.Workshops = append(town.Workshops, workshop)
+		}
+
+		town.Townhall.Household.TargetNumPeople -= 6
 	}
 }
