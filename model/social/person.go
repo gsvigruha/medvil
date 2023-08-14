@@ -111,13 +111,16 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if p.Home.Broken() && p.Happiness > 0 {
 			p.Happiness--
 		}
-		statue := m.GetField(p.Traveller.FX, p.Traveller.FY).Statue
-		if statue != nil {
-			if p.Happiness < MaxPersonState-statue.T.Happiness {
-				p.Happiness += statue.T.Happiness
+		field := m.GetField(p.Traveller.FX, p.Traveller.FY)
+		if field.Statue != nil {
+			if p.Happiness < MaxPersonState-field.Statue.T.Happiness {
+				p.Happiness += field.Statue.T.Happiness
 			} else {
 				p.Happiness = MaxPersonState
 			}
+		}
+		if field.Plant != nil && field.Plant.IsTree() && p.Happiness < MaxPersonState {
+			p.Happiness++
 		}
 	}
 }
