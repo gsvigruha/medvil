@@ -57,6 +57,9 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 	if f.Animal != nil && !f.Animal.Corralled {
 		cv.DrawImage("texture/terrain/"+f.Animal.T.Name+".png", rf.X[0]-32, rf.Y[2]-64, 64, 64)
 	}
+	if f.Statue != nil && !f.Statue.Construction {
+		cv.DrawImage("texture/infra/"+f.Statue.T.Name+".png", rf.X[0]-32, rf.Y[2]-80, 64, 64)
+	}
 	if f.Travellers != nil {
 		// Travellers on the ground ahead other ground objects
 		show := func(t *navigation.Traveller) bool { _, y := GetScreenXY(t, rf, c); return y >= midY && t.FZ == 0 }

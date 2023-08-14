@@ -82,7 +82,7 @@ func (t *Traveller) BlockedBy(dir, opx, opy uint8) bool {
 
 func (t *Traveller) HasRoom(m IMap, dir uint8) bool {
 	field := m.GetField(t.FX, t.FY)
-	if (field.Plant != nil && field.Plant.T.TreeT != nil) || field.Animal != nil {
+	if (field.Plant != nil && field.Plant.T.TreeT != nil) || field.Animal != nil || field.Statue != nil {
 		// Trees are assumed to be in the middle of the field
 		if t.BlockedBy(dir, MaxPX/2, MaxPY/2) {
 			return false

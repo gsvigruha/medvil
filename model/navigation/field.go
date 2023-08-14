@@ -42,6 +42,7 @@ type Field struct {
 	Plant        *terrain.Plant
 	Animal       *terrain.Animal
 	Road         *building.Road
+	Statue       *building.Statue
 	Travellers   []*Traveller `json:"-"`
 	Allocated    bool
 	Construction bool
@@ -126,6 +127,9 @@ func (f Field) Empty() bool {
 		return false
 	}
 	if f.Animal != nil {
+		return false
+	}
+	if f.Statue != nil {
 		return false
 	}
 	return true

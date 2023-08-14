@@ -111,6 +111,14 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if p.Home.Broken() && p.Happiness > 0 {
 			p.Happiness--
 		}
+		statue := m.GetField(p.Traveller.FX, p.Traveller.FY).Statue
+		if statue != nil {
+			if p.Happiness < MaxPersonState-statue.T.Happiness {
+				p.Happiness += statue.T.Happiness
+			} else {
+				p.Happiness = MaxPersonState
+			}
+		}
 	}
 }
 

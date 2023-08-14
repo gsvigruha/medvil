@@ -118,6 +118,13 @@ func (m *Map) AddRoadConstruction(town *social.Town, x, y uint16, rt *building.R
 	return true
 }
 
+func (m *Map) AddStatueConstruction(town *social.Town, x, y uint16, st *building.StatueType) bool {
+	s := &building.Statue{T: st, Construction: true}
+	m.GetField(x, y).Statue = s
+	town.CreateStatueConstruction(x, y, s, m)
+	return true
+}
+
 func (m *Map) AddInfraConstruction(town *social.Town, x, y uint16, it *building.InfraType) bool {
 	town.CreateInfraConstruction(x, y, it, m)
 	return true
