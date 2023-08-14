@@ -75,7 +75,7 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 	} else if ic.it == InfraTypeBridge {
 		return c.Map.Shore(rf.F.X, rf.F.Y)
 	} else if ic.it == InfraTypeStoneWall1 || ic.it == InfraTypeStoneWall2 {
-		return rf.F.RoadCompatible()
+		return rf.F.WallCompatible()
 	} else if ic.it == InfraTypeStoneTower1 || ic.it == InfraTypeStoneTower2 {
 		return rf.F.Buildable()
 	} else if ic.it == InfraTypeStoneWallRamp {
@@ -89,7 +89,7 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 	} else if ic.it == InfraTypeLevelForRoad {
 		return navigation.FieldCanBeLeveledForRoad(*rf.F, c.Map)
 	} else if ic.it == InfraTypeFountain {
-		return rf.F.Buildable()
+		return rf.F.RoadCompatible()
 	}
 	return false
 }

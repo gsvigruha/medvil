@@ -429,7 +429,9 @@ func (town *Town) DestroyRoad(r *building.Road, m navigation.IMap) {
 	var newRoads []*navigation.Field
 	for _, road := range town.Roads {
 		if road.Road == r {
-			m.GetField(road.X, road.Y).Road = nil
+			f := m.GetField(road.X, road.Y)
+			f.Road = nil
+			f.Statue = nil
 		} else {
 			newRoads = append(newRoads, road)
 		}
