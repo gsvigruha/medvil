@@ -4,6 +4,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"strconv"
 )
 
 const DemolishTaskMaxProgress = 30 * 24
@@ -47,7 +48,11 @@ func (t *DemolishTask) Name() string {
 }
 
 func (t *DemolishTask) Tag() string {
-	return ""
+	return DemolishTaskTag(t.F)
+}
+
+func DemolishTaskTag(f *navigation.Field) string {
+	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y))
 }
 
 func (t *DemolishTask) Expired(Calendar *time.CalendarType) bool {

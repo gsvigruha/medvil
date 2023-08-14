@@ -346,13 +346,15 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 }
 
 func (town *Town) CreateDemolishTask(b *building.Building, r *building.Road, f *navigation.Field, m navigation.IMap) {
-	town.Townhall.Household.AddTask(&economy.DemolishTask{
-		Building: b,
-		Road:     r,
-		F:        f,
-		Town:     town,
-		M:        m,
-	})
+	if town.Townhall.Household.NumTasks("demolish", economy.DemolishTaskTag(f)) == 0 {
+		town.Townhall.Household.AddTask(&economy.DemolishTask{
+			Building: b,
+			Road:     r,
+			F:        f,
+			Town:     town,
+			M:        m,
+		})
+	}
 }
 
 func (town *Town) GetHouseholds() []*Household {

@@ -454,6 +454,8 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			if town != nil {
 				town.Townhall.Household.AssignPerson(p, m)
 				p.Task = &economy.GoHomeTask{F: m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y), P: p}
+			} else {
+				m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)
 			}
 		} else {
 			newPeople = append(newPeople, p)
