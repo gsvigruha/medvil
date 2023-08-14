@@ -203,6 +203,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				case building.BuildingTypeCanal:
 					field.Construction = false
 					field.Terrain.T = terrain.Canal
+				case building.BuildingTypeStatue:
+					construction.Statue.Construction = false
 				}
 			}
 			if b != nil {
@@ -261,6 +263,15 @@ func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m naviga
 	roadF := m.GetField(x, y)
 	roadF.Allocated = true
 	town.AddConstructionTasks(c, roadF, m)
+}
+
+func (town *Town) CreateStatueConstruction(x, y uint16, s *building.Statue, m navigation.IMap) {
+	c := &building.Construction{X: x, Y: y, Statue: s, Cost: s.T.Cost, T: building.BuildingTypeStatue, Storage: &artifacts.Resources{}}
+	c.Storage.Init(StoragePerArea)
+	town.Constructions = append(town.Constructions, c)
+
+	f := m.GetField(x, y)
+	town.AddConstructionTasks(c, f, m)
 }
 
 func (town *Town) CreateBuildingConstruction(b *building.Building, m navigation.IMap) {
@@ -418,7 +429,9 @@ func (town *Town) DestroyRoad(r *building.Road, m navigation.IMap) {
 	var newRoads []*navigation.Field
 	for _, road := range town.Roads {
 		if road.Road == r {
-			m.GetField(road.X, road.Y).Road = nil
+			f := m.GetField(road.X, road.Y)
+			f.Road = nil
+			f.Statue = nil
 		} else {
 			newRoads = append(newRoads, road)
 		}

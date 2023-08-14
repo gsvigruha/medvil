@@ -74,6 +74,8 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(economy.TradeTask{})
 	case "TerraformTask":
 		return reflect.TypeOf(economy.TerraformTask{})
+	case "RepairTask":
+		return reflect.TypeOf(economy.RepairTask{})
 	case "Field":
 		return reflect.TypeOf(navigation.Field{})
 	case "Location":
@@ -112,6 +114,8 @@ func LoadStaticType(t reflect.Type, key string) reflect.Value {
 		return reflect.ValueOf(building.GetBuildingExtensionType(key))
 	case "VehicleConstruction":
 		return reflect.ValueOf(economy.GetVehicleConstruction(key))
+	case "StatueType":
+		return reflect.ValueOf(building.GetStatueType(key))
 	}
 	panic("Invalid type " + t.Elem().Name())
 }

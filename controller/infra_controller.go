@@ -27,6 +27,7 @@ const InfraTypeGateNS = 21
 const InfraTypeGateEW = 22
 const InfraTypeLevelForBuilding = 31
 const InfraTypeLevelForRoad = 32
+const InfraTypeFountain = 41
 
 const InfraPanelTop = 0.1
 
@@ -74,7 +75,7 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 	} else if ic.it == InfraTypeBridge {
 		return c.Map.Shore(rf.F.X, rf.F.Y)
 	} else if ic.it == InfraTypeStoneWall1 || ic.it == InfraTypeStoneWall2 {
-		return rf.F.RoadCompatible()
+		return rf.F.WallCompatible()
 	} else if ic.it == InfraTypeStoneTower1 || ic.it == InfraTypeStoneTower2 {
 		return rf.F.Buildable()
 	} else if ic.it == InfraTypeStoneWallRamp {
@@ -87,6 +88,8 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 		return navigation.FieldCanBeLeveledForBuilding(*rf.F, c.Map)
 	} else if ic.it == InfraTypeLevelForRoad {
 		return navigation.FieldCanBeLeveledForRoad(*rf.F, c.Map)
+	} else if ic.it == InfraTypeFountain {
+		return rf.F.RoadCompatible()
 	}
 	return false
 }
@@ -129,6 +132,8 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 			c.Map.AddLevelingTask(c.ActiveTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForBuilding)
 		} else if ic.it == InfraTypeLevelForRoad {
 			c.Map.AddLevelingTask(c.ActiveTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
+		} else if ic.it == InfraTypeFountain {
+			c.Map.AddStatueConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.FountainType)
 		}
 	}
 	return true
@@ -233,6 +238,13 @@ func InfraToControlPanel(cp *ControlPanel) {
 		b:   gui.ButtonGUI{Texture: "infra/canal", X: float64(24 + LargeIconD*2), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
 		it:  InfraTypeCanal,
 		msg: "Extend water with canals for drinking and transport.",
+		ic:  ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:   gui.ButtonGUI{Icon: "infra/fountain", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
+		it:  InfraTypeFountain,
+		msg: "Statues make your population happy.",
 		ic:  ic,
 	})
 
