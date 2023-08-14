@@ -244,7 +244,7 @@ func InfraToControlPanel(cp *ControlPanel) {
 	p.AddButton(InfraBuildButton{
 		b:   gui.ButtonGUI{Icon: "infra/fountain", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
 		it:  InfraTypeFountain,
-		msg: "",
+		msg: "Statues make your population happy.",
 		ic:  ic,
 	})
 
