@@ -189,7 +189,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 					t := &Tower{Household: &Household{Building: b, Town: town}}
 					t.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 					town.Towers = append(town.Towers, t)
-				case building.BuildingTypeWall:
+				case building.BuildingTypeWall, building.BuildingTypeGate:
 					w := &Wall{Building: b, Town: town, F: field}
 					town.Walls = append(town.Walls, w)
 				case building.BuildingTypeRoad:
@@ -243,7 +243,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 					X:        wall.F.X,
 					Y:        wall.F.Y,
 					Cost:     wall.Building.Plan.ConstructionCost(),
-					T:        building.BuildingTypeWall,
+					T:        wall.Building.Plan.BuildingType,
 					Storage:  &artifacts.Resources{},
 				}
 				town.Constructions = append(town.Constructions, c)
@@ -346,13 +346,15 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 }
 
 func (town *Town) CreateDemolishTask(b *building.Building, r *building.Road, f *navigation.Field, m navigation.IMap) {
-	town.Townhall.Household.AddTask(&economy.DemolishTask{
-		Building: b,
-		Road:     r,
-		F:        f,
-		Town:     town,
-		M:        m,
-	})
+	if town.Townhall.Household.NumTasks("demolish", economy.DemolishTaskTag(f)) == 0 {
+		town.Townhall.Household.AddTask(&economy.DemolishTask{
+			Building: b,
+			Road:     r,
+			F:        f,
+			Town:     town,
+			M:        m,
+		})
+	}
 }
 
 func (town *Town) GetHouseholds() []*Household {
@@ -436,7 +438,7 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 		town.Factories = DestroyBuilding(town.Factories, b, m)
 	case building.BuildingTypeTower:
 		town.Towers = DestroyBuilding(town.Towers, b, m)
-	case building.BuildingTypeWall:
+	case building.BuildingTypeWall, building.BuildingTypeGate:
 		var newWalls []*Wall
 		for _, wall := range town.Walls {
 			if wall.Building == b {
