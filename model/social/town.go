@@ -1,6 +1,7 @@
 package social
 
 import (
+	"math"
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
@@ -11,6 +12,7 @@ import (
 )
 
 const ConstructionTransportQuantity = 5
+const MaxSubsidyRatio = 0.8
 
 type JSONBuilding struct {
 	Plan string
@@ -98,7 +100,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		farm.ElapseTime(Calendar, m)
 		if eoYear {
-			town.Transfers.Farm.Transfer(&town.Townhall.Household.Money, &farm.Household.Money)
+			town.Transfers.Farm.CollectTax(town.Townhall.Household, farm.Household)
 		}
 		farm.Household.Filter(Calendar, m)
 		s.Add(farm.Household.Stats())
@@ -111,7 +113,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		workshop.ElapseTime(Calendar, m)
 		if eoYear {
-			town.Transfers.Workshop.Transfer(&town.Townhall.Household.Money, &workshop.Household.Money)
+			town.Transfers.Workshop.CollectTax(town.Townhall.Household, workshop.Household)
 		}
 		workshop.Household.Filter(Calendar, m)
 		s.Add(workshop.Household.Stats())
@@ -124,7 +126,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		mine.ElapseTime(Calendar, m)
 		if eoYear {
-			town.Transfers.Mine.Transfer(&town.Townhall.Household.Money, &mine.Household.Money)
+			town.Transfers.Mine.CollectTax(town.Townhall.Household, mine.Household)
 		}
 		mine.Household.Filter(Calendar, m)
 		s.Add(mine.Household.Stats())
@@ -137,7 +139,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		factory.ElapseTime(Calendar, m)
 		if eoYear {
-			town.Transfers.Factory.Transfer(&town.Townhall.Household.Money, &factory.Household.Money)
+			town.Transfers.Factory.CollectTax(town.Townhall.Household, factory.Household)
 		}
 		factory.Household.Filter(Calendar, m)
 		s.Add(factory.Household.Stats())
@@ -150,10 +152,27 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		tower.ElapseTime(Calendar, m)
 		if eoYear {
-			town.Transfers.Tower.Transfer(&town.Townhall.Household.Money, &tower.Household.Money)
+			town.Transfers.Tower.CollectTax(town.Townhall.Household, tower.Household)
 		}
 		tower.Household.Filter(Calendar, m)
 		s.Add(tower.Household.Stats())
+	}
+	if eoYear {
+		budget := uint32(float64(town.Townhall.Household.Money) * MaxSubsidyRatio)
+		subsidyNeeded := (SumSubsidyNeeded(town.Farms, town.Transfers.Farm) +
+			SumSubsidyNeeded(town.Mines, town.Transfers.Mine) +
+			SumSubsidyNeeded(town.Workshops, town.Transfers.Workshop) +
+			SumSubsidyNeeded(town.Towers, town.Transfers.Tower) +
+			SumSubsidyNeeded(town.Factories, town.Transfers.Factory))
+		var ratio = 1.0
+		if budget < subsidyNeeded {
+			ratio = float64(budget) / float64(subsidyNeeded)
+		}
+		SendSubsidy(town.Farms, town, town.Transfers.Farm, ratio)
+		SendSubsidy(town.Mines, town, town.Transfers.Mine, ratio)
+		SendSubsidy(town.Workshops, town, town.Transfers.Workshop, ratio)
+		SendSubsidy(town.Towers, town, town.Transfers.Tower, ratio)
+		SendSubsidy(town.Factories, town, town.Transfers.Factory, ratio)
 	}
 	for k := range town.Walls {
 		wall := town.Walls[k]
@@ -400,6 +419,26 @@ func AddTransportTasksForField(field *navigation.Field, th *Townhall, m navigati
 				TargetQuantity:   q,
 				CompleteQuantity: true,
 			})
+		}
+	}
+}
+
+func SumSubsidyNeeded[H House](houses []H, transfer TransferCategories) uint32 {
+	var subsidy uint32 = 0
+	for _, h := range houses {
+		if h.GetHousehold().Money < uint32(transfer.Threshold) {
+			subsidy += uint32(transfer.Threshold) - h.GetHousehold().Money
+		}
+	}
+	return subsidy
+}
+
+func SendSubsidy[H House](houses []H, t *Town, transfer TransferCategories, ratio float64) {
+	for _, h := range houses {
+		if h.GetHousehold().Money < uint32(transfer.Threshold) {
+			q := uint32(math.Floor(float64(transfer.Threshold)-float64(h.GetHousehold().Money)) * ratio)
+			h.GetHousehold().Money += q
+			t.Townhall.Household.Money -= q
 		}
 	}
 }

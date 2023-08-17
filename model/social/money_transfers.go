@@ -14,16 +14,18 @@ type MoneyTransfers struct {
 	MarketFundingRate int
 }
 
-func (t *TransferCategories) Transfer(townMoney, householdMoney *uint32) {
-	if int(*householdMoney) > t.Threshold {
-		tax := (*householdMoney - uint32(t.Threshold)) * uint32(t.Rate) / 100
-		*householdMoney -= tax
-		*townMoney += tax
-	} else if int(*householdMoney) < t.Threshold {
-		subsidy := uint32(t.Threshold) - *householdMoney
-		if *townMoney >= subsidy {
-			*householdMoney += subsidy
-			*townMoney -= subsidy
+func (t *TransferCategories) CollectTax(town, household *Household) {
+	if int(household.Money) > t.Threshold {
+		tax := (household.Money - uint32(t.Threshold)) * uint32(t.Rate) / 100
+		household.Money -= tax
+		town.Money += tax
+		dHappiness := uint8(t.Rate * 2)
+		for _, person := range household.People {
+			if person.Happiness >= dHappiness {
+				person.Happiness = -dHappiness
+			} else {
+				person.Happiness = 0
+			}
 		}
 	}
 }
