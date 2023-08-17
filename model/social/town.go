@@ -179,23 +179,23 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 			} else {
 				switch construction.T {
 				case building.BuildingTypeMine:
-					mine := &Mine{Household: &Household{Building: b, Town: town}}
+					mine := &Mine{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
 					mine.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 					town.Mines = append(town.Mines, mine)
 				case building.BuildingTypeWorkshop:
-					w := &Workshop{Household: &Household{Building: b, Town: town}}
+					w := &Workshop{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
 					w.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 					town.Workshops = append(town.Workshops, w)
 				case building.BuildingTypeFarm:
-					f := &Farm{Household: &Household{Building: b, Town: town}}
+					f := &Farm{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
 					f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 					town.Farms = append(town.Farms, f)
 				case building.BuildingTypeFactory:
-					f := &Factory{Household: &Household{Building: b, Town: town}}
+					f := &Factory{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
 					f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 					town.Factories = append(town.Factories, f)
 				case building.BuildingTypeTower:
-					t := &Tower{Household: &Household{Building: b, Town: town}}
+					t := &Tower{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
 					t.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 					town.Towers = append(town.Towers, t)
 				case building.BuildingTypeWall, building.BuildingTypeGate:

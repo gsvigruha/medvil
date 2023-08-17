@@ -121,7 +121,7 @@ var AllManufacture = [...]*Manufacture{
 		BuildingExtensionType: building.Workshop,
 		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("sheep"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{
-			artifacts.Artifacts{A: artifacts.GetArtifact("meat"), Quantity: 7},
+			artifacts.Artifacts{A: artifacts.GetArtifact("meat"), Quantity: 8},
 			artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "toolsmith",

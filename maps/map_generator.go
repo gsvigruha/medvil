@@ -35,6 +35,7 @@ func setupTerrain(m *model.Map, config MapConfig) {
 			fields[i][j] = &navigation.Field{X: uint16(i), Y: uint16(j)}
 			fields[i][j].Terrain.T = terrain.Grass
 			fields[i][j].Terrain.Shape = uint8(rand.Intn(4))
+			fields[i][j].Terrain.Resources = &artifacts.Resources{}
 			if fields[i][j].Terrain.T == terrain.Grass && rand.Intn(TreeProb) < config.Trees {
 				fields[i][j].Plant = &terrain.Plant{
 					T:             terrain.AllTreeTypes[rand.Intn(2)],
