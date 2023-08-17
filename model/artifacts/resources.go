@@ -22,10 +22,10 @@ func (a Artifacts) Multiply(n uint16) Artifacts {
 	return Artifacts{A: a.A, Quantity: a.Quantity * n}
 }
 
-func ArtifactsContain(as []Artifacts, oa *Artifact) bool {
+func GetQuantity(as []Artifacts, oa *Artifact) uint16 {
 	for _, a := range as {
 		if a.A == oa && a.Quantity > 0 {
-			return true
+			return a.Quantity
 		}
 	}
 	return false

@@ -362,8 +362,13 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 			return 0
 		}
 	}
-	if h.Building.Broken && artifacts.ArtifactsContain(h.Building.Plan.RepairCost(), a) {
-		return 0
+	if h.Building.Broken {
+		needed := artifacts.GetQuantity(h.Building.Plan.RepairCost(), a)
+		if q > needed {
+			result = q - needed
+		} else {
+			return 0
+		}
 	}
 	if result >= ProductTransportQuantity(a) || h.Resources.Full() {
 		return result
