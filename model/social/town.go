@@ -11,6 +11,7 @@ import (
 )
 
 const ConstructionTransportQuantity = 5
+const MaxSubsidyRatio = 0.8
 
 type JSONBuilding struct {
 	Plan string
@@ -97,9 +98,6 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		farm.ElapseTime(Calendar, m)
-		if eoYear {
-			town.Transfers.Farm.Transfer(&town.Townhall.Household.Money, &farm.Household.Money)
-		}
 		farm.Household.Filter(Calendar, m)
 		s.Add(farm.Household.Stats())
 	}
@@ -110,9 +108,6 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		workshop.ElapseTime(Calendar, m)
-		if eoYear {
-			town.Transfers.Workshop.Transfer(&town.Townhall.Household.Money, &workshop.Household.Money)
-		}
 		workshop.Household.Filter(Calendar, m)
 		s.Add(workshop.Household.Stats())
 	}
@@ -123,9 +118,6 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		mine.ElapseTime(Calendar, m)
-		if eoYear {
-			town.Transfers.Mine.Transfer(&town.Townhall.Household.Money, &mine.Household.Money)
-		}
 		mine.Household.Filter(Calendar, m)
 		s.Add(mine.Household.Stats())
 	}
@@ -136,9 +128,6 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		factory.ElapseTime(Calendar, m)
-		if eoYear {
-			town.Transfers.Factory.Transfer(&town.Townhall.Household.Money, &factory.Household.Money)
-		}
 		factory.Household.Filter(Calendar, m)
 		s.Add(factory.Household.Stats())
 	}
@@ -149,11 +138,31 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 			person.ElapseTime(Calendar, m)
 		}
 		tower.ElapseTime(Calendar, m)
-		if eoYear {
-			town.Transfers.Tower.Transfer(&town.Townhall.Household.Money, &tower.Household.Money)
-		}
 		tower.Household.Filter(Calendar, m)
 		s.Add(tower.Household.Stats())
+	}
+	if eoYear {
+		CollectTax(town.Farms, town, town.Transfers.Farm)
+		CollectTax(town.Mines, town, town.Transfers.Mine)
+		CollectTax(town.Workshops, town, town.Transfers.Workshop)
+		CollectTax(town.Towers, town, town.Transfers.Tower)
+		CollectTax(town.Factories, town, town.Transfers.Factory)
+
+		budget := uint32(float64(town.Townhall.Household.Money) * MaxSubsidyRatio)
+		subsidyNeeded := (SumSubsidyNeeded(town.Farms, town.Transfers.Farm) +
+			SumSubsidyNeeded(town.Mines, town.Transfers.Mine) +
+			SumSubsidyNeeded(town.Workshops, town.Transfers.Workshop) +
+			SumSubsidyNeeded(town.Towers, town.Transfers.Tower) +
+			SumSubsidyNeeded(town.Factories, town.Transfers.Factory))
+		var ratio = 1.0
+		if budget < subsidyNeeded {
+			ratio = float64(budget) / float64(subsidyNeeded)
+		}
+		SendSubsidy(town.Farms, town, town.Transfers.Farm, ratio)
+		SendSubsidy(town.Mines, town, town.Transfers.Mine, ratio)
+		SendSubsidy(town.Workshops, town, town.Transfers.Workshop, ratio)
+		SendSubsidy(town.Towers, town, town.Transfers.Tower, ratio)
+		SendSubsidy(town.Factories, town, town.Transfers.Factory, ratio)
 	}
 	for k := range town.Walls {
 		wall := town.Walls[k]

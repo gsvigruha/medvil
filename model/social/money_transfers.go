@@ -1,5 +1,9 @@
 package social
 
+import (
+	"math"
+)
+
 type TransferCategories struct {
 	Rate      int
 	Threshold int
@@ -14,16 +18,21 @@ type MoneyTransfers struct {
 	MarketFundingRate int
 }
 
-func (t *TransferCategories) Transfer(townMoney, householdMoney *uint32) {
-	if int(*householdMoney) > t.Threshold {
-		tax := (*householdMoney - uint32(t.Threshold)) * uint32(t.Rate) / 100
-		*householdMoney -= tax
-		*townMoney += tax
-	} else if int(*householdMoney) < t.Threshold {
-		subsidy := uint32(t.Threshold) - *householdMoney
-		if *townMoney >= subsidy {
-			*householdMoney += subsidy
-			*townMoney -= subsidy
+func CollectTax[H House](houses []H, town *Town, t TransferCategories) {
+	for _, h := range houses {
+		household := h.GetHousehold()
+		if int(household.Money) > t.Threshold {
+			tax := (household.Money - uint32(t.Threshold)) * uint32(t.Rate) / 100
+			household.Money -= tax
+			town.Townhall.Household.Money += tax
+			dHappiness := uint8(t.Rate * 2)
+			for _, person := range household.People {
+				if person.Happiness >= dHappiness {
+					person.Happiness = -dHappiness
+				} else {
+					person.Happiness = 0
+				}
+			}
 		}
 	}
 }
@@ -34,6 +43,26 @@ func (t *MoneyTransfers) FundMarket(townMoney, marketMoney *uint32) {
 		if transfer <= *townMoney {
 			*townMoney -= transfer
 			*marketMoney += transfer
+		}
+	}
+}
+
+func SumSubsidyNeeded[H House](houses []H, transfer TransferCategories) uint32 {
+	var subsidy uint32 = 0
+	for _, h := range houses {
+		if h.GetHousehold().Money < uint32(transfer.Threshold) {
+			subsidy += uint32(transfer.Threshold) - h.GetHousehold().Money
+		}
+	}
+	return subsidy
+}
+
+func SendSubsidy[H House](houses []H, t *Town, transfer TransferCategories, ratio float64) {
+	for _, h := range houses {
+		if h.GetHousehold().Money < uint32(transfer.Threshold) {
+			q := uint32(math.Floor(float64(transfer.Threshold)-float64(h.GetHousehold().Money)) * ratio)
+			h.GetHousehold().Money += q
+			t.Townhall.Household.Money -= q
 		}
 	}
 }
