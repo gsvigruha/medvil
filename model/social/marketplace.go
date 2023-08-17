@@ -192,7 +192,7 @@ func (mp *Marketplace) SellAsManyAsPossible(as []artifacts.Artifacts, wallet eco
 }
 
 func (mp *Marketplace) CanBuy(as []artifacts.Artifacts) bool {
-	return mp.Storage.Has(as)
+	return mp.Storage.HasAll(as)
 }
 
 func (mp *Marketplace) CanSell(as []artifacts.Artifacts) bool {

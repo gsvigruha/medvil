@@ -173,7 +173,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			h.AddTask(&economy.RepairTask{
 				B: h.Building,
 				F: m.GetField(h.Building.X, h.Building.Y),
-				R: &h.Resources,
+				R: h.GetResources(),
 			})
 		}
 
@@ -438,7 +438,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 				h.AddTask(p.Task)
 			}
 			p.releaseTask()
-		} else if p.Happiness == 0 && rand.Float64() < FleeingRate {
+		} else if p.Happiness == 0 && rand.Float64() < FleeingRate && h.Town.Country.T != CountryTypeOutlaw {
 			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
 				h.AddTask(p.Task)
 			}

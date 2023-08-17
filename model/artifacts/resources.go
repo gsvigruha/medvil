@@ -28,7 +28,7 @@ func GetQuantity(as []Artifacts, oa *Artifact) uint16 {
 			return a.Quantity
 		}
 	}
-	return false
+	return 0
 }
 
 func Multiply(as []Artifacts, n uint16) []Artifacts {
@@ -146,7 +146,7 @@ func (r *Resources) Get(a *Artifact) uint16 {
 }
 
 func (r *Resources) RemoveAll(as []Artifacts) bool {
-	if !r.Has(as) {
+	if !r.HasAll(as) {
 		return false
 	}
 	for _, a := range as {
@@ -214,7 +214,7 @@ func (r *Resources) HasArtifact(a *Artifact) bool {
 	return false
 }
 
-func (r *Resources) Has(as []Artifacts) bool {
+func (r *Resources) HasAll(as []Artifacts) bool {
 	for _, a := range as {
 		if a.Quantity > 0 {
 			if v, ok := r.Artifacts[a.A]; ok {
