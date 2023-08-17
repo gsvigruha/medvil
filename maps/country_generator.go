@@ -153,7 +153,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 		town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
 	}
 	{
-		res := &town.Townhall.Household.Resources
+		res := town.Townhall.Household.Resources
 		for a, q := range conf.TownhallRes {
 			res.Add(artifacts.GetArtifact(a), q)
 		}

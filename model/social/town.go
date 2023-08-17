@@ -345,7 +345,7 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 			town.Townhall.Household.AddTask(&economy.TransportTask{
 				PickupD:          m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
 				DropoffD:         dest,
-				PickupR:          &town.Townhall.Household.Resources,
+				PickupR:          town.Townhall.Household.Resources,
 				DropoffR:         c.Storage,
 				A:                a.A,
 				TargetQuantity:   q,
@@ -403,8 +403,8 @@ func AddTransportTasksForField(field *navigation.Field, th *Townhall, m navigati
 			th.Household.AddTask(&economy.TransportTask{
 				PickupD:          field,
 				DropoffD:         m.GetField(th.Household.Building.X, th.Household.Building.Y),
-				PickupR:          &field.Terrain.Resources,
-				DropoffR:         &th.Household.Resources,
+				PickupR:          field.Terrain.Resources,
+				DropoffR:         th.Household.Resources,
 				A:                a,
 				TargetQuantity:   q,
 				CompleteQuantity: true,

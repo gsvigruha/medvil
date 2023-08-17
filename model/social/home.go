@@ -57,7 +57,7 @@ func FindWaterTask(h Home, numP uint16, m navigation.IMap) {
 				h.AddPriorityTask(&economy.TransportTask{
 					PickupD:        dest,
 					DropoffD:       h.Destination(building.NonExtension),
-					PickupR:        &dest.Terrain.Resources,
+					PickupR:        dest.Terrain.Resources,
 					DropoffR:       h.GetResources(),
 					A:              water,
 					TargetQuantity: WaterTransportQuantity,

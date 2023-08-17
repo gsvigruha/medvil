@@ -37,7 +37,7 @@ type Household struct {
 	Town            *Town `json:"-"`
 	Tasks           []economy.Task
 	Vehicles        []*vehicles.Vehicle
-	Resources       artifacts.Resources
+	Resources       *artifacts.Resources
 	Heating         uint8
 }
 
@@ -377,19 +377,19 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 }
 
 func (h *Household) HasFood() bool {
-	return economy.HasFood(h.Resources)
+	return economy.HasFood(*h.Resources)
 }
 
 func (h *Household) HasDrink() bool {
-	return economy.HasDrink(h.Resources)
+	return economy.HasDrink(*h.Resources)
 }
 
 func (h *Household) HasMedicine() bool {
-	return economy.HasMedicine(h.Resources)
+	return economy.HasMedicine(*h.Resources)
 }
 
 func (h *Household) HasBeer() bool {
-	return economy.HasBeer(h.Resources)
+	return economy.HasBeer(*h.Resources)
 }
 
 func (h *Household) NumTasks(name string, tag string) int {
@@ -538,7 +538,7 @@ func (h *Household) RandomField(m navigation.IMap, check func(navigation.Field) 
 }
 
 func (h *Household) GetResources() *artifacts.Resources {
-	return &h.Resources
+	return h.Resources
 }
 
 func (h *Household) GetBuilding() *building.Building {
@@ -567,7 +567,7 @@ func (h *Household) Destroy(m navigation.IMap) {
 		dstH.AssignPerson(person, m)
 	}
 	dstH.Money += h.Money
-	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(h.Resources)
+	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(*h.Resources)
 }
 
 func (h *Household) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {

@@ -68,8 +68,8 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 							w.Household.AddPriorityTask(&economy.TransportTask{
 								PickupD:        pickup,
 								DropoffD:       w.Household.Destination(building.NonExtension),
-								PickupR:        &pickup.Terrain.Resources,
-								DropoffR:       &w.Household.Resources,
+								PickupR:        pickup.Terrain.Resources,
+								DropoffR:       w.Household.Resources,
 								A:              water,
 								TargetQuantity: WaterTransportQuantity,
 							})
@@ -82,7 +82,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				w.Household.AddTask(&economy.ManufactureTask{
 					M: w.Manufacture,
 					F: home,
-					R: &w.Household.Resources,
+					R: w.Household.Resources,
 				})
 			}
 		}
