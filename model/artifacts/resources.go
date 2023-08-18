@@ -22,6 +22,16 @@ func (a Artifacts) Multiply(n uint16) Artifacts {
 	return Artifacts{A: a.A, Quantity: a.Quantity * n}
 }
 
+func Filter(as []Artifacts) []Artifacts {
+	var result []Artifacts
+	for _, a := range as {
+		if a.Quantity > 0 {
+			result = append(result, a)
+		}
+	}
+	return result
+}
+
 func GetQuantity(as []Artifacts, oa *Artifact) uint16 {
 	for _, a := range as {
 		if a.A == oa && a.Quantity > 0 {

@@ -70,11 +70,12 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		}
 		t.State = ExchangeTaskStateMarketSell
 	case ExchangeTaskStateMarketSell:
-		t.Goods = t.Exchange.SellAsManyAsPossible(t.Goods, t.HouseholdWallet)
+		t.Goods = artifacts.Filter(t.Exchange.SellAsManyAsPossible(t.Goods, t.HouseholdWallet))
 		t.State = ExchangeTaskStateMarketBuy
 	case ExchangeTaskStateMarketBuy:
 		if t.Exchange.Price(t.GoodsToBuy) <= t.HouseholdWallet.GetMoney() {
-			t.Goods = append(t.Goods, t.Exchange.BuyAsManyAsPossible(t.GoodsToBuy, t.HouseholdWallet)...)
+			bought := artifacts.Filter(t.Exchange.BuyAsManyAsPossible(t.GoodsToBuy, t.HouseholdWallet))
+			t.Goods = append(t.Goods, bought...)
 		}
 		t.State = ExchangeTaskStateDropoffAtHome
 	case ExchangeTaskStateDropoffAtHome:
