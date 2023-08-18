@@ -17,7 +17,7 @@ type Exchange interface {
 	Buy([]artifacts.Artifacts, Wallet)
 	BuyAsManyAsPossible([]artifacts.Artifacts, Wallet) []artifacts.Artifacts
 	Sell([]artifacts.Artifacts, Wallet)
-	SellAsManyAsPossible([]artifacts.Artifacts, Wallet)
+	SellAsManyAsPossible([]artifacts.Artifacts, Wallet) []artifacts.Artifacts
 	CanBuy([]artifacts.Artifacts) bool
 	CanSell([]artifacts.Artifacts) bool
 	Price([]artifacts.Artifacts) uint32
@@ -70,12 +70,11 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		}
 		t.State = ExchangeTaskStateMarketSell
 	case ExchangeTaskStateMarketSell:
-		t.Exchange.SellAsManyAsPossible(t.Goods, t.HouseholdWallet)
-		t.Goods = nil
+		t.Goods = t.Exchange.SellAsManyAsPossible(t.Goods, t.HouseholdWallet)
 		t.State = ExchangeTaskStateMarketBuy
 	case ExchangeTaskStateMarketBuy:
 		if t.Exchange.Price(t.GoodsToBuy) <= t.HouseholdWallet.GetMoney() {
-			t.Goods = t.Exchange.BuyAsManyAsPossible(t.GoodsToBuy, t.HouseholdWallet)
+			t.Goods = append(t.Goods, t.Exchange.BuyAsManyAsPossible(t.GoodsToBuy, t.HouseholdWallet)...)
 		}
 		t.State = ExchangeTaskStateDropoffAtHome
 	case ExchangeTaskStateDropoffAtHome:
