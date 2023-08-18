@@ -68,7 +68,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					p.releaseTask()
 				} else {
 					p.releaseTask()
-					p.Task = &economy.GoToTask{F: m.RandomSpot(p.Traveller.FX, p.Traveller.FY, 10)}
+					p.Task = &economy.GoToTask{F: m.RandomSpot(p.Traveller.FX, p.Traveller.FY, 25)}
 				}
 			}
 		}
