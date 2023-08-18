@@ -17,7 +17,7 @@ const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
-const FleeingRate = 1.0 / (24 * 30 * 12 * 5)
+const FleeingRate = 1.0 / (24 * 30 * 12 * 1)
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")

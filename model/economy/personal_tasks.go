@@ -17,7 +17,7 @@ type Person interface {
 	HasBeer() bool
 }
 
-var PersonalTasks = []string{"eat", "drink", "gohome"}
+var PersonalTasks = []string{"eat", "drink", "heal", "relax", "gohome", "goto"}
 
 func IsPersonalTask(n string) bool {
 	for _, t := range PersonalTasks {
@@ -56,6 +56,11 @@ type GoHomeTask struct {
 	TaskBase
 	F *navigation.Field
 	P Person
+}
+
+type GoToTask struct {
+	TaskBase
+	F *navigation.Field
 }
 
 func (t *EatTask) Destination() navigation.Destination {
@@ -200,5 +205,33 @@ func (t *GoHomeTask) Expired(Calendar *time.CalendarType) bool {
 }
 
 func (t *GoHomeTask) Motion() uint8 {
+	return navigation.MotionStand
+}
+
+func (t *GoToTask) Destination() navigation.Destination {
+	return t.F
+}
+
+func (t *GoToTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+	return true
+}
+
+func (t *GoToTask) Blocked() bool {
+	return false
+}
+
+func (t *GoToTask) Name() string {
+	return "goto"
+}
+
+func (t *GoToTask) Tag() string {
+	return ""
+}
+
+func (t *GoToTask) Expired(Calendar *time.CalendarType) bool {
+	return false
+}
+
+func (t *GoToTask) Motion() uint8 {
 	return navigation.MotionStand
 }

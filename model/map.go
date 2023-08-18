@@ -287,3 +287,11 @@ func (m *Map) GetCountries(t uint8) []*social.Country {
 	}
 	return result
 }
+
+func (m *Map) RandomSpot(x, y uint16, r int) *navigation.Field {
+	var f *navigation.Field
+	for f == nil {
+		f = m.GetField(uint16(int(x)+rand.Intn(r*2)-r), uint16(int(y)+rand.Intn(r*2)-r))
+	}
+	return f
+}

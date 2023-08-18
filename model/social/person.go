@@ -65,9 +65,11 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				if !economy.IsPersonalTask(p.Task.Name()) {
 					p.Task.Pause(true)
 					p.Home.AddTask(p.Task)
-
+					p.releaseTask()
+				} else {
+					p.releaseTask()
+					p.Task = &economy.GoToTask{F: m.RandomSpot(p.Traveller.FX, p.Traveller.FY, 10)}
 				}
-				p.releaseTask()
 			}
 		}
 	} else {
