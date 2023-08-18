@@ -72,7 +72,7 @@ func (mp *Marketplace) pendingSupplyAndDemand() map[*artifacts.Artifact]*SupplyA
 	return sd
 }
 
-func (mp *Marketplace) incPrice(a *artifacts.Artifact) {
+func (mp *Marketplace) IncPrice(a *artifacts.Artifact) {
 	var delta = float64(mp.Prices[a]) * 0.1
 	if delta < 1.0 {
 		delta = 1.0
@@ -80,7 +80,7 @@ func (mp *Marketplace) incPrice(a *artifacts.Artifact) {
 	mp.Prices[a] += uint32(delta)
 }
 
-func (mp *Marketplace) decPrice(a *artifacts.Artifact) {
+func (mp *Marketplace) DecPrice(a *artifacts.Artifact) {
 	var delta = float64(mp.Prices[a]) * 0.1
 	if delta < 1.0 {
 		delta = 1.0
@@ -102,23 +102,23 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		for _, a := range artifacts.All {
 			storage := uint32(mp.Storage.Artifacts[a]) / StorageToSoldRatio
 			if mp.Sold[a]+storage == 0 && mp.Bought[a] > 0 {
-				mp.incPrice(a)
+				mp.IncPrice(a)
 			} else if mp.Bought[a] == 0 && mp.Sold[a]+storage > 0 {
-				mp.decPrice(a)
+				mp.DecPrice(a)
 			} else if mp.Bought[a] > 0 && mp.Sold[a]+storage > 0 {
 				r := float64(mp.Sold[a]+storage) / float64(mp.Bought[a])
 				if r >= 1.1 {
-					mp.decPrice(a)
+					mp.DecPrice(a)
 				} else if r <= 0.9 {
-					mp.incPrice(a)
+					mp.IncPrice(a)
 				}
 			} else {
 				if sd[a].Supply < sd[a].Demand {
-					mp.incPrice(a)
+					mp.IncPrice(a)
 				} else if sd[a].Supply > sd[a].Demand {
-					mp.decPrice(a)
+					mp.DecPrice(a)
 				} else if mp.Storage.Artifacts[a] >= ProductTransportQuantity(a) && sd[a].Demand == 0 {
-					mp.decPrice(a)
+					mp.DecPrice(a)
 				}
 			}
 			mp.Reset(a)
@@ -173,7 +173,8 @@ func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet economy.Wallet) {
 	}
 }
 
-func (mp *Marketplace) SellAsManyAsPossible(as []artifacts.Artifacts, wallet economy.Wallet) {
+func (mp *Marketplace) SellAsManyAsPossible(as []artifacts.Artifacts, wallet economy.Wallet) []artifacts.Artifacts {
+	var leftover []artifacts.Artifacts
 	for _, a := range as {
 		var price uint32
 		var quantity uint16
@@ -188,7 +189,9 @@ func (mp *Marketplace) SellAsManyAsPossible(as []artifacts.Artifacts, wallet eco
 		mp.Money -= price
 		mp.Storage.Add(a.A, quantity)
 		mp.Sold[a.A] += uint32(quantity)
+		leftover = append(leftover, artifacts.Artifacts{A: a.A, Quantity: a.Quantity - quantity})
 	}
+	return leftover
 }
 
 func (mp *Marketplace) CanBuy(as []artifacts.Artifacts) bool {

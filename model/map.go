@@ -272,7 +272,7 @@ func (m *Map) Shore(x, y uint16) bool {
 	if f.Terrain.T != terrain.Water {
 		return false
 	}
-	if m.HasNeighborField(x, y, terrain.Grass) {
+	if m.HasNeighborField(x, y, terrain.Grass) || m.HasNeighborField(x, y, terrain.Dirt) {
 		return true
 	}
 	return false

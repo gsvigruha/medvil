@@ -99,10 +99,11 @@ func CheckMineUseType(useType uint8, f *navigation.Field) bool {
 func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 	m.Household.ElapseTime(Calendar, imap)
 	if Calendar.Hour == 0 {
+		numP := len(m.Household.People)
 		for _, land := range m.Land {
 			m.AddTransportTask(land, imap)
 			tag := economy.MiningTaskTag(land.F, land.UseType)
-			if m.Household.NumTasks("mining", tag) == 0 {
+			if m.Household.NumTasks("mining", tag) < numP {
 				if CheckMineUseType(land.UseType, land.F) && land.F.Terrain.Resources.IsEmpty() {
 					m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
 				}

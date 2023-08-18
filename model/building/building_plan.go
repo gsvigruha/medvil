@@ -178,7 +178,7 @@ func (b BuildingPlan) RepairCost() []artifacts.Artifacts {
 	for i, as := range cc {
 		rc[i] = artifacts.Artifacts{A: as.A, Quantity: uint16(math.Ceil(float64(as.Quantity) / 2))}
 	}
-	return rc
+	return artifacts.Filter(rc)
 }
 
 func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
@@ -249,14 +249,14 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 		}
 	}
 
-	return []artifacts.Artifacts{
+	return artifacts.Filter([]artifacts.Artifacts{
 		artifacts.Artifacts{A: cube, Quantity: cubes},
 		artifacts.Artifacts{A: board, Quantity: boards},
 		artifacts.Artifacts{A: brick, Quantity: bricks},
 		artifacts.Artifacts{A: thatch, Quantity: thatches},
 		artifacts.Artifacts{A: tile, Quantity: tiles},
 		artifacts.Artifacts{A: textile, Quantity: textiles},
-	}
+	})
 }
 
 func (b BuildingPlan) IsComplete() bool {

@@ -12,6 +12,8 @@ import (
 	"strconv"
 )
 
+var TownhallControllerGUIBottomY = 0.7
+
 type TownhallControllerButton struct {
 	tc       *TownhallController
 	b        gui.ButtonGUI
@@ -48,7 +50,7 @@ type TownhallController struct {
 }
 
 func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
-	top := HouseholdControllerGUIBottomY * ControlPanelSY
+	top := TownhallControllerGUIBottomY * ControlPanelSY
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	mp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
 	sp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
@@ -75,7 +77,7 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp := tc.taxPanel
 	sp := tc.storagePanel
 	fp := tc.factoryPanel
-	top := HouseholdControllerGUIBottomY * ControlPanelSY
+	top := TownhallControllerGUIBottomY * ControlPanelSY
 
 	tpw := (ControlPanelSX - 30) / 2
 	s := IconS / 2
@@ -127,12 +129,13 @@ func RefreshSubPanels(tc *TownhallController) {
 }
 
 func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *artifacts.Artifact, q uint16, top float64) {
-	rowH := IconH + int(IconS)
-	xI := i % IconRowMax
-	yI := i / IconRowMax
-	p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*IconW), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*IconW), top+float64(yI*rowH+IconH+4))
-	p.AddPanel(gui.CreateNumberPanel(float64(24+xI*IconW), top+float64(yI*rowH+IconH+12), float64(IconW), gui.FontSize*1.5, 0, 250, 5, "%v",
+	rowH := int(IconS * 2)
+	xI := i % IconRowMaxButtons
+	yI := i / IconRowMaxButtons
+	w := int(float64(IconW) * float64(IconRowMax) / float64(IconRowMaxButtons))
+	p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*w), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*w), top+float64(yI*rowH+IconH+4))
+	p.AddPanel(gui.CreateNumberPanel(float64(24+xI*w), top+float64(yI*rowH+IconH+4), float64(IconW+8), gui.FontSize*1.5, 0, 250, 5, "%v",
 		func() int { return th.StorageTarget[a] },
 		func(v int) { th.StorageTarget[a] = v }).P)
 }

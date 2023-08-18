@@ -103,7 +103,7 @@ func (fc *FarmController) Refresh() {
 
 func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	fields := fc.farm.GetFields()
-	if fc.farm.FieldUsableFor(fc.cp.C.Map, rf.F, fc.UseType) {
+	if fc.farm.FieldUsableFor(fc.cp.C.Map, rf.F, fc.UseType) && !rf.F.Allocated {
 		fields = append(fields, social.FarmLand{
 			X:       rf.F.X,
 			Y:       rf.F.Y,

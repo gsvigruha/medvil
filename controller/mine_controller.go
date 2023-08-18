@@ -81,7 +81,7 @@ func (mc *MineController) Refresh() {
 
 func (mc *MineController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	fields := mc.mine.GetFields()
-	if social.CheckMineUseType(mc.UseType, rf.F) {
+	if social.CheckMineUseType(mc.UseType, rf.F) && !rf.F.Allocated {
 		fields = append(fields, social.MineLand{
 			X:       rf.F.X,
 			Y:       rf.F.Y,
