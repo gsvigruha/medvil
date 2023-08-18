@@ -53,7 +53,7 @@ func GetTerrainType(name string) *TerrainType {
 
 type Terrain struct {
 	T         *TerrainType
-	Resources artifacts.Resources
+	Resources *artifacts.Resources
 	Shape     uint8
 }
 

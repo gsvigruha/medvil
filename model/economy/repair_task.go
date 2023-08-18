@@ -38,7 +38,7 @@ func (t *RepairTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 }
 
 func (t *RepairTask) Blocked() bool {
-	return !t.R.Has(t.B.Plan.RepairCost())
+	return !t.R.HasAll(t.B.Plan.RepairCost())
 }
 
 func (t *RepairTask) Name() string {

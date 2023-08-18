@@ -76,7 +76,7 @@ func addFarm(conf CountryConf, town *social.Town, x, y int, m *model.Map) {
 	}
 	farmB.Plan.BuildingType = building.BuildingTypeFarm
 	AddBuilding(farmB, m)
-	farm := &social.Farm{Household: &social.Household{Building: farmB, Town: town}}
+	farm := &social.Farm{Household: &social.Household{Building: farmB, Town: town, Resources: &artifacts.Resources{}}}
 	farm.Household.TargetNumPeople = 4
 	farm.Household.Resources.VolumeCapacity = farm.Household.Building.Plan.Area() * social.StoragePerArea
 	addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 0, m)
@@ -142,7 +142,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 	m.Countries = append(m.Countries, country)
 	town := country.Towns[0]
 	town.Country = country
-	town.Townhall = &social.Townhall{Household: &social.Household{Building: townhall, Town: town}}
+	town.Townhall = &social.Townhall{Household: &social.Household{Building: townhall, Town: town, Resources: &artifacts.Resources{}}}
 	town.Marketplace = &social.Marketplace{Building: marketplace, Town: town}
 	town.Townhall.Household.People = make([]*social.Person, conf.People)
 	town.Townhall.Household.TargetNumPeople = conf.People
@@ -153,7 +153,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 		town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
 	}
 	{
-		res := &town.Townhall.Household.Resources
+		res := town.Townhall.Household.Resources
 		for a, q := range conf.TownhallRes {
 			res.Add(artifacts.GetArtifact(a), q)
 		}
@@ -179,7 +179,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 			workshopB.Plan.BaseShape[2][2].Extension = &building.BuildingExtension{T: building.Workshop}
 			workshopB.Plan.BuildingType = building.BuildingTypeWorkshop
 			AddBuilding(workshopB, m)
-			workshop := &social.Workshop{Household: &social.Household{Building: workshopB, Town: town}}
+			workshop := &social.Workshop{Household: &social.Household{Building: workshopB, Town: town, Resources: &artifacts.Resources{}}}
 			workshop.Household.TargetNumPeople = 2
 			workshop.Household.Resources.VolumeCapacity = workshop.Household.Building.Plan.Area() * social.StoragePerArea
 			workshop.Manufacture = economy.GetManufacture("butchering")
@@ -194,7 +194,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 			workshopB.Plan.BaseShape[2][2].Extension = &building.BuildingExtension{T: building.Workshop}
 			workshopB.Plan.BuildingType = building.BuildingTypeWorkshop
 			AddBuilding(workshopB, m)
-			workshop := &social.Workshop{Household: &social.Household{Building: workshopB, Town: town}}
+			workshop := &social.Workshop{Household: &social.Household{Building: workshopB, Town: town, Resources: &artifacts.Resources{}}}
 			workshop.Household.TargetNumPeople = 2
 			workshop.Household.Resources.VolumeCapacity = workshop.Household.Building.Plan.Area() * social.StoragePerArea
 			workshop.Manufacture = economy.GetManufacture("sewing")

@@ -49,7 +49,7 @@ func (a *Animal) IsMature(Calendar *time.CalendarType) bool {
 var Sheep = &AnimalType{
 	Name:             "sheep",
 	MaturityAgeYears: 3,
-	EndOfYearYield:   artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 1},
+	EndOfYearYield:   artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 2},
 	EndOfLifeYield:   artifacts.Artifacts{A: artifacts.GetArtifact("sheep"), Quantity: 1},
 }
 

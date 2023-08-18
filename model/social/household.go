@@ -16,8 +16,8 @@ const ReproductionRate = 1.0 / (24 * 30 * 12)
 const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
-const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 10)
-const FleeingRate = 1.0 / (24 * 30 * 12 * 3)
+const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 20)
+const FleeingRate = 1.0 / (24 * 30 * 12 * 5)
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
@@ -37,7 +37,7 @@ type Household struct {
 	Town            *Town `json:"-"`
 	Tasks           []economy.Task
 	Vehicles        []*vehicles.Vehicle
-	Resources       artifacts.Resources
+	Resources       *artifacts.Resources
 	Heating         uint8
 }
 
@@ -173,7 +173,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			h.AddTask(&economy.RepairTask{
 				B: h.Building,
 				F: m.GetField(h.Building.X, h.Building.Y),
-				R: &h.Resources,
+				R: h.GetResources(),
 			})
 		}
 
@@ -362,8 +362,13 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 			return 0
 		}
 	}
-	if h.Building.Broken && artifacts.ArtifactsContain(h.Building.Plan.RepairCost(), a) {
-		return 0
+	if h.Building.Broken {
+		needed := artifacts.GetQuantity(h.Building.Plan.RepairCost(), a)
+		if q > needed {
+			result = q - needed
+		} else {
+			return 0
+		}
 	}
 	if result >= ProductTransportQuantity(a) || h.Resources.Full() {
 		return result
@@ -372,19 +377,19 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 }
 
 func (h *Household) HasFood() bool {
-	return economy.HasFood(h.Resources)
+	return economy.HasFood(*h.Resources)
 }
 
 func (h *Household) HasDrink() bool {
-	return economy.HasDrink(h.Resources)
+	return economy.HasDrink(*h.Resources)
 }
 
 func (h *Household) HasMedicine() bool {
-	return economy.HasMedicine(h.Resources)
+	return economy.HasMedicine(*h.Resources)
 }
 
 func (h *Household) HasBeer() bool {
-	return economy.HasBeer(h.Resources)
+	return economy.HasBeer(*h.Resources)
 }
 
 func (h *Household) NumTasks(name string, tag string) int {
@@ -433,7 +438,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 				h.AddTask(p.Task)
 			}
 			p.releaseTask()
-		} else if p.Happiness == 0 && rand.Float64() < FleeingRate {
+		} else if p.Happiness == 0 && rand.Float64() < FleeingRate && h.Town.Country.T != CountryTypeOutlaw {
 			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
 				h.AddTask(p.Task)
 			}
@@ -533,7 +538,7 @@ func (h *Household) RandomField(m navigation.IMap, check func(navigation.Field) 
 }
 
 func (h *Household) GetResources() *artifacts.Resources {
-	return &h.Resources
+	return h.Resources
 }
 
 func (h *Household) GetBuilding() *building.Building {
@@ -562,7 +567,7 @@ func (h *Household) Destroy(m navigation.IMap) {
 		dstH.AssignPerson(person, m)
 	}
 	dstH.Money += h.Money
-	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(h.Resources)
+	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(*h.Resources)
 }
 
 func (h *Household) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {

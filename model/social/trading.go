@@ -18,7 +18,7 @@ type Trader struct {
 	Money          uint32
 	Person         *Person
 	Vehicle        *vehicles.Vehicle
-	Resources      artifacts.Resources
+	Resources      *artifacts.Resources
 	SourceExchange *Marketplace
 	TargetExchange *Marketplace
 	Tasks          []economy.Task
@@ -88,7 +88,7 @@ func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
 				TargetMarketD:     &navigation.BuildingDestination{B: t.TargetExchange.Building, ET: t.Vehicle.T.BuildingExtensionType},
 				SourceExchange:    t.SourceExchange,
 				TargetExchange:    t.TargetExchange,
-				TraderR:           &t.Resources,
+				TraderR:           t.Resources,
 				TraderWallet:      t,
 				Vehicle:           nil,
 				GoodsSourceToDest: goodsSourceToDest,
@@ -117,19 +117,19 @@ func (t *Trader) SetTasks(tasks []economy.Task) {
 }
 
 func (t *Trader) HasFood() bool {
-	return economy.HasFood(t.Resources)
+	return economy.HasFood(*t.Resources)
 }
 
 func (t *Trader) HasDrink() bool {
-	return economy.HasDrink(t.Resources)
+	return economy.HasDrink(*t.Resources)
 }
 
 func (t *Trader) HasMedicine() bool {
-	return economy.HasMedicine(t.Resources)
+	return economy.HasMedicine(*t.Resources)
 }
 
 func (t *Trader) HasBeer() bool {
-	return economy.HasBeer(t.Resources)
+	return economy.HasBeer(*t.Resources)
 }
 
 func (t *Trader) Field(m navigation.IMap) *navigation.Field {
@@ -145,7 +145,7 @@ func (t *Trader) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.T
 }
 
 func (t *Trader) GetResources() *artifacts.Resources {
-	return &t.Resources
+	return t.Resources
 }
 
 func (t *Trader) GetBuilding() *building.Building {

@@ -14,6 +14,8 @@ const FoodThreshold = 100
 const HealthThreshold = 100
 const HappinessThreshold = 100
 
+const Difficulty = 1
+
 type Person struct {
 	Food      uint8
 	Water     uint8
@@ -105,10 +107,10 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if p.Home.GetHeating() < uint8(rand.Intn(100)) && p.Health > 0 {
 			p.Health--
 		}
-		if !p.Home.HasEnoughClothes() && p.Happiness > 0 {
+		if !p.Home.HasEnoughClothes() && p.Happiness > 0 && rand.Intn(10) < Difficulty {
 			p.Happiness--
 		}
-		if p.Home.Broken() && p.Happiness > 0 {
+		if p.Home.Broken() && p.Happiness > 0 && rand.Intn(10) < Difficulty {
 			p.Happiness--
 		}
 		field := m.GetField(p.Traveller.FX, p.Traveller.FY)

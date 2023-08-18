@@ -113,7 +113,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				T: order.T,
 				O: order,
 				F: field,
-				R: &f.Household.Resources,
+				R: f.Household.Resources,
 			})
 			order.State = OrderStateStarted
 		}

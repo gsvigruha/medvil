@@ -70,8 +70,8 @@ func (m *Mine) AddTransportTask(l MineLand, imap navigation.IMap) {
 				m.Household.AddTask(&economy.TransportTask{
 					PickupD:        l.F,
 					DropoffD:       home,
-					PickupR:        &l.F.Terrain.Resources,
-					DropoffR:       &m.Household.Resources,
+					PickupR:        l.F.Terrain.Resources,
+					DropoffR:       m.Household.Resources,
 					A:              a,
 					TargetQuantity: q,
 				})
