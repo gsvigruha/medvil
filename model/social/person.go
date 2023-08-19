@@ -123,8 +123,13 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Happiness = MaxPersonState
 			}
 		}
-		if field.Plant != nil && field.Plant.IsTree() && p.Happiness < MaxPersonState {
-			p.Happiness++
+		if field.Plant != nil && field.Plant.IsTree() {
+			if p.Happiness < MaxPersonState {
+				p.Happiness++
+			}
+			if p.Health < MaxPersonState {
+				p.Health++
+			}
 		}
 	}
 }

@@ -104,10 +104,12 @@ func RefreshSubPanels(tc *TownhallController) {
 
 	var aI = 0
 	for _, a := range artifacts.All {
-		if q, ok := th.Household.Resources.Artifacts[a]; ok {
-			ArtifactStorageToControlPanel(sp, th, aI, a, q, top+50)
-			aI++
+		var q uint16 = 0
+		if storageQ, ok := th.Household.Resources.Artifacts[a]; ok {
+			q = storageQ
 		}
+		ArtifactStorageToControlPanel(sp, th, aI, a, q, top+50)
+		aI++
 	}
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {

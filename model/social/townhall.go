@@ -27,29 +27,31 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		tag := "storage_target#" + a.Name
 		transportQuantity := ProductTransportQuantity(a)
 		goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: transportQuantity}}
-		if q, ok := t.Household.Resources.Artifacts[a]; ok {
-			if t.Household.NumTasks("exchange", tag) == 0 {
-				targetQ := uint16(t.StorageTarget[a])
-				if q > targetQ {
-					qToSell := t.Household.ArtifactToSell(a, q, false, false)
-					if qToSell > 0 {
-						t.Household.AddTask(&economy.SellTask{
-							Exchange: mp,
-							Goods:    goods,
-							TaskTag:  tag,
-						})
-					}
-				} else if q < targetQ {
-					maxPrice := uint32(float64(t.Household.Money) * StorageRefillBudgetPercentage / float64(len(t.Household.Resources.Artifacts)))
-					if t.Household.Money >= mp.Price(goods) && mp.HasTraded(a) {
-						t.Household.AddTask(&economy.BuyTask{
-							Exchange:        mp,
-							HouseholdWallet: t.Household,
-							Goods:           goods,
-							MaxPrice:        maxPrice,
-							TaskTag:         tag,
-						})
-					}
+		var q uint16 = 0
+		if storageQ, ok := t.Household.Resources.Artifacts[a]; ok {
+			q = storageQ
+		}
+		if t.Household.NumTasks("exchange", tag) == 0 {
+			targetQ := uint16(t.StorageTarget[a])
+			if q > targetQ {
+				qToSell := t.Household.ArtifactToSell(a, q, false, false)
+				if qToSell > 0 {
+					t.Household.AddTask(&economy.SellTask{
+						Exchange: mp,
+						Goods:    goods,
+						TaskTag:  tag,
+					})
+				}
+			} else if q < targetQ {
+				maxPrice := uint32(float64(t.Household.Money) * StorageRefillBudgetPercentage / float64(len(t.Household.Resources.Artifacts)))
+				if t.Household.Money >= mp.Price(goods) && mp.HasTraded(a) {
+					t.Household.AddTask(&economy.BuyTask{
+						Exchange:        mp,
+						HouseholdWallet: t.Household,
+						Goods:           goods,
+						MaxPrice:        maxPrice,
+						TaskTag:         tag,
+					})
 				}
 			}
 		}
