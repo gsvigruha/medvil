@@ -123,7 +123,7 @@ func NewTownToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		resources[a] = n
 	}
 	newTown := &social.Town{Country: th.Household.Town.Country}
-	newTown.Townhall = &social.Townhall{Household: &social.Household{Town: newTown}}
+	newTown.Townhall = &social.Townhall{Household: &social.Household{Town: newTown, Resources: &artifacts.Resources{}}}
 	newTown.Marketplace = &social.Marketplace{Town: newTown}
 	newTown.Init()
 	newTown.Marketplace.Init()
