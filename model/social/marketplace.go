@@ -149,6 +149,7 @@ func (mp *Marketplace) Buy(as []artifacts.Artifacts, wallet economy.Wallet) {
 	wallet.Spend(price)
 	for _, a := range as {
 		mp.Bought[a.A] += uint32(a.Quantity)
+		mp.Town.Country.SocietyStats.RegisterTrade(mp.Prices[a.A], a.Quantity)
 	}
 }
 
@@ -157,8 +158,9 @@ func (mp *Marketplace) BuyAsManyAsPossible(as []artifacts.Artifacts, wallet econ
 	price := mp.Price(existingArtifacts)
 	mp.Money += price
 	wallet.Spend(price)
-	for _, a := range as {
+	for _, a := range existingArtifacts {
 		mp.Bought[a.A] += uint32(a.Quantity)
+		mp.Town.Country.SocietyStats.RegisterTrade(mp.Prices[a.A], a.Quantity)
 	}
 	return existingArtifacts
 }
@@ -170,6 +172,7 @@ func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet economy.Wallet) {
 	wallet.Earn(price)
 	for _, a := range as {
 		mp.Sold[a.A] += uint32(a.Quantity)
+		mp.Town.Country.SocietyStats.RegisterTrade(mp.Prices[a.A], a.Quantity)
 	}
 }
 
@@ -189,6 +192,7 @@ func (mp *Marketplace) SellAsManyAsPossible(as []artifacts.Artifacts, wallet eco
 		mp.Money -= price
 		mp.Storage.Add(a.A, quantity)
 		mp.Sold[a.A] += uint32(quantity)
+		mp.Town.Country.SocietyStats.RegisterTrade(mp.Prices[a.A], quantity)
 		leftover = append(leftover, artifacts.Artifacts{A: a.A, Quantity: a.Quantity - quantity})
 	}
 	return leftover

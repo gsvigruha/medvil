@@ -6,6 +6,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/social"
+	"medvil/model/stats"
 	"medvil/model/terrain"
 	"medvil/model/time"
 )
@@ -42,6 +43,15 @@ func (m *Map) ElapseTime() {
 		country := m.Countries[i]
 		for j := range country.Towns {
 			country.Towns[j].ElapseTime(m.Calendar, m)
+		}
+		if country.History == nil {
+			country.History = &stats.History{}
+		}
+		if country.SocietyStats == nil {
+			country.SocietyStats = &stats.SocietyStats{}
+		}
+		if m.Calendar.Hour == 0 && m.Calendar.Day == 30 && m.Calendar.Month%3 == 0 {
+			country.ArchiveHistory()
 		}
 	}
 	for i := uint16(0); i < m.SX; i++ {

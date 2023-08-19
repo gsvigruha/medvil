@@ -76,5 +76,8 @@ func MapToControlPanel(cp *ControlPanel) {
 	}
 	mb := MapLabel{cp: cp, m: cp.C.Map, img: cv, d: d}
 	p.AddLabel(mb)
+
+	DrawStats(cp, p)
+
 	cp.SetDynamicPanel(p)
 }
