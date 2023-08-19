@@ -11,4 +11,5 @@ type IMap interface {
 	FindDest(start Location, dest Destination, pathType PathType) *Field
 	SetBuildingUnits(b *building.Building, construction bool)
 	Shore(x, y uint16) bool
+	RandomSpot(x, y uint16, r int) *Field
 }
