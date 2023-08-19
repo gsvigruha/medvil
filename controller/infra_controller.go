@@ -29,6 +29,8 @@ const InfraTypeLevelForBuilding = 31
 const InfraTypeLevelForRoad = 32
 const InfraTypeFountain = 41
 const InfraTypeObelisk = 42
+const InfraTypeOakTree = 51
+const InfraTypeAppleTree = 52
 
 const InfraPanelTop = 0.1
 
@@ -91,6 +93,8 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 		return navigation.FieldCanBeLeveledForRoad(*rf.F, c.Map)
 	} else if ic.it == InfraTypeFountain || ic.it == InfraTypeObelisk {
 		return rf.F.StatueCompatible()
+	} else if ic.it == InfraTypeOakTree || ic.it == InfraTypeAppleTree {
+		return rf.F.Plantable()
 	}
 	return false
 }
@@ -137,6 +141,10 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 			c.Map.AddStatueConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.FountainType)
 		} else if ic.it == InfraTypeObelisk {
 			c.Map.AddStatueConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.ObeliskType)
+		} else if ic.it == InfraTypeOakTree {
+			c.ActiveTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingOakTree, F: rf.F, Start: *c.Map.Calendar})
+		} else if ic.it == InfraTypeAppleTree {
+			c.ActiveTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingAppleTree, F: rf.F, Start: *c.Map.Calendar})
 		}
 	}
 	return true
@@ -255,6 +263,20 @@ func InfraToControlPanel(cp *ControlPanel) {
 		b:   gui.ButtonGUI{Icon: "infra/obelisk", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
 		it:  InfraTypeObelisk,
 		msg: "Statues make your population happy.",
+		ic:  ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:   gui.ButtonGUI{Icon: "infra/oak_tree", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
+		it:  InfraTypeOakTree,
+		msg: "Trees make your population happy and healthy.",
+		ic:  ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:   gui.ButtonGUI{Icon: "infra/apple_tree", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
+		it:  InfraTypeAppleTree,
+		msg: "Trees make your population happy and healthy.",
 		ic:  ic,
 	})
 

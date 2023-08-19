@@ -209,9 +209,6 @@ func (f Field) RoadCompatible() bool {
 	if !f.Building.Empty() {
 		return false
 	}
-	if f.Plant != nil {
-		return false
-	}
 	if f.Road != nil {
 		return false
 	}
@@ -253,6 +250,9 @@ func (f Field) Arable() bool {
 	if !f.Building.Empty() {
 		return false
 	}
+	if f.Animal != nil {
+		return false
+	}
 	if f.Road != nil {
 		return false
 	}
@@ -269,7 +269,7 @@ func (f Field) Plantable() bool {
 	if !f.Building.Empty() {
 		return false
 	}
-	if f.Road != nil {
+	if f.Animal != nil {
 		return false
 	}
 	if f.Statue != nil {
