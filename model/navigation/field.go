@@ -209,6 +209,9 @@ func (f Field) RoadCompatible() bool {
 	if !f.Building.Empty() {
 		return false
 	}
+	if f.Plant != nil {
+		return false
+	}
 	if f.Road != nil {
 		return false
 	}
@@ -216,6 +219,25 @@ func (f Field) RoadCompatible() bool {
 		return false
 	}
 	if f.Allocated {
+		return false
+	}
+	if !f.Walkable() {
+		return false
+	}
+	if !((f.NE == f.NW && f.SE == f.SW) || (f.NE == f.SE && f.NW == f.SW)) {
+		return false
+	}
+	return f.Terrain.T.Buildable
+}
+
+func (f Field) StatueCompatible() bool {
+	if !f.Building.Empty() {
+		return false
+	}
+	if f.Plant != nil {
+		return false
+	}
+	if f.Animal != nil {
 		return false
 	}
 	if !f.Walkable() {

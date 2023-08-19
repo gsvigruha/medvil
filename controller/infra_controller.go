@@ -28,6 +28,7 @@ const InfraTypeGateEW = 22
 const InfraTypeLevelForBuilding = 31
 const InfraTypeLevelForRoad = 32
 const InfraTypeFountain = 41
+const InfraTypeObelisk = 42
 
 const InfraPanelTop = 0.1
 
@@ -88,8 +89,8 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 		return navigation.FieldCanBeLeveledForBuilding(*rf.F, c.Map)
 	} else if ic.it == InfraTypeLevelForRoad {
 		return navigation.FieldCanBeLeveledForRoad(*rf.F, c.Map)
-	} else if ic.it == InfraTypeFountain {
-		return rf.F.RoadCompatible()
+	} else if ic.it == InfraTypeFountain || ic.it == InfraTypeObelisk {
+		return rf.F.StatueCompatible()
 	}
 	return false
 }
@@ -134,6 +135,8 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 			c.Map.AddLevelingTask(c.ActiveTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
 		} else if ic.it == InfraTypeFountain {
 			c.Map.AddStatueConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.FountainType)
+		} else if ic.it == InfraTypeObelisk {
+			c.Map.AddStatueConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.ObeliskType)
 		}
 	}
 	return true
@@ -244,6 +247,13 @@ func InfraToControlPanel(cp *ControlPanel) {
 	p.AddButton(InfraBuildButton{
 		b:   gui.ButtonGUI{Icon: "infra/fountain", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
 		it:  InfraTypeFountain,
+		msg: "Statues make your population happy.",
+		ic:  ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:   gui.ButtonGUI{Icon: "infra/obelisk", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
+		it:  InfraTypeObelisk,
 		msg: "Statues make your population happy.",
 		ic:  ic,
 	})

@@ -14,6 +14,12 @@ var FountainType = &StatueType{
 	Name: "fountain", Happiness: 10, Cost: []artifacts.Artifacts{artifacts.Artifacts{artifacts.GetArtifact("cube"), 2}},
 }
 
+var ObeliskType = &StatueType{
+	Name: "obelisk", Happiness: 25, Cost: []artifacts.Artifacts{
+		artifacts.Artifacts{artifacts.GetArtifact("cube"), 3},
+		artifacts.Artifacts{artifacts.GetArtifact("iron_bar"), 2}},
+}
+
 var StatueTypes = [...]*StatueType{
 	FountainType,
 }
