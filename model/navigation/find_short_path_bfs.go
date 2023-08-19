@@ -1,20 +1,19 @@
-package model
+package navigation
 
 import (
 	"math/rand"
-	"medvil/model/navigation"
 )
 
 const ShortPathMaxLength = 100
 const capacity = 1000
 
 type BFSElement struct {
-	PE   navigation.PathElement
+	PE   PathElement
 	prev *BFSElement
 	d    uint8
 }
 
-func AddNextField(pe navigation.PathElement, prevE *BFSElement, toVisit *[]*BFSElement, inQueue map[navigation.Location]bool) {
+func AddNextField(pe PathElement, prevE *BFSElement, toVisit *[]*BFSElement, inQueue map[Location]bool) {
 	if _, ok := inQueue[pe.GetLocation()]; ok {
 		// no need to add it to the queue again
 	} else {
@@ -23,28 +22,28 @@ func AddNextField(pe navigation.PathElement, prevE *BFSElement, toVisit *[]*BFSE
 	}
 }
 
-func CheckField(pe navigation.PathElement, pathType navigation.PathType) bool {
-	if pathType == navigation.PathTypePedestrian {
+func CheckField(pe PathElement, pathType PathType) bool {
+	if pathType == PathTypePedestrian {
 		return pe.Walkable() && !pe.Crowded()
-	} else if pathType == navigation.PathTypeBoat {
+	} else if pathType == PathTypeBoat {
 		return pe.Sailable()
 	}
 	return false
 }
 
-func FindShortPathBFS(m *Map, start navigation.Location, dest navigation.Destination, pathType navigation.PathType) []navigation.PathElement {
+func FindShortPathBFS(m IMap, start Location, dest Destination, pathType PathType) []PathElement {
 	var iter = 0
 	r := rand.New(rand.NewSource(int64(start.X*599 + start.Y)))
-	visited := make(map[navigation.Location]*[]navigation.PathElement, capacity)
+	visited := make(map[Location]*[]PathElement, capacity)
 	se := &BFSElement{PE: m.GetField(start.X, start.Y).GetPathElement(start.Z), prev: nil, d: 1}
 	var toVisit = []*BFSElement{se}
-	var inQueue = make(map[navigation.Location]bool, capacity)
+	var inQueue = make(map[Location]bool, capacity)
 	for len(toVisit) > 0 {
 		e := toVisit[0]
 		toVisit = toVisit[1:]
 
 		if dest.Check(e.PE) {
-			path := make([]navigation.PathElement, e.d)
+			path := make([]PathElement, e.d)
 			var eI = e
 			for i := range path {
 				path[len(path)-1-i] = eI.PE
