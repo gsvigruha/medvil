@@ -95,7 +95,7 @@ func DrawRightLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.
 	cv.SetFillStyle("texture/people/leather.png")
 	// RightKnee
 	DrawLimb(cv, pm, x, y, 3, 2, m.RightHip, m.RightKnee[p])
-	// LeftFoot
+	// LeftShin
 	DrawLimb(cv, pm, x, y, 2, 2, m.RightKnee[p], m.RightFoot[p])
 	// Right Foot
 	DrawLimb(cv, pm, x, y, 1, 1, Move(m.RightFoot[p], [3]float64{-1.0, 0.0, 0.0}), Move(m.RightFoot[p], [3]float64{4.0, 0.0, 0.0}))
