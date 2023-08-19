@@ -16,6 +16,14 @@ import (
 const MaxPX = navigation.MaxPX
 const MaxPY = navigation.MaxPY
 
+func Move(v1, v2 [3]float64) [3]float64 {
+	var v3 [3]float64
+	for i, _ := range v1 {
+		v3[i] = v1[i] + v2[i]
+	}
+	return v3
+}
+
 func GetScreenY(t *navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) float64 {
 	_, y := GetScreenXY(t, rf, c)
 	return y
@@ -64,7 +72,7 @@ func DrawLimb(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, w1, w2 flo
 
 func DrawLeftArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
 	// Arm
-	cv.SetFillStyle("#762")
+	cv.SetFillStyle("texture/people/textile_arm.png")
 	// LeftElbow
 	DrawLimb(cv, pm, x, y, 1, 2, m.LeftShoulder, m.LeftElbow[p])
 	// LeftHand
@@ -73,25 +81,29 @@ func DrawLeftArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.P
 
 func DrawLeftLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
 	// Legs
-	cv.SetFillStyle("#420")
+	cv.SetFillStyle("texture/people/leather.png")
 	// LeftKnee
 	DrawLimb(cv, pm, x, y, 3, 2, m.LeftHip, m.LeftKnee[p])
-	// LeftFoot
+	// LeftShin
 	DrawLimb(cv, pm, x, y, 2, 2, m.LeftKnee[p], m.LeftFoot[p])
+	// Left Foot
+	DrawLimb(cv, pm, x, y, 1, 1, Move(m.LeftFoot[p], [3]float64{-1.0, 0.0, 0.0}), Move(m.LeftFoot[p], [3]float64{4.0, 0.0, 0.0}))
 }
 
 func DrawRightLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
 	// Legs
-	cv.SetFillStyle("#420")
+	cv.SetFillStyle("texture/people/leather.png")
 	// RightKnee
 	DrawLimb(cv, pm, x, y, 3, 2, m.RightHip, m.RightKnee[p])
 	// LeftFoot
 	DrawLimb(cv, pm, x, y, 2, 2, m.RightKnee[p], m.RightFoot[p])
+	// Right Foot
+	DrawLimb(cv, pm, x, y, 1, 1, Move(m.RightFoot[p], [3]float64{-1.0, 0.0, 0.0}), Move(m.RightFoot[p], [3]float64{4.0, 0.0, 0.0}))
 }
 
 func DrawRightArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
 	// Arm
-	cv.SetFillStyle("#762")
+	cv.SetFillStyle("texture/people/textile_arm.png")
 	// RightElbow
 	DrawLimb(cv, pm, x, y, 1, 2, m.RightShoulder, m.RightElbow[p])
 	// LeftHand
@@ -196,15 +208,15 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 		} else {
 			switch person.Home.GetBuilding().Plan.BuildingType {
 			case building.BuildingTypeFarm:
-				cv.SetFillStyle("#BA6")
+				cv.SetFillStyle("texture/people/textile_yellow.png")
 			case building.BuildingTypeMine:
-				cv.SetFillStyle("#B42")
+				cv.SetFillStyle("texture/people/textile_red.png")
 			case building.BuildingTypeWorkshop:
-				cv.SetFillStyle("#B6D")
+				cv.SetFillStyle("texture/people/textile_purple.png")
 			case building.BuildingTypeFactory:
-				cv.SetFillStyle("#B6D")
+				cv.SetFillStyle("texture/people/textile_purple.png")
 			case building.BuildingTypeTownhall:
-				cv.SetFillStyle("#2AE")
+				cv.SetFillStyle("texture/people/textile_blue.png")
 			}
 		}
 	}
