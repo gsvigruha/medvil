@@ -50,7 +50,7 @@ func (m *Map) ElapseTime() {
 		if country.SocietyStats == nil {
 			country.SocietyStats = &stats.SocietyStats{}
 		}
-		if m.Calendar.Hour == 0 && m.Calendar.Day == 30 && m.Calendar.Month%3 == 0 {
+		if m.Calendar.Hour == 0 && m.Calendar.Day == 30 {
 			country.ArchiveHistory()
 		}
 	}

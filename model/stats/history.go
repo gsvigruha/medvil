@@ -29,6 +29,18 @@ func (he HistoryElement) GetExchangedPrice() uint32 {
 	return he.ExchangedPrice
 }
 
+func (he HistoryElement) GetFoodPrice() uint32 {
+	return he.FoodPrice
+}
+
+func (he HistoryElement) GetHouseholdItemPrices() uint32 {
+	return he.HouseholdItemPrice
+}
+
+func (he HistoryElement) GetBuildingMaterialsPrice() uint32 {
+	return he.BuildingMaterialsPrice
+}
+
 type History struct {
 	Elements []HistoryElement
 }
