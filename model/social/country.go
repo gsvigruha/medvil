@@ -9,8 +9,10 @@ const CountryTypeOutlaw uint8 = 1
 const CountryTypeOtherCivilization uint8 = 2
 
 type Country struct {
-	Towns []*Town
-	T     uint8
+	Towns        []*Town
+	T            uint8
+	History      *stats.History
+	SocietyStats *stats.SocietyStats
 }
 
 func (c *Country) Stats() *stats.Stats {
@@ -28,4 +30,9 @@ func (c *Country) AddTownIfDoesNotExist(town *Town) {
 		}
 	}
 	c.Towns = append(c.Towns, town)
+}
+
+func (c *Country) ArchiveHistory() {
+	c.History.Archive(c.Stats(), c.SocietyStats)
+	c.SocietyStats = &stats.SocietyStats{}
 }
