@@ -29,17 +29,17 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 	cv.SetLineWidth(2)
 	switch l.state {
 	case 1:
-		l.drawChart(cv, "#B00", 120, l.s, stats.HistoryElement.GetDeaths, true)
-		l.drawChart(cv, "#808", 240, l.s, stats.HistoryElement.GetDepartures, true)
-		l.drawChart(cv, "#DDD", 360, l.s, stats.HistoryElement.GetPeople, false)
+		l.drawChart(cv, "#B00", 120, "deaths", stats.HistoryElement.GetDeaths, true)
+		l.drawChart(cv, "#808", 240, "departures", stats.HistoryElement.GetDepartures, true)
+		l.drawChart(cv, "#DDD", 360, "people", stats.HistoryElement.GetPeople, false)
 	case 2:
-		l.drawChart(cv, "#DDD", 120, l.s, stats.HistoryElement.GetArtifacts, false)
-		l.drawChart(cv, "#FF0", 240, l.s, stats.HistoryElement.GetExchangedNum, true)
-		l.drawChart(cv, "#FF0", 360, l.s, stats.HistoryElement.GetExchangedPrice, true)
+		l.drawChart(cv, "#DDD", 120, "products", stats.HistoryElement.GetArtifacts, false)
+		l.drawChart(cv, "#FF0", 240, "trade volume", stats.HistoryElement.GetExchangedNum, true)
+		l.drawChart(cv, "#FF0", 360, "trade volume", stats.HistoryElement.GetExchangedPrice, true)
 	case 3:
-		l.drawChart(cv, "#D82", 120, l.s, stats.HistoryElement.GetFoodPrice, false)
-		l.drawChart(cv, "#660", 240, l.s, stats.HistoryElement.GetHouseholdItemPrices, false)
-		l.drawChart(cv, "#D42", 360, l.s, stats.HistoryElement.GetBuildingMaterialsPrice, false)
+		l.drawChart(cv, "#D82", 120, "food price", stats.HistoryElement.GetFoodPrice, false)
+		l.drawChart(cv, "#660", 240, "household item price", stats.HistoryElement.GetHouseholdItemPrices, false)
+		l.drawChart(cv, "#D42", 360, "building materials price", stats.HistoryElement.GetBuildingMaterialsPrice, false)
 	}
 }
 
@@ -47,18 +47,18 @@ func (l *ChartsLabel) CaptureClick(x float64, y float64) {
 
 }
 
-func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, s *stats.History, fn func(stats.HistoryElement) uint32, sum bool) {
+func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, caption string, fn func(stats.HistoryElement) uint32, sum bool) {
 	maxPoints := (int(ControlPanelSX) - 48) / DPoint
 	var startIdx = 0
-	if len(s.Elements)/int(l.timeScale) > maxPoints {
-		startIdx = len(s.Elements)/int(l.timeScale) - maxPoints
+	if len(l.s.Elements)/int(l.timeScale) > maxPoints {
+		startIdx = len(l.s.Elements)/int(l.timeScale) - maxPoints
 	}
 
 	var max uint32 = 0
 	var scaleCntr uint32 = 0
 	var scaleAggr uint32 = 0
-	for i := startIdx; i < len(s.Elements); i++ {
-		he := s.Elements[i]
+	for i := startIdx; i < len(l.s.Elements); i++ {
+		he := l.s.Elements[i]
 		scaleAggr += fn(he)
 		scaleCntr++
 		if scaleCntr == uint32(l.timeScale) {
@@ -80,7 +80,7 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, s *stats.His
 	}
 
 	cv.SetStrokeStyle(color.RGBA{R: 192, G: 192, B: 192, A: 128})
-	for i := 0; i < maxPoints*DPoint/20; i++ {
+	for i := 0; i < maxPoints*DPoint/20+1; i++ {
 		cv.BeginPath()
 		cv.MoveTo(float64(i*20), float64(y))
 		cv.LineTo(float64(i*20), float64(y-100))
@@ -90,8 +90,8 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, s *stats.His
 
 	for i := 0; i <= 5; i++ {
 		cv.BeginPath()
-		cv.MoveTo(float64(24), float64(y-i*20))
-		cv.LineTo(float64(int(ControlPanelSX)-24), float64(y-i*20))
+		cv.MoveTo(float64(0), float64(y-i*20))
+		cv.LineTo(float64(int(ControlPanelSX)), float64(y-i*20))
 		cv.ClosePath()
 		cv.Stroke()
 	}
@@ -100,8 +100,8 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, s *stats.His
 	cv.BeginPath()
 	scaleCntr = 0
 	scaleAggr = 0
-	for i := startIdx; i < len(s.Elements); i++ {
-		he := s.Elements[i]
+	for i := startIdx; i < len(l.s.Elements); i++ {
+		he := l.s.Elements[i]
 		scaleAggr += fn(he)
 		scaleCntr++
 		if scaleCntr == uint32(l.timeScale) {
@@ -125,7 +125,8 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, s *stats.His
 
 	cv.SetFillStyle(c)
 	cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
-	cv.FillText(strconv.Itoa(int(max)), ControlPanelSX-120, float64(y-80))
+	text := caption + " " + strconv.Itoa(int(max))
+	cv.FillText(text, 0, float64(y-96))
 }
 
 func DrawStats(cp *ControlPanel, p *gui.Panel) {
@@ -147,7 +148,7 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 			ClickImpl: func() { cl.state = 3 }})
 
 		p.AddButton(gui.SimpleButton{
-			ButtonGUI: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*5), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS},
+			ButtonGUI: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS},
 			ClickImpl: func() {
 				switch cl.timeScale {
 				case 1:
