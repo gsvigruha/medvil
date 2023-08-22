@@ -165,12 +165,12 @@ func BuildingPlanFromJSON(fileName string) BuildingPlan {
 	return plan
 }
 
-var cube = artifacts.GetArtifact("cube")
-var board = artifacts.GetArtifact("board")
-var brick = artifacts.GetArtifact("brick")
-var thatch = artifacts.GetArtifact("thatch")
-var tile = artifacts.GetArtifact("tile")
-var textile = artifacts.GetArtifact("textile")
+var Cube = artifacts.GetArtifact("cube")
+var Board = artifacts.GetArtifact("board")
+var Brick = artifacts.GetArtifact("brick")
+var Thatch = artifacts.GetArtifact("thatch")
+var Tile = artifacts.GetArtifact("tile")
+var Textile = artifacts.GetArtifact("textile")
 
 func (b BuildingPlan) RepairCost() []artifacts.Artifacts {
 	cc := b.ConstructionCost()
@@ -250,12 +250,12 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 	}
 
 	return artifacts.Filter([]artifacts.Artifacts{
-		artifacts.Artifacts{A: cube, Quantity: cubes},
-		artifacts.Artifacts{A: board, Quantity: boards},
-		artifacts.Artifacts{A: brick, Quantity: bricks},
-		artifacts.Artifacts{A: thatch, Quantity: thatches},
-		artifacts.Artifacts{A: tile, Quantity: tiles},
-		artifacts.Artifacts{A: textile, Quantity: textiles},
+		artifacts.Artifacts{A: Cube, Quantity: cubes},
+		artifacts.Artifacts{A: Board, Quantity: boards},
+		artifacts.Artifacts{A: Brick, Quantity: bricks},
+		artifacts.Artifacts{A: Thatch, Quantity: thatches},
+		artifacts.Artifacts{A: Tile, Quantity: tiles},
+		artifacts.Artifacts{A: Textile, Quantity: textiles},
 	})
 }
 
