@@ -126,7 +126,7 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 
 		mp.Town.Country.SocietyStats.RegisterFoodPrices(mp.Prices[economy.Bread], mp.Prices[economy.Meat], mp.Prices[economy.Fruit], mp.Prices[economy.Vegetable])
 		mp.Town.Country.SocietyStats.RegisterBuildingMaterialsPrices(mp.Prices[building.Cube], mp.Prices[building.Board], mp.Prices[building.Brick], mp.Prices[building.Thatch], mp.Prices[building.Tile])
-		mp.Town.Country.SocietyStats.RegisterHouseholdItemPrices(mp.Prices[Log], mp.Prices[Textile], mp.Prices[Leather], mp.Prices[Tools], mp.Prices[economy.Beer], mp.Prices[economy.Medicine])
+		mp.Town.Country.SocietyStats.RegisterHouseholdItemPrices(mp.Prices[Log], mp.Prices[Textile], mp.Prices[Leather], mp.Prices[Tools], mp.Prices[Paper], mp.Prices[economy.Beer], mp.Prices[economy.Medicine])
 	}
 }
 
