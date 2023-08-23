@@ -25,21 +25,21 @@ func (s *SocietyStats) RegisterDeparture() {
 	s.Departures++
 }
 
-func (s *SocietyStats) RegisterFoodPrices(items ...uint32) {
+func (s *SocietyStats) RegisterFoodPrices(items []uint32) {
 	for _, item := range items {
 		s.FoodPrice += item
 	}
 	s.FoodPrice /= uint32(len(items))
 }
 
-func (s *SocietyStats) RegisterBuildingMaterialsPrices(items ...uint32) {
+func (s *SocietyStats) RegisterBuildingMaterialsPrices(items []uint32) {
 	for _, item := range items {
 		s.BuildingMaterialsPrice += item
 	}
 	s.BuildingMaterialsPrice /= uint32(len(items))
 }
 
-func (s *SocietyStats) RegisterHouseholdItemPrices(items ...uint32) {
+func (s *SocietyStats) RegisterHouseholdItemPrices(items []uint32) {
 	for _, item := range items {
 		s.HouseholdItemPrice += item
 	}

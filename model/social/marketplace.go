@@ -11,6 +11,10 @@ import (
 
 const StorageToSoldRatio = 12
 
+var FoodArtifacts = []*artifacts.Artifact{economy.Bread, economy.Meat, economy.Fruit, economy.Vegetable}
+var BuildingMaterials = []*artifacts.Artifact{building.Cube, building.Board, building.Brick, building.Thatch, building.Tile}
+var HouseholdItems = []*artifacts.Artifact{Log, Textile, Leather, Tools, Paper, economy.Beer, economy.Medicine}
+
 type Marketplace struct {
 	Town      *Town `json:"-"`
 	Building  *building.Building
@@ -21,6 +25,14 @@ type Marketplace struct {
 	Bought    map[*artifacts.Artifact]uint32
 	BuyTasks  map[*economy.BuyTask]bool
 	SellTasks map[*economy.SellTask]bool
+}
+
+func (mp *Marketplace) prices(as []*artifacts.Artifact) []uint32 {
+	prices := make([]uint32, len(as))
+	for i, a := range as {
+		prices[i] = mp.Prices[a]
+	}
+	return prices
 }
 
 func (mp *Marketplace) Init() {
@@ -124,9 +136,9 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 			mp.Reset(a)
 		}
 
-		mp.Town.Country.SocietyStats.RegisterFoodPrices(mp.Prices[economy.Bread], mp.Prices[economy.Meat], mp.Prices[economy.Fruit], mp.Prices[economy.Vegetable])
-		mp.Town.Country.SocietyStats.RegisterBuildingMaterialsPrices(mp.Prices[building.Cube], mp.Prices[building.Board], mp.Prices[building.Brick], mp.Prices[building.Thatch], mp.Prices[building.Tile])
-		mp.Town.Country.SocietyStats.RegisterHouseholdItemPrices(mp.Prices[Log], mp.Prices[Textile], mp.Prices[Leather], mp.Prices[Tools], mp.Prices[Paper], mp.Prices[economy.Beer], mp.Prices[economy.Medicine])
+		mp.Town.Country.SocietyStats.RegisterFoodPrices(mp.prices(FoodArtifacts))
+		mp.Town.Country.SocietyStats.RegisterBuildingMaterialsPrices(mp.prices(BuildingMaterials))
+		mp.Town.Country.SocietyStats.RegisterHouseholdItemPrices(mp.prices(HouseholdItems))
 	}
 }
 
