@@ -4,6 +4,8 @@ import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"image/color"
+	"medvil/model/artifacts"
+	"medvil/model/social"
 	"medvil/model/stats"
 	"medvil/view/gui"
 	"strconv"
@@ -17,6 +19,15 @@ type ChartsLabel struct {
 	img       *canvas.Canvas
 	state     uint8
 	timeScale uint8
+	helperMsg string
+}
+
+func icons(as []*artifacts.Artifact) []string {
+	icons := make([]string, len(as))
+	for i, a := range as {
+		icons[i] = "icon/gui/artifacts/" + a.Name
+	}
+	return icons
 }
 
 func (l *ChartsLabel) Render(cv *canvas.Canvas) {
@@ -29,25 +40,29 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 	cv.SetLineWidth(2)
 	switch l.state {
 	case 1:
-		l.drawChart(cv, "#B00", 120, "deaths", stats.HistoryElement.GetDeaths, true)
-		l.drawChart(cv, "#808", 240, "departures", stats.HistoryElement.GetDepartures, true)
-		l.drawChart(cv, "#DDD", 360, "people", stats.HistoryElement.GetPeople, false)
+		l.drawChart(cv, "#DDD", 130, []string{"icon/gui/person"}, stats.HistoryElement.GetPeople, false)
+		l.drawChart(cv, "#B00", 260, []string{"icon/gui/person"}, stats.HistoryElement.GetDeaths, true)
+		l.drawChart(cv, "#808", 390, []string{"icon/gui/person"}, stats.HistoryElement.GetDepartures, true)
+		l.helperMsg = "Population, deaths and departures"
 	case 2:
-		l.drawChart(cv, "#DDD", 120, "products", stats.HistoryElement.GetArtifacts, false)
-		l.drawChart(cv, "#FF0", 240, "trade volume", stats.HistoryElement.GetExchangedNum, true)
-		l.drawChart(cv, "#FF0", 360, "trade volume", stats.HistoryElement.GetExchangedPrice, true)
+		l.drawChart(cv, "#DDD", 130, []string{"icon/gui/barrel"}, stats.HistoryElement.GetArtifacts, false)
+		l.drawChart(cv, "#FF0", 260, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedNum, true)
+		l.drawChart(cv, "#FF0", 390, []string{"icon/gui/market", "icon/gui/coin"}, stats.HistoryElement.GetExchangedPrice, true)
+		l.helperMsg = "Products and market transactions"
 	case 3:
-		l.drawChart(cv, "#D82", 120, "food price", stats.HistoryElement.GetFoodPrice, false)
-		l.drawChart(cv, "#660", 240, "household item price", stats.HistoryElement.GetHouseholdItemPrices, false)
-		l.drawChart(cv, "#D42", 360, "building materials price", stats.HistoryElement.GetBuildingMaterialsPrice, false)
+		l.drawChart(cv, "#D82", 130, icons(social.FoodArtifacts), stats.HistoryElement.GetFoodPrice, false)
+		l.drawChart(cv, "#660", 260, icons(social.BuildingMaterials), stats.HistoryElement.GetHouseholdItemPrices, false)
+		l.drawChart(cv, "#D42", 390, icons(social.HouseholdItems), stats.HistoryElement.GetBuildingMaterialsPrice, false)
+		l.helperMsg = "Average price of food, building materials"
 	}
+	l.CaptureClick(0, 0)
 }
 
 func (l *ChartsLabel) CaptureClick(x float64, y float64) {
-
+	l.cp.HelperMessage(l.helperMsg)
 }
 
-func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, caption string, fn func(stats.HistoryElement) uint32, sum bool) {
+func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []string, fn func(stats.HistoryElement) uint32, sum bool) {
 	maxPoints := (int(ControlPanelSX) - 48) / DPoint
 	var startIdx = 0
 	if len(l.s.Elements)/int(l.timeScale) > maxPoints {
@@ -123,15 +138,19 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, caption stri
 	cv.ClosePath()
 	cv.Stroke()
 
+	for i, icon := range icons {
+		cv.DrawImage(icon+".png", float64(i*32), float64(y-128), 32, 32)
+	}
+
 	cv.SetFillStyle(c)
 	cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
-	text := caption + " " + strconv.Itoa(int(max))
-	cv.FillText(text, 0, float64(y-96))
+	text := strconv.Itoa(int(max))
+	cv.FillText(text, ControlPanelSX-60-float64(len(text))*gui.FontSize*0.5, float64(y-104))
 }
 
 func DrawStats(cp *ControlPanel, p *gui.Panel) {
 	if cp.C.Map != nil && cp.C.Map.Countries[0] != nil && cp.C.Map.Countries[0].History != nil {
-		offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX)-48, 480, true, cp.C.ctx)
+		offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX)-48, 520, true, cp.C.ctx)
 		cv := canvas.New(offscreen)
 		cl := &ChartsLabel{cp: cp, s: cp.C.Map.Countries[0].History, img: cv, timeScale: 1}
 		cl.Draw(cv)
