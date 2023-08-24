@@ -305,3 +305,18 @@ func (m *Map) RandomSpot(x, y uint16, r int) *navigation.Field {
 	}
 	return f
 }
+
+func (m *Map) GetNearbyGuard(t *navigation.Traveller) *social.Person {
+	f := m.GetField(t.FX, t.FY)
+	if f != nil {
+		for _, t := range f.Travellers {
+			if t.Person != nil {
+				person := t.Person.(*social.Person)
+				if person.Home.GetTown().Country.T != social.CountryTypeOutlaw {
+					return person
+				}
+			}
+		}
+	}
+	return nil
+}

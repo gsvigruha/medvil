@@ -41,9 +41,9 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 	switch l.state {
 	case 1:
 		l.drawChart(cv, "#DDD", 130, []string{"icon/gui/person"}, stats.HistoryElement.GetPeople, false)
-		l.drawChart(cv, "#B00", 260, []string{"icon/gui/person"}, stats.HistoryElement.GetDeaths, true)
-		l.drawChart(cv, "#808", 390, []string{"icon/gui/person"}, stats.HistoryElement.GetDepartures, true)
-		l.helperMsg = "Population, deaths and departures"
+		l.drawChart(cv, "#B00", 260, []string{"icon/gui/death"}, stats.HistoryElement.GetDeaths, true)
+		l.drawChart(cv, "#808", 390, []string{"icon/gui/emigration"}, stats.HistoryElement.GetDepartures, true)
+		l.helperMsg = "Population size, deaths and emigration"
 	case 2:
 		l.drawChart(cv, "#DDD", 130, []string{"icon/gui/barrel"}, stats.HistoryElement.GetArtifacts, false)
 		l.drawChart(cv, "#FF0", 260, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedNum, true)

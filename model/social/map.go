@@ -7,4 +7,5 @@ import (
 type IMap interface {
 	navigation.IMap
 	GetCountries(t uint8) []*Country
+	GetNearbyGuard(t *navigation.Traveller) *Person
 }
