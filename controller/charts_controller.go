@@ -51,8 +51,8 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.helperMsg = "Products and market transactions"
 	case 3:
 		l.drawChart(cv, "#D82", 130, icons(social.FoodArtifacts), stats.HistoryElement.GetFoodPrice, false)
-		l.drawChart(cv, "#660", 260, icons(social.BuildingMaterials), stats.HistoryElement.GetHouseholdItemPrices, false)
-		l.drawChart(cv, "#D42", 390, icons(social.HouseholdItems), stats.HistoryElement.GetBuildingMaterialsPrice, false)
+		l.drawChart(cv, "#660", 260, icons(social.HouseholdItems), stats.HistoryElement.GetHouseholdItemPrices, false)
+		l.drawChart(cv, "#D42", 390, icons(social.BuildingMaterials), stats.HistoryElement.GetBuildingMaterialsPrice, false)
 		l.helperMsg = "Average price of food, building materials"
 	}
 	l.CaptureClick(0, 0)
