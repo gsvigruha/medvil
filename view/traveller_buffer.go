@@ -22,7 +22,7 @@ func (tc *TravellerImageCache) RenderTravellerOnBuffer(
 	key := t.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.FormatBool(tallPlant(f))
 	person := c.ReverseReferences.TravellerToPerson[t]
 	if person != nil {
-		key = key + "#" + strconv.Itoa(int(person.Home.GetBuilding().Plan.BuildingType)) + "#" + strconv.Itoa(int(person.Home.GetTown().Country.T))
+		key = key + "#" + strconv.Itoa(int(person.Home.GetBuilding().Plan.BuildingType)) + "#" + strconv.Itoa(int(person.Home.GetTown().Country.T)) + "#" + strconv.FormatBool(person.Equipment.Weapon)
 	}
 	if ce, ok := tc.entries[key]; ok {
 		return ce.cv

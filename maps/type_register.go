@@ -7,10 +7,12 @@ import (
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/materials"
+	"medvil/model/military"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/model/terrain"
 	"medvil/model/vehicles"
+
 	"reflect"
 )
 
@@ -76,6 +78,8 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(economy.TerraformTask{})
 	case "RepairTask":
 		return reflect.TypeOf(economy.RepairTask{})
+	case "PatrolTask":
+		return reflect.TypeOf(military.PatrolTask{})
 	case "Field":
 		return reflect.TypeOf(navigation.Field{})
 	case "Location":
