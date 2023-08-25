@@ -1,5 +1,11 @@
 package stats
 
+import (
+	"medvil/model/economy"
+	"medvil/model/time"
+	"reflect"
+)
+
 type SocietyStats struct {
 	Deaths                 uint32
 	Departures             uint32
@@ -10,6 +16,8 @@ type SocietyStats struct {
 	FoodPrice              uint32
 	HouseholdItemPrice     uint32
 	BuildingMaterialsPrice uint32
+	PendingTasks           map[economy.Task]uint32
+	CompletedTasks         map[string]uint32
 }
 
 func (s *SocietyStats) RegisterTrade(price uint32, quantity uint16) {
@@ -44,4 +52,24 @@ func (s *SocietyStats) RegisterHouseholdItemPrices(items []uint32) {
 		s.HouseholdItemPrice += item
 	}
 	s.HouseholdItemPrice /= uint32(len(items))
+}
+
+func (s *SocietyStats) StartTask(t economy.Task, calendar *time.CalendarType) {
+	if s.PendingTasks != nil {
+		s.PendingTasks[t] = calendar.DaysElapsed()
+	}
+}
+
+func (s *SocietyStats) FinishTask(t economy.Task, calendar *time.CalendarType) {
+	if s.PendingTasks != nil {
+		if start, ok := s.PendingTasks[t]; ok {
+			aggrName := reflect.TypeOf(t).Elem().Name()
+			if aggrTime, ok := s.CompletedTasks[aggrName]; ok {
+				s.CompletedTasks[aggrName] = aggrTime + calendar.DaysElapsed() - start
+			} else {
+				s.CompletedTasks[aggrName] = calendar.DaysElapsed() - start
+			}
+			delete(s.PendingTasks, t)
+		}
+	}
 }

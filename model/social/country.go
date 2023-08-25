@@ -34,5 +34,5 @@ func (c *Country) AddTownIfDoesNotExist(town *Town) {
 
 func (c *Country) ArchiveHistory() {
 	c.History.Archive(c.Stats(), c.SocietyStats)
-	c.SocietyStats = &stats.SocietyStats{}
+	c.SocietyStats = &stats.SocietyStats{PendingTasks: c.SocietyStats.PendingTasks, CompletedTasks: make(map[string]uint32)}
 }

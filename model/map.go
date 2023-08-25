@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
+	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/model/stats"
@@ -48,7 +49,7 @@ func (m *Map) ElapseTime() {
 			country.History = &stats.History{}
 		}
 		if country.SocietyStats == nil {
-			country.SocietyStats = &stats.SocietyStats{}
+			country.SocietyStats = &stats.SocietyStats{PendingTasks: make(map[economy.Task]uint32), CompletedTasks: make(map[string]uint32)}
 		}
 		if m.Calendar.Hour == 0 && m.Calendar.Day == 30 {
 			country.ArchiveHistory()

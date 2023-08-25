@@ -54,6 +54,12 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.drawChart(cv, "#660", 260, icons(social.HouseholdItems), stats.HistoryElement.GetHouseholdItemPrices, false)
 		l.drawChart(cv, "#D42", 390, icons(social.BuildingMaterials), stats.HistoryElement.GetBuildingMaterialsPrice, false)
 		l.helperMsg = "Average price of food, building materials"
+	case 4:
+		l.drawChart(cv, "#862", 130, []string{"icon/gui/tasks/transport"}, stats.HistoryElement.GetTransportTaskTime, true)
+		l.drawChart(cv, "#EC0", 260, []string{"icon/gui/tasks/exchange"}, stats.HistoryElement.GetExchangeTaskTime, true)
+		l.drawChart(cv, "#2A0", 390, []string{"icon/gui/tasks/ploughing"}, stats.HistoryElement.GetAgricultureTaskTime, true)
+		l.drawChart(cv, "#BBB", 520, []string{"icon/gui/tasks/milling"}, stats.HistoryElement.GetManufactureTaskTime, true)
+		l.helperMsg = "Days spent on various tasks"
 	}
 	l.CaptureClick(0, 0)
 }
@@ -165,6 +171,9 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 		p.AddButton(gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "coin", X: float64(24 + LargeIconD*2), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS},
 			ClickImpl: func() { cl.state = 3 }})
+		p.AddButton(gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "tasks/transport", X: float64(24 + LargeIconD*3), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS},
+			ClickImpl: func() { cl.state = 4 }})
 
 		p.AddButton(gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS},

@@ -26,6 +26,7 @@ const PathTypePedestrian PathType = 0
 const PathTypeBoat PathType = 1
 
 type Person interface {
+	CacheKey() string
 }
 
 type PathComp struct {

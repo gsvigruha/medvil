@@ -6,6 +6,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"strconv"
 )
 
 const MaxPersonState = 250
@@ -48,6 +49,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Traveller.IncPhase()
 			}
 			if p.Task.Complete(Calendar, p.Equipment.Tool) {
+				p.Home.GetTown().Country.SocietyStats.FinishTask(p.Task, Calendar)
 				p.releaseTask()
 			}
 		} else {
@@ -88,6 +90,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Equipment = economy.Tool
 			}
 			p.Task.SetUp(p.Traveller, p.Home)
+			p.Home.GetTown().Country.SocietyStats.StartTask(p.Task, Calendar)
 		} else if !p.IsHome {
 			p.Task = &economy.GoHomeTask{F: home, P: p}
 		}
@@ -208,4 +211,10 @@ func (p *Person) HasMedicine() bool {
 
 func (p *Person) HasBeer() bool {
 	return p.Home.HasBeer()
+}
+
+func (p *Person) CacheKey() string {
+	return strconv.Itoa(int(p.Home.GetBuilding().Plan.BuildingType)) + "#" +
+		strconv.Itoa(int(p.Home.GetTown().Country.T)) + "#" +
+		strconv.FormatBool(p.Equipment.Weapon)
 }
