@@ -75,8 +75,8 @@ func setupTerrain(m *model.Map, config MapConfig) {
 					fields[i][j].Surroundings[k] = GetSurroundingType(fields[i][j], fields[i+di1][j+dj1], fields[i+di2][j+dj2], fields[i+di3][j+dj3])
 				}
 			}
-			if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil {
-				if !m.Shore(uint16(i), uint16(j)) {
+			if !m.Shore(uint16(i), uint16(j)) {
+				if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil {
 					if fields[i][j].Terrain.T == terrain.Grass && fields[i][j].Flat() {
 						if rand.Float64() < 0.66 {
 							fields[i][j].Terrain.T = terrain.Mud
@@ -90,7 +90,9 @@ func setupTerrain(m *model.Map, config MapConfig) {
 							fields[i][j].Terrain.T = terrain.Rock
 						}
 					}
-				} else {
+				}
+			} else {
+				if rand.Intn(ResourcesProb) < config.Resources*2 {
 					fields[i][j].Terrain.T = terrain.Gold
 				}
 			}

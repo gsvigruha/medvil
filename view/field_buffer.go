@@ -27,7 +27,7 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 		} else {
 			cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		}
-	} else if f.Terrain.T == terrain.Water {
+	} else if f.Terrain.T == terrain.Water || f.Terrain.T == terrain.Gold {
 		cv.SetFillStyle("texture/terrain/water_" + strconv.Itoa(int(f.Terrain.Shape)) + "_" + strconv.Itoa(phase) + ".png")
 	} else {
 		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
@@ -36,7 +36,7 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 	rf.Draw(cv)
 	cv.Fill()
 
-	if f.Terrain.T.Object {
+	if f.Terrain.T.Object || f.Terrain.T == terrain.Gold {
 		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
 		rf.Draw(cv)
 		cv.Fill()
