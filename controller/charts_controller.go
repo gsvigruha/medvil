@@ -41,9 +41,9 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 	switch l.state {
 	case 1:
 		l.drawChart(cv, "#DDD", 130, []string{"icon/gui/person"}, stats.HistoryElement.GetPeople, false)
-		l.drawChart(cv, "#B00", 260, []string{"icon/gui/person"}, stats.HistoryElement.GetDeaths, true)
-		l.drawChart(cv, "#808", 390, []string{"icon/gui/person"}, stats.HistoryElement.GetDepartures, true)
-		l.helperMsg = "Population, deaths and departures"
+		l.drawChart(cv, "#B00", 260, []string{"icon/gui/death"}, stats.HistoryElement.GetDeaths, true)
+		l.drawChart(cv, "#808", 390, []string{"icon/gui/emigration"}, stats.HistoryElement.GetDepartures, true)
+		l.helperMsg = "Population size, deaths and emigration"
 	case 2:
 		l.drawChart(cv, "#DDD", 130, []string{"icon/gui/barrel"}, stats.HistoryElement.GetArtifacts, false)
 		l.drawChart(cv, "#FF0", 260, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedNum, true)
@@ -51,8 +51,8 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.helperMsg = "Products and market transactions"
 	case 3:
 		l.drawChart(cv, "#D82", 130, icons(social.FoodArtifacts), stats.HistoryElement.GetFoodPrice, false)
-		l.drawChart(cv, "#660", 260, icons(social.BuildingMaterials), stats.HistoryElement.GetHouseholdItemPrices, false)
-		l.drawChart(cv, "#D42", 390, icons(social.HouseholdItems), stats.HistoryElement.GetBuildingMaterialsPrice, false)
+		l.drawChart(cv, "#660", 260, icons(social.HouseholdItems), stats.HistoryElement.GetHouseholdItemPrices, false)
+		l.drawChart(cv, "#D42", 390, icons(social.BuildingMaterials), stats.HistoryElement.GetBuildingMaterialsPrice, false)
 		l.helperMsg = "Average price of food, building materials"
 	}
 	l.CaptureClick(0, 0)

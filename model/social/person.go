@@ -84,7 +84,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		} else if p.Happiness < HappinessThreshold && p.Home.HasBeer() {
 			p.Task = &economy.DrinkTask{F: home, P: p}
 		} else if p.Task = p.Home.NextTask(m, p.Equipment); p.Task != nil {
-			if !p.Equipment.Tool && p.Home.GetResources().Remove(Tools, 1) == 1 {
+			if !p.Equipment.Tool && !p.Equipment.Weapon && p.Home.GetResources().Remove(Tools, 1) == 1 {
 				p.Equipment = economy.Tool
 			}
 			p.Task.SetUp(p.Traveller, p.Home)

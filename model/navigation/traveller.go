@@ -25,6 +25,9 @@ type PathType uint8
 const PathTypePedestrian PathType = 0
 const PathTypeBoat PathType = 1
 
+type Person interface {
+}
+
 type PathComp struct {
 	Path      *Path
 	PE        PathElement
@@ -44,6 +47,7 @@ type Traveller struct {
 	Visible   bool
 	T         uint8
 	Vehicle   Vehicle
+	Person    Person
 	PathComp  PathComp
 	Lane      uint8
 	StuckCntr uint8

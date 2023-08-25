@@ -17,7 +17,7 @@ const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
-const FleeingRate = 1.0 / (24 * 30 * 12 * 5)
+const FleeingRate = 1.0 / (24 * 30 * 12 * 3)
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
@@ -416,7 +416,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 		T:  navigation.TravellerTypePedestrian,
 	}
 	traveller.InitPathElement(f)
-	return &Person{
+	person := &Person{
 		Food:      MaxPersonState,
 		Water:     MaxPersonState,
 		Happiness: MaxPersonState,
@@ -427,6 +427,8 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 		Traveller: traveller,
 		Equipment: economy.NoEquipment,
 	}
+	traveller.Person = person
+	return person
 }
 
 func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
@@ -464,6 +466,10 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			} else {
 				m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)
 			}
+		} else if guard := m.GetNearbyGuard(p.Traveller); guard != nil && h.Town.Country.T == CountryTypeOutlaw {
+			th := guard.Home.GetTown().Townhall
+			th.Household.AssignPerson(p, m)
+			p.Task = &economy.GoHomeTask{F: m.GetField(th.Household.Building.X, th.Household.Building.Y), P: p}
 		} else {
 			newPeople = append(newPeople, p)
 		}

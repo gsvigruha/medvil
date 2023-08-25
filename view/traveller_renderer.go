@@ -205,6 +205,8 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	if person != nil {
 		if person.Home.GetTown().Country.T == social.CountryTypeOutlaw {
 			cv.SetFillStyle("#952")
+		} else if person.Equipment.Weapon {
+			cv.SetFillStyle("#444")
 		} else {
 			switch person.Home.GetBuilding().Plan.BuildingType {
 			case building.BuildingTypeFarm:
