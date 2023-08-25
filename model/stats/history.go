@@ -41,6 +41,22 @@ func (he HistoryElement) GetBuildingMaterialsPrice() uint32 {
 	return he.BuildingMaterialsPrice
 }
 
+func (he HistoryElement) GetTransportTaskTime() uint32 {
+	return he.CompletedTasks["TransportTask"]
+}
+
+func (he HistoryElement) GetExchangeTaskTime() uint32 {
+	return he.CompletedTasks["ExchangeTask"]
+}
+
+func (he HistoryElement) GetAgricultureTaskTime() uint32 {
+	return he.CompletedTasks["AgriculturalTask"]
+}
+
+func (he HistoryElement) GetManufactureTaskTime() uint32 {
+	return he.CompletedTasks["ManufactureTask"]
+}
+
 type History struct {
 	Elements []HistoryElement
 }
