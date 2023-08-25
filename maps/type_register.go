@@ -12,7 +12,6 @@ import (
 	"medvil/model/social"
 	"medvil/model/terrain"
 	"medvil/model/vehicles"
-
 	"reflect"
 )
 
