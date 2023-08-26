@@ -120,6 +120,6 @@ func (t *Tower) FieldWithinDistance(field *navigation.Field) bool {
 	return WithinDistance(t.Household.Building, field, TowerMaxDistance)
 }
 
-func (t *Tower) GetHousehold() *Household {
+func (t *Tower) GetHome() Home {
 	return t.Household
 }

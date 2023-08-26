@@ -597,3 +597,7 @@ func (h *Household) Broken() bool {
 func (h *Household) GetTown() *Town {
 	return h.Town
 }
+
+func (h *Household) GetPeople() []*Person {
+	return h.People
+}

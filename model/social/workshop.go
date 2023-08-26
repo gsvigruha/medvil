@@ -111,6 +111,6 @@ func (w *Workshop) GetFields() []navigation.FieldWithContext {
 	return []navigation.FieldWithContext{}
 }
 
-func (w *Workshop) GetHousehold() *Household {
+func (w *Workshop) GetHome() Home {
 	return w.Household
 }

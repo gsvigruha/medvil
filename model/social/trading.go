@@ -69,6 +69,10 @@ func (t *Trader) GetGoodsToTrade(a *artifacts.Artifact, src *Marketplace, dst *M
 		if sellQuantity < buyQuantity {
 			quantity = sellQuantity
 		}
+		capacity := t.Vehicle.T.MaxVolume / a.V
+		if capacity < quantity {
+			quantity = capacity
+		}
 		return []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: quantity}}
 	}
 	return []artifacts.Artifacts{}
@@ -214,4 +218,12 @@ func (t *Trader) Broken() bool {
 
 func (t *Trader) GetTown() *Town {
 	return t.Town
+}
+
+func (t *Trader) GetPeople() []*Person {
+	return []*Person{t.Person}
+}
+
+func (t *Trader) GetHome() Home {
+	return t
 }

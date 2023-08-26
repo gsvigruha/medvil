@@ -127,6 +127,6 @@ func (m *Mine) FieldWithinDistance(field *navigation.Field) bool {
 	return WithinDistance(m.Household.Building, field, MineMaxDistance)
 }
 
-func (m *Mine) GetHousehold() *Household {
+func (m *Mine) GetHome() Home {
 	return m.Household
 }

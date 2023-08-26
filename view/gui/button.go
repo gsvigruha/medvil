@@ -52,7 +52,7 @@ type SimpleButton struct {
 
 func (b SimpleButton) Render(cv *canvas.Canvas) {
 	if b.Highlight != nil && b.Highlight() {
-		cv.SetFillStyle(color.RGBA{R: 224, G: 240, B: 255, A: 240})
+		cv.SetFillStyle(color.RGBA{R: 192, G: 224, B: 255, A: 192})
 		cv.FillRect(b.X, b.Y, b.SX, b.SY)
 	}
 	b.ButtonGUI.Render(cv)

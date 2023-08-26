@@ -57,6 +57,7 @@ func (town *Town) Init() {
 		Mine:              defaultTransfers,
 		Factory:           defaultTransfers,
 		Tower:             militaryTransfers,
+		Trader:            defaultTransfers,
 		MarketFundingRate: 70,
 	}
 	town.Stats = &stats.Stats{}
@@ -147,13 +148,15 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		CollectTax(town.Workshops, town, town.Transfers.Workshop)
 		CollectTax(town.Towers, town, town.Transfers.Tower)
 		CollectTax(town.Factories, town, town.Transfers.Factory)
+		CollectTax(town.Townhall.Traders, town, town.Transfers.Trader)
 
 		budget := uint32(float64(town.Townhall.Household.Money) * MaxSubsidyRatio)
 		subsidyNeeded := (SumSubsidyNeeded(town.Farms, town.Transfers.Farm) +
 			SumSubsidyNeeded(town.Mines, town.Transfers.Mine) +
 			SumSubsidyNeeded(town.Workshops, town.Transfers.Workshop) +
 			SumSubsidyNeeded(town.Towers, town.Transfers.Tower) +
-			SumSubsidyNeeded(town.Factories, town.Transfers.Factory))
+			SumSubsidyNeeded(town.Factories, town.Transfers.Factory) +
+			SumSubsidyNeeded(town.Townhall.Traders, town.Transfers.Trader))
 		var ratio = 1.0
 		if budget < subsidyNeeded {
 			ratio = float64(budget) / float64(subsidyNeeded)
@@ -163,6 +166,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		SendSubsidy(town.Workshops, town, town.Transfers.Workshop, ratio)
 		SendSubsidy(town.Towers, town, town.Transfers.Tower, ratio)
 		SendSubsidy(town.Factories, town, town.Transfers.Factory, ratio)
+		SendSubsidy(town.Townhall.Traders, town, town.Transfers.Trader, ratio)
 	}
 	for k := range town.Walls {
 		wall := town.Walls[k]
@@ -444,7 +448,8 @@ func AddTransportTasksForField(field *navigation.Field, th *Townhall, m navigati
 func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMap) []H {
 	var newHouses []H
 	for _, house := range houses {
-		if house.GetHousehold().Building == b {
+		household := house.GetHome().(*Household)
+		if household.Building == b {
 			// Remove the building elements from the field
 			for _, coords := range b.GetBuildingXYs(true) {
 				m.GetField(coords[0], coords[1]).Building = navigation.FieldBuildingObjects{}
@@ -453,8 +458,8 @@ func DestroyBuilding[H House](houses []H, b *building.Building, m navigation.IMa
 			for _, field := range house.GetFields() {
 				field.Field().Allocated = false
 			}
-			house.GetHousehold().Destroy(m)
-			AddTransportTasksForField(m.GetField(b.X, b.Y), house.GetHousehold().Town.Townhall, m)
+			household.Destroy(m)
+			AddTransportTasksForField(m.GetField(b.X, b.Y), household.Town.Townhall, m)
 		} else {
 			newHouses = append(newHouses, house)
 		}
