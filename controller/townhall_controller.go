@@ -12,7 +12,7 @@ import (
 	"strconv"
 )
 
-var TownhallControllerGUIBottomY = 0.7
+var TownhallControllerGUIBottomY = 0.75
 
 type TownhallControllerButton struct {
 	tc       *TownhallController

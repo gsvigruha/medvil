@@ -435,11 +435,15 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 	var newPeople = make([]*Person, 0, len(h.People))
 	for _, p := range h.People {
 		if p.Health == 0 {
-			m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)
+			f := m.GetField(p.Traveller.FX, p.Traveller.FY)
+			f.UnregisterTraveller(p.Traveller)
 			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
 				h.AddTask(p.Task)
 			}
 			p.releaseTask()
+			if p.Equipment.Tool || p.Equipment.Weapon {
+				f.Terrain.Resources.Add(artifacts.GetArtifact("iron_bar"), 1)
+			}
 			h.Town.Country.SocietyStats.RegisterDeath()
 		} else if p.Happiness == 0 && rand.Float64() < FleeingRate && h.Town.Country.T != CountryTypeOutlaw {
 			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {

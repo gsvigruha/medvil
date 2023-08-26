@@ -19,7 +19,7 @@ type TravellerImageCache struct {
 
 func (tc *TravellerImageCache) RenderTravellerOnBuffer(
 	cv *canvas.Canvas, t *navigation.Traveller, f *navigation.Field, c *controller.Controller) *canvas.Canvas {
-	key := t.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.FormatBool(tallPlant(f))
+	key := t.CacheKey(c.Perspective) + "#" + strconv.FormatBool(tallPlant(f))
 	person := t.Person
 	if person != nil {
 		key = key + "#" + person.CacheKey()

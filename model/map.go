@@ -315,7 +315,7 @@ func (m *Map) GetNearbyGuard(t *navigation.Traveller) *social.Person {
 				for _, t := range f.Travellers {
 					if t.Person != nil {
 						person := t.Person.(*social.Person)
-						if person.Home.GetTown().Country.T != social.CountryTypeOutlaw && !person.IsHome && person.Equipment.Weapon {
+						if person.Home.GetTown() != nil && person.Home.GetTown().Country.T != social.CountryTypeOutlaw && !person.IsHome && person.Equipment.Weapon {
 							return person
 						}
 					}
