@@ -245,6 +245,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				town.Constructions = append(town.Constructions, c)
 				town.AddConstructionTasks(c, road, m)
 			}
+			town.AddTransportTask(m.GetField(road.X, road.Y))
 		}
 		for _, wall := range town.Walls {
 			wf := m.GetField(wall.F.X, wall.F.Y)
@@ -259,6 +260,33 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				}
 				town.Constructions = append(town.Constructions, c)
 				town.AddConstructionTasks(c, wf, m)
+			}
+			town.AddTransportTask(wf)
+		}
+		for i := -TownhallMaxDistance; i <= TownhallMaxDistance; i++ {
+			for j := -TownhallMaxDistance; j <= TownhallMaxDistance; j++ {
+				f := m.GetField(uint16(int(town.Townhall.Household.Building.X)+i), uint16(int(town.Townhall.Household.Building.Y)+j))
+				if f != nil && !f.Allocated && town.Townhall.FieldWithinDistance(f) {
+					town.AddTransportTask(f)
+				}
+			}
+		}
+	}
+}
+
+func (town *Town) AddTransportTask(f *navigation.Field) {
+	for a, q := range f.Terrain.Resources.Artifacts {
+		if f.Terrain.Resources.IsRealArtifact(a) && q > 0 {
+			tag := economy.TransportTaskTag(f, a)
+			if town.Townhall.Household.NumTasks("transport", tag) == 0 {
+				town.Townhall.Household.AddTask(&economy.TransportTask{
+					PickupD:        f,
+					DropoffD:       town.Townhall.Household.Destination(building.NonExtension),
+					PickupR:        f.Terrain.Resources,
+					DropoffR:       town.Townhall.Household.Resources,
+					A:              a,
+					TargetQuantity: q,
+				})
 			}
 		}
 	}
