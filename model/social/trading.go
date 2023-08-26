@@ -21,6 +21,7 @@ type Trader struct {
 	Resources      *artifacts.Resources
 	SourceExchange *Marketplace
 	TargetExchange *Marketplace
+	Town           *Town
 	Tasks          []economy.Task
 }
 
@@ -212,5 +213,5 @@ func (t *Trader) Broken() bool {
 }
 
 func (t *Trader) GetTown() *Town {
-	return t.Person.Home.GetTown()
+	return t.Town
 }

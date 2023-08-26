@@ -119,6 +119,7 @@ func (t *Townhall) CreateTrader(m navigation.IMap) {
 						Vehicle:        v,
 						Resources:      &r,
 						SourceExchange: t.Household.Town.Marketplace,
+						Town:           t.Household.Town,
 					}
 					t.Traders = append(t.Traders, trader)
 					p.Home = trader
