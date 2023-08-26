@@ -360,8 +360,9 @@ func (t *Traveller) InitPathElement(pe PathElement) {
 	t.PathComp.PE = pe
 }
 
-func (t *Traveller) CacheKey() string {
-	key := strconv.Itoa(int(t.Direction)) + "#" +
+func (t *Traveller) CacheKey(perspective uint8) string {
+	dirIdx := (perspective - t.Direction) % 4
+	key := strconv.Itoa(int(dirIdx)) + "#" +
 		strconv.Itoa(int(t.Motion)) + "#" +
 		strconv.Itoa(int(t.Phase)) + "#" +
 		strconv.Itoa(int(t.T))
