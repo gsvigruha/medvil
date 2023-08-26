@@ -167,6 +167,6 @@ func (f *Farm) FieldWithinDistance(field *navigation.Field) bool {
 	return WithinDistance(f.Household.Building, field, FarmMaxDistance)
 }
 
-func (f *Farm) GetHousehold() *Household {
+func (f *Farm) GetHome() Home {
 	return f.Household
 }

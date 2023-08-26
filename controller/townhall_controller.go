@@ -99,8 +99,12 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*5, tpw-tw, s, 0, 100, 10, "tax rate %v", &th.Household.Town.Transfers.Factory.Rate).P)
 	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*6, tpw-tw, s, 0, 1000, 50, "threshold %v", &th.Household.Town.Transfers.Factory.Threshold).P)
 
-	tp.AddPanel(gui.CreateNumberPaneFromVal(24, top+h*8, tpw-s, s, 0, 100, 50, "military funding %v", &th.Household.Town.Transfers.Tower.Threshold).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(24+tpw, top+h*8, tpw-s, s, 0, 100, 10, "market funding %v", &th.Household.Town.Transfers.MarketFundingRate).P)
+	tp.AddImageLabel("trader", 24, top+h*8, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*9, tpw-tw, s, 0, 100, 10, "tax rate %v", &th.Household.Town.Transfers.Trader.Rate).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*10, tpw-tw, s, 0, 1000, 50, "threshold %v", &th.Household.Town.Transfers.Trader.Threshold).P)
+
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*8, tpw-s, s, 0, 100, 50, "military %v", &th.Household.Town.Transfers.Tower.Threshold).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*9, tpw-s, s, 0, 100, 10, "market %v", &th.Household.Town.Transfers.MarketFundingRate).P)
 
 	var aI = 0
 	for _, a := range artifacts.All {

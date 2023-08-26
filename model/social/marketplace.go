@@ -112,28 +112,30 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		sd := mp.pendingSupplyAndDemand()
 
 		for _, a := range artifacts.All {
-			storage := uint32(mp.Storage.Artifacts[a]) / StorageToSoldRatio
-			if mp.Sold[a]+storage == 0 && mp.Bought[a] > 0 {
-				mp.IncPrice(a)
-			} else if mp.Bought[a] == 0 && mp.Sold[a]+storage > 0 {
-				mp.DecPrice(a)
-			} else if mp.Bought[a] > 0 && mp.Sold[a]+storage > 0 {
-				r := float64(mp.Sold[a]+storage) / float64(mp.Bought[a])
-				if r >= 1.1 {
-					mp.DecPrice(a)
-				} else if r <= 0.9 {
+			if a != gold {
+				storage := uint32(mp.Storage.Artifacts[a]) / StorageToSoldRatio
+				if mp.Sold[a]+storage == 0 && mp.Bought[a] > 0 {
 					mp.IncPrice(a)
-				}
-			} else {
-				if sd[a].Supply < sd[a].Demand {
-					mp.IncPrice(a)
-				} else if sd[a].Supply > sd[a].Demand {
+				} else if mp.Bought[a] == 0 && mp.Sold[a]+storage > 0 {
 					mp.DecPrice(a)
-				} else if mp.Storage.Artifacts[a] >= ProductTransportQuantity(a) && sd[a].Demand == 0 {
-					mp.DecPrice(a)
+				} else if mp.Bought[a] > 0 && mp.Sold[a]+storage > 0 {
+					r := float64(mp.Sold[a]+storage) / float64(mp.Bought[a])
+					if r >= 1.1 {
+						mp.DecPrice(a)
+					} else if r <= 0.9 {
+						mp.IncPrice(a)
+					}
+				} else {
+					if sd[a].Supply < sd[a].Demand {
+						mp.IncPrice(a)
+					} else if sd[a].Supply > sd[a].Demand {
+						mp.DecPrice(a)
+					} else if mp.Storage.Artifacts[a] >= ProductTransportQuantity(a) && sd[a].Demand == 0 {
+						mp.DecPrice(a)
+					}
 				}
+				mp.Reset(a)
 			}
-			mp.Reset(a)
 		}
 
 		mp.Town.Country.SocietyStats.RegisterFoodPrices(mp.prices(FoodArtifacts))

@@ -5,6 +5,6 @@ import (
 )
 
 type House interface {
-	GetHousehold() *Household
+	HomeProvider
 	GetFields() []navigation.FieldWithContext
 }

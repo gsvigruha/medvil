@@ -179,6 +179,6 @@ func (f *Factory) GetFields() []navigation.FieldWithContext {
 	return []navigation.FieldWithContext{}
 }
 
-func (f *Factory) GetHousehold() *Household {
+func (f *Factory) GetHome() Home {
 	return f.Household
 }

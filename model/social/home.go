@@ -33,6 +33,7 @@ type Home interface {
 	PendingCosts() uint32
 	Broken() bool
 	GetTown() *Town
+	GetPeople() []*Person
 }
 
 var water = artifacts.GetArtifact("water")
