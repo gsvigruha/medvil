@@ -212,5 +212,5 @@ func (t *Trader) Broken() bool {
 }
 
 func (t *Trader) GetTown() *Town {
-	return nil
+	return t.Person.Home.GetTown()
 }
