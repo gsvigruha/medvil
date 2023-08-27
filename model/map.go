@@ -88,6 +88,7 @@ func (m *Map) ElapseTime() {
 				f.Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
 				navigation.SetRoadConnectionsForNeighbors(m, f)
 				navigation.SetBuildingDeckForNeighbors(m, f)
+				navigation.SetSurroundingTypesForNeighbors(m, f)
 			}
 			if f.Plant == nil && f.Terrain.T == terrain.Dirt && r.Float64() < GrassGrowRate && m.Calendar.Season() == time.Winter {
 				f.Terrain.T = terrain.Grass
@@ -324,4 +325,8 @@ func (m *Map) GetNearbyGuard(t *navigation.Traveller) *social.Person {
 		}
 	}
 	return nil
+}
+
+func (m *Map) Size() (uint16, uint16) {
+	return m.SX, m.SY
 }

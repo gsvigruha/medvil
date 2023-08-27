@@ -12,4 +12,5 @@ type IMap interface {
 	SetBuildingUnits(b *building.Building, construction bool)
 	Shore(x, y uint16) bool
 	RandomSpot(x, y uint16, r int) *Field
+	Size() (uint16, uint16)
 }
