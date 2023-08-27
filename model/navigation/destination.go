@@ -6,6 +6,7 @@ import (
 
 type Destination interface {
 	Check(PathElement) bool
+	DestHint() (uint16, uint16, bool)
 }
 
 type BuildingDestination struct {
@@ -36,10 +37,18 @@ func (bd *BuildingDestination) Check(pe PathElement) bool {
 	return false
 }
 
+func (bd *BuildingDestination) DestHint() (uint16, uint16, bool) {
+	return bd.B.X, bd.B.Y, true
+}
+
 type TravellerDestination struct {
 	T *Traveller
 }
 
 func (td TravellerDestination) Check(pe PathElement) bool {
 	return pe.GetLocation().X == td.T.FX && pe.GetLocation().Y == td.T.FY && pe.GetLocation().Z == td.T.FZ
+}
+
+func (td TravellerDestination) DestHint() (uint16, uint16, bool) {
+	return td.T.FX, td.T.FY, true
 }

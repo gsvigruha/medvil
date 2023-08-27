@@ -240,7 +240,12 @@ func (m *Map) ShortPath(start navigation.Location, dest navigation.Destination, 
 	if dest.Check(m.GetField(start.X, start.Y).GetPathElement(start.Z)) {
 		return nil
 	}
-	p := navigation.FindShortPathBFS(m, start, dest, pathType)
+	var p []navigation.PathElement
+	if _, _, ok := dest.DestHint(); ok {
+		p = navigation.FindShortPathTargeted(m, start, dest, pathType)
+	} else {
+		p = navigation.FindShortPathBFS(m, start, dest, pathType)
+	}
 	if p != nil {
 		return &navigation.Path{P: p[1:]}
 	}

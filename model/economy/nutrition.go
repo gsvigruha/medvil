@@ -113,3 +113,7 @@ func (d WaterDestination) Check(pe navigation.PathElement) bool {
 	}
 	return false
 }
+
+func (d WaterDestination) DestHint() (uint16, uint16, bool) {
+	return 0, 0, false
+}

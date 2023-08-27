@@ -8,6 +8,7 @@ type PathElement interface {
 	Sailable() bool
 	TravellerVisible() bool
 	Crowded() bool
+	LocationXY() (uint16, uint16)
 }
 
 type Path struct {
