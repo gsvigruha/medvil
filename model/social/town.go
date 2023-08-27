@@ -26,6 +26,13 @@ type JSONFarm struct {
 	Money      uint32
 }
 
+type TownSettings struct {
+	RoadRepairs        bool
+	WallRepairs        bool
+	Trading            bool
+	ArtifactCollection bool
+}
+
 type Town struct {
 	Country       *Country `json:"-"`
 	Townhall      *Townhall
@@ -40,6 +47,7 @@ type Town struct {
 	Stats         *stats.Stats
 	Transfers     *MoneyTransfers
 	Roads         []*navigation.Field
+	Settings      TownSettings
 }
 
 func (town *Town) Init() {
@@ -236,42 +244,48 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	town.Constructions = constructions
 	town.Stats = s
 	if Calendar.Day == 30 && Calendar.Hour == 0 && town.Townhall.Household.Resources.Remove(Paper, 1) > 0 {
-		for _, road := range town.Roads {
-			if road.Road.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(road)) == 0 {
-				c := &building.Construction{
-					Road:    road.Road,
-					X:       road.X,
-					Y:       road.Y,
-					Cost:    road.Road.T.Cost,
-					T:       building.BuildingTypeRoad,
-					Storage: &artifacts.Resources{},
+		if town.Settings.RoadRepairs {
+			for _, road := range town.Roads {
+				if road.Road.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(road)) == 0 {
+					c := &building.Construction{
+						Road:    road.Road,
+						X:       road.X,
+						Y:       road.Y,
+						Cost:    road.Road.T.Cost,
+						T:       building.BuildingTypeRoad,
+						Storage: &artifacts.Resources{},
+					}
+					town.Constructions = append(town.Constructions, c)
+					town.AddConstructionTasks(c, road, m)
 				}
-				town.Constructions = append(town.Constructions, c)
-				town.AddConstructionTasks(c, road, m)
+				town.AddTransportTask(m.GetField(road.X, road.Y))
 			}
-			town.AddTransportTask(m.GetField(road.X, road.Y))
 		}
-		for _, wall := range town.Walls {
-			wf := m.GetField(wall.F.X, wall.F.Y)
-			if wall.Building.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(wf)) == 0 {
-				c := &building.Construction{
-					Building: wall.Building,
-					X:        wall.F.X,
-					Y:        wall.F.Y,
-					Cost:     wall.Building.Plan.ConstructionCost(),
-					T:        wall.Building.Plan.BuildingType,
-					Storage:  &artifacts.Resources{},
+		if town.Settings.WallRepairs {
+			for _, wall := range town.Walls {
+				wf := m.GetField(wall.F.X, wall.F.Y)
+				if wall.Building.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(wf)) == 0 {
+					c := &building.Construction{
+						Building: wall.Building,
+						X:        wall.F.X,
+						Y:        wall.F.Y,
+						Cost:     wall.Building.Plan.ConstructionCost(),
+						T:        wall.Building.Plan.BuildingType,
+						Storage:  &artifacts.Resources{},
+					}
+					town.Constructions = append(town.Constructions, c)
+					town.AddConstructionTasks(c, wf, m)
 				}
-				town.Constructions = append(town.Constructions, c)
-				town.AddConstructionTasks(c, wf, m)
+				town.AddTransportTask(wf)
 			}
-			town.AddTransportTask(wf)
 		}
-		for i := -TownhallMaxDistance; i <= TownhallMaxDistance; i++ {
-			for j := -TownhallMaxDistance; j <= TownhallMaxDistance; j++ {
-				f := m.GetField(uint16(int(town.Townhall.Household.Building.X)+i), uint16(int(town.Townhall.Household.Building.Y)+j))
-				if f != nil && !f.Allocated && town.Townhall.FieldWithinDistance(f) {
-					town.AddTransportTask(f)
+		if town.Settings.ArtifactCollection {
+			for i := -TownhallMaxDistance; i <= TownhallMaxDistance; i++ {
+				for j := -TownhallMaxDistance; j <= TownhallMaxDistance; j++ {
+					f := m.GetField(uint16(int(town.Townhall.Household.Building.X)+i), uint16(int(town.Townhall.Household.Building.Y)+j))
+					if f != nil && !f.Allocated && town.Townhall.FieldWithinDistance(f) {
+						town.AddTransportTask(f)
+					}
 				}
 			}
 		}

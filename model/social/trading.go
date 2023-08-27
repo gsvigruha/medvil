@@ -79,7 +79,7 @@ func (t *Trader) GetGoodsToTrade(a *artifacts.Artifact, src *Marketplace, dst *M
 }
 
 func (t *Trader) GetTradeTask(m navigation.IMap) economy.Task {
-	if t.TargetExchange == nil {
+	if t.TargetExchange == nil || !t.SourceExchange.Town.Settings.Trading || !t.TargetExchange.Town.Settings.Trading {
 		return nil
 	}
 	artifactSourceToDest := t.GetArtifactToTrade(t.SourceExchange, t.TargetExchange)

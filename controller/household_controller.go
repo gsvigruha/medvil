@@ -12,7 +12,7 @@ import (
 
 const IconRowMax = 9
 
-var PersonGUIY = 0.15
+var PersonGUIY = 0.175
 var ArtifactsGUIY = 0.45
 var TaskGUIY = 0.6
 
@@ -81,7 +81,7 @@ func taskIconW(h *social.Household) (int, int) {
 }
 
 func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household) {
-	MoneyToControlPanel(p, h.Town, &h.Money, 100, 24, LargeIconD+float64(IconH)+24)
+	MoneyToControlPanel(p, h.Town, &h.Money, 100, 24, LargeIconD*2+float64(IconH)+24)
 	piw := personIconW(h)
 	for i, person := range h.People {
 		PersonToPanel(cp, p, i, person, piw, PersonGUIY*ControlPanelSY)

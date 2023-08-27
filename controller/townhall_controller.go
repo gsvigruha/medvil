@@ -38,10 +38,10 @@ func (b *TownhallControllerButton) Enabled() bool {
 
 type TownhallController struct {
 	cp             *ControlPanel
+	topPanel       *gui.Panel
 	householdPanel *gui.Panel
 	taxPanel       *gui.Panel
 	storagePanel   *gui.Panel
-	factoryPanel   *gui.Panel
 	traderPanel    *gui.Panel
 	buttons        []*TownhallControllerButton
 	subPanel       *gui.Panel
@@ -50,22 +50,22 @@ type TownhallController struct {
 }
 
 func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
-	top := TownhallControllerGUIBottomY * ControlPanelSY
+	top := 15 + IconS + LargeIconD
+	topPanel := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
-	mp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
-	sp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
-	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
-	tp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelTop}
+	mp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
+	sp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
+	tp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 
-	tc := &TownhallController{cp: cp, th: th, householdPanel: hp, taxPanel: mp, storagePanel: sp, factoryPanel: fp, traderPanel: tp}
+	tc := &TownhallController{cp: cp, th: th, topPanel: topPanel, householdPanel: hp, taxPanel: mp, storagePanel: sp, traderPanel: tp}
 	tc.buttons = []*TownhallControllerButton{
-		&TownhallControllerButton{tc: tc, subPanel: mp, b: gui.ButtonGUI{Icon: "taxes", X: float64(24 + IconW*0), Y: top, SX: IconS, SY: IconS}},
-		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(24 + IconW*1), Y: top, SX: IconS, SY: IconS}},
-		&TownhallControllerButton{tc: tc, subPanel: fp, b: gui.ButtonGUI{Icon: "factory", X: float64(24 + IconW*2), Y: top, SX: IconS, SY: IconS}},
-		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(24 + IconW*3), Y: top, SX: IconS, SY: IconS}},
+		&TownhallControllerButton{tc: tc, subPanel: hp, b: gui.ButtonGUI{Icon: "house", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS}},
+		&TownhallControllerButton{tc: tc, subPanel: mp, b: gui.ButtonGUI{Icon: "taxes", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS}},
+		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS}},
+		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS}},
 	}
 
-	HouseholdToControlPanel(cp, hp, th.Household)
+	tc.subPanel = tc.householdPanel
 	RefreshSubPanels(tc)
 
 	cp.SetDynamicPanel(tc)
@@ -74,10 +74,12 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 func RefreshSubPanels(tc *TownhallController) {
 	th := tc.th
+	town := th.Household.Town
 	tp := tc.taxPanel
 	sp := tc.storagePanel
-	fp := tc.factoryPanel
-	top := TownhallControllerGUIBottomY * ControlPanelSY
+	top := 15 + IconS + LargeIconD*2
+
+	HouseholdToControlPanel(tc.cp, tc.householdPanel, th.Household)
 
 	tpw := (ControlPanelSX - 30) / 2
 	s := IconS / 2
@@ -106,6 +108,41 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*8, tpw-s, s, 0, 100, 50, "military %v", &th.Household.Town.Transfers.Tower.Threshold).P)
 	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*9, tpw-s, s, 0, 100, 10, "market %v", &th.Household.Town.Transfers.MarketFundingRate).P)
 
+	tp.AddLargeTextLabel("Activities", 24, top+LargeIconD*4)
+	tp.AddImageLabel("infra/cobble_road", 24, top+LargeIconD*5, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*5, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.RoadRepairs },
+		ClickImpl: func() {
+			town.Settings.RoadRepairs = !town.Settings.RoadRepairs
+			tc.cp.HelperMessage("Start or stop repairing roads")
+		}})
+
+	tp.AddImageLabel("infra/wall_small", 24, top+LargeIconD*6, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*6, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.WallRepairs },
+		ClickImpl: func() {
+			town.Settings.WallRepairs = !town.Settings.WallRepairs
+			tc.cp.HelperMessage("Start or stop repairing walls")
+		}})
+
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: 24 + LargeIconD, Y: top + LargeIconD*7, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.Trading },
+		ClickImpl: func() {
+			town.Settings.Trading = !town.Settings.Trading
+			tc.cp.HelperMessage("Enable or disable trading with this city")
+		}})
+
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "barrel", X: 24 + LargeIconD, Y: top + LargeIconD*8, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.ArtifactCollection },
+		ClickImpl: func() {
+			town.Settings.ArtifactCollection = !town.Settings.ArtifactCollection
+			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items")
+		}})
+
 	var aI = 0
 	for _, a := range artifacts.All {
 		var q uint16 = 0
@@ -117,19 +154,23 @@ func RefreshSubPanels(tc *TownhallController) {
 	}
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
-		fp.AddPanel(CreateOrderPanelForTownhall(24, float64(i+2)*IconS+top, gui.FontSize*8, s, th, vc, tc.cp.C.Map))
+		tc.traderPanel.AddPanel(CreateOrderPanelForTownhall(24, float64(i+2)*IconS+top, gui.FontSize*8, s, th, vc, tc.cp.C.Map))
 		if vc.Output.Trader {
-			fp.AddButton(CreateTraderButtonForTownhall(24+tpw, float64(i+2)*IconS+top, float64(IconH), s, th, tc.cp.C.Map))
+			tc.traderPanel.AddButton(CreateTraderButtonForTownhall(24+tpw, float64(i+2)*IconS+top, float64(IconH), s, th, tc.cp.C.Map))
 		}
 	}
+	for i, vehicle := range th.Household.Vehicles {
+		VehicleToControlPanel(tc.traderPanel, i, 6*IconS+top, vehicle, IconW)
+	}
 
+	traderTop := top + ControlPanelSY*0.25
 	for i, t := range th.Traders {
-		tc.traderPanel.AddButton(CreateTraderButton(float64(24+i*IconW), top+float64(IconH), tc, t))
+		tc.traderPanel.AddButton(CreateTraderButton(float64(24+i*IconW), traderTop, tc, t))
 	}
 	if tc.activeTrader != nil {
-		MoneyToControlPanel(tc.traderPanel, th.Household.Town, &tc.activeTrader.Money, 24, 10, top+float64(IconH*2)+IconS)
+		MoneyToControlPanel(tc.traderPanel, th.Household.Town, &tc.activeTrader.Money, 24, 10, traderTop+float64(IconH)+IconS)
 		for i, task := range tc.activeTrader.Tasks {
-			TaskToControlPanel(tc.cp, tc.traderPanel, i, top+float64(IconH*4)+IconS, task, IconW)
+			TaskToControlPanel(tc.cp, tc.traderPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
 		}
 	}
 }
@@ -147,28 +188,27 @@ func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *
 }
 
 func (tc *TownhallController) CaptureClick(x, y float64) {
-	tc.householdPanel.CaptureClick(x, y)
+	tc.topPanel.CaptureClick(x, y)
 }
 
 func (tc *TownhallController) Render(cv *canvas.Canvas) {
-	tc.householdPanel.Render(cv)
+	tc.topPanel.Render(cv)
 }
 
 func (tc *TownhallController) Clear() {}
 
 func (tc *TownhallController) Refresh() {
+	tc.topPanel.Clear()
 	tc.householdPanel.Clear()
 	tc.taxPanel.Clear()
 	tc.storagePanel.Clear()
-	tc.factoryPanel.Clear()
 	tc.traderPanel.Clear()
-	HouseholdToControlPanel(tc.cp, tc.householdPanel, tc.th.Household)
 	RefreshSubPanels(tc)
 	for _, button := range tc.buttons {
-		tc.householdPanel.AddButton(button)
+		tc.topPanel.AddButton(button)
 	}
 	if tc.subPanel != nil {
-		tc.householdPanel.AddPanel(tc.subPanel)
+		tc.topPanel.AddPanel(tc.subPanel)
 	}
 }
 
