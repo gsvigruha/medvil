@@ -10,6 +10,7 @@ import (
 type VehicleOrder interface {
 	CompleteBuild(*navigation.Field)
 	IsBuilt() bool
+	IsExpired() bool
 	PickupVehicle() *vehicles.Vehicle
 	Name() string
 }
