@@ -1,11 +1,13 @@
 package navigation
 
 import (
+	"log"
 	"math/rand"
+	"os"
 )
 
 const ShortPathMaxLength = 100
-const capacity = 1000
+const Capacity = 1000
 
 type BFSElement struct {
 	PE   PathElement
@@ -34,10 +36,10 @@ func CheckField(pe PathElement, pathType PathType) bool {
 func FindShortPathBFS(m IMap, start Location, dest Destination, pathType PathType) []PathElement {
 	var iter = 0
 	r := rand.New(rand.NewSource(int64(start.X*599 + start.Y)))
-	visited := make(map[Location]*[]PathElement, capacity)
+	visited := make(map[Location]*[]PathElement, Capacity)
 	se := &BFSElement{PE: m.GetField(start.X, start.Y).GetPathElement(start.Z), prev: nil, d: 1}
 	var toVisit = []*BFSElement{se}
-	var inQueue = make(map[Location]bool, capacity)
+	var inQueue = make(map[Location]bool, Capacity)
 	for len(toVisit) > 0 {
 		e := toVisit[0]
 		toVisit = toVisit[1:]
@@ -48,6 +50,9 @@ func FindShortPathBFS(m IMap, start Location, dest Destination, pathType PathTyp
 			for i := range path {
 				path[len(path)-1-i] = eI.PE
 				eI = eI.prev
+			}
+			if os.Getenv("MEDVIL_VERBOSE") == "2" {
+				log.Printf("Found path with BFS in: ", iter)
 			}
 			return path
 		}
@@ -77,6 +82,9 @@ func FindShortPathBFS(m IMap, start Location, dest Destination, pathType PathTyp
 		}
 		visited[e.PE.GetLocation()] = nil
 		iter++
+	}
+	if os.Getenv("MEDVIL_VERBOSE") == "2" {
+		log.Printf("Not found path with BFS after: ", iter)
 	}
 	return nil
 }

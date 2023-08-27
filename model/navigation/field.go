@@ -16,6 +16,10 @@ func (l *Location) Check(pe PathElement) bool {
 	return *l == pe.GetLocation()
 }
 
+func (l *Location) DestHint() (uint16, uint16, bool) {
+	return l.X, l.Y, true
+}
+
 type FieldWithContext interface {
 	Field() *Field
 	Context() string
@@ -137,6 +141,10 @@ func (f Field) Empty() bool {
 
 func (f Field) Crowded() bool {
 	return len(f.Travellers) > 8
+}
+
+func (f Field) LocationXY() (uint16, uint16) {
+	return f.X, f.Y
 }
 
 func (f Field) Walkable() bool {
@@ -304,6 +312,10 @@ func (f *Field) Check(pe PathElement) bool {
 		return f2 == f
 	}
 	return false
+}
+
+func (f *Field) DestHint() (uint16, uint16, bool) {
+	return f.X, f.Y, true
 }
 
 func min(x, y uint8) uint8 {

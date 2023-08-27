@@ -103,6 +103,10 @@ func (bpe *BuildingPathElement) Crowded() bool {
 	return false
 }
 
+func (bpe *BuildingPathElement) LocationXY() (uint16, uint16) {
+	return bpe.L.X, bpe.L.Y
+}
+
 func (bpe *BuildingPathElement) Walkable() bool {
 	if bpe.BC.IsConstruction() {
 		return false
