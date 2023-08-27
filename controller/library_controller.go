@@ -25,8 +25,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: 24, Y: nTop + float64(IconS*7), SX: IconS, SY: IconS},
 		ClickImpl: func() {
-			cp.C.Map = maps.NewMap(*config)
-			cp.C.LinkMap()
+			go cp.C.NewMap(*config)
 		}})
 
 	p.AddLargeTextLabel("Load and save", 24, ControlPanelSY*0.45)
@@ -63,20 +62,22 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "load", X: float64(24 + IconW*0), Y: lasTop + float64(IconH*2), SX: IconS, SY: IconS},
 		ClickImpl: func() {
-			cp.C.Load(filesDropdown.GetSelectedValue())
+			go cp.C.Load(filesDropdown.GetSelectedValue())
 			CPActionCancel(cp.C)
 		}})
 
 	savedButton := gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "save", X: float64(24 + IconW*1), Y: lasTop + float64(IconH*2), SX: IconS, SY: IconS},
-		ClickImpl: func() { cp.C.Save(filesDropdown.GetSelectedValue()) }}
+		ClickImpl: func() {
+			go cp.C.Save(filesDropdown.GetSelectedValue())
+		}}
 	savedButton.Disabled = func() bool { return cp.C.Map == nil }
 	p.AddButton(savedButton)
 
 	plusButton := gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: float64(24 + IconW*2), Y: lasTop + float64(IconH*2), SX: IconS, SY: IconS},
 		ClickImpl: func() {
-			cp.C.Save(time.Now().Format(time.RFC3339) + ".mdvl")
+			go cp.C.Save(time.Now().Format(time.RFC3339) + ".mdvl")
 			CPActionCancel(cp.C)
 		}}
 	plusButton.Disabled = func() bool { return cp.C.Map == nil }

@@ -13,6 +13,7 @@ const OrderStateOrdered = 0
 const OrderStateStarted = 1
 const OrderStateBuilt = 2
 const OrderStateComplete = 3
+const OrderStateExpired = 4
 
 type VehicleOrder struct {
 	T       *economy.VehicleConstruction
@@ -23,6 +24,10 @@ type VehicleOrder struct {
 
 func (o *VehicleOrder) IsBuilt() bool {
 	return o.State == OrderStateBuilt
+}
+
+func (o *VehicleOrder) IsExpired() bool {
+	return o.State == OrderStateExpired
 }
 
 func (o *VehicleOrder) PickupVehicle() *vehicles.Vehicle {
@@ -103,6 +108,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if order.T.Output.Water {
 				ext, x, y := f.Household.Building.GetExtensionWithCoords(building.Deck)
 				if ext == nil {
+					order.State = OrderStateExpired
 					continue
 				}
 				field = m.GetField(x, y)

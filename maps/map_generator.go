@@ -64,17 +64,7 @@ func setupTerrain(m *model.Map, config MapConfig) {
 
 	for i := range fields {
 		for j := range fields[i] {
-			for k, _ := range navigation.DirectionOrthogonalXY {
-				di1 := navigation.DirectionOrthogonalXY[k][0]
-				dj1 := navigation.DirectionOrthogonalXY[k][1]
-				di2 := navigation.DirectionOrthogonalXY[(k+1)%4][0]
-				dj2 := navigation.DirectionOrthogonalXY[(k+1)%4][1]
-				di3 := navigation.DirectionDiagonalXY[k][0]
-				dj3 := navigation.DirectionDiagonalXY[k][1]
-				if i > 0 && j > 0 && i < sx-1 && j < sy-1 {
-					fields[i][j].Surroundings[k] = GetSurroundingType(fields[i][j], fields[i+di1][j+dj1], fields[i+di2][j+dj2], fields[i+di3][j+dj3])
-				}
-			}
+			navigation.SetSurroundingTypes(m, fields[i][j])
 			if !m.Shore(uint16(i), uint16(j)) {
 				if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil {
 					if fields[i][j].Terrain.T == terrain.Grass && fields[i][j].Flat() {
@@ -153,24 +143,6 @@ func GenerateHills(x, y, peak, n int, fields [][]*navigation.Field) {
 			GenerateHills(nx, ny, npeak, n+1, fields)
 		}
 	}
-}
-
-func GetSurroundingType(f *navigation.Field, of1 *navigation.Field, of2 *navigation.Field, of3 *navigation.Field) uint8 {
-	if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Water && of2.Terrain.T == terrain.Water && of3.Terrain.T == terrain.Water {
-		return navigation.SurroundingWater
-	} else if f.Terrain.T == terrain.Water && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
-		if of1.Flat() && of2.Flat() && of3.Flat() {
-			return navigation.SurroundingGrass
-		} else {
-			return navigation.SurroundingDarkSlope
-		}
-	}
-	if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
-		if f.Flat() && !of1.Flat() && !of2.Flat() && !of3.Flat() {
-			return navigation.SurroundingDarkSlope
-		}
-	}
-	return navigation.SurroundingSame
 }
 
 func findStartingLocation(m *model.Map) (int, int) {

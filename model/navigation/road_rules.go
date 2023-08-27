@@ -132,6 +132,9 @@ func SetWallConnections(m IMap, f *Field) {
 }
 
 func SetBuildingDeck(m IMap, f *Field, of *Field) {
+	if f.Allocated {
+		return
+	}
 	b := of.Building.GetBuilding()
 	if b != nil &&
 		!of.Building.IsBuildingExtension() &&

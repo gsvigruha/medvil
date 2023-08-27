@@ -9,6 +9,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
+	"sync"
 )
 
 const PerspectiveNE uint8 = 0
@@ -35,6 +36,7 @@ type Controller struct {
 	Perspective               uint8
 	ShowHouseIcons            bool
 	Map                       *model.Map
+	MapLock                   sync.Mutex
 	RenderedFields            []*renderer.RenderedField
 	RenderedBuildingParts     []renderer.RenderedBuildingPart
 	RenderedTravellers        []*renderer.RenderedTraveller
@@ -341,12 +343,25 @@ func (c *Controller) AddRenderedTraveller(rt *renderer.RenderedTraveller) {
 }
 
 func (c *Controller) Save(fileName string) {
+	c.MapLock.Lock()
 	maps.Serialize(c.Map, "saved/"+fileName)
+	c.MapLock.Unlock()
 }
 
 func (c *Controller) Load(fileName string) {
-	c.Map = maps.Deserialize("saved/" + fileName).(*model.Map)
+	m := maps.Deserialize("saved/" + fileName).(*model.Map)
+	c.MapLock.Lock()
+	c.Map = m
 	c.LinkMap()
+	c.MapLock.Unlock()
+}
+
+func (c *Controller) NewMap(config maps.MapConfig) {
+	m := maps.NewMap(config)
+	c.MapLock.Lock()
+	c.Map = m
+	c.LinkMap()
+	c.MapLock.Unlock()
 }
 
 func (c *Controller) LinkMap() {

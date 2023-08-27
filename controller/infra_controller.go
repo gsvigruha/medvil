@@ -176,7 +176,14 @@ func InfraToControlPanel(cp *ControlPanel) {
 	})
 
 	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/bridge", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
+		b:   gui.ButtonGUI{Icon: "infra/canal", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
+		it:  InfraTypeCanal,
+		msg: "Extend water with canals for drinking and transport.",
+		ic:  ic,
+	})
+
+	p.AddButton(InfraBuildButton{
+		b:   gui.ButtonGUI{Icon: "infra/bridge", X: float64(24 + LargeIconD*4), Y: top, SX: LargeIconS, SY: LargeIconS},
 		it:  InfraTypeBridge,
 		msg: "Build bridges. People can cross small rivers.",
 		ic:  ic,
@@ -242,13 +249,6 @@ func InfraToControlPanel(cp *ControlPanel) {
 		b:   gui.ButtonGUI{Icon: "infra/terraform_road", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
 		it:  InfraTypeLevelForRoad,
 		msg: "Terraform hills in order to build roads on it.",
-		ic:  ic,
-	})
-
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Texture: "infra/canal", X: float64(24 + LargeIconD*2), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeCanal,
-		msg: "Extend water with canals for drinking and transport.",
 		ic:  ic,
 	})
 

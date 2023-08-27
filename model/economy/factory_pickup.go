@@ -60,7 +60,7 @@ func FactoryPickupTaskTag(o VehicleOrder) string {
 }
 
 func (t *FactoryPickupTask) Expired(Calendar *time.CalendarType) bool {
-	return false
+	return t.Order.IsExpired()
 }
 
 func (t *FactoryPickupTask) Motion() uint8 {

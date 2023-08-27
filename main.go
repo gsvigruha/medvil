@@ -48,7 +48,9 @@ func main() {
 	wnd.MainLoop(func() {
 		start := time.Now()
 		if c.Map != nil {
+			c.MapLock.Lock()
 			view.Render(ic, cv, *c.Map, c)
+			c.MapLock.Unlock()
 			elapsed := time.Since(start)
 
 			if elapsed.Nanoseconds() < PlantFrameRenderTimeNs {
@@ -62,8 +64,10 @@ func main() {
 				log.Printf("%s", c.Map.Calendar)
 			}
 			for i := 0; i < c.TimeSpeed; i++ {
+				c.MapLock.Lock()
 				c.Map.Calendar.Tick()
 				c.Map.ElapseTime()
+				c.MapLock.Unlock()
 			}
 		} else {
 			c.ControlPanel.Render(cv, c)

@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"math"
+	"medvil/model/terrain"
 )
 
 const MaxTerraformFieldCornerDiff = 2
@@ -174,4 +175,50 @@ func LevelFieldForRoad(f *Field, m IMap) bool {
 		}
 	}
 	return false
+}
+
+func GetSurroundingType(f *Field, of1 *Field, of2 *Field, of3 *Field) uint8 {
+	if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Water && of2.Terrain.T == terrain.Water && of3.Terrain.T == terrain.Water {
+		return SurroundingWater
+	} else if f.Terrain.T == terrain.Water && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
+		if of1.Flat() && of2.Flat() && of3.Flat() {
+			return SurroundingGrass
+		} else {
+			return SurroundingDarkSlope
+		}
+	}
+	if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
+		if f.Flat() && !of1.Flat() && !of2.Flat() && !of3.Flat() {
+			return SurroundingDarkSlope
+		}
+	}
+	return SurroundingSame
+}
+
+func SetSurroundingTypes(m IMap, f *Field) {
+	i := int(f.X)
+	j := int(f.Y)
+	sx, sy := m.Size()
+	for k, _ := range DirectionOrthogonalXY {
+		di1 := DirectionOrthogonalXY[k][0]
+		dj1 := DirectionOrthogonalXY[k][1]
+		di2 := DirectionOrthogonalXY[(k+1)%4][0]
+		dj2 := DirectionOrthogonalXY[(k+1)%4][1]
+		di3 := DirectionDiagonalXY[k][0]
+		dj3 := DirectionDiagonalXY[k][1]
+		if i > 0 && j > 0 && i < int(sx)-1 && j < int(sy)-1 {
+			f.Surroundings[k] = GetSurroundingType(f, m.GetField(uint16(i+di1), uint16(j+dj1)), m.GetField(uint16(i+di2), uint16(j+dj2)), m.GetField(uint16(i+di3), uint16(j+dj3)))
+		}
+	}
+}
+
+func SetSurroundingTypesForNeighbors(m IMap, f *Field) {
+	SetSurroundingTypes(m, f)
+	for i := 0; i < 8; i++ {
+		d := DirectionAllXY[i]
+		of := m.GetNField(f.X, d[0], f.Y, d[1])
+		if of != nil {
+			SetSurroundingTypes(m, of)
+		}
+	}
 }
