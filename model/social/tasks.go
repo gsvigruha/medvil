@@ -22,10 +22,13 @@ func NumBatches(totalQuantity, minTransportQuantity, maxTransportQuantity uint16
 }
 
 func CountTags(task economy.Task, name, tag string) int {
+	if task.Name() != name {
+		return 0
+	}
 	var i = 0
 	taskTags := strings.Split(task.Tag(), ";")
 	for _, taskTag := range taskTags {
-		if task.Name() == name && strings.Contains(taskTag, tag) {
+		if strings.Contains(taskTag, tag) {
 			i++
 		}
 	}
