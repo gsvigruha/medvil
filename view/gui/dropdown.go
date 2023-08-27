@@ -2,6 +2,7 @@ package gui
 
 import (
 	"github.com/tfriedel6/canvas"
+	"image/color"
 )
 
 type DropDown struct {
@@ -35,7 +36,7 @@ func (d *DropDown) SetSelectedValue(v string) {
 }
 
 func (d *DropDown) Render(cv *canvas.Canvas) {
-	cv.SetFillStyle("#321")
+	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 192})
 	if d.Open {
 		cv.FillRect(d.X, d.Y, d.SX, d.SY*float64(len(d.Options)+1))
 	} else {
