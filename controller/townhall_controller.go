@@ -74,6 +74,7 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 func RefreshSubPanels(tc *TownhallController) {
 	th := tc.th
+	town := th.Household.Town
 	tp := tc.taxPanel
 	sp := tc.storagePanel
 	top := 15 + IconS + LargeIconD*2
@@ -106,6 +107,41 @@ func RefreshSubPanels(tc *TownhallController) {
 
 	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*8, tpw-s, s, 0, 100, 50, "military %v", &th.Household.Town.Transfers.Tower.Threshold).P)
 	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*9, tpw-s, s, 0, 100, 10, "market %v", &th.Household.Town.Transfers.MarketFundingRate).P)
+
+	tp.AddLargeTextLabel("Activities", 24, top+LargeIconD*4)
+	tp.AddImageLabel("infra/cobble_road", 24, top+LargeIconD*5, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*5, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.RoadRepairs },
+		ClickImpl: func() {
+			town.Settings.RoadRepairs = !town.Settings.RoadRepairs
+			tc.cp.HelperMessage("Start or stop repairing roads")
+		}})
+
+	tp.AddImageLabel("infra/wall_small", 24, top+LargeIconD*6, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*6, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.WallRepairs },
+		ClickImpl: func() {
+			town.Settings.WallRepairs = !town.Settings.WallRepairs
+			tc.cp.HelperMessage("Start or stop repairing walls")
+		}})
+
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: 24 + LargeIconD, Y: top + LargeIconD*7, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.Trading },
+		ClickImpl: func() {
+			town.Settings.Trading = !town.Settings.Trading
+			tc.cp.HelperMessage("Enable or disable trading with this city")
+		}})
+
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "barrel", X: 24 + LargeIconD, Y: top + LargeIconD*8, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.ArtifactCollection },
+		ClickImpl: func() {
+			town.Settings.ArtifactCollection = !town.Settings.ArtifactCollection
+			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items")
+		}})
 
 	var aI = 0
 	for _, a := range artifacts.All {
