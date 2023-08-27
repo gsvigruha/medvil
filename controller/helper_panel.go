@@ -38,6 +38,8 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 		p.AddTextLabel(strconv.Itoa(int(v.ActualQuantity))+"/"+strconv.Itoa(int(v.ActualQuantity+v.TargetQuantity)), x+IconS*0.75, y+IconS)
 	case *economy.RepairTask:
 		ArtifactsToHelperPanel(p, v.B.Plan.RepairCost(), 0, y)
+	case *economy.FactoryPickupTask:
+		p.AddImageLabel("vehicles/"+v.Order.Name(), 10+float64(IconW), y, IconS, IconS, style)
 	}
 }
 

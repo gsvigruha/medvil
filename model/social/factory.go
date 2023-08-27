@@ -156,12 +156,15 @@ func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
 	return n
 }
 
-func PickFactory(fs []*Factory) *Factory {
+func PickFactory(fs []*Factory, et *building.BuildingExtensionType) *Factory {
 	var f *Factory = nil
 	var orders = 0
 	for _, fi := range fs {
-		if f == nil || orders < len(fi.Orders) {
-			f = fi
+		if et == building.NonExtension || fi.Household.Building.HasExtension(et) {
+			if f == nil || orders < len(fi.Orders) {
+				f = fi
+				orders = len(fi.Orders)
+			}
 		}
 	}
 	return f
