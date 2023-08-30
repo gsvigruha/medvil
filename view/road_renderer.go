@@ -27,10 +27,13 @@ func RenderRoad(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 			leftEdge := f.Road.EdgeConnections[(i-1)%4]
 			corner := f.Road.CornerConnections[(i-1)%4]
 			rightEdge := f.Road.EdgeConnections[i]
+			shore := f.Surroundings[(i-1)%4] == navigation.SurroundingWater
 			if leftEdge {
 				cv.LineTo((rf.X[idx1]*7+rf.X[idx4])/8, (rf.Y[idx1]*7+rf.Y[idx4])/8-(rf.Z[idx1]*7+rf.Z[idx4])/8)
 			}
-			if leftEdge && corner && rightEdge {
+			if shore && !leftEdge && !rightEdge {
+				cv.LineTo((rf.X[idx1]*6+rf.X[idx3]*2)/8, (rf.Y[idx1]*6+rf.Y[idx3]*2)/8-(rf.Z[idx1]*6+rf.Z[idx3]*2)/8)
+			} else if leftEdge && corner && rightEdge {
 				cv.LineTo(rf.X[idx1], rf.Y[idx1]-rf.Z[idx1])
 			} else {
 				cv.LineTo((rf.X[idx1]*7+rf.X[idx3])/8, (rf.Y[idx1]*7+rf.Y[idx3])/8-(rf.Z[idx1]*7+rf.Z[idx3])/8)
