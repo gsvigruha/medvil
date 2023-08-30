@@ -178,7 +178,7 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	case navigation.MotionMine:
 		m = animation.PersonMotionMine
 	}
-	p := (t.Phase / 2) % 8
+	p := t.DrawingPhase()
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
 

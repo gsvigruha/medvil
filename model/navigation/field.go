@@ -347,3 +347,7 @@ func (f *Field) TravellerVisible() bool {
 func (f *Field) TopLocation() *Location {
 	return &Location{X: f.X, Y: f.Y, Z: GetZForField(f)}
 }
+
+func (f *Field) BrokenRoad() bool {
+	return f.Road != nil && f.Road.Broken
+}

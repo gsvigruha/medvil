@@ -360,11 +360,15 @@ func (t *Traveller) InitPathElement(pe PathElement) {
 	t.PathComp.PE = pe
 }
 
+func (t *Traveller) DrawingPhase() uint8 {
+	return (t.Phase / 2) % 8
+}
+
 func (t *Traveller) CacheKey(perspective uint8) string {
 	dirIdx := (perspective - t.Direction) % 4
 	key := strconv.Itoa(int(dirIdx)) + "#" +
 		strconv.Itoa(int(t.Motion)) + "#" +
-		strconv.Itoa(int(t.Phase)) + "#" +
+		strconv.Itoa(int(t.DrawingPhase())) + "#" +
 		strconv.Itoa(int(t.T))
 	if t.Vehicle != nil {
 		key = key + "#v" + strconv.FormatBool(t.Vehicle.Water())

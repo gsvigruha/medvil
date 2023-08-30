@@ -119,6 +119,9 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			p.Happiness--
 		}
 		field := m.GetField(p.Traveller.FX, p.Traveller.FY)
+		if field.BrokenRoad() && p.Happiness > 0 && rand.Intn(10) < Difficulty {
+			p.Happiness--
+		}
 		if field.Statue != nil {
 			if p.Happiness < MaxPersonState-field.Statue.T.Happiness {
 				p.Happiness += field.Statue.T.Happiness
