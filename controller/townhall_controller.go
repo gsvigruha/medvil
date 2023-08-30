@@ -59,7 +59,7 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 	tc := &TownhallController{cp: cp, th: th, topPanel: topPanel, householdPanel: hp, taxPanel: mp, storagePanel: sp, traderPanel: tp}
 	tc.buttons = []*TownhallControllerButton{
-		&TownhallControllerButton{tc: tc, subPanel: hp, b: gui.ButtonGUI{Icon: "house", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS}},
+		&TownhallControllerButton{tc: tc, subPanel: hp, b: gui.ButtonGUI{Icon: "town", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS}},
 		&TownhallControllerButton{tc: tc, subPanel: mp, b: gui.ButtonGUI{Icon: "taxes", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS}},
 		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS}},
 		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS}},
