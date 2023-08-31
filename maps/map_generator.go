@@ -138,7 +138,8 @@ func GenerateHills(x, y, peak, n int, fields [][]*navigation.Field) {
 	}
 	if n < MaxIter && peak > 4 && rad > 4 {
 		for l := 0; l < HillBranching; l++ {
-			nx, ny := x+rand.Intn(rad/4)-rad/2, y+rand.Intn(rad/4)-rad/2
+			nx := x+rand.Intn(rad)-rad/2
+			ny := y+rand.Intn(rad)-rad/2
 			npeak := rand.Intn(peak/2) + peak/2
 			GenerateHills(nx, ny, npeak, n+1, fields)
 		}
