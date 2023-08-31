@@ -53,7 +53,8 @@ func setupTerrain(m *model.Map, config MapConfig) {
 	for k := 0; k < area*config.Hills/HillAreaRatio; k++ {
 		x, y := rand.Intn(sx), rand.Intn(sy)
 		peak := rand.Intn(30) + 10
-		GenerateHills(x, y, peak, 1, fields)
+		angle := rand.Float64() * math.Pi * 2
+		GenerateHills(x, y, peak, 1, angle, fields)
 	}
 
 	for k := 0; k < area*config.Lakes/LakeAreaRatio; k++ {
@@ -117,9 +118,9 @@ func GenerateLakes(x, y int, size float64, n int, fields [][]*navigation.Field, 
 	}
 }
 
-func GenerateHills(x, y, peak, n int, fields [][]*navigation.Field) {
+func GenerateHills(x, y, peak, n int, angle float64, fields [][]*navigation.Field) {
 	slope := rand.Float64()*2.0 + 1.0
-	rad := int(float64(peak) / slope)
+	rad := float64(peak) / slope
 	for i := range fields {
 		for j := range fields[i] {
 			h0 := float64(peak) - slope*math.Sqrt(float64((x-i)*(x-i))+float64((y-j)*(y-j)))
@@ -136,12 +137,14 @@ func GenerateHills(x, y, peak, n int, fields [][]*navigation.Field) {
 			fields[i][j].NW = uint8(h)
 		}
 	}
-	if n < MaxIter && peak > 4 && rad > 4 {
+	if n < MaxIter && peak > 4 {
+		radX := int(math.Abs(rad*math.Cos(angle))) + 1
+		radY := int(math.Abs(rad*math.Sin(angle))) + 1
 		for l := 0; l < HillBranching; l++ {
-			nx := x+rand.Intn(rad)-rad/2
-			ny := y+rand.Intn(rad)-rad/2
+			nx := x + rand.Intn(radX*2) - radX
+			ny := y + rand.Intn(radY*2) - radY
 			npeak := rand.Intn(peak/2) + peak/2
-			GenerateHills(nx, ny, npeak, n+1, fields)
+			GenerateHills(nx, ny, npeak, n+1, angle, fields)
 		}
 	}
 }
