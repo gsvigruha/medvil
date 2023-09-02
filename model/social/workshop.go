@@ -35,13 +35,13 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		for _, mName := range economy.GetManufactureNames(w.Household.Building.Plan.GetExtensions()) {
 			manufacture := economy.GetManufacture(mName)
 			profit := float64(mp.Price(manufacture.Outputs)) / float64(mp.Price(artifacts.Purchasable(manufacture.Inputs)))
-			if profit > maxProfit {
+			if profit > maxProfit && (w.Household.Town.Settings.Coinage || manufacture.Name != "goldsmith") {
 				maxProfit = profit
 				w.Manufacture = manufacture
 			}
 		}
 	}
-	if w.Manufacture != nil {
+	if w.Manufacture != nil && (w.Household.Town.Settings.Coinage || w.Manufacture.Name != "goldsmith") {
 		purchasableInputs := artifacts.Purchasable(w.Manufacture.Inputs)
 		maxUnitCost := float64(mp.Price(w.Manufacture.Outputs)) / ProfitCostRatio
 		if float64(mp.Price(purchasableInputs)) < maxUnitCost {

@@ -17,6 +17,8 @@ const TravellerTypeBoat uint8 = 1
 const TravellerTypeCart uint8 = 2
 const TravellerTypeTradingBoat uint8 = 3
 const TravellerTypeTradingCart uint8 = 4
+const TravellerTypeExpeditionBoat uint8 = 5
+const TravellerTypeExpeditionCart uint8 = 6
 
 const RoadBreakdownRate = 0.0001
 

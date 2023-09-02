@@ -67,11 +67,40 @@ var TradingCartConstruction = &VehicleConstruction{
 	Output: vehicles.TradingCart,
 }
 
+var ExpeditionBoatConstruction = &VehicleConstruction{
+	Name:                  "expedition_boat",
+	Time:                  30 * 24 * 3,
+	Power:                 1000,
+	BuildingExtensionType: building.Deck,
+	Inputs: []artifacts.Artifacts{
+		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 8},
+		artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 5},
+		artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 10},
+	},
+	Output: vehicles.ExpeditionBoat,
+}
+
+var ExpeditionCartConstruction = &VehicleConstruction{
+	Name:                  "expedition_cart",
+	Time:                  30 * 24 * 3,
+	Power:                 1000,
+	BuildingExtensionType: building.Deck,
+	Inputs: []artifacts.Artifacts{
+		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 6},
+		artifacts.Artifacts{A: artifacts.GetArtifact("iron_bar"), Quantity: 2},
+		artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 5},
+		artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 4},
+	},
+	Output: vehicles.ExpeditionCart,
+}
+
 var AllVehicleConstruction = [...]*VehicleConstruction{
 	BoatConstruction,
 	CartConstruction,
 	TradingBoatConstruction,
 	TradingCartConstruction,
+	ExpeditionBoatConstruction,
+	ExpeditionCartConstruction,
 }
 
 func GetVehicleConstruction(name string) *VehicleConstruction {

@@ -361,6 +361,13 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 			return 0
 		}
 	}
+	if a == GoldCoin {
+		if h.Town.Settings.Coinage {
+			result = q
+		} else {
+			return 0
+		}
+	}
 	if h.Building.Broken {
 		needed := artifacts.GetQuantity(h.Building.Plan.RepairCost(), a)
 		if q > needed {
@@ -498,13 +505,23 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 	h.Vehicles = newVehicles
 }
 
+func (h *Household) GetVehicles(filter func(v *vehicles.Vehicle) bool) []*vehicles.Vehicle {
+	result := make([]*vehicles.Vehicle, 0, len(h.Vehicles))
+	for _, v := range h.Vehicles {
+		if filter(v) {
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
 func (h *Household) AddVehicle(v *vehicles.Vehicle) {
 	h.Vehicles = append(h.Vehicles, v)
 }
 
 func (h *Household) AllocateVehicle(waterOk bool) *vehicles.Vehicle {
 	for _, v := range h.Vehicles {
-		if !v.InUse && (!v.T.Water || waterOk) {
+		if !v.InUse && (!v.T.Water || waterOk) && !v.T.Trader && !v.T.Expedition {
 			v.SetInUse(true)
 			return v
 		}

@@ -7,6 +7,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/renderer"
 	"sort"
+	"strconv"
 )
 
 func renderPlant(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
@@ -55,7 +56,11 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		renderPlant(ic, cv, rf, f, c)
 	}
 	if f.Animal != nil && !f.Animal.Corralled {
-		cv.DrawImage("texture/terrain/"+f.Animal.T.Name+".png", rf.X[0]-32, rf.Y[2]-64, 64, 64)
+		var phase = 0
+		if c.TimeSpeed == 1 {
+			phase = (int((c.Map.Calendar.Hour+(c.Map.Calendar.Day%2*24))/12) + int(f.Terrain.Shape)) % 4
+		}
+		cv.DrawImage("texture/terrain/"+f.Animal.T.Name+"_"+strconv.Itoa(phase)+".png", rf.X[0]-32, rf.Y[2]-64, 64, 64)
 	}
 	if f.Statue != nil && !f.Statue.Construction {
 		cv.DrawImage("icon/gui/infra/"+f.Statue.T.Name+".png", rf.X[0]-32, rf.Y[2]-80, 64, 64)

@@ -11,6 +11,7 @@ type VehicleType struct {
 	Land                  bool
 	IndoorStorage         bool
 	Trader                bool
+	Expedition            bool
 	MaxVolume             uint16
 	BuildingCheckFn       func(navigation.Field) bool
 	BuildingExtensionType *building.BuildingExtensionType
@@ -22,6 +23,7 @@ var Boat = &VehicleType{
 	Land:                  false,
 	IndoorStorage:         false,
 	Trader:                false,
+	Expedition:            false,
 	MaxVolume:             75,
 	BuildingCheckFn:       navigation.Field.Sailable,
 	BuildingExtensionType: building.Deck,
@@ -32,6 +34,7 @@ var Cart = &VehicleType{
 	Land:                  true,
 	IndoorStorage:         true,
 	Trader:                false,
+	Expedition:            false,
 	MaxVolume:             50,
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
@@ -42,6 +45,7 @@ var TradingBoat = &VehicleType{
 	Land:                  false,
 	IndoorStorage:         false,
 	Trader:                true,
+	Expedition:            false,
 	MaxVolume:             75,
 	BuildingCheckFn:       navigation.Field.Sailable,
 	BuildingExtensionType: building.Deck,
@@ -52,7 +56,30 @@ var TradingCart = &VehicleType{
 	Land:                  true,
 	IndoorStorage:         true,
 	Trader:                true,
+	Expedition:            false,
 	MaxVolume:             50,
+	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
+	BuildingExtensionType: building.NonExtension,
+}
+var ExpeditionBoat = &VehicleType{
+	Name:                  "expedition_boat",
+	Water:                 true,
+	Land:                  false,
+	IndoorStorage:         false,
+	Trader:                false,
+	Expedition:            true,
+	MaxVolume:             250,
+	BuildingCheckFn:       navigation.Field.Sailable,
+	BuildingExtensionType: building.Deck,
+}
+var ExpeditionCart = &VehicleType{
+	Name:                  "expedition_cart",
+	Water:                 false,
+	Land:                  true,
+	IndoorStorage:         false,
+	Trader:                false,
+	Expedition:            true,
+	MaxVolume:             150,
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
 }
@@ -62,6 +89,8 @@ var VehicleTypes = [...]*VehicleType{
 	Cart,
 	TradingBoat,
 	TradingCart,
+	ExpeditionBoat,
+	ExpeditionCart,
 }
 
 func GetVehicleType(name string) *VehicleType {
