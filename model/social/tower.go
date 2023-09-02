@@ -47,40 +47,42 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	h.ElapseTime(Calendar, m)
 	mp := h.Town.Marketplace
 
-	unarmedPeople := t.numUnarmedPeople()
-	if unarmedPeople > 0 {
-		tag := "weapon_buying"
-		var weapons = h.Resources.Get(Sword)
-		if weapons > h.Resources.Get(Shield) {
-			weapons = h.Resources.Get(Shield)
-		}
-
-		if h.NumTasks("exchange", tag) == 0 && weapons == 0 {
-			var quantity = (ProductTransportQuantity(Sword) + ProductTransportQuantity(Shield)) / 2
-			if quantity > unarmedPeople {
-				quantity = unarmedPeople
+	if mp != nil {
+		unarmedPeople := t.numUnarmedPeople()
+		if unarmedPeople > 0 {
+			tag := "weapon_buying"
+			var weapons = h.Resources.Get(Sword)
+			if weapons > h.Resources.Get(Shield) {
+				weapons = h.Resources.Get(Shield)
 			}
-			needs := []artifacts.Artifacts{
-				artifacts.Artifacts{A: Sword, Quantity: quantity},
-				artifacts.Artifacts{A: Shield, Quantity: quantity}}
-			if h.Money >= mp.Price(needs) && mp.HasTraded(Sword) && mp.HasTraded(Shield) {
-				h.AddTask(&economy.BuyTask{
-					Exchange:        mp,
-					HouseholdWallet: h,
-					Goods:           needs,
-					MaxPrice:        uint32(float64(h.Money) * WeaponBudgetRatio),
-					TaskTag:         tag,
-				})
-			}
-		}
 
-		if weapons > 0 {
-			for _, p := range h.People {
-				if !p.Equipment.Weapon && h.Resources.Remove(Sword, 1) > 0 && h.Resources.Remove(Shield, 1) > 0 {
-					p.Equipment = economy.Weapon
-					weapons--
-					if weapons == 0 {
-						break
+			if h.NumTasks("exchange", tag) == 0 && weapons == 0 {
+				var quantity = (ProductTransportQuantity(Sword) + ProductTransportQuantity(Shield)) / 2
+				if quantity > unarmedPeople {
+					quantity = unarmedPeople
+				}
+				needs := []artifacts.Artifacts{
+					artifacts.Artifacts{A: Sword, Quantity: quantity},
+					artifacts.Artifacts{A: Shield, Quantity: quantity}}
+				if h.Money >= mp.Price(needs) && mp.HasTraded(Sword) && mp.HasTraded(Shield) {
+					h.AddTask(&economy.BuyTask{
+						Exchange:        mp,
+						HouseholdWallet: h,
+						Goods:           needs,
+						MaxPrice:        uint32(float64(h.Money) * WeaponBudgetRatio),
+						TaskTag:         tag,
+					})
+				}
+			}
+
+			if weapons > 0 {
+				for _, p := range h.People {
+					if !p.Equipment.Weapon && h.Resources.Remove(Sword, 1) > 0 && h.Resources.Remove(Shield, 1) > 0 {
+						p.Equipment = economy.Weapon
+						weapons--
+						if weapons == 0 {
+							break
+						}
 					}
 				}
 			}

@@ -128,14 +128,19 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
-	f.Household.MaybeBuyBoat(Calendar, m)
-	f.Household.MaybeBuyCart(Calendar, m)
+
 	if Calendar.Hour == 0 {
 		for _, land := range f.Land {
 			f.AddTransportTask(land, m)
 		}
 	}
-	f.Household.SellArtifacts(NotInputOrProduct, f.IsOutput)
+
+	if f.Household.Town.Marketplace != nil {
+		f.Household.MaybeBuyBoat(Calendar, m)
+		f.Household.MaybeBuyCart(Calendar, m)
+
+		f.Household.SellArtifacts(NotInputOrProduct, f.IsOutput)
+	}
 }
 
 var fruit = artifacts.GetArtifact("fruit")

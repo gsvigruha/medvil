@@ -110,9 +110,12 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 			}
 		}
 	}
-	m.Household.SellArtifacts(NotInputOrProduct, NotInputOrProduct)
-	m.Household.MaybeBuyBoat(Calendar, imap)
-	m.Household.MaybeBuyCart(Calendar, imap)
+
+	if m.Household.Town.Marketplace != nil {
+		m.Household.SellArtifacts(NotInputOrProduct, NotInputOrProduct)
+		m.Household.MaybeBuyBoat(Calendar, imap)
+		m.Household.MaybeBuyCart(Calendar, imap)
+	}
 }
 
 func (m *Mine) GetFields() []navigation.FieldWithContext {
