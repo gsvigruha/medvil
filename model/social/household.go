@@ -13,7 +13,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 3)
+const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 4)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
@@ -102,34 +102,60 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			h.ReassignFirstPerson(h.Town.Townhall.Household, m)
 		}
 	}
-	if h.NumTasks("exchange", "market") <= len(h.People)/3 {
-		CombineExchangeTasks(h, h.Town.Marketplace, m)
-	}
 	numP := uint16(len(h.People))
-	FindWaterTask(h, numP, m)
 	mp := h.Town.Marketplace
-	GetFoodTasks(h, numP, mp)
-	numTools := h.Resources.Get(Tools) + h.PeopleWithTools()
-	if numP > numTools && h.NumTasks("exchange", "tools_purchase") == 0 {
-		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Tools, Quantity: 1}}
-		if h.Money >= mp.Price(needs) && mp.HasTraded(Tools) {
-			h.AddTask(&economy.BuyTask{
-				Exchange:        mp,
-				HouseholdWallet: h,
-				Goods:           needs,
-				MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
-				TaskTag:         "tools_purchase",
-			})
+	if mp != nil {
+		if h.NumTasks("exchange", "market") <= len(h.People)/3 {
+			CombineExchangeTasks(h, mp, m)
 		}
-	}
 
-	h.MaybeBuyExtras(Log, MinLog, "heating_fuel_shopping")
-	h.MaybeBuyExtras(economy.Medicine, numP, "medicine_shopping")
-	h.MaybeBuyExtras(economy.Beer, numP, "beer_shopping")
-	if mp.Prices[Textile] < mp.Prices[Leather] {
-		h.MaybeBuyExtras(Textile, h.clothesNeeded(), "textile_shopping")
-	} else {
-		h.MaybeBuyExtras(Leather, h.clothesNeeded(), "leather_shopping")
+		FindWaterTask(h, numP, m)
+		GetFoodTasks(h, numP, mp)
+		numTools := h.Resources.Get(Tools) + h.PeopleWithTools()
+		if numP > numTools && h.NumTasks("exchange", "tools_purchase") == 0 {
+			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Tools, Quantity: 1}}
+			if h.Money >= mp.Price(needs) && mp.HasTraded(Tools) {
+				h.AddTask(&economy.BuyTask{
+					Exchange:        mp,
+					HouseholdWallet: h,
+					Goods:           needs,
+					MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+					TaskTag:         "tools_purchase",
+				})
+			}
+		}
+
+		h.MaybeBuyExtras(Log, MinLog, "heating_fuel_shopping")
+		h.MaybeBuyExtras(economy.Medicine, numP, "medicine_shopping")
+		h.MaybeBuyExtras(economy.Beer, numP, "beer_shopping")
+		if mp.Prices[Textile] < mp.Prices[Leather] {
+			h.MaybeBuyExtras(Textile, h.clothesNeeded(), "textile_shopping")
+		} else {
+			h.MaybeBuyExtras(Leather, h.clothesNeeded(), "leather_shopping")
+		}
+
+		if h.Building.Broken {
+			if h.NumTasks("repair", "") == 0 {
+				h.AddTask(&economy.RepairTask{
+					B: h.Building,
+					F: m.GetField(h.Building.X, h.Building.Y),
+					R: h.GetResources(),
+				})
+			}
+
+			needs := h.Resources.Needs(h.Building.Plan.RepairCost())
+			if len(needs) > 0 && h.NumTasks("exchange", "repair_shopping") == 0 {
+				if h.Money >= mp.Price(needs) {
+					h.AddTask(&economy.BuyTask{
+						Exchange:        mp,
+						HouseholdWallet: h,
+						Goods:           needs,
+						MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+						TaskTag:         "repair_shopping",
+					})
+				}
+			}
+		}
 	}
 
 	if Calendar.Hour == 0 {
@@ -168,28 +194,6 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	if rand.Float64() < BuildingBrokenRate {
 		h.Building.Broken = true
-	}
-	if h.Building.Broken {
-		if h.NumTasks("repair", "") == 0 {
-			h.AddTask(&economy.RepairTask{
-				B: h.Building,
-				F: m.GetField(h.Building.X, h.Building.Y),
-				R: h.GetResources(),
-			})
-		}
-
-		needs := h.Resources.Needs(h.Building.Plan.RepairCost())
-		if len(needs) > 0 && h.NumTasks("exchange", "repair_shopping") == 0 {
-			if h.Money >= mp.Price(needs) {
-				h.AddTask(&economy.BuyTask{
-					Exchange:        mp,
-					HouseholdWallet: h,
-					Goods:           needs,
-					MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
-					TaskTag:         "repair_shopping",
-				})
-			}
-		}
 	}
 }
 

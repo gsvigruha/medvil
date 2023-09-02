@@ -85,10 +85,12 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	s := &stats.Stats{}
 	eoYear := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
 	eoMonth := (Calendar.Hour == 0 && Calendar.Day == 1)
-	town.Marketplace.ElapseTime(Calendar, m)
-	s.Add(town.Marketplace.Stats())
-	if eoMonth {
-		town.Transfers.FundMarket(&town.Townhall.Household.Money, &town.Marketplace.Money)
+	if town.Marketplace != nil {
+		town.Marketplace.ElapseTime(Calendar, m)
+		s.Add(town.Marketplace.Stats())
+		if eoMonth {
+			town.Transfers.FundMarket(&town.Townhall.Household.Money, &town.Marketplace.Money)
+		}
 	}
 	for l := range town.Townhall.Household.People {
 		person := town.Townhall.Household.People[l]
@@ -214,6 +216,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				case building.BuildingTypeWall, building.BuildingTypeGate:
 					w := &Wall{Building: b, Town: town, F: field}
 					town.Walls = append(town.Walls, w)
+				case building.BuildingTypeTownhall:
+					town.Country.CreateNewTown(b)
 				case building.BuildingTypeRoad:
 					if construction.Road.Construction {
 						construction.Road.Construction = false

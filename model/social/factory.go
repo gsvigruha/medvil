@@ -79,28 +79,30 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	//home := m.GetField(f.Household.Building.X, f.Household.Building.Y)
 	mp := f.Household.Town.Marketplace
 
-	needs := artifacts.Resources{}
-	needs.Init(0)
-	for _, order := range f.Orders {
-		if order.State == OrderStateOrdered {
-			needs.AddAll(artifacts.Purchasable(order.T.Inputs))
+	if mp != nil {
+		needs := artifacts.Resources{}
+		needs.Init(0)
+		for _, order := range f.Orders {
+			if order.State == OrderStateOrdered {
+				needs.AddAll(artifacts.Purchasable(order.T.Inputs))
+			}
 		}
-	}
 
-	for a, q := range needs.Artifacts {
-		tag := "order_input#" + a.Name
-		transportQ := ProductTransportQuantity(a)
-		e := f.Household.Resources.Get(a)
-		if q > e && NumBatchesSimple(q-e, transportQ)+1 > f.Household.NumTasks("exchange", tag) {
-			inputs := artifacts.Artifacts{A: a, Quantity: transportQ}.Wrap()
-			if f.Household.Money >= mp.Price(inputs) {
-				f.Household.AddTask(&economy.BuyTask{
-					Exchange:        mp,
-					HouseholdWallet: f.Household,
-					Goods:           inputs,
-					MaxPrice:        mp.Price(inputs) * 2,
-					TaskTag:         tag,
-				})
+		for a, q := range needs.Artifacts {
+			tag := "order_input#" + a.Name
+			transportQ := ProductTransportQuantity(a)
+			e := f.Household.Resources.Get(a)
+			if q > e && NumBatchesSimple(q-e, transportQ)+1 > f.Household.NumTasks("exchange", tag) {
+				inputs := artifacts.Artifacts{A: a, Quantity: transportQ}.Wrap()
+				if f.Household.Money >= mp.Price(inputs) {
+					f.Household.AddTask(&economy.BuyTask{
+						Exchange:        mp,
+						HouseholdWallet: f.Household,
+						Goods:           inputs,
+						MaxPrice:        mp.Price(inputs) * 2,
+						TaskTag:         tag,
+					})
+				}
 			}
 		}
 	}

@@ -479,6 +479,16 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 		ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeFactory) },
 		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFactory, bc.cp.C.ActiveTown) }})
+	bc.p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "town", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeTownhall) },
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeTownhall, bc.cp.C.ActiveTown) }})
+	if bc.cp.C.ActiveTown != nil && bc.cp.C.ActiveTown.Marketplace == nil {
+		bc.p.AddButton(gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "market", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeMarket) },
+			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMarket, bc.cp.C.ActiveTown) }})
+	}
 }
 
 func SetupBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
