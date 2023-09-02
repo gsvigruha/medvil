@@ -229,7 +229,7 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 }
 
 func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap) {
-	if h.numVehicles(vehicles.Cart) == 0 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
+	if h.numVehicles(vehicles.Cart) < len(h.People)/2 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories, building.NonExtension)
 		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			order := factory.CreateOrder(economy.CartConstruction, h)
