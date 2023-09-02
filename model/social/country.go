@@ -1,6 +1,8 @@
 package social
 
 import (
+	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/stats"
 )
 
@@ -35,4 +37,12 @@ func (c *Country) AddTownIfDoesNotExist(town *Town) {
 func (c *Country) ArchiveHistory() {
 	c.History.Archive(c.Stats(), c.SocietyStats)
 	c.SocietyStats = &stats.SocietyStats{PendingTasks: c.SocietyStats.PendingTasks, CompletedTasks: make(map[string]uint32)}
+}
+
+func (c *Country) CreateNewTown(b *building.Building) {
+	newTown := &Town{Country: c}
+	newTown.Townhall = &Townhall{Household: &Household{Building: b, Town: newTown, Resources: &artifacts.Resources{}}}
+	newTown.Townhall.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+	newTown.Init()
+	c.Towns = append(c.Towns, newTown)
 }
