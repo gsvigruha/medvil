@@ -250,14 +250,7 @@ func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall, vc
 			factory := social.PickFactory(h.Town.Factories, vc.BuildingExtensionType)
 			order := factory.CreateOrder(vc, h)
 			if order != nil {
-				hx, hy, _ := social.GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
 				fx, fy, _ := social.GetRandomBuildingXY(factory.Household.Building, m, navigation.Field.BuildingNonExtension)
-				h.AddTask(&economy.FactoryPickupTask{
-					PickupD:  m.GetField(fx, fy),
-					DropoffD: m.GetField(hx, hy),
-					Order:    order,
-					TaskBase: economy.TaskBase{FieldCenter: true},
-				})
 				h.AddTask(&economy.CreateTraderTask{
 					Townhall: th,
 					PickupD:  m.GetField(fx, fy),

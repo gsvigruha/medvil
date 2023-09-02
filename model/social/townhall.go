@@ -128,8 +128,6 @@ func (t *Townhall) CreateTrader(v *vehicles.Vehicle, p economy.Person) {
 			person.Home = trader
 			person.Traveller.UseVehicle(v)
 			person.SetHome()
-			//homeField := t.getTraderDestField(trader, m)
-			//p.Task = &economy.GoHomeTask{F: homeField, P: p}
 			return
 		}
 	}
