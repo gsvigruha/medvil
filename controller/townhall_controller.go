@@ -286,7 +286,9 @@ func CreateTraderButtonForTownhall(x, y float64, th *social.Townhall, vc *econom
 			}
 		},
 	})
-	p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(th.Household.Town.Marketplace, vc)), 24+x+float64(IconW)*2, y+float64(LargeIconD)/2)
+	if th.Household.Town.Marketplace != nil {
+		p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(th.Household.Town.Marketplace, vc)), 24+x+float64(IconW)*2, y+float64(LargeIconD)/2)
+	}
 	return p
 }
 
@@ -321,7 +323,9 @@ func CreateExpeditionButtonForTownhall(x, y float64, th *social.Townhall, vc *ec
 			}
 		},
 	})
-	p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(th.Household.Town.Marketplace, vc)), 24+x+float64(IconW)*2, y+float64(LargeIconD)/2)
+	if th.Household.Town.Marketplace != nil {
+		p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(th.Household.Town.Marketplace, vc)), 24+x+float64(IconW)*2, y+float64(LargeIconD)/2)
+	}
 	return p
 }
 

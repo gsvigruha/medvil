@@ -141,7 +141,11 @@ func VehiclePrice(mp *Marketplace, vc *economy.VehicleConstruction) uint32 {
 }
 
 func (f *Factory) Price(vc *economy.VehicleConstruction) uint32 {
-	return VehiclePrice(f.Household.Town.Marketplace, vc)
+	if f.Household.Town.Marketplace != nil {
+		return VehiclePrice(f.Household.Town.Marketplace, vc)
+	} else {
+		return 0
+	}
 }
 
 func (f *Factory) CreateOrder(vc *economy.VehicleConstruction, h *Household) *VehicleOrder {

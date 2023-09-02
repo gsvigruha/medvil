@@ -34,6 +34,7 @@ type Home interface {
 	Broken() bool
 	GetTown() *Town
 	GetPeople() []*Person
+	GetExchange() economy.Exchange
 }
 
 var water = artifacts.GetArtifact("water")
