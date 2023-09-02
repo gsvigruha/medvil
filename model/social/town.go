@@ -218,6 +218,10 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 					town.Walls = append(town.Walls, w)
 				case building.BuildingTypeTownhall:
 					town.Country.CreateNewTown(b)
+				case building.BuildingTypeMarket:
+					town.Marketplace = &Marketplace{Town: town, Building: b}
+					town.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * StoragePerArea
+					town.Marketplace.Init()
 				case building.BuildingTypeRoad:
 					if construction.Road.Construction {
 						construction.Road.Construction = false
@@ -512,6 +516,12 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 		town.Factories = DestroyBuilding(town.Factories, b, m)
 	case building.BuildingTypeTower:
 		town.Towers = DestroyBuilding(town.Towers, b, m)
+	case building.BuildingTypeMarket:
+		for _, coords := range town.Marketplace.Building.GetBuildingXYs(true) {
+			m.GetField(coords[0], coords[1]).Building = navigation.FieldBuildingObjects{}
+		}
+		m.GetField(town.Marketplace.Building.X, town.Marketplace.Building.Y).Terrain.Resources.AddResources(town.Marketplace.Storage)
+		town.Marketplace = nil
 	case building.BuildingTypeWall, building.BuildingTypeGate:
 		var newWalls []*Wall
 		for _, wall := range town.Walls {

@@ -19,8 +19,8 @@ const ProfitCostRatio = 2.0
 var Paper = artifacts.GetArtifact("paper")
 
 func (w *Workshop) IsManufactureProfitable() bool {
-	if w.Manufacture != nil {
-		mp := w.Household.Town.Marketplace
+	mp := w.Household.Town.Marketplace
+	if w.Manufacture != nil && mp != nil {
 		return float64(mp.Price(w.Manufacture.Outputs)) >= float64(mp.Price(artifacts.Purchasable(w.Manufacture.Inputs)))*ProfitCostRatio
 	}
 	return false

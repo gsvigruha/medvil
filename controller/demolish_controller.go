@@ -42,6 +42,11 @@ func (dc *DemolishController) GetActiveFields(c *Controller, rf *renderer.Render
 	for _, r := range dc.th.Household.Town.Roads {
 		fields = append(fields, c.Map.GetField(r.X, r.Y))
 	}
+	if dc.th.Household.Town.Marketplace != nil {
+		for _, coords := range dc.th.Household.Town.Marketplace.Building.GetBuildingXYs(true) {
+			fields = append(fields, c.Map.GetField(coords[0], coords[1]))
+		}
+	}
 	return fields
 }
 
