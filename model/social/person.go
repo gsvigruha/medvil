@@ -89,7 +89,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if !p.Equipment.Tool && !p.Equipment.Weapon && p.Home.GetResources().Remove(Tools, 1) == 1 {
 				p.Equipment = economy.Tool
 			}
-			p.Task.SetUp(p.Traveller, p.Home)
+			p.Task.SetUp(p.Traveller, p.Home, p)
 			p.Home.GetTown().Country.SocietyStats.StartTask(p.Task, Calendar)
 		} else if !p.IsHome {
 			p.Task = &economy.GoHomeTask{F: home, P: p}

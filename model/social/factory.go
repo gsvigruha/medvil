@@ -130,8 +130,12 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	f.Orders = newOrders
 }
 
+func VehiclePrice(mp *Marketplace, vc *economy.VehicleConstruction) uint32 {
+	return mp.Price(artifacts.Purchasable(vc.Inputs)) * 2
+}
+
 func (f *Factory) Price(vc *economy.VehicleConstruction) uint32 {
-	return f.Household.Town.Marketplace.Price(artifacts.Purchasable(vc.Inputs)) * 2
+	return VehiclePrice(f.Household.Town.Marketplace, vc)
 }
 
 func (f *Factory) CreateOrder(vc *economy.VehicleConstruction, h *Household) *VehicleOrder {
@@ -170,14 +174,16 @@ func PickFactory(fs []*Factory, et *building.BuildingExtensionType) *Factory {
 	return f
 }
 
-func GetVehicleConstructions(factories []*Factory) []*economy.VehicleConstruction {
+func GetVehicleConstructions(factories []*Factory, filter func(*economy.VehicleConstruction) bool) []*economy.VehicleConstruction {
 	result := make([]*economy.VehicleConstruction, 0, len(economy.AllVehicleConstruction))
 	for _, vc := range economy.AllVehicleConstruction {
-		for _, factory := range factories {
-			extensions := factory.Household.Building.Plan.GetExtensions()
-			if economy.ConstructionCompatible(vc, extensions) {
-				result = append(result, vc)
-				break
+		if filter(vc) {
+			for _, factory := range factories {
+				extensions := factory.Household.Building.Plan.GetExtensions()
+				if economy.ConstructionCompatible(vc, extensions) {
+					result = append(result, vc)
+					break
+				}
 			}
 		}
 	}

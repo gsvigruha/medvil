@@ -5,6 +5,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"medvil/model/vehicles"
 )
 
 type Townhall struct {
@@ -70,6 +71,9 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 
+	t.Household.MaybeBuyBoat(Calendar, m)
+	t.Household.MaybeBuyCart(Calendar, m)
+
 	for _, trader := range t.Traders {
 		trader.ElapseTime(Calendar, m)
 	}
@@ -106,31 +110,25 @@ func (t *Townhall) getTraderDestField(trader *Trader, m navigation.IMap) *naviga
 	return nil
 }
 
-func (t *Townhall) CreateTrader(m navigation.IMap) {
-	for i, v := range t.Household.Vehicles {
-		if !v.InUse {
-			for j, p := range t.Household.People {
-				if p.Task == nil {
-					var r artifacts.Resources
-					r.Init(v.T.MaxVolume)
-					trader := &Trader{
-						Money:          0,
-						Person:         p,
-						Vehicle:        v,
-						Resources:      &r,
-						SourceExchange: t.Household.Town.Marketplace,
-						Town:           t.Household.Town,
-					}
-					t.Traders = append(t.Traders, trader)
-					p.Home = trader
-					p.Traveller.UseVehicle(v)
-					t.Household.Vehicles = append(t.Household.Vehicles[:i], t.Household.Vehicles[i+1:]...)
-					t.Household.People = append(t.Household.People[:j], t.Household.People[j+1:]...)
-					homeField := t.getTraderDestField(trader, m)
-					p.Task = &economy.GoHomeTask{F: homeField, P: p}
-					return
-				}
+func (t *Townhall) CreateTrader(v *vehicles.Vehicle, p economy.Person) {
+	for _, pI := range t.Household.People {
+		person := p.(*Person)
+		if pI == person {
+			var r artifacts.Resources
+			r.Init(v.T.MaxVolume)
+			trader := &Trader{
+				Money:          0,
+				Person:         person,
+				Vehicle:        v,
+				Resources:      &r,
+				SourceExchange: t.Household.Town.Marketplace,
+				Town:           t.Household.Town,
 			}
+			t.Traders = append(t.Traders, trader)
+			person.Home = trader
+			person.Traveller.UseVehicle(v)
+			person.SetHome()
+			return
 		}
 	}
 }
