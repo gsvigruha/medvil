@@ -20,8 +20,11 @@ var BoatConstruction = &VehicleConstruction{
 	Time:                  30 * 24,
 	Power:                 1000,
 	BuildingExtensionType: building.Deck,
-	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3}},
-	Output:                vehicles.Boat,
+	Inputs: []artifacts.Artifacts{
+		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3},
+		artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 2},
+	},
+	Output: vehicles.Boat,
 }
 
 var CartConstruction = &VehicleConstruction{
@@ -29,8 +32,12 @@ var CartConstruction = &VehicleConstruction{
 	Time:                  30 * 24,
 	Power:                 1000,
 	BuildingExtensionType: nil,
-	Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 2}},
-	Output:                vehicles.Cart,
+	Inputs: []artifacts.Artifacts{
+		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 2},
+		artifacts.Artifacts{A: artifacts.GetArtifact("iron_bar"), Quantity: 1},
+		artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 2},
+	},
+	Output: vehicles.Cart,
 }
 
 var TradingBoatConstruction = &VehicleConstruction{
@@ -40,7 +47,9 @@ var TradingBoatConstruction = &VehicleConstruction{
 	BuildingExtensionType: building.Deck,
 	Inputs: []artifacts.Artifacts{
 		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 3},
-		artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 2}},
+		artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 2},
+		artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 2},
+	},
 	Output: vehicles.TradingBoat,
 }
 
@@ -51,7 +60,10 @@ var TradingCartConstruction = &VehicleConstruction{
 	BuildingExtensionType: nil,
 	Inputs: []artifacts.Artifacts{
 		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 2},
-		artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 2}},
+		artifacts.Artifacts{A: artifacts.GetArtifact("iron_bar"), Quantity: 1},
+		artifacts.Artifacts{A: artifacts.GetArtifact("leather"), Quantity: 2},
+		artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 2},
+	},
 	Output: vehicles.TradingCart,
 }
 
