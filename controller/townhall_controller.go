@@ -149,6 +149,14 @@ func RefreshSubPanels(tc *TownhallController) {
 			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items")
 		}})
 
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: 24 + LargeIconD, Y: top + LargeIconD*9, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.Coinage },
+		ClickImpl: func() {
+			town.Settings.Coinage = !town.Settings.Coinage
+			tc.cp.HelperMessage("Start or stop minting gold coins")
+		}})
+
 	var aI = 0
 	for _, a := range artifacts.All {
 		var q uint16 = 0

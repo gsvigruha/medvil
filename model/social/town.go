@@ -31,6 +31,7 @@ type TownSettings struct {
 	WallRepairs        bool
 	Trading            bool
 	ArtifactCollection bool
+	Coinage            bool
 }
 
 type Town struct {

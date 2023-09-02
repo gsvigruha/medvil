@@ -64,7 +64,7 @@ type SupplyAndDemand struct {
 	Demand uint32
 }
 
-var gold = artifacts.GetArtifact("gold_coin")
+var GoldCoin = artifacts.GetArtifact("gold_coin")
 
 func (mp *Marketplace) pendingSupplyAndDemand() map[*artifacts.Artifact]*SupplyAndDemand {
 	sd := make(map[*artifacts.Artifact]*SupplyAndDemand)
@@ -104,7 +104,7 @@ func (mp *Marketplace) DecPrice(a *artifacts.Artifact) {
 
 func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if Calendar.Hour == 0 && Calendar.Day == 1 {
-		allGold := []artifacts.Artifacts{artifacts.Artifacts{A: gold, Quantity: mp.Storage.Get(gold)}}
+		allGold := []artifacts.Artifacts{artifacts.Artifacts{A: GoldCoin, Quantity: mp.Storage.Get(GoldCoin)}}
 		price := mp.Price(allGold)
 		wallet := &mp.Town.Townhall.Household.Money
 		*wallet += price * 2
@@ -112,7 +112,7 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 		sd := mp.pendingSupplyAndDemand()
 
 		for _, a := range artifacts.All {
-			if a != gold {
+			if a != GoldCoin {
 				storage := uint32(mp.Storage.Artifacts[a]) / StorageToSoldRatio
 				if mp.Sold[a]+storage == 0 && mp.Bought[a] > 0 {
 					mp.IncPrice(a)

@@ -56,12 +56,34 @@ var TradingCart = &VehicleType{
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
 }
+var ExpeditionBoat = &VehicleType{
+	Name:                  "expedition_boat",
+	Water:                 true,
+	Land:                  false,
+	IndoorStorage:         false,
+	Trader:                false,
+	MaxVolume:             150,
+	BuildingCheckFn:       navigation.Field.Sailable,
+	BuildingExtensionType: building.Deck,
+}
+var ExpeditionCart = &VehicleType{
+	Name:                  "expedition_cart",
+	Water:                 false,
+	Land:                  true,
+	IndoorStorage:         false,
+	Trader:                false,
+	MaxVolume:             150,
+	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
+	BuildingExtensionType: building.NonExtension,
+}
 
 var VehicleTypes = [...]*VehicleType{
 	Boat,
 	Cart,
 	TradingBoat,
 	TradingCart,
+	ExpeditionBoat,
+	ExpeditionCart,
 }
 
 func GetVehicleType(name string) *VehicleType {
