@@ -13,7 +13,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 2)
+const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 3)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
@@ -25,6 +25,7 @@ var Tools = artifacts.GetArtifact("tools")
 var Textile = artifacts.GetArtifact("textile")
 var Leather = artifacts.GetArtifact("leather")
 var Clothes = artifacts.GetArtifact("clothes")
+var IronBar = artifacts.GetArtifact("iron_bar")
 
 const LogToFirewood = 5
 const MinLog = 1
@@ -440,7 +441,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			}
 			p.releaseTask()
 			if p.Equipment.Tool || p.Equipment.Weapon {
-				f.Terrain.Resources.Add(artifacts.GetArtifact("iron_bar"), 1)
+				f.Terrain.Resources.Add(IronBar, 1)
 			}
 			h.Town.Country.SocietyStats.RegisterDeath()
 		} else if p.Happiness == 0 && rand.Float64() < FleeingRate && h.Town.Country.T != CountryTypeOutlaw {
@@ -490,6 +491,8 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 	for _, v := range h.Vehicles {
 		if !v.Broken || v.InUse {
 			newVehicles = append(newVehicles, v)
+		} else if v.T == vehicles.Cart {
+			h.Resources.Add(IronBar, 1)
 		}
 	}
 	h.Vehicles = newVehicles
