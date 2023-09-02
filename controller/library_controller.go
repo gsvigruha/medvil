@@ -88,6 +88,10 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24, Y: ControlPanelSY*0.7 + float64(IconH), SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ShowHouseIcons },
 		ClickImpl: func() { cp.C.ShowHouseIcons = !cp.C.ShowHouseIcons }})
+	p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*2, SX: IconS, SY: IconS},
+		Highlight: func() bool { return cp.C.ShowAllocatedFields },
+		ClickImpl: func() { cp.C.ShowAllocatedFields = !cp.C.ShowAllocatedFields }})
 
 	cp.SetDynamicPanel(p)
 }

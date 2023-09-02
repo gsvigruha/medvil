@@ -9,6 +9,8 @@ import (
 	"strconv"
 )
 
+const VehicleBreakDownRate = 1.0 / (24 * 30 * 12 * 5)
+
 const MaxPersonState = 250
 const WaterThreshold = 100
 const FoodThreshold = 100
@@ -137,6 +139,9 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Health++
 			}
 		}
+	}
+	if p.Traveller.Vehicle != nil && rand.Float64() < VehicleBreakDownRate {
+		p.Traveller.Vehicle.Break()
 	}
 }
 

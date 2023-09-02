@@ -77,6 +77,7 @@ type Vehicle struct {
 	T         *VehicleType
 	Traveller *navigation.Traveller
 	InUse     bool
+	Broken    bool
 }
 
 func (v *Vehicle) PathType() navigation.PathType {
@@ -105,4 +106,8 @@ func (v *Vehicle) SetHome(home bool) {
 
 func (v *Vehicle) Water() bool {
 	return v.T.Water
+}
+
+func (v *Vehicle) Break() {
+	v.Broken = true
 }

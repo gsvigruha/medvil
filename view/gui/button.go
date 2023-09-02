@@ -5,6 +5,8 @@ import (
 	"image/color"
 )
 
+var ButtonColorHighlight = color.RGBA{R: 192, G: 224, B: 255, A: 192}
+
 type Button interface {
 	Click()
 	Render(cv *canvas.Canvas)
@@ -52,7 +54,7 @@ type SimpleButton struct {
 
 func (b SimpleButton) Render(cv *canvas.Canvas) {
 	if b.Highlight != nil && b.Highlight() {
-		cv.SetFillStyle(color.RGBA{R: 192, G: 224, B: 255, A: 192})
+		cv.SetFillStyle(ButtonColorHighlight)
 		cv.FillRect(b.X, b.Y, b.SX, b.SY)
 	}
 	b.ButtonGUI.Render(cv)

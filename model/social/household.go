@@ -13,7 +13,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
+const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 3)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
@@ -25,6 +25,7 @@ var Tools = artifacts.GetArtifact("tools")
 var Textile = artifacts.GetArtifact("textile")
 var Leather = artifacts.GetArtifact("leather")
 var Clothes = artifacts.GetArtifact("clothes")
+var IronBar = artifacts.GetArtifact("iron_bar")
 
 const LogToFirewood = 5
 const MinLog = 1
@@ -229,7 +230,7 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 }
 
 func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap) {
-	if h.numVehicles(vehicles.Cart) == 0 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
+	if h.numVehicles(vehicles.Cart) < len(h.People)/2 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories, building.NonExtension)
 		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			order := factory.CreateOrder(economy.CartConstruction, h)
@@ -440,7 +441,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			}
 			p.releaseTask()
 			if p.Equipment.Tool || p.Equipment.Weapon {
-				f.Terrain.Resources.Add(artifacts.GetArtifact("iron_bar"), 1)
+				f.Terrain.Resources.Add(IronBar, 1)
 			}
 			h.Town.Country.SocietyStats.RegisterDeath()
 		} else if p.Happiness == 0 && rand.Float64() < FleeingRate && h.Town.Country.T != CountryTypeOutlaw {
@@ -485,6 +486,16 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 		}
 	}
 	h.Tasks = newTasks
+
+	var newVehicles = make([]*vehicles.Vehicle, 0, len(h.Vehicles))
+	for _, v := range h.Vehicles {
+		if !v.Broken || v.InUse {
+			newVehicles = append(newVehicles, v)
+		} else if v.T == vehicles.Cart {
+			h.Resources.Add(IronBar, 1)
+		}
+	}
+	h.Vehicles = newVehicles
 }
 
 func (h *Household) AddVehicle(v *vehicles.Vehicle) {

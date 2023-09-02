@@ -25,7 +25,7 @@ func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	for i, vc := range economy.GetVehicleConstructions(factory.Household.Building.Plan.GetExtensions()) {
-		fp.AddPanel(CreateOrderPanelForFactory(10, float64(i)*IconS+hcy, gui.FontSize*8, 20, factory, vc, cp.C.Map))
+		fp.AddPanel(CreateOrderPanelForFactory(10, float64(i*IconH)+hcy, factory, vc, cp.C.Map))
 	}
 
 	cp.SetDynamicPanel(fc)
@@ -49,10 +49,11 @@ func (fc *FactoryController) Refresh() {
 }
 
 type OrderButton struct {
-	b         gui.ButtonGUI
 	factories []*social.Factory
 	vc        *economy.VehicleConstruction
-	l         *gui.TextLabel
+	icon      *gui.ImageLabel
+	price     *gui.TextLabel
+	orders    *gui.TextLabel
 	m         navigation.IMap
 }
 
@@ -81,28 +82,30 @@ func (b OrderButton) NumOrders() int {
 }
 
 func (b OrderButton) Render(cv *canvas.Canvas) {
-	b.b.Render(cv)
-	b.l.Text = fmt.Sprintf("%v %v", b.vc.Name, b.NumOrders())
+	b.price.Text = fmt.Sprintf("$%v", b.factories[0].Price(b.vc))
+	b.orders.Text = fmt.Sprintf("%v", b.NumOrders())
 }
 
 func (b OrderButton) Contains(x float64, y float64) bool {
-	return b.b.Contains(x, y)
+	return false
 }
 
 func (b OrderButton) Enabled() bool {
-	return b.b.Enabled()
+	return true
 }
 
-func CreateOrderPanelForFactory(x, y, sx, sy float64, factory *social.Factory, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
+func CreateOrderPanelForFactory(x, y float64, factory *social.Factory, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
-	l := p.AddTextLabel("", x, y+sy*2/3)
+	orders := p.AddTextLabel("", 24+x+float64(IconW)*2, y+float64(IconS))
+	price := p.AddTextLabel("", 24+x+float64(IconW)*3, y+float64(IconS))
+	icon := p.AddImageLabel("vehicles/"+vc.Name, 24, y, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	p.AddButton(OrderButton{
-		b:         gui.ButtonGUI{Icon: "plus", X: x + sx, Y: y, SX: sy, SY: sy},
 		factories: []*social.Factory{factory},
 		vc:        vc,
-		l:         l,
+		icon:      icon,
+		price:     price,
+		orders:    orders,
 		m:         m,
 	})
-	p.AddTextLabel(fmt.Sprintf("$%v", factory.Price(vc)), x+sx+sy*2, y+sy*2/3)
 	return p
 }
