@@ -35,6 +35,7 @@ type Controller struct {
 	CenterY                   int
 	Perspective               uint8
 	ShowHouseIcons            bool
+	ShowAllocatedFields       bool
 	Map                       *model.Map
 	MapLock                   sync.Mutex
 	RenderedFields            []*renderer.RenderedField
