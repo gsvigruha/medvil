@@ -472,7 +472,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			th := guard.Home.GetTown().Townhall
 			th.Household.AssignPerson(p, m)
 			p.Task = &economy.GoHomeTask{F: m.GetField(th.Household.Building.X, th.Household.Building.Y), P: p}
-		} else {
+		} else if p.Home == h {
 			newPeople = append(newPeople, p)
 		}
 	}

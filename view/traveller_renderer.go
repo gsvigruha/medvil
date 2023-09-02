@@ -207,7 +207,7 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 			cv.SetFillStyle("#952")
 		} else if person.Equipment.Weapon {
 			cv.SetFillStyle("texture/people/metal.png")
-		} else {
+		} else if person.Home.GetBuilding() != nil {
 			switch person.Home.GetBuilding().Plan.BuildingType {
 			case building.BuildingTypeFarm:
 				cv.SetFillStyle("texture/people/textile_yellow.png")
