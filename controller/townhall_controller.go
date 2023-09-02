@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"github.com/tfriedel6/canvas"
-	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
@@ -154,10 +153,11 @@ func RefreshSubPanels(tc *TownhallController) {
 		aI++
 	}
 
-	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories) {
-		if vc.Output.Trader {
-			tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i+2)*IconS+top, float64(IconH), s, th, vc, tc.cp.C.Map))
-		}
+	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Trader }) {
+		tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i+2)*IconS+top, float64(IconH), s, th, vc, tc.cp.C.Map))
+	}
+	for i := 0; i < th.Household.NumTasks("create_trader", ""); i++ {
+		tc.traderPanel.AddImageLabel("tasks/create_trader", float64(24+i*IconW), top+ControlPanelSY*0.20, IconS, IconS, gui.ImageLabelStyleRegular)
 	}
 
 	traderTop := top + ControlPanelSY*0.25
@@ -243,17 +243,11 @@ func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedFi
 func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
 	p.AddTextLabel(vc.Name, x, y+sy*2/3)
-	var factories []*social.Factory
-	for _, factory := range th.Household.Town.Factories {
-		if economy.ConstructionCompatible(vc, factory.Household.Building.Plan.GetExtensions()) {
-			factories = append(factories, factory)
-		}
-	}
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + 240, Y: y, SX: sy, SY: sy},
 		ClickImpl: func() {
-			factory := factories[rand.Intn(len(factories))]
 			h := th.Household
+			factory := social.PickFactory(h.Town.Factories, vc.BuildingExtensionType)
 			order := factory.CreateOrder(vc, h)
 			if order != nil {
 				hx, hy, _ := social.GetRandomBuildingXY(h.Building, m, navigation.Field.BuildingNonExtension)
@@ -272,7 +266,7 @@ func CreateTraderButtonForTownhall(x, y, sx, sy float64, th *social.Townhall, vc
 			}
 		},
 	})
-	p.AddTextLabel(fmt.Sprintf("$%v", factories[0].Price(vc)), x+160, y+sy*2/3)
+	p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(th.Household.Town.Marketplace, vc)), x+160, y+sy*2/3)
 	return p
 }
 
