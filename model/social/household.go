@@ -631,3 +631,7 @@ func (h *Household) GetTown() *Town {
 func (h *Household) GetPeople() []*Person {
 	return h.People
 }
+
+func (h *Household) GetExchange() economy.Exchange {
+	return h.Town.Marketplace
+}

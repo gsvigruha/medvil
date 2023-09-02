@@ -99,7 +99,7 @@ func (t *ExchangeTask) Tag() string {
 }
 
 func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
-	return false
+	return t.Household != nil && t.Household.GetExchange() != t.Exchange
 }
 
 func (t *ExchangeTask) AddBuyTask(bt *BuyTask) {

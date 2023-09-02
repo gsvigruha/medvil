@@ -227,3 +227,7 @@ func (t *Trader) GetPeople() []*Person {
 func (t *Trader) GetHome() Home {
 	return t
 }
+
+func (t *Trader) GetExchange() economy.Exchange {
+	return t.SourceExchange
+}
