@@ -96,8 +96,8 @@ func (b OrderButton) Enabled() bool {
 
 func CreateOrderPanelForFactory(x, y float64, factory *social.Factory, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
-	price := p.AddTextLabel("", 24+x+float64(IconW)*2, y+float64(IconS))
-	orders := p.AddTextLabel("", 24+x+float64(IconW)*3, y+float64(IconS))
+	orders := p.AddTextLabel("", 24+x+float64(IconW)*2, y+float64(IconS))
+	price := p.AddTextLabel("", 24+x+float64(IconW)*3, y+float64(IconS))
 	icon := p.AddImageLabel("vehicles/"+vc.Name, 24, y, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	p.AddButton(OrderButton{
 		factories: []*social.Factory{factory},

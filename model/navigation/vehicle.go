@@ -6,4 +6,5 @@ type Vehicle interface {
 	SetInUse(bool)
 	SetHome(bool)
 	Water() bool
+	Break()
 }

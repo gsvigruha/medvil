@@ -13,7 +13,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 5)
+const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 3)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
@@ -485,6 +485,14 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 		}
 	}
 	h.Tasks = newTasks
+
+	var newVehicles = make([]*vehicles.Vehicle, 0, len(h.Vehicles))
+	for _, v := range h.Vehicles {
+		if !v.Broken || v.InUse {
+			newVehicles = append(newVehicles, v)
+		}
+	}
+	h.Vehicles = newVehicles
 }
 
 func (h *Household) AddVehicle(v *vehicles.Vehicle) {
