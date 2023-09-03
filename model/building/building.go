@@ -174,6 +174,7 @@ func (b *Building) GetBuildingXYs(includeExtensions bool) [][2]uint16 {
 		for j := uint16(0); j < 5; j++ {
 			bx := uint16(b.X+i) - 2
 			by := uint16(b.Y+j) - 2
+			// Include fields with extensions if they have floors
 			if b.Plan.BaseShape[i][j] != nil && (includeExtensions || b.Plan.BaseShape[i][j].Extension == nil || len(b.Plan.BaseShape[i][j].Floors) > 0) {
 				fields = append(fields, [2]uint16{bx, by})
 			}
