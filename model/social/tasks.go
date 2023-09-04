@@ -41,11 +41,21 @@ func IsExchangeBaseTask(t economy.Task) bool {
 	return sok || bok
 }
 
-func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
+func MarketAndHouseholdConnectedWithWater(h Home, mp *Marketplace, m navigation.IMap) bool {
 	sailableMP := mp.Building.HasExtension(building.Deck)
-	sailableH := h.RandomField(m, navigation.Field.BoatDestination) != nil
-	waterOk := sailableMP && sailableH
+	sailableH := h.GetBuilding().HasExtension(building.Deck)
+	if sailableMP && sailableH {
+		// TODO: determine connectedness more effectively
+		mpExtension := mp.Building.GetExtensionsWithCoords(building.Deck)[0]
+		mpExtensionLocation := m.GetField(mpExtension.X, mpExtension.Y).GetLocation()
+		return m.FindDest(mpExtensionLocation, h.Destination(building.Deck), navigation.PathTypeBoat) != nil
+	} else {
+		return false
+	}
+}
 
+func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
+	waterOk := MarketAndHouseholdConnectedWithWater(h, mp, m)
 	var vehicle *vehicles.Vehicle
 	var buildingCheckFn = navigation.Field.BuildingNonExtension
 	var buildingExtension = building.NonExtension
