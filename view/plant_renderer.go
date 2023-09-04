@@ -7,6 +7,7 @@ import (
 	"math"
 	"math/rand"
 	"medvil/controller"
+	"medvil/model/navigation"
 	"medvil/model/terrain"
 	"medvil/model/time"
 	"medvil/renderer"
@@ -161,4 +162,16 @@ func RenderPlant(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedFi
 	} else {
 		RenderRegularPlant(cv, plant, rf, c)
 	}
+}
+
+func RenderPlantOnBuffer(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
+	plantBufferW, plantBufferH := getPlantBufferSize(f.Plant)
+	midX, midY := rf.MidScreenPoint()
+	tx := midX - plantBufferW/2
+	ty := midY - plantBufferH
+	if !f.Plant.IsTree() {
+		ty += DY
+	}
+	img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf, c)
+	cv.DrawImage(img, tx, ty, plantBufferW, plantBufferH)
 }
