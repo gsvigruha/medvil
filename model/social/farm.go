@@ -175,3 +175,15 @@ func (f *Farm) FieldWithinDistance(field *navigation.Field) bool {
 func (f *Farm) GetHome() Home {
 	return f.Household
 }
+
+func (f *Farm) GetLandDistribution() map[uint8]int {
+	result := make(map[uint8]int)
+	for _, land := range f.Land {
+		if cnt, ok := result[land.UseType]; ok {
+			result[land.UseType] = cnt + 1
+		} else {
+			result[land.UseType] = 1
+		}
+	}
+	return result
+}

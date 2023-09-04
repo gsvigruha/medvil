@@ -32,34 +32,44 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 	mc := &MineController{householdPanel: hp, minePanel: mp, mine: mine, UseType: economy.MineFieldUseTypeNone, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
-	mp.AddButton(LandUseButton{
+	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(24), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeNone,
 	})
-	mp.AddButton(LandUseButton{
+	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/stone", X: float64(24 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeStone,
 	})
-	mp.AddButton(LandUseButton{
+	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/clay", X: float64(24 + IconW*2), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeClay,
 	})
-	mp.AddButton(LandUseButton{
+	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/iron_ore", X: float64(24 + IconW*3), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeIron,
 	})
-	mp.AddButton(LandUseButton{
+	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/gold_ore", X: float64(24 + IconW*4), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeGold,
 	})
+	mc.RefreshLandUseButtons()
 
 	cp.SetDynamicPanel(mc)
 	cp.C.ClickHandler = mc
+}
+
+func (mc *MineController) RefreshLandUseButtons() {
+	landDist := mc.mine.GetLandDistribution()
+	for _, b := range mc.minePanel.Buttons {
+		if lub, ok := b.(*LandUseButton); ok {
+			lub.cnt = landDist[lub.useType]
+		}
+	}
 }
 
 func (mc *MineController) CaptureClick(x, y float64) {
@@ -105,6 +115,7 @@ func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField)
 				mc.mine.Land = append(mc.mine.Land[:i], mc.mine.Land[i+1:]...)
 				rf.F.Allocated = false
 			}
+			mc.RefreshLandUseButtons()
 			return true
 		}
 	}
@@ -117,6 +128,7 @@ func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField)
 				F:       rf.F,
 			})
 			rf.F.Allocated = true
+			mc.RefreshLandUseButtons()
 			return true
 		}
 	}

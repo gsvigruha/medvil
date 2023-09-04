@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/view/gui"
+	"strconv"
 )
 
 type LandUseController interface {
@@ -15,6 +16,7 @@ type LandUseButton struct {
 	b       gui.ButtonGUI
 	luc     LandUseController
 	useType uint8
+	cnt     int
 }
 
 func (b LandUseButton) Click() {
@@ -26,6 +28,12 @@ func (b LandUseButton) Render(cv *canvas.Canvas) {
 	if b.luc.GetUseType() != b.useType {
 		cv.SetFillStyle(color.RGBA{R: 64, G: 0, B: 0, A: 128})
 		cv.FillRect(b.b.X, b.b.Y, IconS, IconS)
+	}
+	if b.cnt > 0 {
+		cv.SetFillStyle("#FED")
+		cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
+		text := strconv.Itoa(b.cnt)
+		cv.FillText(text, b.b.X+b.b.SX-float64(len(text))*gui.FontSize*0.5+4, b.b.Y+b.b.SY)
 	}
 }
 
