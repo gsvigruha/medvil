@@ -218,7 +218,7 @@ func (h *Household) MaybeBuyExtras(a *artifacts.Artifact, threshold uint16, tag 
 func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap) {
 	if h.NumDecks() > h.numVehicles(vehicles.Boat) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories, building.Deck)
-		deckField := h.AllocateDeck(m)
+		deckField := h.GetUnallocatedDeck(m)
 		if deckField != nil {
 			if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 				order := factory.CreateOrder(economy.BoatConstruction, h)
@@ -655,7 +655,7 @@ func (h *Household) NumDecks() int {
 	return result
 }
 
-func (h *Household) AllocateDeck(m navigation.IMap) *navigation.Field {
+func (h *Household) GetUnallocatedDeck(m navigation.IMap) *navigation.Field {
 	for _, e := range h.Building.GetExtensionsWithCoords(building.Deck) {
 		f := m.GetField(e.X, e.Y)
 		if !f.Allocated {
