@@ -81,6 +81,9 @@ func (m *Map) ElapseTime() {
 				if m.Calendar.Season() == time.Winter && !f.Animal.Corralled {
 					f.Animal = nil
 				}
+				if m.Calendar.Season() == time.Summer && f.Animal.Corralled {
+					f.Animal = nil
+				}
 			}
 			if f.Terrain.T == terrain.Canal && m.HasNeighborField(f.X, f.Y, terrain.Water) {
 				f.Terrain.T = terrain.Water
