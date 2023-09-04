@@ -192,10 +192,11 @@ func (b *Building) HasExtension(et *BuildingExtensionType) bool {
 	return false
 }
 
-func (b *Building) GetExtensionWithCoords(et *BuildingExtensionType) (*BuildingExtension, uint16, uint16) {
-	e, i, j := b.Plan.GetExtensionWithCoords(et)
-	if e != nil {
-		return e, uint16(b.X+i) - 2, uint16(b.Y+j) - 2
+func (b *Building) GetExtensionsWithCoords(et *BuildingExtensionType) []ExtensionWithCoords {
+	es := b.Plan.GetExtensionsWithCoords(et)
+	result := make([]ExtensionWithCoords, len(es))
+	for i, e := range es {
+		result[i] = ExtensionWithCoords{e.E, uint16(b.X+e.X) - 2, uint16(b.Y+e.Y) - 2}
 	}
-	return nil, 0, 0
+	return result
 }

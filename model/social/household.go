@@ -216,18 +216,22 @@ func (h *Household) MaybeBuyExtras(a *artifacts.Artifact, threshold uint16, tag 
 }
 
 func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap) {
-	if h.Building.HasExtension(building.Deck) && h.numVehicles(vehicles.Boat) == 0 && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
+	if h.NumDecks() > h.numVehicles(vehicles.Boat) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
 		factory := PickFactory(h.Town.Factories, building.Deck)
-		if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
-			order := factory.CreateOrder(economy.BoatConstruction, h)
-			if order != nil {
-				h.AddTask(&economy.FactoryPickupTask{
-					// Factories need to be accessed via land even for boat pickups first
-					PickupD:  factory.Household.Destination(building.NonExtension),
-					DropoffD: h.Destination(building.Deck),
-					Order:    order,
-					TaskBase: economy.TaskBase{FieldCenter: true},
-				})
+		deckField := h.AllocateDeck(m)
+		if deckField != nil {
+			if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
+				order := factory.CreateOrder(economy.BoatConstruction, h)
+				if order != nil {
+					deckField.Allocated = true
+					h.AddTask(&economy.FactoryPickupTask{
+						// Factories need to be accessed via land even for boat pickups first
+						PickupD:  factory.Household.Destination(building.NonExtension),
+						DropoffD: deckField,
+						Order:    order,
+						TaskBase: economy.TaskBase{FieldCenter: true},
+					})
+				}
 			}
 		}
 	}
@@ -502,8 +506,13 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 	for _, v := range h.Vehicles {
 		if !v.Broken || v.InUse {
 			newVehicles = append(newVehicles, v)
-		} else if v.T == vehicles.Cart {
-			h.Resources.Add(IronBar, 1)
+		} else {
+			if v.T == vehicles.Cart {
+				h.Resources.Add(IronBar, 1)
+			}
+			if v.Parking != nil {
+				v.Parking.Allocated = false
+			}
 		}
 	}
 	h.Vehicles = newVehicles
@@ -634,4 +643,24 @@ func (h *Household) GetPeople() []*Person {
 
 func (h *Household) GetExchange() economy.Exchange {
 	return h.Town.Marketplace
+}
+
+func (h *Household) NumDecks() int {
+	var result = 0
+	for _, e := range h.Building.Plan.GetExtensions() {
+		if e.T == building.Deck {
+			result++
+		}
+	}
+	return result
+}
+
+func (h *Household) AllocateDeck(m navigation.IMap) *navigation.Field {
+	for _, e := range h.Building.GetExtensionsWithCoords(building.Deck) {
+		f := m.GetField(e.X, e.Y)
+		if !f.Allocated {
+			return f
+		}
+	}
+	return nil
 }

@@ -331,19 +331,29 @@ func (b *BuildingPlan) Copy() *BuildingPlan {
 }
 
 func (b *BuildingPlan) GetExtension(et *BuildingExtensionType) *BuildingExtension {
-	e, _, _ := b.GetExtensionWithCoords(et)
-	return e
+	es := b.GetExtensionsWithCoords(et)
+	if len(es) > 0 {
+		return es[0].E
+	}
+	return nil
 }
 
-func (b *BuildingPlan) GetExtensionWithCoords(et *BuildingExtensionType) (*BuildingExtension, uint16, uint16) {
+type ExtensionWithCoords struct {
+	E *BuildingExtension
+	X uint16
+	Y uint16
+}
+
+func (b *BuildingPlan) GetExtensionsWithCoords(et *BuildingExtensionType) []ExtensionWithCoords {
+	var result []ExtensionWithCoords
 	for i := uint16(0); i < BuildingBaseMaxSize; i++ {
 		for j := uint16(0); j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil && b.BaseShape[i][j].Extension != nil && b.BaseShape[i][j].Extension.T == et {
-				return b.BaseShape[i][j].Extension, i, j
+				result = append(result, ExtensionWithCoords{E: b.BaseShape[i][j].Extension, X: i, Y: j})
 			}
 		}
 	}
-	return nil, 0, 0
+	return result
 }
 
 func (b *BuildingPlan) GetExtensions() []*BuildingExtension {

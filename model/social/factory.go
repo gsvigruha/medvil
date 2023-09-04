@@ -112,12 +112,12 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
 			var field *navigation.Field
 			if order.T.Output.Water {
-				ext, x, y := f.Household.Building.GetExtensionWithCoords(building.Deck)
-				if ext == nil {
+				es := f.Household.Building.GetExtensionsWithCoords(building.Deck)
+				if len(es) == 0 {
 					order.State = OrderStateExpired
 					continue
 				}
-				field = m.GetField(x, y)
+				field = m.GetField(es[0].X, es[0].Y)
 			} else {
 				field = f.Household.RandomField(m, navigation.Field.BuildingNonExtension)
 			}
