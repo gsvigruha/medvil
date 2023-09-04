@@ -112,12 +112,12 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if order.State == OrderStateOrdered && f.Household.Resources.RemoveAll(order.T.Inputs) {
 			var field *navigation.Field
 			if order.T.Output.Water {
-				ext, x, y := f.Household.Building.GetExtensionWithCoords(building.Deck)
-				if ext == nil {
+				es := f.Household.Building.GetExtensionsWithCoords(building.Deck)
+				if len(es) == 0 {
 					order.State = OrderStateExpired
 					continue
 				}
-				field = m.GetField(x, y)
+				field = m.GetField(es[0].X, es[0].Y)
 			} else {
 				field = f.Household.RandomField(m, navigation.Field.BuildingNonExtension)
 			}
@@ -170,14 +170,24 @@ func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
 	return n
 }
 
-func PickFactory(fs []*Factory, et *building.BuildingExtensionType) *Factory {
+func PickFactory(fs []*Factory, et *building.BuildingExtensionType, dest *Household, m navigation.IMap) *Factory {
 	var f *Factory = nil
-	var orders = 0
+	var orders = 1000
 	for _, fi := range fs {
 		if et == building.NonExtension || fi.Household.Building.HasExtension(et) {
-			if f == nil || orders < len(fi.Orders) {
-				f = fi
-				orders = len(fi.Orders)
+			if f == nil || orders > len(fi.Orders) {
+				if et == building.Deck {
+					// TODO: determine connectedness more effectively
+					factoryExtension := fi.Household.Building.GetExtensionsWithCoords(et)[0]
+					factoryExtensionLocation := m.GetField(factoryExtension.X, factoryExtension.Y).GetLocation()
+					if m.FindDest(factoryExtensionLocation, dest.Destination(et), navigation.PathTypeBoat) != nil {
+						f = fi
+						orders = len(fi.Orders)
+					}
+				} else {
+					f = fi
+					orders = len(fi.Orders)
+				}
 			}
 		}
 	}

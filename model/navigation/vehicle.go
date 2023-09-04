@@ -7,4 +7,5 @@ type Vehicle interface {
 	SetHome(bool)
 	Water() bool
 	Break()
+	SetParking(*Field)
 }

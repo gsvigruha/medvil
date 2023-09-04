@@ -36,6 +36,9 @@ func (t *FactoryPickupTask) Complete(Calendar *time.CalendarType, tool bool) boo
 		v := t.Order.PickupVehicle()
 		t.Household.AddVehicle(v)
 		t.Traveller.UseVehicle(v)
+		if f, ok := t.DropoffD.(*navigation.Field); ok {
+			t.Traveller.Vehicle.SetParking(f)
+		}
 		t.Dropoff = true
 	}
 	return false

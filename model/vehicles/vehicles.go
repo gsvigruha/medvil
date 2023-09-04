@@ -107,6 +107,7 @@ type Vehicle struct {
 	Traveller *navigation.Traveller
 	InUse     bool
 	Broken    bool
+	Parking   *navigation.Field
 }
 
 func (v *Vehicle) PathType() navigation.PathType {
@@ -139,4 +140,8 @@ func (v *Vehicle) Water() bool {
 
 func (v *Vehicle) Break() {
 	v.Broken = true
+}
+
+func (v *Vehicle) SetParking(f *navigation.Field) {
+	v.Parking = f
 }
