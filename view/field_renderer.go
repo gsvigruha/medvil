@@ -7,20 +7,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/renderer"
 	"sort"
-	"strconv"
 )
-
-func renderPlant(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
-	plantBufferW, plantBufferH := getPlantBufferSize(f.Plant)
-	midX, midY := rf.MidScreenPoint()
-	tx := midX - plantBufferW/2
-	ty := midY - plantBufferH
-	if !f.Plant.IsTree() {
-		ty += DY
-	}
-	img := ic.Pic.RenderPlantOnBuffer(f.Plant, rf, c)
-	cv.DrawImage(img, tx, ty, plantBufferW, plantBufferH)
-}
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	xMin, yMin, _, _ := rf.BoundingBox()
@@ -39,7 +26,7 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 	}
 
 	if f.Plant != nil && !f.Plant.IsTree() {
-		renderPlant(ic, cv, rf, f, c)
+		RenderPlantOnBuffer(ic, cv, rf, f, c)
 	}
 
 	_, midY := rf.MidPoint()
@@ -53,14 +40,10 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+40, rf.Y[2]-72, 32, 32)
 	}
 	if f.Plant != nil && f.Plant.IsTree() {
-		renderPlant(ic, cv, rf, f, c)
+		RenderPlantOnBuffer(ic, cv, rf, f, c)
 	}
 	if f.Animal != nil && !f.Animal.Corralled {
-		var phase = 0
-		if c.TimeSpeed == 1 {
-			phase = (int((c.Map.Calendar.Hour+(c.Map.Calendar.Day%2*24))/12) + int(f.Terrain.Shape)) % 4
-		}
-		cv.DrawImage("texture/terrain/"+f.Animal.T.Name+"_"+strconv.Itoa(phase)+".png", rf.X[0]-32, rf.Y[2]-64, 64, 64)
+		RenderAnimal(cv, rf, f, c)
 	}
 	if f.Statue != nil && !f.Statue.Construction {
 		cv.DrawImage("icon/gui/infra/"+f.Statue.T.Name+".png", rf.X[0]-32, rf.Y[2]-80, 64, 64)

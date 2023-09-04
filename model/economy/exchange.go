@@ -99,6 +99,7 @@ func (t *ExchangeTask) Tag() string {
 }
 
 func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
+	// Expire exchange task if the marketplace got recreated
 	return t.Household != nil && t.Household.GetExchange() != t.Exchange
 }
 

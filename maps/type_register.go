@@ -49,6 +49,8 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(economy.RelaxTask{})
 	case "GoHomeTask":
 		return reflect.TypeOf(economy.GoHomeTask{})
+	case "GoToTask":
+		return reflect.TypeOf(economy.GoToTask{})
 	case "TransportTask":
 		return reflect.TypeOf(economy.TransportTask{})
 	case "ExchangeTask":

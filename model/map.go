@@ -12,7 +12,7 @@ import (
 	"medvil/model/time"
 )
 
-const PlantSpreadRate = 0.00002
+const PlantSpreadRate = 0.00003
 const PlantDeathRate = 0.00001
 const GrassGrowRate = 0.0001
 
@@ -60,7 +60,7 @@ func (m *Map) ElapseTime() {
 			f := m.Fields[i][j]
 			if f.Plant != nil {
 				f.Plant.ElapseTime(m.Calendar)
-				if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(m.Calendar) {
+				if f.Plant.IsMature(m.Calendar) {
 					m.SpreadPlant(i-1, j, f.Plant, m.Calendar, r)
 					m.SpreadPlant(i, j-1, f.Plant, m.Calendar, r)
 					m.SpreadPlant(i+1, j, f.Plant, m.Calendar, r)
@@ -71,7 +71,7 @@ func (m *Map) ElapseTime() {
 						f.Plant = nil
 					}
 				} else {
-					if f.Plant.T.Habitat != terrain.Cultivated && f.Plant.IsMature(m.Calendar) && r.Float64() < PlantDeathRate {
+					if f.Plant.IsMature(m.Calendar) && r.Float64() < PlantDeathRate {
 						f.Plant = nil
 					}
 				}
@@ -79,6 +79,9 @@ func (m *Map) ElapseTime() {
 			if f.Animal != nil {
 				f.Animal.ElapseTime(m.Calendar)
 				if m.Calendar.Season() == time.Winter && !f.Animal.Corralled {
+					f.Animal = nil
+				}
+				if m.Calendar.Season() == time.Summer && f.Animal.Corralled {
 					f.Animal = nil
 				}
 			}

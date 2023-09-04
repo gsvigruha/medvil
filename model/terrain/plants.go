@@ -12,9 +12,8 @@ import (
 type PlantHabitatType uint8
 
 const (
-	Cultivated PlantHabitatType = 0
-	Land       PlantHabitatType = 1
-	Shore      PlantHabitatType = 2
+	Land  PlantHabitatType = 1
+	Shore PlantHabitatType = 2
 )
 
 type PlantType struct {
