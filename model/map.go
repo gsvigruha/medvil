@@ -98,7 +98,7 @@ func (m *Map) ElapseTime() {
 			}
 		}
 	}
-	if m.Calendar.Hour == 12 {
+	if m.Calendar.Hour == 12 && m.Calendar.Day%5 == 0 {
 		navigation.LabelIslands(m, m.SX, m.SY)
 	}
 }
