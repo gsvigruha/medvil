@@ -6,9 +6,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/renderer"
-	"medvil/view/gui"
 	"sort"
-	"strconv"
 )
 
 func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
@@ -87,8 +85,5 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		if f.Allocated {
 			cv.DrawImage("icon/gui/flag.png", rf.X[0]-32, rf.Y[2]-80, 64, 64)
 		}
-		cv.SetFillStyle("#FED")
-		cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
-		cv.FillText(strconv.Itoa(int(f.IslandLabel)), rf.X[0]-32, rf.Y[2]-80)
 	}
 }
