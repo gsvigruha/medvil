@@ -50,6 +50,8 @@ type Field struct {
 	Travellers   []*Traveller `json:"-"`
 	Allocated    bool
 	Construction bool
+
+	IslandLabel uint16
 }
 
 func (f *Field) GetLocation() Location {

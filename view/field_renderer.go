@@ -81,7 +81,9 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 		RenderTravellers(ic, cv, f.Travellers, show, rf, c)
 	}
 
-	if c.ShowAllocatedFields && f.Allocated {
-		cv.DrawImage("icon/gui/flag.png", rf.X[0]-32, rf.Y[2]-80, 64, 64)
+	if c.ShowAllocatedFields {
+		if f.Allocated {
+			cv.DrawImage("icon/gui/flag.png", rf.X[0]-32, rf.Y[2]-80, 64, 64)
+		}
 	}
 }

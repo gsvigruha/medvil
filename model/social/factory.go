@@ -173,20 +173,17 @@ func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
 func PickFactory(fs []*Factory, et *building.BuildingExtensionType, dest *Household, m navigation.IMap) *Factory {
 	var f *Factory = nil
 	var orders = 1000
-	for _, fi := range fs {
-		if et == building.NonExtension || fi.Household.Building.HasExtension(et) {
-			if f == nil || orders > len(fi.Orders) {
+	for _, fI := range fs {
+		if et == building.NonExtension || fI.Household.Building.HasExtension(et) {
+			if f == nil || orders > len(fI.Orders) {
 				if et == building.Deck {
-					// TODO: determine connectedness more effectively
-					factoryExtension := fi.Household.Building.GetExtensionsWithCoords(et)[0]
-					factoryExtensionLocation := m.GetField(factoryExtension.X, factoryExtension.Y).GetLocation()
-					if m.FindDest(factoryExtensionLocation, dest.Destination(et), navigation.PathTypeBoat) != nil {
-						f = fi
-						orders = len(fi.Orders)
+					if BuildingsConnectedWithWater(fI.Household.Building, dest.Building, m) {
+						f = fI
+						orders = len(fI.Orders)
 					}
 				} else {
-					f = fi
-					orders = len(fi.Orders)
+					f = fI
+					orders = len(fI.Orders)
 				}
 			}
 		}

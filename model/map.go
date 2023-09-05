@@ -98,6 +98,9 @@ func (m *Map) ElapseTime() {
 			}
 		}
 	}
+	if m.Calendar.Hour == 12 && m.Calendar.Day%5 == 0 {
+		navigation.LabelIslands(m, m.SX, m.SY)
+	}
 }
 
 func (m *Map) GetNField(x uint16, dx int, y uint16, dy int) *navigation.Field {
