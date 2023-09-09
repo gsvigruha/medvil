@@ -2,6 +2,7 @@ package economy
 
 import (
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/navigation"
 )
 
@@ -18,6 +19,16 @@ var Medicine = artifacts.GetArtifact("medicine")
 
 var Foods = []*artifacts.Artifact{Fruit, Vegetable, Bread, Meat}
 var Drinks = []*artifacts.Artifact{Water, Wine, Beer}
+
+var Log = artifacts.GetArtifact("log")
+var Textile = artifacts.GetArtifact("textile")
+var Leather = artifacts.GetArtifact("leather")
+var Tools = artifacts.GetArtifact("tools")
+var Paper = artifacts.GetArtifact("paper")
+
+var FoodArtifacts = []*artifacts.Artifact{Bread, Meat, Fruit, Vegetable}
+var BuildingMaterials = []*artifacts.Artifact{building.Cube, building.Board, building.Brick, building.Thatch, building.Tile}
+var HouseholdItems = []*artifacts.Artifact{Log, Textile, Leather, Tools, Paper, Beer, Medicine}
 
 const MinFoodOrDrinkPerPerson uint16 = 2
 const MaxFoodOrDrinkPerPerson uint16 = 5

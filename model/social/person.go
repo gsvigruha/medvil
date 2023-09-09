@@ -51,7 +51,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Traveller.IncPhase()
 			}
 			if p.Task.Complete(Calendar, p.Equipment.Tool) {
-				p.Home.GetTown().Country.SocietyStats.FinishTask(p.Task, Calendar)
+				p.Home.GetTown().Stats.FinishTask(p.Task, Calendar)
 				p.releaseTask()
 			}
 		} else {
@@ -92,7 +92,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Equipment = economy.Tool
 			}
 			p.Task.SetUp(p.Traveller, p.Home, p)
-			p.Home.GetTown().Country.SocietyStats.StartTask(p.Task, Calendar)
+			p.Home.GetTown().Stats.StartTask(p.Task, Calendar)
 		} else if !p.IsHome {
 			p.Task = &economy.GoHomeTask{F: home, P: p}
 		}

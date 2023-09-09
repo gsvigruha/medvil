@@ -3,6 +3,7 @@ package social
 import (
 	"medvil/model/artifacts"
 	"medvil/model/building"
+	"medvil/model/economy"
 	"medvil/model/stats"
 )
 
@@ -11,14 +12,14 @@ const CountryTypeOutlaw uint8 = 1
 const CountryTypeOtherCivilization uint8 = 2
 
 type Country struct {
-	Towns        []*Town
-	T            uint8
-	History      *stats.History
-	SocietyStats *stats.SocietyStats
+	Towns   []*Town
+	T       uint8
+	History *stats.History
 }
 
 func (c *Country) Stats() *stats.Stats {
 	s := &stats.Stats{}
+	s.Init(make(map[economy.Task]uint32))
 	for _, town := range c.Towns {
 		s.Add(town.Stats)
 	}
@@ -35,8 +36,10 @@ func (c *Country) AddTownIfDoesNotExist(town *Town) {
 }
 
 func (c *Country) ArchiveHistory() {
-	c.History.Archive(c.Stats(), c.SocietyStats)
-	c.SocietyStats = &stats.SocietyStats{PendingTasks: c.SocietyStats.PendingTasks, CompletedTasks: make(map[string]uint32)}
+	c.History.Archive(c.Stats())
+	for _, town := range c.Towns {
+		town.ArchiveHistory()
+	}
 }
 
 func (c *Country) CreateNewTown(b *building.Building) {
