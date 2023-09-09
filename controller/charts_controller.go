@@ -5,7 +5,7 @@ import (
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"image/color"
 	"medvil/model/artifacts"
-	"medvil/model/social"
+	"medvil/model/economy"
 	"medvil/model/stats"
 	"medvil/view/gui"
 	"strconv"
@@ -49,13 +49,13 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.helperMsg = "Population size, deaths and emigration"
 	case 2:
 		l.drawChart(cv, "#22B", 140, []string{"icon/gui/barrel"}, stats.HistoryElement.GetArtifacts, false)
-		l.drawChart(cv, "#22B", 280, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedNum, true)
+		l.drawChart(cv, "#22B", 280, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedQuantity, true)
 		l.drawChart(cv, "#22B", 420, []string{"icon/gui/market", "icon/gui/coin"}, stats.HistoryElement.GetExchangedPrice, true)
 		l.helperMsg = "Products and market transactions"
 	case 3:
-		l.drawChart(cv, "#22B", 140, icons(social.FoodArtifacts), stats.HistoryElement.GetFoodPrice, false)
-		l.drawChart(cv, "#22B", 280, icons(social.HouseholdItems), stats.HistoryElement.GetHouseholdItemPrices, false)
-		l.drawChart(cv, "#22B", 420, icons(social.BuildingMaterials), stats.HistoryElement.GetBuildingMaterialsPrice, false)
+		l.drawChart(cv, "#22B", 140, icons(economy.FoodArtifacts), stats.HistoryElement.GetFoodPrice, false)
+		l.drawChart(cv, "#22B", 280, icons(economy.HouseholdItems), stats.HistoryElement.GetHouseholdItemPrices, false)
+		l.drawChart(cv, "#22B", 420, icons(economy.BuildingMaterials), stats.HistoryElement.GetBuildingMaterialsPrice, false)
 		l.helperMsg = "Average price of food, building materials"
 	case 4:
 		l.drawChart(cv, "#22B", 140, []string{"icon/gui/tasks/transport"}, stats.HistoryElement.GetTransportTaskTime, true)

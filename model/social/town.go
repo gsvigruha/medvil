@@ -45,10 +45,11 @@ type Town struct {
 	Towers        []*Tower
 	Walls         []*Wall
 	Constructions []*building.Construction
-	Stats         *stats.Stats
 	Transfers     *MoneyTransfers
 	Roads         []*navigation.Field
 	Settings      TownSettings
+	Stats         *stats.Stats
+	History       *stats.History
 }
 
 func (town *Town) Init() {
@@ -69,7 +70,8 @@ func (town *Town) Init() {
 		Trader:            defaultTransfers,
 		MarketFundingRate: 70,
 	}
-	town.Stats = &stats.Stats{}
+	town.History = &stats.History{}
+	town.ArchiveHistory()
 
 	town.Townhall.StorageTarget = make(map[*artifacts.Artifact]int)
 	for _, a := range artifacts.All {
@@ -82,7 +84,8 @@ func (town *Town) Init() {
 }
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
-	s := &stats.Stats{}
+	s := town.Stats
+	s.Reset()
 	eoYear := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
 	eoMonth := (Calendar.Hour == 0 && Calendar.Day == 1)
 	if town.Marketplace != nil {
@@ -527,4 +530,14 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 		}
 		town.Walls = newWalls
 	}
+}
+
+func (town *Town) ArchiveHistory() {
+	var pt = make(map[economy.Task]uint32)
+	if town.Stats != nil {
+		town.History.Archive(town.Stats)
+		pt = town.Stats.PendingTasks
+	}
+	town.Stats = &stats.Stats{}
+	town.Stats.Init(pt)
 }

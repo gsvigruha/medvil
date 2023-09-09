@@ -11,10 +11,6 @@ import (
 
 const StorageToSoldRatio = 12
 
-var FoodArtifacts = []*artifacts.Artifact{economy.Bread, economy.Meat, economy.Fruit, economy.Vegetable}
-var BuildingMaterials = []*artifacts.Artifact{building.Cube, building.Board, building.Brick, building.Thatch, building.Tile}
-var HouseholdItems = []*artifacts.Artifact{Log, Textile, Leather, Tools, Paper, economy.Beer, economy.Medicine}
-
 type Marketplace struct {
 	Town      *Town `json:"-"`
 	Building  *building.Building
@@ -137,10 +133,6 @@ func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap
 				mp.Reset(a)
 			}
 		}
-
-		mp.Town.Country.SocietyStats.RegisterFoodPrices(mp.prices(FoodArtifacts))
-		mp.Town.Country.SocietyStats.RegisterBuildingMaterialsPrices(mp.prices(BuildingMaterials))
-		mp.Town.Country.SocietyStats.RegisterHouseholdItemPrices(mp.prices(HouseholdItems))
 	}
 }
 
@@ -167,7 +159,7 @@ func (mp *Marketplace) Buy(as []artifacts.Artifacts, wallet economy.Wallet) {
 	wallet.Spend(price)
 	for _, a := range as {
 		mp.Bought[a.A] += uint32(a.Quantity)
-		mp.Town.Country.SocietyStats.RegisterTrade(mp.Prices[a.A], a.Quantity)
+		mp.Town.Stats.RegisterTrade(a.A, mp.Prices[a.A], a.Quantity)
 	}
 }
 
@@ -178,7 +170,7 @@ func (mp *Marketplace) BuyAsManyAsPossible(as []artifacts.Artifacts, wallet econ
 	wallet.Spend(price)
 	for _, a := range existingArtifacts {
 		mp.Bought[a.A] += uint32(a.Quantity)
-		mp.Town.Country.SocietyStats.RegisterTrade(mp.Prices[a.A], a.Quantity)
+		mp.Town.Stats.RegisterTrade(a.A, mp.Prices[a.A], a.Quantity)
 	}
 	return existingArtifacts
 }
@@ -190,7 +182,7 @@ func (mp *Marketplace) Sell(as []artifacts.Artifacts, wallet economy.Wallet) {
 	wallet.Earn(price)
 	for _, a := range as {
 		mp.Sold[a.A] += uint32(a.Quantity)
-		mp.Town.Country.SocietyStats.RegisterTrade(mp.Prices[a.A], a.Quantity)
+		mp.Town.Stats.RegisterTrade(a.A, mp.Prices[a.A], a.Quantity)
 	}
 }
 
@@ -210,7 +202,7 @@ func (mp *Marketplace) SellAsManyAsPossible(as []artifacts.Artifacts, wallet eco
 		mp.Money -= price
 		mp.Storage.Add(a.A, quantity)
 		mp.Sold[a.A] += uint32(quantity)
-		mp.Town.Country.SocietyStats.RegisterTrade(mp.Prices[a.A], quantity)
+		mp.Town.Stats.RegisterTrade(a.A, mp.Prices[a.A], quantity)
 		leftover = append(leftover, artifacts.Artifacts{A: a.A, Quantity: a.Quantity - quantity})
 	}
 	return leftover

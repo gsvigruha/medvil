@@ -459,7 +459,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			if p.Equipment.Tool || p.Equipment.Weapon {
 				f.Terrain.Resources.Add(IronBar, 1)
 			}
-			h.Town.Country.SocietyStats.RegisterDeath()
+			h.Town.Stats.RegisterDeath()
 		} else if p.Happiness == 0 && rand.Float64() < FleeingRate && h.Town.Country.T != CountryTypeOutlaw {
 			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
 				h.AddTask(p.Task)
@@ -478,7 +478,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 					}
 				}
 			}
-			h.Town.Country.SocietyStats.RegisterDeparture()
+			h.Town.Stats.RegisterDeparture()
 			if town != nil {
 				town.Townhall.Household.AssignPerson(p, m)
 				p.Task = &economy.GoHomeTask{F: m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y), P: p}
