@@ -30,6 +30,10 @@ func (o *VehicleOrder) IsExpired() bool {
 	return o.State == OrderStateExpired
 }
 
+func (o *VehicleOrder) Expire() {
+	o.State = OrderStateExpired
+}
+
 func (o *VehicleOrder) PickupVehicle() *vehicles.Vehicle {
 	o.State = OrderStateComplete
 	return o.Vehicle
@@ -129,7 +133,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			})
 			order.State = OrderStateStarted
 		}
-		if order.State != OrderStateComplete {
+		if order.State != OrderStateComplete && order.State != OrderStateExpired {
 			newOrders = append(newOrders, order)
 		}
 	}
