@@ -14,12 +14,12 @@ import (
 const DPoint = 2
 
 type ChartsLabel struct {
-	cp        *ControlPanel
-	s         *stats.History
-	img       *canvas.Canvas
-	state     uint8
-	timeScale uint8
-	helperMsg string
+	cp           *ControlPanel
+	townSelector *gui.DropDown
+	img          *canvas.Canvas
+	state        uint8
+	timeScale    uint8
+	helperMsg    string
 }
 
 func icons(as []*artifacts.Artifact) []string {
@@ -72,8 +72,15 @@ func (l *ChartsLabel) CaptureClick(x float64, y float64) {
 }
 
 func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []string, fn func(stats.HistoryElement) uint32, sum bool) {
+	var s *stats.History
+	if l.townSelector.Selected == 0 {
+		s = l.cp.C.Map.Countries[0].History
+	} else {
+		s = l.cp.C.Map.Countries[0].Towns[l.townSelector.Selected-1].History
+	}
+
 	maxPoints := (int(ControlPanelSX) - 48) / DPoint
-	numPoints := len(l.s.Elements) / int(l.timeScale)
+	numPoints := len(s.Elements) / int(l.timeScale)
 	var startIdx = 0
 	if numPoints > maxPoints {
 		startIdx = numPoints - maxPoints
@@ -82,8 +89,8 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []stri
 	var max uint32 = 0
 	var scaleCntr uint32 = 0
 	var scaleAggr uint32 = 0
-	for i := startIdx; i < len(l.s.Elements); i++ {
-		he := l.s.Elements[i]
+	for i := startIdx; i < len(s.Elements); i++ {
+		he := s.Elements[i]
 		scaleAggr += fn(he)
 		scaleCntr++
 		if scaleCntr == uint32(l.timeScale) {
@@ -125,8 +132,8 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []stri
 	cv.BeginPath()
 	scaleCntr = 0
 	scaleAggr = 0
-	for i := startIdx; i < len(l.s.Elements); i++ {
-		he := l.s.Elements[i]
+	for i := startIdx; i < len(s.Elements); i++ {
+		he := s.Elements[i]
 		scaleAggr += fn(he)
 		scaleCntr++
 		if scaleCntr == uint32(l.timeScale) {
@@ -159,7 +166,7 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 	if cp.C.Map != nil && cp.C.Map.Countries[0] != nil && cp.C.Map.Countries[0].History != nil {
 		offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX)-48, 560, true, cp.C.ctx)
 		cv := canvas.New(offscreen)
-		cl := &ChartsLabel{cp: cp, s: cp.C.Map.Countries[0].History, img: cv, timeScale: 1}
+		cl := &ChartsLabel{cp: cp, img: cv, timeScale: 1}
 		cl.Draw(cv)
 		p.AddLabel(cl)
 
@@ -188,5 +195,22 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 					cl.timeScale = 1
 				}
 			}})
+
+		var names []string = []string{"country"}
+		var icons []string = []string{"town"}
+		for i, _ := range cp.C.Map.Countries[0].Towns {
+			names = append(names, "town "+strconv.Itoa(i))
+			icons = append(icons, "town")
+		}
+		cl.townSelector = &gui.DropDown{
+			X:        float64(24 + LargeIconD*4),
+			Y:        ControlPanelSY*0.5 + float64(IconH/8),
+			SX:       IconS + gui.FontSize*5,
+			SY:       IconS,
+			Options:  names,
+			Icons:    icons,
+			Selected: 0,
+		}
+		p.AddDropDown(cl.townSelector)
 	}
 }
