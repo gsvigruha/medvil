@@ -11,6 +11,7 @@ type VehicleOrder interface {
 	CompleteBuild(*navigation.Field)
 	IsBuilt() bool
 	IsExpired() bool
+	Expire()
 	PickupVehicle() *vehicles.Vehicle
 	Name() string
 }

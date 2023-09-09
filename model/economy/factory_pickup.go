@@ -64,6 +64,9 @@ func FactoryPickupTaskTag(o VehicleOrder) string {
 }
 
 func (t *FactoryPickupTask) Expired(Calendar *time.CalendarType) bool {
+	if t.Paused {
+		t.Order.Expire()
+	}
 	return t.Order.IsExpired()
 }
 

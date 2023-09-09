@@ -37,6 +37,10 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(building.RoofUnit{})
 	case "ExtensionUnit":
 		return reflect.TypeOf(building.ExtensionUnit{})
+	case "Building":
+		return reflect.TypeOf(building.Building{})
+	case "Road":
+		return reflect.TypeOf(building.Road{})
 	case "BuildingPathElement":
 		return reflect.TypeOf(navigation.BuildingPathElement{})
 	case "EatTask":

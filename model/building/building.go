@@ -2,6 +2,7 @@ package building
 
 import (
 	"encoding/json"
+	"medvil/model/artifacts"
 )
 
 type Building struct {
@@ -199,4 +200,12 @@ func (b *Building) GetExtensionsWithCoords(et *BuildingExtensionType) []Extensio
 		result[i] = ExtensionWithCoords{e.E, uint16(b.X+e.X) - 2, uint16(b.Y+e.Y) - 2}
 	}
 	return result
+}
+
+func (b *Building) Repair() {
+	b.Broken = false
+}
+
+func (b *Building) RepairCost() []artifacts.Artifacts {
+	return b.Plan.RepairCost()
 }

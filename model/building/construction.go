@@ -23,6 +23,7 @@ type Construction struct {
 	Cost        []artifacts.Artifacts
 	Storage     *artifacts.Resources
 	T           BuildingType
+	Expired     bool
 }
 
 func (c *Construction) IsComplete() bool {
