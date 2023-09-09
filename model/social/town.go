@@ -189,53 +189,45 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		if construction.IsComplete() {
 			b := construction.Building
 			field := m.GetField(construction.X, construction.Y)
-			if b != nil && b.Broken {
-				b.Broken = false
-			} else {
-				switch construction.T {
-				case building.BuildingTypeMine:
-					mine := &Mine{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
-					mine.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
-					town.Mines = append(town.Mines, mine)
-				case building.BuildingTypeWorkshop:
-					w := &Workshop{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
-					w.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
-					town.Workshops = append(town.Workshops, w)
-				case building.BuildingTypeFarm:
-					f := &Farm{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
-					f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
-					town.Farms = append(town.Farms, f)
-				case building.BuildingTypeFactory:
-					f := &Factory{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
-					f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
-					town.Factories = append(town.Factories, f)
-				case building.BuildingTypeTower:
-					t := &Tower{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
-					t.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
-					town.Towers = append(town.Towers, t)
-				case building.BuildingTypeWall, building.BuildingTypeGate:
-					w := &Wall{Building: b, Town: town, F: field}
-					town.Walls = append(town.Walls, w)
-				case building.BuildingTypeTownhall:
-					town.Country.CreateNewTown(b)
-				case building.BuildingTypeMarket:
-					town.Marketplace = &Marketplace{Town: town, Building: b}
-					town.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * StoragePerArea
-					town.Marketplace.Init()
-				case building.BuildingTypeRoad:
-					if construction.Road.Construction {
-						construction.Road.Construction = false
-						navigation.SetRoadConnections(m, field)
-						town.Roads = append(town.Roads, field)
-					} else if construction.Road.Broken {
-						construction.Road.Broken = false
-					}
-				case building.BuildingTypeCanal:
-					field.Construction = false
-					field.Terrain.T = terrain.Canal
-				case building.BuildingTypeStatue:
-					construction.Statue.Construction = false
-				}
+			switch construction.T {
+			case building.BuildingTypeMine:
+				mine := &Mine{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
+				mine.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Mines = append(town.Mines, mine)
+			case building.BuildingTypeWorkshop:
+				w := &Workshop{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
+				w.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Workshops = append(town.Workshops, w)
+			case building.BuildingTypeFarm:
+				f := &Farm{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
+				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Farms = append(town.Farms, f)
+			case building.BuildingTypeFactory:
+				f := &Factory{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
+				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Factories = append(town.Factories, f)
+			case building.BuildingTypeTower:
+				t := &Tower{Household: &Household{Building: b, Town: town, Resources: &artifacts.Resources{}}}
+				t.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Towers = append(town.Towers, t)
+			case building.BuildingTypeWall, building.BuildingTypeGate:
+				w := &Wall{Building: b, Town: town, F: field}
+				town.Walls = append(town.Walls, w)
+			case building.BuildingTypeTownhall:
+				town.Country.CreateNewTown(b)
+			case building.BuildingTypeMarket:
+				town.Marketplace = &Marketplace{Town: town, Building: b}
+				town.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Marketplace.Init()
+			case building.BuildingTypeRoad:
+				construction.Road.Construction = false
+				navigation.SetRoadConnections(m, field)
+				town.Roads = append(town.Roads, field)
+			case building.BuildingTypeCanal:
+				field.Construction = false
+				field.Terrain.T = terrain.Canal
+			case building.BuildingTypeStatue:
+				construction.Statue.Construction = false
 			}
 			if b != nil {
 				m.SetBuildingUnits(b, false)
@@ -255,37 +247,32 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	if Calendar.Day == 30 && Calendar.Hour == 0 && town.Townhall.Household.Resources.Remove(Paper, 1) > 0 {
 		if town.Settings.RoadRepairs {
 			for _, road := range town.Roads {
-				if road.Road.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(road)) == 0 {
-					c := &building.Construction{
-						Road:    road.Road,
-						X:       road.X,
-						Y:       road.Y,
-						Cost:    road.Road.T.Cost,
-						T:       building.BuildingTypeRoad,
-						Storage: &artifacts.Resources{},
-					}
-					town.Constructions = append(town.Constructions, c)
-					town.AddConstructionTasks(c, road, m)
+				if road.Road.Broken && town.Townhall.Household.NumTasks("repair", economy.BuildingTaskTag(road)) == 0 {
+					f := m.GetField(road.X, road.Y)
+					res := &artifacts.Resources{}
+					res.Init(25)
+					town.Townhall.Household.AddTask(&economy.RepairTask{
+						Repairable: road.Road,
+						Field:      f,
+						Resources:  res,
+					})
+					town.AddTransportTasks(road.Road.RepairCost(), f, res, m)
 				}
-				town.AddTransportTask(m.GetField(road.X, road.Y))
 			}
 		}
 		if town.Settings.WallRepairs {
 			for _, wall := range town.Walls {
 				wf := m.GetField(wall.F.X, wall.F.Y)
-				if wall.Building.Broken && town.Townhall.Household.NumTasks("building", economy.BuildingTaskTag(wf)) == 0 {
-					c := &building.Construction{
-						Building: wall.Building,
-						X:        wall.F.X,
-						Y:        wall.F.Y,
-						Cost:     wall.Building.Plan.ConstructionCost(),
-						T:        wall.Building.Plan.BuildingType,
-						Storage:  &artifacts.Resources{},
-					}
-					town.Constructions = append(town.Constructions, c)
-					town.AddConstructionTasks(c, wf, m)
+				res := &artifacts.Resources{}
+				res.Init(25)
+				if wall.Building.Broken && town.Townhall.Household.NumTasks("repair", economy.BuildingTaskTag(wf)) == 0 {
+					town.Townhall.Household.AddTask(&economy.RepairTask{
+						Repairable: wall.Building,
+						Field:      wall.F,
+						Resources:  res,
+					})
+					town.AddTransportTasks(wall.Building.RepairCost(), wall.F, res, m)
 				}
-				town.AddTransportTask(wf)
 			}
 		}
 		if town.Settings.ArtifactCollection {
@@ -381,14 +368,28 @@ func (town *Town) CreateLevelingTask(f *navigation.Field, taskType uint8, m navi
 }
 
 func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navigation.Field, m navigation.IMap) {
-	var totalTasks uint16 = 0
 	var dest navigation.Destination
 	if c.Building != nil && c.Building.Broken {
 		dest = buildingF
 	} else {
 		dest = buildingF.TopLocation()
 	}
-	for _, a := range c.Cost {
+	totalTasks := town.AddTransportTasks(c.Cost, dest, c.Storage, m)
+	if totalTasks == 0 {
+		totalTasks = 1
+	}
+	c.MaxProgress = totalTasks
+	for i := uint16(0); i < totalTasks; i++ {
+		town.Townhall.Household.AddTask(&economy.BuildingTask{
+			D: dest,
+			C: c,
+		})
+	}
+}
+
+func (town *Town) AddTransportTasks(cost []artifacts.Artifacts, dest navigation.Destination, storage *artifacts.Resources, m navigation.IMap) uint16 {
+	var totalTasks uint16 = 0
+	for _, a := range cost {
 		var totalQ = a.Quantity
 		totalTasks += totalQ
 		for totalQ > 0 {
@@ -401,23 +402,14 @@ func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navi
 				PickupD:          m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
 				DropoffD:         dest,
 				PickupR:          town.Townhall.Household.Resources,
-				DropoffR:         c.Storage,
+				DropoffR:         storage,
 				A:                a.A,
 				TargetQuantity:   q,
 				CompleteQuantity: true,
 			})
 		}
 	}
-	if totalTasks == 0 {
-		totalTasks = 1
-	}
-	c.MaxProgress = totalTasks
-	for i := uint16(0); i < totalTasks; i++ {
-		town.Townhall.Household.AddTask(&economy.BuildingTask{
-			D: dest,
-			C: c,
-		})
-	}
+	return totalTasks
 }
 
 func (town *Town) CreateDemolishTask(b *building.Building, r *building.Road, f *navigation.Field, m navigation.IMap) {
@@ -456,13 +448,12 @@ func AddTransportTasksForField(field *navigation.Field, th *Townhall, m navigati
 	for a, q := range field.Terrain.Resources.Artifacts {
 		if q > 0 {
 			th.Household.AddTask(&economy.TransportTask{
-				PickupD:          field,
-				DropoffD:         m.GetField(th.Household.Building.X, th.Household.Building.Y),
-				PickupR:          field.Terrain.Resources,
-				DropoffR:         th.Household.Resources,
-				A:                a,
-				TargetQuantity:   q,
-				CompleteQuantity: true,
+				PickupD:        field,
+				DropoffD:       m.GetField(th.Household.Building.X, th.Household.Building.Y),
+				PickupR:        field.Terrain.Resources,
+				DropoffR:       th.Household.Resources,
+				A:              a,
+				TargetQuantity: q,
 			})
 		}
 	}

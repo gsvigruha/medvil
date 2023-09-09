@@ -74,7 +74,13 @@ func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) string
 
 func (t *TransportTask) Expired(Calendar *time.CalendarType) bool {
 	// If a water collection task is paused better to drop it and create a new one
-	return t.A == Water && t.Paused
+	if t.A == Water && t.Paused {
+		return true
+	}
+	if !t.CompleteQuantity && t.Paused {
+		return true
+	}
+	return false
 }
 
 func (t *TransportTask) Motion() uint8 {

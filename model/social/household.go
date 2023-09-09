@@ -135,11 +135,12 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 
 		if h.Building.Broken {
-			if h.NumTasks("repair", "") == 0 {
+			f := m.GetField(h.Building.X, h.Building.Y)
+			if h.NumTasks("repair", economy.BuildingTaskTag(f)) == 0 {
 				h.AddTask(&economy.RepairTask{
-					B: h.Building,
-					F: m.GetField(h.Building.X, h.Building.Y),
-					R: h.GetResources(),
+					Repairable: h.Building,
+					Field:      f,
+					Resources:  h.GetResources(),
 				})
 			}
 

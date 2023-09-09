@@ -2,35 +2,39 @@ package economy
 
 import (
 	"medvil/model/artifacts"
-	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/time"
 )
 
 const RepairTaskMaxProgress = 30 * 24
 
+type Repairable interface {
+	Repair()
+	RepairCost() []artifacts.Artifacts
+}
+
 type RepairTask struct {
 	TaskBase
-	B        *building.Building
-	F        *navigation.Field
-	R        *artifacts.Resources
-	Progress uint16
+	Repairable Repairable
+	Field      *navigation.Field
+	Resources  *artifacts.Resources
+	Progress   uint16
 }
 
 func (t *RepairTask) Destination() navigation.Destination {
-	return t.F
+	return t.Field
 }
 
 func (t *RepairTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	if t.Progress == 0 && !t.Blocked() {
-		t.R.RemoveAll(t.B.Plan.RepairCost())
+		t.Resources.RemoveAll(t.Repairable.RepairCost())
 		t.Progress = 1
 	}
 	if t.Progress > 0 {
 		if t.Progress < RepairTaskMaxProgress {
 			t.Progress++
 		} else {
-			t.B.Broken = false
+			t.Repairable.Repair()
 			return true
 		}
 	}
@@ -38,7 +42,7 @@ func (t *RepairTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 }
 
 func (t *RepairTask) Blocked() bool {
-	return !t.R.HasAll(t.B.Plan.RepairCost())
+	return !t.Resources.HasAll(t.Repairable.RepairCost())
 }
 
 func (t *RepairTask) Name() string {
@@ -46,7 +50,7 @@ func (t *RepairTask) Name() string {
 }
 
 func (t *RepairTask) Tag() string {
-	return ""
+	return BuildingTaskTag(t.Field)
 }
 
 func (t *RepairTask) Expired(Calendar *time.CalendarType) bool {

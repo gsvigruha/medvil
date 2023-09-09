@@ -45,3 +45,11 @@ type Road struct {
 	EdgeConnections   [4]bool
 	CornerConnections [4]bool
 }
+
+func (r *Road) Repair() {
+	r.Broken = false
+}
+
+func (r *Road) RepairCost() []artifacts.Artifacts {
+	return r.T.Cost
+}
