@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
-	"medvil/model/social"
 	"medvil/view/gui"
 	"strconv"
 )
@@ -38,12 +37,12 @@ func (b MoneyControllerButton) Enabled() bool {
 	return b.b.Enabled()
 }
 
-func MoneyToControlPanel(p *gui.Panel, town *social.Town, targetWallet *uint32, amount uint32, x, y float64) {
+func MoneyToControlPanel(p *gui.Panel, srcWallet *uint32, targetWallet *uint32, amount uint32, x, y float64) {
 	p.AddTextLabel("$ "+strconv.Itoa(int(*targetWallet)), x, y)
-	if town != nil {
+	if srcWallet != nil {
 		p.AddButton(MoneyControllerButton{
 			b:            gui.ButtonGUI{Icon: "plus", X: x + gui.FontSize*4, Y: y - gui.FontSize*3/4, SX: gui.FontSize, SY: gui.FontSize},
-			sourceWallet: &town.Townhall.Household.Money,
+			sourceWallet: srcWallet,
 			targetWallet: targetWallet,
 			amount:       amount,
 		})

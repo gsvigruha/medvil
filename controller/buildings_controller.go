@@ -323,7 +323,7 @@ func (bc *BuildingsController) RotatePlan() {
 }
 
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	if bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
+	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
 		return nil
 	}
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
@@ -337,6 +337,9 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 		return false
 	}
 	if bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
+		return false
+	}
+	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
 		return false
 	}
 	if bc.Plan.IsComplete() {

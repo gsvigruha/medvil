@@ -75,6 +75,35 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		t.Household.MaybeBuyBoat(Calendar, m)
 		t.Household.MaybeBuyCart(Calendar, m)
 	}
+
+	if t.Household.Town.Supplier != nil {
+		srcH := t.Household.Town.Supplier.Townhall.Household
+		dstH := t.Household
+		if dstH.HasRoomForPeople() {
+			srcH.ReassignFirstPerson(dstH, m)
+		}
+		for _, a := range artifacts.All {
+			var q uint16 = 0
+			if storageQ, ok := t.Household.Resources.Artifacts[a]; ok {
+				q = storageQ
+			}
+			pickupD := m.GetField(srcH.Building.X, srcH.Building.Y)
+			if t.Household.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) == 0 {
+				targetQ := uint16(t.StorageTarget[a])
+				if q < targetQ {
+					t.Household.AddTask(&economy.TransportTask{
+						PickupD:        pickupD,
+						DropoffD:       m.GetField(dstH.Building.X, dstH.Building.Y),
+						PickupR:        srcH.Resources,
+						DropoffR:       dstH.Resources,
+						A:              a,
+						TargetQuantity: ProductTransportQuantity(a),
+					})
+				}
+			}
+		}
+	}
+
 	for _, trader := range t.Traders {
 		trader.ElapseTime(Calendar, m)
 	}

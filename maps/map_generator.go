@@ -154,6 +154,9 @@ func findStartingLocation(m *model.Map) (int, int) {
 	var maxScore = 0
 	for i := range m.Fields {
 		for j := range m.Fields[i] {
+			if i < 5 || j < 5 || i > len(m.Fields)-5 || j > len(m.Fields[i])-5 {
+				continue
+			}
 			dx := float64(int(m.SX/2) - i)
 			dy := float64(int(m.SY/2) - j)
 			var score = int(m.SX+m.SY)/4 - int(math.Sqrt(dx*dx+dy*dy))
