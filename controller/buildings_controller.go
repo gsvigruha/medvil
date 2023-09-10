@@ -455,6 +455,8 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activ
 		helperMsg = "Build mines to extract minerals, stone and clay."
 	case building.BuildingTypeFactory:
 		helperMsg = "Build factories to build vehicles."
+	case building.BuildingTypeTownhall:
+		helperMsg = "Establish a new town."
 	}
 	cp.HelperMessage(helperMsg)
 

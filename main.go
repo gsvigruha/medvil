@@ -33,7 +33,7 @@ func main() {
 	defer profile.Start(profile.ProfilePath(".")).Stop()
 
 	rand.Seed(time.Now().UnixNano())
-	wnd, cv, ctx, err := view.CreateWindow(1920, 1080, "Medvil")
+	wnd, cv, ctx, err := view.CreateWindow(3840, 2160, "Medvil")
 	if err != nil {
 		panic(err)
 	}

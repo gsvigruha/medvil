@@ -110,6 +110,9 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		if key == glfw.KeyL {
 			c.Load(GetLatestFile())
 		}
+		if key == glfw.KeyEscape {
+			glfw.Terminate()
+		}
 	}
 	if action == glfw.Release {
 		if key == glfw.KeyUp || key == glfw.KeyW {
