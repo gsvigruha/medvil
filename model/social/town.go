@@ -34,6 +34,27 @@ type TownSettings struct {
 	Coinage            bool
 }
 
+var DefaultTownSettings = TownSettings{
+	RoadRepairs:        true,
+	WallRepairs:        true,
+	Trading:            true,
+	ArtifactCollection: true,
+	Coinage:            true,
+}
+
+var DefaultStorageTarget = map[string]int{
+	"fruit":     20,
+	"vegetable": 20,
+	"bread":     20,
+	"cube":      20,
+	"brick":     20,
+	"board":     20,
+	"tile":      10,
+	"thatch":    10,
+	"log":       20,
+	"textile":   20,
+}
+
 type Town struct {
 	Country       *Country `json:"-"`
 	Townhall      *Townhall
@@ -50,6 +71,8 @@ type Town struct {
 	Settings      TownSettings
 	Stats         *stats.Stats
 	History       *stats.History
+	Supplier      *Town
+	Name          string
 }
 
 func (town *Town) Init() {
@@ -217,7 +240,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				w := &Wall{Building: b, Town: town, F: field}
 				town.Walls = append(town.Walls, w)
 			case building.BuildingTypeTownhall:
-				town.Country.CreateNewTown(b)
+				town.Country.CreateNewTown(b, town)
 			case building.BuildingTypeMarket:
 				town.Marketplace = &Marketplace{Town: town, Building: b}
 				town.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * StoragePerArea

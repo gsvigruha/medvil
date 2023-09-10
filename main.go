@@ -39,7 +39,7 @@ func main() {
 	}
 	ic := view.NewImageCache(ctx)
 
-	c := controller.Link(wnd.Window, ctx)
+	c := controller.Link(wnd, ctx)
 	controller.LibraryToControlPanel(c.ControlPanel)
 
 	fmt.Println("Init done")

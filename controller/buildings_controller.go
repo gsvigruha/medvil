@@ -323,7 +323,7 @@ func (bc *BuildingsController) RotatePlan() {
 }
 
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	if bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
+	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
 		return nil
 	}
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
@@ -336,7 +336,10 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 	if bc.activeTown == nil {
 		return false
 	}
-	if bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
+	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
+		return false
+	}
+	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
 		return false
 	}
 	if bc.Plan.IsComplete() {
@@ -455,6 +458,8 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activ
 		helperMsg = "Build mines to extract minerals, stone and clay."
 	case building.BuildingTypeFactory:
 		helperMsg = "Build factories to build vehicles."
+	case building.BuildingTypeTownhall:
+		helperMsg = "Establish a new town."
 	}
 	cp.HelperMessage(helperMsg)
 

@@ -70,13 +70,6 @@ var OutlawConf = CountryConf{
 	Village: true,
 }
 
-var defaultTownSettings = social.TownSettings{
-	RoadRepairs:        true,
-	WallRepairs:        true,
-	Trading:            true,
-	ArtifactCollection: true,
-}
-
 func addFarm(conf CountryConf, town *social.Town, x, y int, m *model.Map) {
 	farmB := &building.Building{
 		Plan: building.BuildingPlanFromJSON(conf.FarmPlan),
@@ -147,7 +140,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 	marketplace.Plan.BuildingType = building.BuildingTypeMarket
 	AddBuilding(marketplace, m)
 
-	country := &social.Country{Towns: []*social.Town{&social.Town{Settings: defaultTownSettings}}, T: t, History: &stats.History{}}
+	country := &social.Country{Towns: []*social.Town{&social.Town{Settings: social.DefaultTownSettings}}, T: t, History: &stats.History{}}
 	m.Countries = append(m.Countries, country)
 	town := country.Towns[0]
 	town.Country = country

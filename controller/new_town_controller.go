@@ -54,7 +54,7 @@ func (ntc *NewTownController) SetToState() {
 			}
 		}
 		for i := 0; i < *ntc.numPeople; i++ {
-			srcH.ReassignFirstPerson(dstH, ntc.cp.C.Map)
+			srcH.ReassignFirstPerson(dstH, true, ntc.cp.C.Map)
 			if len(dstH.People) > int(dstH.TargetNumPeople) {
 				dstH.TargetNumPeople++
 			}

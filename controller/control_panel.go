@@ -108,14 +108,24 @@ func (p *ControlPanel) GetHelperPanel() *gui.Panel {
 
 func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.C = c
-	if c.W < 2000 {
+	if c.H < 1000 {
+		ControlPanelSX = 300.0
+		ControlPanelSY = float64(c.H)
+		IconS = 24.0
+		IconW = 30
+		IconH = 30
+		LargeIconS = 36.0
+		LargeIconD = 40.0
+		gui.FontSize = 12.0
+		ScaleBuildingControllerElements(0.75)
+	} else if c.H < 1500 {
 		ControlPanelSX = 400.0
 		ControlPanelSY = float64(c.H)
 		IconS = 32.0
 		IconW = 40
 		IconH = 40
 		LargeIconS = 48.0
-		LargeIconD = 60.0
+		LargeIconD = 52.0
 		gui.FontSize = 16.0
 		ScaleBuildingControllerElements(1.0)
 	} else {

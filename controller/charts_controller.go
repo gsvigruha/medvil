@@ -196,10 +196,10 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 				}
 			}})
 
-		var names []string = []string{"country"}
+		var names []string = []string{"Country"}
 		var icons []string = []string{"town"}
-		for i, _ := range cp.C.Map.Countries[0].Towns {
-			names = append(names, "town "+strconv.Itoa(i))
+		for _, town := range cp.C.Map.Countries[0].Towns {
+			names = append(names, town.Name)
 			icons = append(icons, "town")
 		}
 		cl.townSelector = &gui.DropDown{

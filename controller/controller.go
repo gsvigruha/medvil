@@ -19,6 +19,12 @@ const PerspectiveNW uint8 = 3
 
 const MaxRenderCnt = 10
 
+type Window interface {
+	GetGLFWWindow() *glfw.Window
+	Close()
+	SetController(*Controller)
+}
+
 type ClickHandler interface {
 	HandleClick(c *Controller, rf *renderer.RenderedField) bool
 	GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext
@@ -27,6 +33,7 @@ type ClickHandler interface {
 type Controller struct {
 	X                         float64
 	Y                         float64
+	Window                    Window
 	DX                        int
 	DY                        int
 	W                         int
@@ -109,6 +116,10 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		}
 		if key == glfw.KeyL {
 			c.Load(GetLatestFile())
+		}
+		if key == glfw.KeyEscape {
+			c.Save("latest_autosave.mdvl")
+			c.Window.Close()
 		}
 	}
 	if action == glfw.Release {
@@ -220,51 +231,54 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				return
 			}
 		}
-		for i := range c.RenderedBuildingParts {
-			rbp := c.RenderedBuildingParts[i]
-			if rbp.Contains(c.X, c.Y) {
-				c.Reset()
-				c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbp.GetBuilding()]
-				if c.SelectedTownhall != nil {
-					c.ActiveTown = c.SelectedTownhall.Household.Town
-					TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
-				}
-				c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbp.GetBuilding()]
-				if c.SelectedMarketplace != nil {
-					c.ActiveTown = c.SelectedMarketplace.Town
-					MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
-				}
-				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbp.GetBuilding()]
-				if c.SelectedFarm != nil {
-					c.ActiveTown = c.SelectedFarm.Household.Town
-					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
-				}
-				c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbp.GetBuilding()]
-				if c.SelectedWorkshop != nil {
-					c.ActiveTown = c.SelectedWorkshop.Household.Town
-					WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
-				}
-				c.SelectedMine = c.ReverseReferences.BuildingToMine[rbp.GetBuilding()]
-				if c.SelectedMine != nil {
-					c.ActiveTown = c.SelectedMine.Household.Town
-					MineToControlPanel(c.ControlPanel, c.SelectedMine)
-				}
-				c.SelectedFactory = c.ReverseReferences.BuildingToFactory[rbp.GetBuilding()]
-				if c.SelectedFactory != nil {
-					c.ActiveTown = c.SelectedFactory.Household.Town
-					FactoryToControlPanel(c.ControlPanel, c.SelectedFactory)
-				}
-				c.SelectedTower = c.ReverseReferences.BuildingToTower[rbp.GetBuilding()]
-				if c.SelectedTower != nil {
-					c.ActiveTown = c.SelectedTower.Household.Town
-					TowerToControlPanel(c.ControlPanel, c.SelectedTower)
-				}
-				c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]
-				if c.SelectedConstruction != nil {
-					ConstructionToControlPanel(c.ControlPanel, c.SelectedConstruction)
-				}
-				return
+		var rbp renderer.RenderedBuildingPart
+		for _, rbpI := range c.RenderedBuildingParts {
+			if rbpI.Contains(c.X, c.Y) {
+				rbp = rbpI
 			}
+		}
+		if rbp != nil {
+			c.Reset()
+			c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbp.GetBuilding()]
+			if c.SelectedTownhall != nil {
+				c.ActiveTown = c.SelectedTownhall.Household.Town
+				TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
+			}
+			c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbp.GetBuilding()]
+			if c.SelectedMarketplace != nil {
+				c.ActiveTown = c.SelectedMarketplace.Town
+				MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
+			}
+			c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbp.GetBuilding()]
+			if c.SelectedFarm != nil {
+				c.ActiveTown = c.SelectedFarm.Household.Town
+				FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
+			}
+			c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbp.GetBuilding()]
+			if c.SelectedWorkshop != nil {
+				c.ActiveTown = c.SelectedWorkshop.Household.Town
+				WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
+			}
+			c.SelectedMine = c.ReverseReferences.BuildingToMine[rbp.GetBuilding()]
+			if c.SelectedMine != nil {
+				c.ActiveTown = c.SelectedMine.Household.Town
+				MineToControlPanel(c.ControlPanel, c.SelectedMine)
+			}
+			c.SelectedFactory = c.ReverseReferences.BuildingToFactory[rbp.GetBuilding()]
+			if c.SelectedFactory != nil {
+				c.ActiveTown = c.SelectedFactory.Household.Town
+				FactoryToControlPanel(c.ControlPanel, c.SelectedFactory)
+			}
+			c.SelectedTower = c.ReverseReferences.BuildingToTower[rbp.GetBuilding()]
+			if c.SelectedTower != nil {
+				c.ActiveTown = c.SelectedTower.Household.Town
+				TowerToControlPanel(c.ControlPanel, c.SelectedTower)
+			}
+			c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]
+			if c.SelectedConstruction != nil {
+				ConstructionToControlPanel(c.ControlPanel, c.SelectedConstruction)
+			}
+			return
 		}
 		for i := range c.RenderedTravellers {
 			rt := c.RenderedTravellers[i]
@@ -309,16 +323,18 @@ func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
 func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
 }
 
-func Link(wnd *glfw.Window, ctx *goglbackend.GLContext) *Controller {
+func Link(window Window, ctx *goglbackend.GLContext) *Controller {
+	wnd := window.GetGLFWWindow()
 	W, H := wnd.GetFramebufferSize()
 	controlPanel := &ControlPanel{}
-	c := &Controller{H: H, W: W, ControlPanel: controlPanel, TimeSpeed: 1, ShowHouseIcons: true}
+	c := &Controller{H: H, W: W, Window: window, ControlPanel: controlPanel, TimeSpeed: 1, ShowHouseIcons: true}
 	controlPanel.Setup(c, ctx)
 	wnd.SetKeyCallback(c.KeyboardCallback)
 	wnd.SetMouseButtonCallback(c.MouseButtonCallback)
 	wnd.SetCursorPosCallback(c.MouseMoveCallback)
 	wnd.SetScrollCallback(c.MouseScrollCallback)
 	c.ctx = ctx
+	window.SetController(c)
 	return c
 }
 
@@ -344,6 +360,9 @@ func (c *Controller) AddRenderedTraveller(rt *renderer.RenderedTraveller) {
 }
 
 func (c *Controller) Save(fileName string) {
+	if c.Map == nil {
+		return
+	}
 	c.MapLock.Lock()
 	maps.Serialize(c.Map, "saved/"+fileName)
 	c.MapLock.Unlock()
