@@ -55,7 +55,6 @@ type TownhallController struct {
 	th               *social.Townhall
 	activeTrader     *social.Trader
 	activeExpedition *social.Expedition
-	supplierSelector *gui.DropDown
 }
 
 func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
@@ -200,11 +199,11 @@ func RefreshSubPanels(tc *TownhallController) {
 		}
 		if tc.activeTrader.SourceExchange != nil {
 			tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*5), IconS, IconS, gui.ImageLabelStyleRegular)
-			tc.traderPanel.AddTextLabel(tc.activeTrader.SourceExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH*5)+IconH/2)
+			tc.traderPanel.AddTextLabel(tc.activeTrader.SourceExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH)*5.5)
 		}
 		if tc.activeTrader.TargetExchange != nil {
 			tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*6), IconS, IconS, gui.ImageLabelStyleRegular)
-			tc.traderPanel.AddTextLabel(tc.activeTrader.TargetExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH*6)+IconH/2)
+			tc.traderPanel.AddTextLabel(tc.activeTrader.TargetExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH)*6.5)
 		}
 	}
 
