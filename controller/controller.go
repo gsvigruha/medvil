@@ -231,51 +231,54 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				return
 			}
 		}
-		for i := range c.RenderedBuildingParts {
-			rbp := c.RenderedBuildingParts[i]
-			if rbp.Contains(c.X, c.Y) {
-				c.Reset()
-				c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbp.GetBuilding()]
-				if c.SelectedTownhall != nil {
-					c.ActiveTown = c.SelectedTownhall.Household.Town
-					TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
-				}
-				c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbp.GetBuilding()]
-				if c.SelectedMarketplace != nil {
-					c.ActiveTown = c.SelectedMarketplace.Town
-					MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
-				}
-				c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbp.GetBuilding()]
-				if c.SelectedFarm != nil {
-					c.ActiveTown = c.SelectedFarm.Household.Town
-					FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
-				}
-				c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbp.GetBuilding()]
-				if c.SelectedWorkshop != nil {
-					c.ActiveTown = c.SelectedWorkshop.Household.Town
-					WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
-				}
-				c.SelectedMine = c.ReverseReferences.BuildingToMine[rbp.GetBuilding()]
-				if c.SelectedMine != nil {
-					c.ActiveTown = c.SelectedMine.Household.Town
-					MineToControlPanel(c.ControlPanel, c.SelectedMine)
-				}
-				c.SelectedFactory = c.ReverseReferences.BuildingToFactory[rbp.GetBuilding()]
-				if c.SelectedFactory != nil {
-					c.ActiveTown = c.SelectedFactory.Household.Town
-					FactoryToControlPanel(c.ControlPanel, c.SelectedFactory)
-				}
-				c.SelectedTower = c.ReverseReferences.BuildingToTower[rbp.GetBuilding()]
-				if c.SelectedTower != nil {
-					c.ActiveTown = c.SelectedTower.Household.Town
-					TowerToControlPanel(c.ControlPanel, c.SelectedTower)
-				}
-				c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]
-				if c.SelectedConstruction != nil {
-					ConstructionToControlPanel(c.ControlPanel, c.SelectedConstruction)
-				}
-				return
+		var rbp renderer.RenderedBuildingPart
+		for _, rbpI := range c.RenderedBuildingParts {
+			if rbpI.Contains(c.X, c.Y) {
+				rbp = rbpI
 			}
+		}
+		if rbp != nil {
+			c.Reset()
+			c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbp.GetBuilding()]
+			if c.SelectedTownhall != nil {
+				c.ActiveTown = c.SelectedTownhall.Household.Town
+				TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
+			}
+			c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbp.GetBuilding()]
+			if c.SelectedMarketplace != nil {
+				c.ActiveTown = c.SelectedMarketplace.Town
+				MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
+			}
+			c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbp.GetBuilding()]
+			if c.SelectedFarm != nil {
+				c.ActiveTown = c.SelectedFarm.Household.Town
+				FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
+			}
+			c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbp.GetBuilding()]
+			if c.SelectedWorkshop != nil {
+				c.ActiveTown = c.SelectedWorkshop.Household.Town
+				WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
+			}
+			c.SelectedMine = c.ReverseReferences.BuildingToMine[rbp.GetBuilding()]
+			if c.SelectedMine != nil {
+				c.ActiveTown = c.SelectedMine.Household.Town
+				MineToControlPanel(c.ControlPanel, c.SelectedMine)
+			}
+			c.SelectedFactory = c.ReverseReferences.BuildingToFactory[rbp.GetBuilding()]
+			if c.SelectedFactory != nil {
+				c.ActiveTown = c.SelectedFactory.Household.Town
+				FactoryToControlPanel(c.ControlPanel, c.SelectedFactory)
+			}
+			c.SelectedTower = c.ReverseReferences.BuildingToTower[rbp.GetBuilding()]
+			if c.SelectedTower != nil {
+				c.ActiveTown = c.SelectedTower.Household.Town
+				TowerToControlPanel(c.ControlPanel, c.SelectedTower)
+			}
+			c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]
+			if c.SelectedConstruction != nil {
+				ConstructionToControlPanel(c.ControlPanel, c.SelectedConstruction)
+			}
+			return
 		}
 		for i := range c.RenderedTravellers {
 			rt := c.RenderedTravellers[i]
@@ -357,6 +360,9 @@ func (c *Controller) AddRenderedTraveller(rt *renderer.RenderedTraveller) {
 }
 
 func (c *Controller) Save(fileName string) {
+	if c.Map == nil {
+		return
+	}
 	c.MapLock.Lock()
 	maps.Serialize(c.Map, "saved/"+fileName)
 	c.MapLock.Unlock()

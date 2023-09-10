@@ -6,10 +6,12 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
+	"image"
 	_ "image/gif" // Imported here so that applications based on this package support these formats by default
 	_ "image/jpeg"
 	_ "image/png"
 	"medvil/controller"
+	"os"
 	"runtime"
 	"time"
 )
@@ -99,6 +101,16 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 		wnd.c.Save("latest_autosave.mdvl")
 		wnd.Close()
 	})
+
+	icon, err := os.Open("icon/gui/house.png")
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("Error loading icon: %v", err)
+	}
+	iconImage, _, err := image.Decode(icon)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("Error loading icon: %v", err)
+	}
+	window.SetIcon([]image.Image{iconImage})
 
 	return wnd, cv, ctx, nil
 }

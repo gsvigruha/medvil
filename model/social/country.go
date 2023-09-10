@@ -1,6 +1,7 @@
 package social
 
 import (
+	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
@@ -43,7 +44,8 @@ func (c *Country) ArchiveHistory() {
 }
 
 func (c *Country) CreateNewTown(b *building.Building, supplier *Town) {
-	newTown := &Town{Country: c, Supplier: supplier, Settings: DefaultTownSettings}
+	name := TownNames[rand.Intn(len(TownNames))]
+	newTown := &Town{Country: c, Supplier: supplier, Settings: DefaultTownSettings, Name: name}
 	newTown.Townhall = &Townhall{Household: &Household{Building: b, Town: newTown, Resources: &artifacts.Resources{}}}
 	newTown.Townhall.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
 	newTown.Init()

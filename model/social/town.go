@@ -72,6 +72,7 @@ type Town struct {
 	Stats         *stats.Stats
 	History       *stats.History
 	Supplier      *Town
+	Name          string
 }
 
 func (town *Town) Init() {
