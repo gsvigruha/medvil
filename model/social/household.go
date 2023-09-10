@@ -517,6 +517,8 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			if v.Parking != nil {
 				v.Parking.Allocated = false
 			}
+			f := m.GetField(v.Traveller.FX, v.Traveller.FY)
+			f.UnregisterTraveller(v.Traveller)
 		}
 	}
 	h.Vehicles = newVehicles

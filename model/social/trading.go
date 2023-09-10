@@ -210,7 +210,7 @@ func (t *Trader) GetMoney() uint32 {
 }
 
 func (t *Trader) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
-	return navigation.TravellerDestination{T: t.Person.Traveller}
+	return &navigation.TravellerDestination{T: t.Person.Traveller}
 }
 
 func (t *Trader) Stats() *stats.Stats {

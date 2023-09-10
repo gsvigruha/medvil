@@ -81,7 +81,7 @@ func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
 			}
 			var hf navigation.Destination = h.RandomField(m, buildingCheckFn)
 			if h.IsHomeVehicle() {
-				hf = navigation.TravellerDestination{T: vehicle.Traveller}
+				hf = &navigation.TravellerDestination{T: vehicle.Traveller}
 			} else if vehicle != nil && vehicle.Parking != nil {
 				hf = vehicle.Parking
 			}
