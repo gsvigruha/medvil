@@ -164,6 +164,14 @@ func RefreshSubPanels(tc *TownhallController) {
 			tc.cp.HelperMessage("Start or stop minting gold coins")
 		}})
 
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "town", X: 24 + LargeIconD, Y: top + LargeIconD*10, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.UseSupplier },
+		ClickImpl: func() {
+			town.Settings.UseSupplier = !town.Settings.UseSupplier
+			tc.cp.HelperMessage("Start or stop relying on supplies from the hometown")
+		}})
+
 	var aI = 0
 	for _, a := range artifacts.All {
 		var q uint16 = 0
@@ -173,22 +181,6 @@ func RefreshSubPanels(tc *TownhallController) {
 		ArtifactStorageToControlPanel(sp, th, aI, a, q, top+50)
 		aI++
 	}
-	var townNames []string
-	var townIcons []string
-	for _, town := range town.Country.Towns {
-		townNames = append(townNames, town.Name)
-		townIcons = append(townIcons, "town")
-	}
-	tc.supplierSelector = &gui.DropDown{
-		X:        float64(24),
-		Y:        ControlPanelSY * 0.7,
-		SX:       IconS + gui.FontSize*5,
-		SY:       IconS,
-		Options:  townNames,
-		Icons:    townIcons,
-		Selected: 0,
-	}
-	sp.AddDropDown(tc.supplierSelector)
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Trader }) {
 		tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))

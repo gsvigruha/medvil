@@ -32,6 +32,7 @@ type TownSettings struct {
 	Trading            bool
 	ArtifactCollection bool
 	Coinage            bool
+	UseSupplier        bool
 }
 
 var DefaultTownSettings = TownSettings{
@@ -40,6 +41,7 @@ var DefaultTownSettings = TownSettings{
 	Trading:            true,
 	ArtifactCollection: true,
 	Coinage:            true,
+	UseSupplier:        true,
 }
 
 var DefaultStorageTarget = map[string]int{
