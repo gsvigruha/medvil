@@ -1,6 +1,7 @@
 package social
 
 import (
+	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
@@ -111,6 +112,9 @@ func (town *Town) Init() {
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	s := town.Stats
 	s.Reset()
+	if town.Name == "" {
+		town.Name = TownNames[rand.Intn(len(TownNames))]
+	}
 	eoYear := (Calendar.Hour == 0 && Calendar.Day == 1 && Calendar.Month == 1)
 	eoMonth := (Calendar.Hour == 0 && Calendar.Day == 1)
 	if town.Marketplace != nil {

@@ -198,6 +198,14 @@ func RefreshSubPanels(tc *TownhallController) {
 		for i, task := range tc.activeTrader.Tasks {
 			TaskToControlPanel(tc.cp, tc.traderPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
 		}
+		if tc.activeTrader.SourceExchange != nil {
+			tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*5), IconS, IconS, gui.ImageLabelStyleRegular)
+			tc.traderPanel.AddTextLabel(tc.activeTrader.SourceExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH*5)+IconH/2)
+		}
+		if tc.activeTrader.TargetExchange != nil {
+			tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*6), IconS, IconS, gui.ImageLabelStyleRegular)
+			tc.traderPanel.AddTextLabel(tc.activeTrader.TargetExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH*6)+IconH/2)
+		}
 	}
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Expedition }) {
