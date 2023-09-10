@@ -19,6 +19,11 @@ const PerspectiveNW uint8 = 3
 
 const MaxRenderCnt = 10
 
+type Window interface {
+	GetGLFWWindow() *glfw.Window
+	Close()
+}
+
 type ClickHandler interface {
 	HandleClick(c *Controller, rf *renderer.RenderedField) bool
 	GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext
@@ -27,6 +32,7 @@ type ClickHandler interface {
 type Controller struct {
 	X                         float64
 	Y                         float64
+	Window                    Window
 	DX                        int
 	DY                        int
 	W                         int
@@ -111,7 +117,7 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 			c.Load(GetLatestFile())
 		}
 		if key == glfw.KeyEscape {
-			glfw.Terminate()
+			c.Window.Close()
 		}
 	}
 	if action == glfw.Release {
@@ -312,10 +318,11 @@ func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
 func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {
 }
 
-func Link(wnd *glfw.Window, ctx *goglbackend.GLContext) *Controller {
+func Link(window Window, ctx *goglbackend.GLContext) *Controller {
+	wnd := window.GetGLFWWindow()
 	W, H := wnd.GetFramebufferSize()
 	controlPanel := &ControlPanel{}
-	c := &Controller{H: H, W: W, ControlPanel: controlPanel, TimeSpeed: 1, ShowHouseIcons: true}
+	c := &Controller{H: H, W: W, Window: window, ControlPanel: controlPanel, TimeSpeed: 1, ShowHouseIcons: true}
 	controlPanel.Setup(c, ctx)
 	wnd.SetKeyCallback(c.KeyboardCallback)
 	wnd.SetMouseButtonCallback(c.MouseButtonCallback)

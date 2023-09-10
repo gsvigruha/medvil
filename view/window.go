@@ -100,6 +100,10 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 	return wnd, cv, ctx, nil
 }
 
+func (wnd *Window) GetGLFWWindow() *glfw.Window {
+	return wnd.Window
+}
+
 // FPS returns the frames per second (averaged over 10 frames)
 func (wnd *Window) FPS() float32 {
 	return wnd.fps

@@ -10,7 +10,7 @@ import (
 	"medvil/model/time"
 )
 
-const PlantSpreadRate = 0.00003
+const PlantSpreadRate = 0.00004
 const PlantDeathRate = 0.00001
 const GrassGrowRate = 0.0001
 
