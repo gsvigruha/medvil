@@ -86,12 +86,16 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddLargeTextLabel("Settings", 24, ControlPanelSY*0.7)
 	p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24, Y: ControlPanelSY*0.7 + float64(IconH), SX: IconS, SY: IconS},
-		Highlight: func() bool { return cp.C.ShowHouseIcons },
-		ClickImpl: func() { cp.C.ShowHouseIcons = !cp.C.ShowHouseIcons }})
+		Highlight: func() bool { return cp.C.ViewSettings.ShowHouseIcons },
+		ClickImpl: func() { cp.C.ViewSettings.ShowHouseIcons = !cp.C.ViewSettings.ShowHouseIcons }})
 	p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*2, SX: IconS, SY: IconS},
-		Highlight: func() bool { return cp.C.ShowAllocatedFields },
-		ClickImpl: func() { cp.C.ShowAllocatedFields = !cp.C.ShowAllocatedFields }})
+		Highlight: func() bool { return cp.C.ViewSettings.ShowAllocatedFields },
+		ClickImpl: func() { cp.C.ViewSettings.ShowAllocatedFields = !cp.C.ViewSettings.ShowAllocatedFields }})
+	p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*3, SX: IconS, SY: IconS},
+		Highlight: func() bool { return cp.C.ViewSettings.ShowLabels },
+		ClickImpl: func() { cp.C.ViewSettings.ShowLabels = !cp.C.ViewSettings.ShowLabels }})
 
 	cp.SetDynamicPanel(p)
 }

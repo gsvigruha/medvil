@@ -42,6 +42,9 @@ func IsExchangeBaseTask(t economy.Task) bool {
 }
 
 func BuildingsConnectedWithWater(b1, b2 *building.Building, m navigation.IMap) bool {
+	if b1 == nil || b2 == nil {
+		return true
+	}
 	for _, e1 := range b1.GetExtensionsWithCoords(building.Deck) {
 		for _, e2 := range b2.GetExtensionsWithCoords(building.Deck) {
 			if m.GetField(e1.X, e1.Y).IslandLabel == m.GetField(e2.X, e2.Y).IslandLabel {

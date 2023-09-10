@@ -55,6 +55,7 @@ type TownhallController struct {
 	th               *social.Townhall
 	activeTrader     *social.Trader
 	activeExpedition *social.Expedition
+	supplierSelector *gui.DropDown
 }
 
 func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
@@ -172,6 +173,22 @@ func RefreshSubPanels(tc *TownhallController) {
 		ArtifactStorageToControlPanel(sp, th, aI, a, q, top+50)
 		aI++
 	}
+	var townNames []string
+	var townIcons []string
+	for _, town := range town.Country.Towns {
+		townNames = append(townNames, town.Name)
+		townIcons = append(townIcons, "town")
+	}
+	tc.supplierSelector = &gui.DropDown{
+		X:        float64(24),
+		Y:        ControlPanelSY * 0.7,
+		SX:       IconS + gui.FontSize*5,
+		SY:       IconS,
+		Options:  townNames,
+		Icons:    townIcons,
+		Selected: 0,
+	}
+	sp.AddDropDown(tc.supplierSelector)
 
 	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Trader }) {
 		tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
