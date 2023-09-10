@@ -37,7 +37,9 @@ func (p *Person) releaseTask() {
 		p.Equipment = economy.NoEquipment
 		p.Home.GetResources().Add(Tools, 1)
 	}
-	p.Traveller.ExitVehicle()
+	if !p.Home.IsHomeVehicle() {
+		p.Traveller.ExitVehicle()
+	}
 }
 
 func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {

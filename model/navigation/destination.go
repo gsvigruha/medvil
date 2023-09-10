@@ -45,10 +45,10 @@ type TravellerDestination struct {
 	T *Traveller
 }
 
-func (td TravellerDestination) Check(pe PathElement) bool {
+func (td *TravellerDestination) Check(pe PathElement) bool {
 	return pe.GetLocation().X == td.T.FX && pe.GetLocation().Y == td.T.FY && pe.GetLocation().Z == td.T.FZ
 }
 
-func (td TravellerDestination) DestHint() (uint16, uint16, bool) {
+func (td *TravellerDestination) DestHint() (uint16, uint16, bool) {
 	return td.T.FX, td.T.FY, true
 }

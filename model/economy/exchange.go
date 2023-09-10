@@ -80,7 +80,6 @@ func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 		t.State = ExchangeTaskStateDropoffAtHome
 	case ExchangeTaskStateDropoffAtHome:
 		t.HouseholdR.AddAll(t.Goods)
-		t.Traveller.ExitVehicle()
 		return true
 	}
 	return false

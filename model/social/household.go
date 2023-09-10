@@ -455,6 +455,9 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
 				h.AddTask(p.Task)
 			}
+			if p.Traveller.Vehicle != nil {
+				p.Traveller.Vehicle.Break()
+			}
 			p.releaseTask()
 			if p.Equipment.Tool || p.Equipment.Weapon {
 				f.Terrain.Resources.Add(IronBar, 1)
@@ -514,6 +517,8 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			if v.Parking != nil {
 				v.Parking.Allocated = false
 			}
+			f := m.GetField(v.Traveller.FX, v.Traveller.FY)
+			f.UnregisterTraveller(v.Traveller)
 		}
 	}
 	h.Vehicles = newVehicles
@@ -666,4 +671,8 @@ func (h *Household) GetUnallocatedDeck(m navigation.IMap) *navigation.Field {
 		}
 	}
 	return nil
+}
+
+func (h *Household) IsHomeVehicle() bool {
+	return false
 }
