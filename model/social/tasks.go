@@ -53,7 +53,7 @@ func BuildingsConnectedWithWater(b1, b2 *building.Building, m navigation.IMap) b
 }
 
 func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
-	waterOk := BuildingsConnectedWithWater(h.GetBuilding(), mp.Building, m)
+	waterOk := h.GetBuilding() == nil || BuildingsConnectedWithWater(h.GetBuilding(), mp.Building, m)
 	var vehicle *vehicles.Vehicle
 	var buildingCheckFn = navigation.Field.BuildingNonExtension
 	var buildingExtension = building.NonExtension

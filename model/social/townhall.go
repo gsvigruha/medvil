@@ -76,7 +76,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		t.Household.MaybeBuyCart(Calendar, m)
 	}
 
-	if t.Household.Town.Supplier != nil {
+	if t.Household.Town.Supplier != nil && t.Household.Town.Settings.UseSupplier {
 		srcH := t.Household.Town.Supplier.Townhall.Household
 		dstH := t.Household
 		if dstH.HasRoomForPeople() {

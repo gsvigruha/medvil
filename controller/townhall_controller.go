@@ -163,6 +163,14 @@ func RefreshSubPanels(tc *TownhallController) {
 			tc.cp.HelperMessage("Start or stop minting gold coins")
 		}})
 
+	tp.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "town", X: 24 + LargeIconD, Y: top + LargeIconD*10, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return town.Settings.UseSupplier },
+		ClickImpl: func() {
+			town.Settings.UseSupplier = !town.Settings.UseSupplier
+			tc.cp.HelperMessage("Start or stop relying on supplies from the hometown")
+		}})
+
 	var aI = 0
 	for _, a := range artifacts.All {
 		var q uint16 = 0
@@ -188,6 +196,14 @@ func RefreshSubPanels(tc *TownhallController) {
 		MoneyToControlPanel(tc.traderPanel, &th.Household.Money, &tc.activeTrader.Money, 24, 10, traderTop+float64(IconH)+IconS)
 		for i, task := range tc.activeTrader.Tasks {
 			TaskToControlPanel(tc.cp, tc.traderPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
+		}
+		if tc.activeTrader.SourceExchange != nil {
+			tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*5), IconS, IconS, gui.ImageLabelStyleRegular)
+			tc.traderPanel.AddTextLabel(tc.activeTrader.SourceExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH)*5.5)
+		}
+		if tc.activeTrader.TargetExchange != nil {
+			tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*6), IconS, IconS, gui.ImageLabelStyleRegular)
+			tc.traderPanel.AddTextLabel(tc.activeTrader.TargetExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH)*6.5)
 		}
 	}
 

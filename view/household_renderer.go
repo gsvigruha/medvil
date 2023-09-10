@@ -7,6 +7,7 @@ import (
 	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/buildings"
+	"medvil/view/gui"
 )
 
 func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string) {
@@ -88,5 +89,29 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 
 	for i, icon := range icons {
 		cv.DrawImage(icon, midX-float64(len(icons))*24/2+float64(i)*24, midY-z, 24, 24)
+	}
+}
+
+func DrawLabels(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, k int, c *controller.Controller) {
+	if f.Building.GetBuilding().X != f.X || f.Building.GetBuilding().Y != f.Y {
+		return
+	}
+
+	z := float64(k+1) * buildings.BuildingUnitHeight * buildings.DZ
+	midX, midY := rf.MidScreenPoint()
+
+	townhall := c.ReverseReferences.BuildingToTownhall[f.Building.GetBuilding()]
+	if townhall != nil {
+		name := townhall.Household.Town.Name
+		if name != "" {
+			dx := float64(len(name)) * gui.FontSize * 0.25
+			y := midY - z - 10
+			dy := gui.FontSize
+			cv.SetFillStyle("texture/wood.png")
+			cv.FillRect(midX-dx-4, y-dy-2, dx*2+8, dy+10)
+			cv.SetFillStyle("#FED")
+			cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
+			cv.FillText(name, midX-dx, y)
+		}
 	}
 }

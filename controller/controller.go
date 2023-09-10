@@ -30,6 +30,20 @@ type ClickHandler interface {
 	GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext
 }
 
+type ViewSettings struct {
+	ShowHouseIcons       bool
+	ShowAllocatedFields  bool
+	ShowLabels           bool
+	ShowTutorialMessages bool
+}
+
+var DefaultViewSettings = ViewSettings{
+	ShowHouseIcons:       true,
+	ShowAllocatedFields:  false,
+	ShowLabels:           true,
+	ShowTutorialMessages: true,
+}
+
 type Controller struct {
 	X                         float64
 	Y                         float64
@@ -41,8 +55,7 @@ type Controller struct {
 	CenterX                   int
 	CenterY                   int
 	Perspective               uint8
-	ShowHouseIcons            bool
-	ShowAllocatedFields       bool
+	ViewSettings              ViewSettings
 	Map                       *model.Map
 	MapLock                   sync.Mutex
 	RenderedFields            []*renderer.RenderedField
@@ -327,7 +340,7 @@ func Link(window Window, ctx *goglbackend.GLContext) *Controller {
 	wnd := window.GetGLFWWindow()
 	W, H := wnd.GetFramebufferSize()
 	controlPanel := &ControlPanel{}
-	c := &Controller{H: H, W: W, Window: window, ControlPanel: controlPanel, TimeSpeed: 1, ShowHouseIcons: true}
+	c := &Controller{H: H, W: W, Window: window, ControlPanel: controlPanel, TimeSpeed: 1, ViewSettings: DefaultViewSettings}
 	controlPanel.Setup(c, ctx)
 	wnd.SetKeyCallback(c.KeyboardCallback)
 	wnd.SetMouseButtonCallback(c.MouseButtonCallback)
