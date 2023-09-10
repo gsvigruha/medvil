@@ -22,6 +22,7 @@ const MaxRenderCnt = 10
 type Window interface {
 	GetGLFWWindow() *glfw.Window
 	Close()
+	SetController(*Controller)
 }
 
 type ClickHandler interface {
@@ -117,6 +118,7 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 			c.Load(GetLatestFile())
 		}
 		if key == glfw.KeyEscape {
+			c.Save("latest_autosave.mdvl")
 			c.Window.Close()
 		}
 	}
@@ -329,6 +331,7 @@ func Link(window Window, ctx *goglbackend.GLContext) *Controller {
 	wnd.SetCursorPosCallback(c.MouseMoveCallback)
 	wnd.SetScrollCallback(c.MouseScrollCallback)
 	c.ctx = ctx
+	window.SetController(c)
 	return c
 }
 

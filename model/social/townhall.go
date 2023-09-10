@@ -80,7 +80,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		srcH := t.Household.Town.Supplier.Townhall.Household
 		dstH := t.Household
 		if dstH.HasRoomForPeople() {
-			srcH.ReassignFirstPerson(dstH, m)
+			srcH.ReassignFirstPerson(dstH, len(dstH.Tasks) == 0, m)
 		}
 		for _, a := range artifacts.All {
 			var q uint16 = 0

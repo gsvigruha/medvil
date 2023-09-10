@@ -9,6 +9,7 @@ import (
 	_ "image/gif" // Imported here so that applications based on this package support these formats by default
 	_ "image/jpeg"
 	_ "image/png"
+	"medvil/controller"
 	"runtime"
 	"time"
 )
@@ -18,6 +19,7 @@ import (
 type Window struct {
 	Window     *glfw.Window
 	canvas     *canvas.Canvas
+	c          *controller.Controller
 	frameTimes [10]time.Time
 	frameIndex int
 	frameCount int
@@ -94,10 +96,15 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 		}
 	})
 	window.SetCloseCallback(func(w *glfw.Window) {
+		wnd.c.Save("latest_autosave.mdvl")
 		wnd.Close()
 	})
 
 	return wnd, cv, ctx, nil
+}
+
+func (wnd *Window) SetController(c *controller.Controller) {
+	wnd.c = c
 }
 
 func (wnd *Window) GetGLFWWindow() *glfw.Window {
