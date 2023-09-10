@@ -41,6 +41,20 @@ func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+	if Calendar.Hour == 0 && Calendar.Day == 1 && t.Person.Task != nil {
+		if tt, ok := t.Person.Task.(*economy.TradeTask); ok {
+			tt.Pause(true)
+			t.AddPriorityTask(tt)
+			t.Person.Task = nil
+		}
+	}
+	if !economy.HasPersonalTask(t.Tasks) {
+		for i := 0; i < len(t.Tasks); i++ {
+			if t.Tasks[i].IsPaused() {
+				t.Tasks[i].Pause(false)
+			}
+		}
+	}
 }
 
 func (t *Trader) GetArtifactToTrade(pickupMP, dropoffMP *Marketplace) *artifacts.Artifact {
@@ -138,7 +152,7 @@ func (t *Trader) HasBeer() bool {
 }
 
 func (t *Trader) Field(m navigation.IMap) *navigation.Field {
-	return m.GetField(t.Person.Traveller.FX, t.Person.Traveller.FY)
+	return m.GetField(t.Vehicle.Traveller.FX, t.Vehicle.Traveller.FY)
 }
 
 func (t *Trader) RandomField(m navigation.IMap, check func(navigation.Field) bool) *navigation.Field {
@@ -230,4 +244,8 @@ func (t *Trader) GetHome() Home {
 
 func (t *Trader) GetExchange() economy.Exchange {
 	return t.SourceExchange
+}
+
+func (t *Trader) IsHomeVehicle() bool {
+	return true
 }

@@ -276,7 +276,9 @@ func (t *Traveller) EnsurePath(dest Destination, m IMap) (bool, bool) {
 			select {
 			case t.PathComp.Path = <-t.PathComp.pc:
 				t.PathComp.computing = false
-				t.Lane = uint8(rand.Intn(3) + 1)
+				if t.Lane == 0 {
+					t.Lane = uint8(rand.Intn(3) + 1)
+				}
 				t.StuckCntr = 0
 			}
 		}

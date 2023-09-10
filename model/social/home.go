@@ -35,6 +35,7 @@ type Home interface {
 	GetTown() *Town
 	GetPeople() []*Person
 	GetExchange() economy.Exchange
+	IsHomeVehicle() bool
 }
 
 var water = artifacts.GetArtifact("water")

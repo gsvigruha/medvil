@@ -79,8 +79,10 @@ func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
 				buildingExtension = building.NonExtension
 				maxVolume = ExchangeTaskMaxVolumePedestrian
 			}
-			var hf = h.RandomField(m, buildingCheckFn)
-			if vehicle != nil && vehicle.Parking != nil {
+			var hf navigation.Destination = h.RandomField(m, buildingCheckFn)
+			if h.IsHomeVehicle() {
+				hf = navigation.TravellerDestination{T: vehicle.Traveller}
+			} else if vehicle != nil && vehicle.Parking != nil {
 				hf = vehicle.Parking
 			}
 			et = &economy.ExchangeTask{

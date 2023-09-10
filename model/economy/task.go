@@ -61,3 +61,12 @@ func IconName(t Task) string {
 	}
 	return t.Name()
 }
+
+func HasPersonalTask(tasks []Task) bool {
+	for _, task := range tasks {
+		if IsPersonalTask(task.Name()) {
+			return true
+		}
+	}
+	return false
+}
