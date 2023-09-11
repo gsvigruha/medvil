@@ -79,7 +79,7 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []stri
 		s = l.cp.C.Map.Countries[0].Towns[l.townSelector.Selected-1].History
 	}
 
-	maxPoints := (int(ControlPanelSX)-48)/DPoint - 10
+	maxPoints := (int(ControlPanelSX) - 48) / DPoint
 	numPoints := len(s.Elements) / int(l.timeScale)
 	var startIdx = 0
 	if numPoints > maxPoints {
