@@ -40,6 +40,8 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 		ArtifactsToHelperPanel(p, v.Repairable.RepairCost(), 0, y)
 	case *economy.FactoryPickupTask:
 		p.AddImageLabel("vehicles/"+v.Order.Name(), 10+float64(IconW), y, IconS, IconS, style)
+	case *economy.TradeTask:
+		ArtifactsToHelperPanel(p, v.Goods, 0, y)
 	}
 }
 

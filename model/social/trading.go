@@ -61,7 +61,7 @@ func (t *Trader) GetArtifactToTrade(pickupMP, dropoffMP *Marketplace) *artifacts
 	var weights []float64
 	var tradableArtifacts []*artifacts.Artifact
 	for _, a := range artifacts.All {
-		if pickupMP.HasTraded(a) && dropoffMP.HasTraded(a) && pickupMP.Storage.Get(a) > ProductTransportQuantity(a) {
+		if pickupMP.HasTraded(a) && dropoffMP.HasTraded(a) && pickupMP.Storage.Get(a) > ProductTransportQuantity(a) && dropoffMP.Prices[a] > 2 {
 			if pickupMP.Prices[a]*TradeProfitThreshold <= dropoffMP.Prices[a] {
 				profit := float64(dropoffMP.Prices[a]) / float64(pickupMP.Prices[a])
 				weights = append(weights, profit)
