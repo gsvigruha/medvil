@@ -24,6 +24,7 @@ type Exchange interface {
 	RegisterSellTask(*SellTask, bool)
 	RegisterBuyTask(*BuyTask, bool)
 	HasAny([]artifacts.Artifacts) bool
+	UnitPrice(*artifacts.Artifact) uint32
 }
 
 const ExchangeTaskStatePickupAtHome uint8 = 0

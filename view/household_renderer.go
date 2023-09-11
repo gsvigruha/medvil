@@ -2,6 +2,7 @@ package view
 
 import (
 	"github.com/tfriedel6/canvas"
+	"image/color"
 	"medvil/controller"
 	"medvil/model/navigation"
 	"medvil/model/social"
@@ -104,11 +105,16 @@ func DrawLabels(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 	if townhall != nil {
 		name := townhall.Household.Town.Name
 		if name != "" {
-			dx := float64(len(name)) * gui.FontSize * 0.25
+			dx := float64(len(name)) * gui.FontSize * 0.24
 			y := midY - z - 10
 			dy := gui.FontSize
+			if c.ActiveTown == townhall.Household.Town {
+				cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
+				cv.SetLineWidth(4.0)
+				cv.StrokeRect(midX-dx-8, y-dy-2, dx*2+16, dy+10)
+			}
 			cv.SetFillStyle("texture/wood.png")
-			cv.FillRect(midX-dx-4, y-dy-2, dx*2+8, dy+10)
+			cv.FillRect(midX-dx-8, y-dy-2, dx*2+16, dy+10)
 			cv.SetFillStyle("#FED")
 			cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
 			cv.FillText(name, midX-dx, y)

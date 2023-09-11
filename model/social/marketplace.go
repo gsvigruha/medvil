@@ -243,3 +243,7 @@ func (mp *Marketplace) HasTraded(a *artifacts.Artifact) bool {
 	_, ok := mp.Storage.Artifacts[a]
 	return ok
 }
+
+func (mp *Marketplace) UnitPrice(a *artifacts.Artifact) uint32 {
+	return mp.Prices[a]
+}
