@@ -30,6 +30,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	w.Household.ElapseTime(Calendar, m)
 	home := m.GetField(w.Household.Building.X, w.Household.Building.Y)
 	mp := w.Household.Town.Marketplace
+	numP := uint16(len(w.Household.People))
 
 	if mp != nil {
 		if w.AutoSwitch && Calendar.Day == 30 && Calendar.Hour == 0 && Calendar.Month%3 == 0 && w.Household.Resources.Remove(Paper, 1) > 0 {
@@ -50,7 +51,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				transportQ := MinProductTransportQuantity(purchasableInputs)
 				batch := artifacts.Multiply(purchasableInputs, transportQ)
 				tag := "manufacture_input"
-				if w.Household.Resources.Needs(batch) != nil && w.Household.NumTasks("exchange", tag) == 0 {
+				if w.Household.Resources.Needs(batch) != nil && w.Household.NumTasks("exchange", tag) == 0 && len(w.Household.Tasks) < int(numP) * 5 {
 					if w.Household.Money >= mp.Price(batch) {
 						w.Household.AddTask(&economy.BuyTask{
 							Exchange:        mp,
@@ -59,7 +60,6 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 							MaxPrice:        uint32(maxUnitCost * float64(transportQ)),
 							TaskTag:         tag,
 						})
-						numP := uint16(len(w.Household.People))
 						water := artifacts.GetArtifact("water")
 						if w.Manufacture.IsInput(water) &&
 							w.Household.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP+WaterTransportQuantity &&
