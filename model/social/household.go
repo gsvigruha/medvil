@@ -548,8 +548,8 @@ func (h *Household) AllocateVehicle(waterOk bool) *vehicles.Vehicle {
 	return nil
 }
 
-func (h *Household) Stats() *stats.Stats {
-	return &stats.Stats{
+func (h *Household) Stats() *stats.HouseholdStats {
+	return &stats.HouseholdStats{
 		Money:     h.Money,
 		People:    uint32(len(h.People)),
 		Buildings: 1,

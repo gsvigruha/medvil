@@ -18,11 +18,11 @@ func (he HistoryElement) GetDepartures() uint32 {
 }
 
 func (he HistoryElement) GetPeople() uint32 {
-	return he.People
+	return he.GlobalStats.People
 }
 
 func (he HistoryElement) GetArtifacts() uint32 {
-	return he.Artifacts
+	return he.GlobalStats.Artifacts
 }
 
 func (he HistoryElement) GetExchangedQuantity() uint32 {

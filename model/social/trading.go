@@ -213,8 +213,8 @@ func (t *Trader) Destination(extensionType *building.BuildingExtensionType) navi
 	return &navigation.TravellerDestination{T: t.Person.Traveller}
 }
 
-func (t *Trader) Stats() *stats.Stats {
-	return &stats.Stats{
+func (t *Trader) Stats() *stats.HouseholdStats {
+	return &stats.HouseholdStats{
 		Money:     t.Money,
 		People:    1,
 		Buildings: 0,
