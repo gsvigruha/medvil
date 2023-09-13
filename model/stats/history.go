@@ -89,3 +89,23 @@ type History struct {
 func (h *History) Archive(stats *Stats) {
 	h.Elements = append(h.Elements, HistoryElement{*stats})
 }
+
+func (he HistoryElement) GetFarmMoney() uint32 {
+	return he.FarmStats.Money
+}
+
+func (he HistoryElement) GetWorkshopMoney() uint32 {
+	return he.WorkshopStats.Money
+}
+
+func (he HistoryElement) GetMineMoney() uint32 {
+	return he.MineStats.Money
+}
+
+func (he HistoryElement) GetGovernmentMoney() uint32 {
+	return he.GovernmentStats.Money
+}
+
+func (he HistoryElement) GetTraderMoney() uint32 {
+	return he.TraderStats.Money
+}

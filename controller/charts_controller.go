@@ -35,6 +35,8 @@ func (l *ChartsLabel) Render(cv *canvas.Canvas) {
 	cv.DrawImage(l.img, 24, ControlPanelSY*0.55, float64(l.img.Width()), float64(l.img.Height()))
 }
 
+type ElementLookup func(stats.HistoryElement) uint32
+
 func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 	cv.ClearRect(0, 0, float64(l.img.Width()), float64(l.img.Height()))
 	cv.SetFillStyle("texture/parchment.png")
@@ -63,6 +65,16 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.drawChart(cv, "#22B", 420, []string{"icon/gui/tasks/ploughing"}, stats.HistoryElement.GetAgricultureTaskTime, true)
 		l.drawChart(cv, "#22B", 560, []string{"icon/gui/tasks/milling"}, stats.HistoryElement.GetManufactureTaskTime, true)
 		l.helperMsg = "Days spent on various tasks"
+	case 5:
+		l.drawCharts(cv, []string{"#F00", "#0F0", "#880", "#088", "#444"}, 140,
+			[]string{"icon/gui/farm", "icon/gui/workshop", "icon/gui/mine", "icon/gui/trader", "icon/gui/town"},
+			[]ElementLookup{
+				stats.HistoryElement.GetFarmMoney,
+				stats.HistoryElement.GetWorkshopMoney,
+				stats.HistoryElement.GetMineMoney,
+				stats.HistoryElement.GetTraderMoney,
+				stats.HistoryElement.GetGovernmentMoney,
+			}, false)
 	}
 	l.CaptureClick(0, 0)
 }
@@ -71,7 +83,11 @@ func (l *ChartsLabel) CaptureClick(x float64, y float64) {
 	l.cp.HelperMessage(l.helperMsg)
 }
 
-func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []string, fn func(stats.HistoryElement) uint32, sum bool) {
+func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []string, fn ElementLookup, sum bool) {
+	l.drawCharts(cv, []string{c}, y, icons, []ElementLookup{fn}, sum)
+}
+
+func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []string, fns []ElementLookup, sum bool) {
 	var s *stats.History
 	if l.townSelector.Selected == 0 {
 		s = l.cp.C.Map.Countries[0].History
@@ -87,28 +103,30 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []stri
 	}
 
 	var max uint32 = 0
-	var scaleCntr uint32 = 0
-	var scaleAggr uint32 = 0
-	for i := startIdx; i < len(s.Elements); i++ {
-		he := s.Elements[i]
-		scaleAggr += fn(he)
-		scaleCntr++
-		if scaleCntr == uint32(l.timeScale) {
-			var val uint32
-			if sum {
-				val = scaleAggr
-			} else {
-				val = scaleAggr / scaleCntr
+	for _, fn := range fns {
+		var scaleCntr uint32 = 0
+		var scaleAggr uint32 = 0
+		for i := startIdx; i < len(s.Elements); i++ {
+			he := s.Elements[i]
+			scaleAggr += fn(he)
+			scaleCntr++
+			if scaleCntr == uint32(l.timeScale) {
+				var val uint32
+				if sum {
+					val = scaleAggr
+				} else {
+					val = scaleAggr / scaleCntr
+				}
+				if val > max {
+					max = val
+				}
+				scaleCntr = 0
+				scaleAggr = 0
 			}
-			if val > max {
-				max = val
-			}
-			scaleCntr = 0
-			scaleAggr = 0
 		}
-	}
-	if max == 0 {
-		max = 1
+		if max == 0 {
+			max = 1
+		}
 	}
 
 	cv.SetStrokeStyle(color.RGBA{R: 128, G: 64, B: 255, A: 64})
@@ -128,35 +146,38 @@ func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []stri
 		cv.Stroke()
 	}
 
-	cv.SetStrokeStyle(c)
-	cv.BeginPath()
-	scaleCntr = 0
-	scaleAggr = 0
-	for i := startIdx; i < len(s.Elements); i++ {
-		he := s.Elements[i]
-		scaleAggr += fn(he)
-		scaleCntr++
-		if scaleCntr == uint32(l.timeScale) {
-			var val uint32
-			if sum {
-				val = scaleAggr
-			} else {
-				val = scaleAggr / scaleCntr
+	for i, fn := range fns {
+		c := cs[i]
+		cv.SetStrokeStyle(c)
+		cv.BeginPath()
+		var scaleCntr uint32 = 0
+		var scaleAggr uint32 = 0
+		for i := startIdx; i < len(s.Elements); i++ {
+			he := s.Elements[i]
+			scaleAggr += fn(he)
+			scaleCntr++
+			if scaleCntr == uint32(l.timeScale) {
+				var val uint32
+				if sum {
+					val = scaleAggr
+				} else {
+					val = scaleAggr / scaleCntr
+				}
+				scaleCntr = 0
+				scaleAggr = 0
+				cv.LineTo(float64(i-startIdx)*DPoint/float64(l.timeScale), float64(y-int(val*100/max)))
 			}
-			scaleCntr = 0
-			scaleAggr = 0
-			cv.LineTo(float64(i-startIdx)*DPoint/float64(l.timeScale), float64(y-int(val*100/max)))
 		}
+		cv.MoveTo(0, 0)
+		cv.ClosePath()
+		cv.Stroke()
 	}
-	cv.MoveTo(0, 0)
-	cv.ClosePath()
-	cv.Stroke()
 
 	for i, icon := range icons {
 		cv.DrawImage(icon+".png", float64(i*32), float64(y-136), 32, 32)
 	}
 
-	cv.SetFillStyle(c)
+	cv.SetFillStyle("#22B")
 	cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
 	text := strconv.Itoa(int(max))
 	cv.FillText(text, ControlPanelSX-60-float64(len(text))*gui.FontSize*0.5, float64(y-112))
@@ -182,6 +203,9 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 		p.AddButton(gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "tasks/transport", X: float64(24 + LargeIconD*3), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS},
 			ClickImpl: func() { cl.state = 4 }})
+		p.AddButton(gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "farm", X: float64(24 + LargeIconD*4), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS},
+			ClickImpl: func() { cl.state = 5 }})
 
 		p.AddButton(gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS},
