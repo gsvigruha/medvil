@@ -27,7 +27,7 @@ func AddNextFieldWithEstimatedDist(pe PathElement, prevE *TargetedElement, toVis
 		cx, cy := pe.LocationXY()
 		dx, dy, _ := dest.DestHint()
 		distI := prevE.ds + 1.0/pe.GetSpeed()
-		estimatedTotalDist := int(distI + absDist(cx, dx) + absDist(cy, dy))
+		estimatedTotalDist := int(distI + (absDist(cx, dx)+absDist(cy, dy))/2.0)
 		for len(*toVisit) <= int(estimatedTotalDist) {
 			*toVisit = append(*toVisit, []*TargetedElement{})
 		}

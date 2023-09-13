@@ -230,8 +230,8 @@ func (mp *Marketplace) Price(as []artifacts.Artifacts) uint32 {
 	return price
 }
 
-func (mp *Marketplace) Stats() *stats.Stats {
-	return &stats.Stats{
+func (mp *Marketplace) Stats() *stats.HouseholdStats {
+	return &stats.HouseholdStats{
 		Money:     mp.Money,
 		People:    0,
 		Buildings: 1,

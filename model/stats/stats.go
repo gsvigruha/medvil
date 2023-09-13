@@ -7,11 +7,20 @@ import (
 	"reflect"
 )
 
-type Stats struct {
+type HouseholdStats struct {
 	Money     uint32
 	Artifacts uint32
 	People    uint32
 	Buildings uint32
+}
+
+type Stats struct {
+	GlobalStats     HouseholdStats
+	FarmStats       HouseholdStats
+	WorkshopStats   HouseholdStats
+	MineStats       HouseholdStats
+	GovernmentStats HouseholdStats
+	TraderStats     HouseholdStats
 
 	Deaths           uint32
 	Departures       uint32
@@ -33,17 +42,35 @@ func (s *Stats) Init(pt map[economy.Task]uint32) {
 }
 
 func (s *Stats) Reset() {
+	s.GlobalStats.Reset()
+	s.FarmStats.Reset()
+	s.WorkshopStats.Reset()
+	s.MineStats.Reset()
+	s.GovernmentStats.Reset()
+	s.TraderStats.Reset()
+}
+
+func (s *HouseholdStats) Reset() {
 	s.Money = 0
 	s.Artifacts = 0
 	s.People = 0
 	s.Buildings = 0
 }
 
-func (s *Stats) Add(os *Stats) {
+func (s *HouseholdStats) Add(os *HouseholdStats) {
 	s.Money += os.Money
 	s.Artifacts += os.Artifacts
 	s.People += os.People
 	s.Buildings += os.Buildings
+}
+
+func (s *Stats) Add(os *Stats) {
+	s.GlobalStats.Add(&os.GlobalStats)
+	s.FarmStats.Add(&os.FarmStats)
+	s.WorkshopStats.Add(&os.WorkshopStats)
+	s.MineStats.Add(&os.MineStats)
+	s.GovernmentStats.Add(&os.GovernmentStats)
+	s.TraderStats.Add(&os.TraderStats)
 
 	s.Deaths += os.Deaths
 	s.Departures += os.Departures
