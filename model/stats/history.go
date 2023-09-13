@@ -109,3 +109,23 @@ func (he HistoryElement) GetGovernmentMoney() uint32 {
 func (he HistoryElement) GetTraderMoney() uint32 {
 	return he.TraderStats.Money
 }
+
+func (he HistoryElement) GetFarmPeople() uint32 {
+	return he.FarmStats.People
+}
+
+func (he HistoryElement) GetWorkshopPeople() uint32 {
+	return he.WorkshopStats.People
+}
+
+func (he HistoryElement) GetMinePeople() uint32 {
+	return he.MineStats.People
+}
+
+func (he HistoryElement) GetGovernmentPeople() uint32 {
+	return he.GovernmentStats.People
+}
+
+func (he HistoryElement) GetTraderPeople() uint32 {
+	return he.TraderStats.People
+}
