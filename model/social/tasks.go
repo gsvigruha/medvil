@@ -7,7 +7,6 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/vehicles"
-	"strings"
 )
 
 func NumBatchesSimple(totalQuantity, transportQuantity uint16) int {
@@ -25,14 +24,34 @@ func CountTags(task economy.Task, name, tag string) int {
 	if task.Name() != name {
 		return 0
 	}
-	var i = 0
-	taskTags := strings.Split(task.Tag(), ";")
-	for _, taskTag := range taskTags {
-		if strings.Contains(taskTag, tag) {
-			i++
+	var cnt = 0
+	var it = 0
+	var started = true
+	taskTag := task.Tag()
+	for i := range taskTag {
+		c := taskTag[i]
+		if c == tag[it] {
+			if !started {
+				it = 1
+				started = true
+			} else {
+				if it == len(tag)-1 {
+					cnt++
+					started = false
+					it = 0
+				} else {
+					it++
+				}
+			}
+		} else if c == ';' {
+			it = 0
+			started = true
+		} else {
+			it = 0
+			started = false
 		}
 	}
-	return i
+	return cnt
 }
 
 func IsExchangeBaseTask(t economy.Task) bool {

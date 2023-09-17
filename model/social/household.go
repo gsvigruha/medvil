@@ -145,16 +145,14 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 
 			needs := h.Resources.Needs(h.Building.Plan.RepairCost())
-			if len(needs) > 0 && h.NumTasks("exchange", "repair_shopping") == 0 {
-				if h.Money >= mp.Price(needs) {
-					h.AddTask(&economy.BuyTask{
-						Exchange:        mp,
-						HouseholdWallet: h,
-						Goods:           needs,
-						MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
-						TaskTag:         "repair_shopping",
-					})
-				}
+			if len(needs) > 0 && h.Money >= mp.Price(needs) && h.NumTasks("exchange", "repair_shopping") == 0 {
+				h.AddTask(&economy.BuyTask{
+					Exchange:        mp,
+					HouseholdWallet: h,
+					Goods:           needs,
+					MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+					TaskTag:         "repair_shopping",
+				})
 			}
 		}
 	}
