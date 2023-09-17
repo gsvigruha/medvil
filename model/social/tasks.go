@@ -7,6 +7,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/vehicles"
+	"strings"
 )
 
 func NumBatchesSimple(totalQuantity, transportQuantity uint16) int {
