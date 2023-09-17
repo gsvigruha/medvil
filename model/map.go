@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
@@ -248,7 +247,6 @@ func (m *Map) ShortPath(start navigation.Location, dest navigation.Destination, 
 	if p != nil {
 		return &navigation.Path{P: p[1:]}
 	}
-	fmt.Println(start, dest)
 	return nil
 }
 

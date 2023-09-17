@@ -43,7 +43,7 @@ func AddNextFieldWithEstimatedDist(pe PathElement, prevE *TargetedElement, toVis
 
 func FindShortPathTargeted(m IMap, start Location, dest Destination, pathType PathType) []PathElement {
 	dx, dy, _ := dest.DestHint()
-	var maxLength = int(absDist(start.X, dx)+absDist(start.Y, dy)) * 2
+	var maxLength = int(absDist(start.X, dx)+absDist(start.Y, dy)) * 3
 	if maxLength > ShortPathMaxLength {
 		maxLength = ShortPathMaxLength
 	}
