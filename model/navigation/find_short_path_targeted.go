@@ -45,10 +45,10 @@ func FindShortPathTargeted(m IMap, start Location, dest Destination, pathType Pa
 	var iter = 0
 	var currentEstimatedDist = 0
 	r := rand.New(rand.NewSource(int64(start.X*599 + start.Y)))
-	visited := make(map[Location]*[]PathElement, 20)
+	visited := make(map[Location]*[]PathElement, Capacity)
 	se := &TargetedElement{PE: m.GetField(start.X, start.Y).GetPathElement(start.Z), prev: nil, d: 1, ds: 0.0}
 	var toVisit = [][]*TargetedElement{[]*TargetedElement{se}}
-	var inQueue = make(map[Location]bool, 20)
+	var inQueue = make(map[Location]bool, Capacity)
 	for true {
 		var e *TargetedElement = nil
 		for e == nil {
