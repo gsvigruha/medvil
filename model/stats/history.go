@@ -5,7 +5,7 @@ import (
 	"medvil/model/economy"
 )
 
-const MaxHistory = 1200
+const MaxHistory = 2400
 
 type HistoryElement struct {
 	Stats
@@ -20,16 +20,16 @@ func (he HistoryElement) GetDepartures() uint32 {
 }
 
 func (he HistoryElement) GetPeople() uint32 {
-	return he.GlobalStats.People
+	return he.Global.People
 }
 
 func (he HistoryElement) GetArtifacts() uint32 {
-	return he.GlobalStats.Artifacts
+	return he.Global.Artifacts
 }
 
 func (he HistoryElement) GetExchangedQuantity() uint32 {
 	var quantity uint32 = 0
-	for _, q := range he.TradeQuantity {
+	for _, q := range he.TradeQ {
 		quantity += q
 	}
 	return quantity
@@ -37,7 +37,7 @@ func (he HistoryElement) GetExchangedQuantity() uint32 {
 
 func (he HistoryElement) GetExchangedPrice() uint32 {
 	var moneyAmount uint32 = 0
-	for _, q := range he.TradeMoneyAmount {
+	for _, q := range he.TradeM {
 		moneyAmount += q
 	}
 	return moneyAmount
@@ -47,8 +47,8 @@ func (he HistoryElement) computePrice(as []*artifacts.Artifact) uint32 {
 	var quantity uint32 = 0
 	var price uint32 = 0
 	for _, a := range as {
-		quantity += he.TradeQuantity[a]
-		price += he.TradeMoneyAmount[a]
+		quantity += he.TradeQ[a]
+		price += he.TradeM[a]
 	}
 	if quantity > 0 {
 		return price / quantity
@@ -69,19 +69,19 @@ func (he HistoryElement) GetBuildingMaterialsPrice() uint32 {
 }
 
 func (he HistoryElement) GetTransportTaskTime() uint32 {
-	return he.CompletedTasks["TransportTask"]
+	return he.CompletedT["TransportTask"]
 }
 
 func (he HistoryElement) GetExchangeTaskTime() uint32 {
-	return he.CompletedTasks["ExchangeTask"]
+	return he.CompletedT["ExchangeTask"]
 }
 
 func (he HistoryElement) GetAgricultureTaskTime() uint32 {
-	return he.CompletedTasks["AgriculturalTask"]
+	return he.CompletedT["AgriculturalTask"]
 }
 
 func (he HistoryElement) GetManufactureTaskTime() uint32 {
-	return he.CompletedTasks["ManufactureTask"]
+	return he.CompletedT["ManufactureTask"]
 }
 
 type History struct {
@@ -96,41 +96,41 @@ func (h *History) Archive(stats *Stats) {
 }
 
 func (he HistoryElement) GetFarmMoney() uint32 {
-	return he.FarmStats.Money
+	return he.Farm.Money
 }
 
 func (he HistoryElement) GetWorkshopMoney() uint32 {
-	return he.WorkshopStats.Money
+	return he.Workshop.Money
 }
 
 func (he HistoryElement) GetMineMoney() uint32 {
-	return he.MineStats.Money
+	return he.Mine.Money
 }
 
 func (he HistoryElement) GetGovernmentMoney() uint32 {
-	return he.GovernmentStats.Money
+	return he.Gov.Money
 }
 
 func (he HistoryElement) GetTraderMoney() uint32 {
-	return he.TraderStats.Money
+	return he.Trader.Money
 }
 
 func (he HistoryElement) GetFarmPeople() uint32 {
-	return he.FarmStats.People
+	return he.Farm.People
 }
 
 func (he HistoryElement) GetWorkshopPeople() uint32 {
-	return he.WorkshopStats.People
+	return he.Workshop.People
 }
 
 func (he HistoryElement) GetMinePeople() uint32 {
-	return he.MineStats.People
+	return he.Mine.People
 }
 
 func (he HistoryElement) GetGovernmentPeople() uint32 {
-	return he.GovernmentStats.People
+	return he.Gov.People
 }
 
 func (he HistoryElement) GetTraderPeople() uint32 {
-	return he.TraderStats.People
+	return he.Trader.People
 }

@@ -105,9 +105,12 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 
 	maxPoints := (int(ControlPanelSX) - 48) / DPoint
 	numPoints := len(s.Elements) / int(l.timeScale)
+	var dPoint = float64(DPoint)
 	var startIdx = 0
 	if numPoints > maxPoints {
 		startIdx = (numPoints - maxPoints) * int(l.timeScale)
+	} else if numPoints < maxPoints {
+		dPoint = DPoint * float64(maxPoints) / float64(numPoints)
 	}
 
 	var max uint32 = 0
@@ -138,7 +141,7 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 	}
 
 	cv.SetStrokeStyle(color.RGBA{R: 128, G: 64, B: 255, A: 64})
-	for i := 0; i < maxPoints*DPoint/20+1; i++ {
+	for i := 0; i < int(float64(maxPoints)*dPoint/20)+1; i++ {
 		cv.BeginPath()
 		cv.MoveTo(float64(i*20), float64(y))
 		cv.LineTo(float64(i*20), float64(y-100))
@@ -173,7 +176,7 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 				}
 				scaleCntr = 0
 				scaleAggr = 0
-				cv.LineTo(float64(i-startIdx)*DPoint/float64(l.timeScale), float64(y-int(val*100/max)))
+				cv.LineTo(float64(i-startIdx)*dPoint/float64(l.timeScale), float64(y-int(val*100/max)))
 			}
 		}
 		cv.MoveTo(0, 0)

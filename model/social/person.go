@@ -1,11 +1,13 @@
 package social
 
 import (
+	"log"
 	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"os"
 	"strconv"
 )
 
@@ -69,6 +71,9 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				}
 			} else if !computing {
 				if !economy.IsPersonalTask(p.Task.Name()) {
+					if os.Getenv("MEDVIL_VERBOSE") == "2" {
+						log.Printf("Paused Task: %T\n", p.Task)
+					}
 					p.Task.Pause(true)
 					p.Home.AddTask(p.Task)
 					p.releaseTask()

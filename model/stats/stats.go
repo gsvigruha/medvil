@@ -15,39 +15,39 @@ type HouseholdStats struct {
 }
 
 type Stats struct {
-	GlobalStats     HouseholdStats
-	FarmStats       HouseholdStats
-	WorkshopStats   HouseholdStats
-	MineStats       HouseholdStats
-	GovernmentStats HouseholdStats
-	TraderStats     HouseholdStats
+	Global   HouseholdStats
+	Farm     HouseholdStats
+	Workshop HouseholdStats
+	Mine     HouseholdStats
+	Gov      HouseholdStats
+	Trader   HouseholdStats
 
-	Deaths           uint32
-	Departures       uint32
-	TradeMoneyAmount map[*artifacts.Artifact]uint32
-	TradeQuantity    map[*artifacts.Artifact]uint32
-	PendingTasks     map[economy.Task]uint32
-	CompletedTasks   map[string]uint32
+	Deaths     uint32
+	Departures uint32
+	TradeM     map[*artifacts.Artifact]uint32
+	TradeQ     map[*artifacts.Artifact]uint32
+	PendingT   map[economy.Task]uint32
+	CompletedT map[string]uint32
 }
 
 func (s *Stats) Init(pt map[economy.Task]uint32) {
-	s.PendingTasks = pt
-	s.CompletedTasks = make(map[string]uint32)
-	s.TradeMoneyAmount = make(map[*artifacts.Artifact]uint32)
-	s.TradeQuantity = make(map[*artifacts.Artifact]uint32)
+	s.PendingT = pt
+	s.CompletedT = make(map[string]uint32)
+	s.TradeM = make(map[*artifacts.Artifact]uint32)
+	s.TradeQ = make(map[*artifacts.Artifact]uint32)
 	for _, a := range artifacts.All {
-		s.TradeMoneyAmount[a] = 0
-		s.TradeQuantity[a] = 0
+		s.TradeM[a] = 0
+		s.TradeQ[a] = 0
 	}
 }
 
 func (s *Stats) Reset() {
-	s.GlobalStats.Reset()
-	s.FarmStats.Reset()
-	s.WorkshopStats.Reset()
-	s.MineStats.Reset()
-	s.GovernmentStats.Reset()
-	s.TraderStats.Reset()
+	s.Global.Reset()
+	s.Farm.Reset()
+	s.Workshop.Reset()
+	s.Mine.Reset()
+	s.Gov.Reset()
+	s.Trader.Reset()
 }
 
 func (s *HouseholdStats) Reset() {
@@ -65,24 +65,24 @@ func (s *HouseholdStats) Add(os *HouseholdStats) {
 }
 
 func (s *Stats) Add(os *Stats) {
-	s.GlobalStats.Add(&os.GlobalStats)
-	s.FarmStats.Add(&os.FarmStats)
-	s.WorkshopStats.Add(&os.WorkshopStats)
-	s.MineStats.Add(&os.MineStats)
-	s.GovernmentStats.Add(&os.GovernmentStats)
-	s.TraderStats.Add(&os.TraderStats)
+	s.Global.Add(&os.Global)
+	s.Farm.Add(&os.Farm)
+	s.Workshop.Add(&os.Workshop)
+	s.Mine.Add(&os.Mine)
+	s.Gov.Add(&os.Gov)
+	s.Trader.Add(&os.Trader)
 
 	s.Deaths += os.Deaths
 	s.Departures += os.Departures
 
-	for a, q := range os.TradeMoneyAmount {
-		s.TradeMoneyAmount[a] = s.TradeMoneyAmount[a] + q
+	for a, q := range os.TradeM {
+		s.TradeM[a] = s.TradeM[a] + q
 	}
-	for a, q := range os.TradeQuantity {
-		s.TradeQuantity[a] = s.TradeQuantity[a] + q
+	for a, q := range os.TradeQ {
+		s.TradeQ[a] = s.TradeQ[a] + q
 	}
-	for t, q := range os.CompletedTasks {
-		s.CompletedTasks[t] = s.CompletedTasks[t] + q
+	for t, q := range os.CompletedT {
+		s.CompletedT[t] = s.CompletedT[t] + q
 	}
 }
 
@@ -95,26 +95,26 @@ func (s *Stats) RegisterDeparture() {
 }
 
 func (s *Stats) RegisterTrade(a *artifacts.Artifact, unitPrice uint32, quantity uint16) {
-	s.TradeMoneyAmount[a] = s.TradeMoneyAmount[a] + unitPrice*uint32(quantity)
-	s.TradeQuantity[a] = s.TradeQuantity[a] + uint32(quantity)
+	s.TradeM[a] = s.TradeM[a] + unitPrice*uint32(quantity)
+	s.TradeQ[a] = s.TradeQ[a] + uint32(quantity)
 }
 
 func (s *Stats) StartTask(t economy.Task, calendar *time.CalendarType) {
-	if s.PendingTasks != nil {
-		s.PendingTasks[t] = calendar.DaysElapsed()
+	if s.PendingT != nil {
+		s.PendingT[t] = calendar.DaysElapsed()
 	}
 }
 
 func (s *Stats) FinishTask(t economy.Task, calendar *time.CalendarType) {
-	if s.PendingTasks != nil {
-		if start, ok := s.PendingTasks[t]; ok {
+	if s.PendingT != nil {
+		if start, ok := s.PendingT[t]; ok {
 			aggrName := reflect.TypeOf(t).Elem().Name()
-			if aggrTime, ok := s.CompletedTasks[aggrName]; ok {
-				s.CompletedTasks[aggrName] = aggrTime + calendar.DaysElapsed() - start
+			if aggrTime, ok := s.CompletedT[aggrName]; ok {
+				s.CompletedT[aggrName] = aggrTime + calendar.DaysElapsed() - start
 			} else {
-				s.CompletedTasks[aggrName] = calendar.DaysElapsed() - start
+				s.CompletedT[aggrName] = calendar.DaysElapsed() - start
 			}
-			delete(s.PendingTasks, t)
+			delete(s.PendingT, t)
 		}
 	}
 }

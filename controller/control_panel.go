@@ -86,10 +86,10 @@ func (p *ControlPanel) Refresh() {
 		strconv.Itoa(int(p.C.Map.Calendar.Month)) + ", " +
 		strconv.Itoa(int(p.C.Map.Calendar.Year))
 	stats := p.C.Country.Stats()
-	p.moneyLabel.Text = strconv.Itoa(int(stats.GlobalStats.Money))
-	p.peopleLabel.Text = strconv.Itoa(int(stats.GlobalStats.People))
-	p.artifactsLabel.Text = strconv.Itoa(int(stats.GlobalStats.Artifacts))
-	p.buildingsLabel.Text = strconv.Itoa(int(stats.GlobalStats.Buildings))
+	p.moneyLabel.Text = strconv.Itoa(int(stats.Global.Money))
+	p.peopleLabel.Text = strconv.Itoa(int(stats.Global.People))
+	p.artifactsLabel.Text = strconv.Itoa(int(stats.Global.Artifacts))
+	p.buildingsLabel.Text = strconv.Itoa(int(stats.Global.Buildings))
 	if p.dynamicPanel != nil {
 		p.dynamicPanel.Refresh()
 	}

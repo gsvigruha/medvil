@@ -157,7 +157,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 
-	if Calendar.Hour == 0 {
+	if Calendar.Hour == 0 && Calendar.Day == 30 {
 		for i := 0; i < len(h.Tasks); i++ {
 			if h.Tasks[i].IsPaused() {
 				h.Tasks[i].Pause(false)
