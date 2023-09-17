@@ -119,7 +119,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	eoMonth := (Calendar.Hour == 0 && Calendar.Day == 1)
 	if town.Marketplace != nil {
 		town.Marketplace.ElapseTime(Calendar, m)
-		s.GlobalStats.Add(town.Marketplace.Stats())
+		s.Global.Add(town.Marketplace.Stats())
 		if eoMonth {
 			town.Transfers.FundMarket(&town.Townhall.Household.Money, &town.Marketplace.Money)
 		}
@@ -131,11 +131,11 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	town.Townhall.ElapseTime(Calendar, m)
 	town.Townhall.Household.Filter(Calendar, m)
 	town.Townhall.Filter(Calendar, m)
-	s.GlobalStats.Add(town.Townhall.Household.Stats())
-	s.GovernmentStats.Add(town.Townhall.Household.Stats())
+	s.Global.Add(town.Townhall.Household.Stats())
+	s.Gov.Add(town.Townhall.Household.Stats())
 	for _, trader := range town.Townhall.Traders {
-		s.GlobalStats.Add(trader.Stats())
-		s.TraderStats.Add(trader.Stats())
+		s.Global.Add(trader.Stats())
+		s.Trader.Add(trader.Stats())
 	}
 	for k := range town.Farms {
 		farm := town.Farms[k]
@@ -145,8 +145,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		farm.ElapseTime(Calendar, m)
 		farm.Household.Filter(Calendar, m)
-		s.GlobalStats.Add(farm.Household.Stats())
-		s.FarmStats.Add(farm.Household.Stats())
+		s.Global.Add(farm.Household.Stats())
+		s.Farm.Add(farm.Household.Stats())
 	}
 	for k := range town.Workshops {
 		workshop := town.Workshops[k]
@@ -156,8 +156,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		workshop.ElapseTime(Calendar, m)
 		workshop.Household.Filter(Calendar, m)
-		s.GlobalStats.Add(workshop.Household.Stats())
-		s.WorkshopStats.Add(workshop.Household.Stats())
+		s.Global.Add(workshop.Household.Stats())
+		s.Workshop.Add(workshop.Household.Stats())
 	}
 	for k := range town.Mines {
 		mine := town.Mines[k]
@@ -167,8 +167,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		mine.ElapseTime(Calendar, m)
 		mine.Household.Filter(Calendar, m)
-		s.GlobalStats.Add(mine.Household.Stats())
-		s.MineStats.Add(mine.Household.Stats())
+		s.Global.Add(mine.Household.Stats())
+		s.Mine.Add(mine.Household.Stats())
 	}
 	for k := range town.Factories {
 		factory := town.Factories[k]
@@ -178,8 +178,8 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		factory.ElapseTime(Calendar, m)
 		factory.Household.Filter(Calendar, m)
-		s.GlobalStats.Add(factory.Household.Stats())
-		s.WorkshopStats.Add(factory.Household.Stats())
+		s.Global.Add(factory.Household.Stats())
+		s.Workshop.Add(factory.Household.Stats())
 	}
 	for k := range town.Towers {
 		tower := town.Towers[k]
@@ -189,7 +189,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		}
 		tower.ElapseTime(Calendar, m)
 		tower.Household.Filter(Calendar, m)
-		s.GlobalStats.Add(tower.Household.Stats())
+		s.Global.Add(tower.Household.Stats())
 	}
 	if eoYear {
 		CollectTax(town.Farms, town, town.Transfers.Farm)
@@ -571,7 +571,7 @@ func (town *Town) ArchiveHistory() {
 	var pt = make(map[economy.Task]uint32)
 	if town.Stats != nil {
 		town.History.Archive(town.Stats)
-		pt = town.Stats.PendingTasks
+		pt = town.Stats.PendingT
 	}
 	town.Stats = &stats.Stats{}
 	town.Stats.Init(pt)
