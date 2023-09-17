@@ -5,6 +5,8 @@ import (
 	"medvil/model/economy"
 )
 
+const MaxHistory = 1200
+
 type HistoryElement struct {
 	Stats
 }
@@ -88,6 +90,9 @@ type History struct {
 
 func (h *History) Archive(stats *Stats) {
 	h.Elements = append(h.Elements, HistoryElement{*stats})
+	if len(h.Elements) > MaxHistory { // buffer
+		h.Elements = h.Elements[len(h.Elements)-MaxHistory:]
+	}
 }
 
 func (he HistoryElement) GetFarmMoney() uint32 {

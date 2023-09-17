@@ -7,7 +7,7 @@ import (
 )
 
 const ShortPathMaxLength = 100
-const Capacity = 1000
+const Capacity = 100
 
 type BFSElement struct {
 	PE   PathElement
@@ -38,7 +38,8 @@ func FindShortPathBFS(m IMap, start Location, dest Destination, pathType PathTyp
 	r := rand.New(rand.NewSource(int64(start.X*599 + start.Y)))
 	visited := make(map[Location]*[]PathElement, Capacity)
 	se := &BFSElement{PE: m.GetField(start.X, start.Y).GetPathElement(start.Z), prev: nil, d: 1}
-	var toVisit = []*BFSElement{se}
+	var toVisit = make([]*BFSElement, 1, Capacity)
+	toVisit[0] = se
 	var inQueue = make(map[Location]bool, Capacity)
 	for len(toVisit) > 0 {
 		e := toVisit[0]
