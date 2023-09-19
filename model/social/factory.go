@@ -174,14 +174,14 @@ func (f *Factory) NumOrders(vc *economy.VehicleConstruction) int {
 	return n
 }
 
-func PickFactory(fs []*Factory, et *building.BuildingExtensionType, dest *Household, m navigation.IMap) *Factory {
+func PickFactory(fs []*Factory, et *building.BuildingExtensionType, dest *building.Building, m navigation.IMap) *Factory {
 	var f *Factory = nil
 	var orders = 1000
 	for _, fI := range fs {
 		if et == building.NonExtension || fI.Household.Building.HasExtension(et) {
 			if f == nil || orders > len(fI.Orders) {
 				if et == building.Deck {
-					if BuildingsConnectedWithWater(fI.Household.Building, dest.Building, m) {
+					if BuildingsConnectedWithWater(fI.Household.Building, dest, m) {
 						f = fI
 						orders = len(fI.Orders)
 					}

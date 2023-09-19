@@ -41,7 +41,7 @@ type Home interface {
 var water = artifacts.GetArtifact("water")
 
 func needsWater(h Home, numP uint16) bool {
-	if h.GetResources().Get(water) < economy.MinFoodOrDrinkPerPerson*numP &&
+	if h.GetResources().Get(water) <= economy.MinFoodOrDrinkPerPerson*numP &&
 		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", "water") {
 		return true
 	}

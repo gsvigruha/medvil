@@ -216,7 +216,7 @@ func (h *Household) MaybeBuyExtras(a *artifacts.Artifact, threshold uint16, tag 
 
 func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap) {
 	if h.NumDecks() > h.numVehicles(vehicles.Boat) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
-		factory := PickFactory(h.Town.Factories, building.Deck, h, m)
+		factory := PickFactory(h.Town.Factories, building.Deck, h.Building, m)
 		deckField := h.GetUnallocatedDeck(m)
 		if deckField != nil {
 			if factory != nil && factory.Price(economy.BoatConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
@@ -238,7 +238,7 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 
 func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap) {
 	if h.numVehicles(vehicles.Cart) < len(h.People)/2 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
-		factory := PickFactory(h.Town.Factories, building.NonExtension, h, m)
+		factory := PickFactory(h.Town.Factories, building.NonExtension, h.Building, m)
 		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			order := factory.CreateOrder(economy.CartConstruction, h)
 			if order != nil {
