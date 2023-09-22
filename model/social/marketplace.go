@@ -40,6 +40,7 @@ func (mp *Marketplace) Init() {
 	for _, a := range artifacts.All {
 		mp.Prices[a] = 10
 		mp.Reset(a)
+		mp.Storage.Add(a, 0)
 		for _, m := range economy.AllManufacture {
 			for _, o := range m.Outputs {
 				if a == o.A {
