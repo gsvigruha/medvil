@@ -71,13 +71,15 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 		writer.WriteString("{")
 		var first bool = true
 		for _, key := range v.MapKeys() {
-			if !first {
-				writer.WriteString(", ")
+			if t.Kind() != reflect.Ptr || !key.IsNil() {
+				if !first {
+					writer.WriteString(", ")
+				}
+				SerializeObject(key.Interface(), writer)
+				writer.WriteString(": ")
+				SerializeObject(v.MapIndex(key).Interface(), writer)
+				first = false
 			}
-			SerializeObject(key.Interface(), writer)
-			writer.WriteString(": ")
-			SerializeObject(v.MapIndex(key).Interface(), writer)
-			first = false
 		}
 		writer.WriteString("}")
 	case reflect.Ptr:

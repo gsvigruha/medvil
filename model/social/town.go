@@ -78,7 +78,7 @@ type Town struct {
 	Name          string
 }
 
-func (town *Town) Init() {
+func (town *Town) Init(historyLength int) {
 	defaultTransfers := TransferCategories{
 		Rate:      30,
 		Threshold: 200,
@@ -96,7 +96,7 @@ func (town *Town) Init() {
 		Trader:            defaultTransfers,
 		MarketFundingRate: 70,
 	}
-	town.History = &stats.History{}
+	town.History = &stats.History{Elements: make([]stats.HistoryElement, historyLength)}
 	town.ArchiveHistory()
 
 	town.Townhall.StorageTarget = make(map[*artifacts.Artifact]int)
