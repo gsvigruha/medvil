@@ -14,6 +14,12 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 		p.AddTextureLabel("terrain/"+f.Deposit.T.Name, 24, FieldGUIY*ControlPanelSY+LargeIconD, 120, 80)
 		p.AddTextLabel(ArtifactQStr(f.Deposit.Q), 160, FieldGUIY*ControlPanelSY+LargeIconD+40)
 	}
+	if f.Plant != nil {
+
+	}
+	if f.Animal != nil {
+
+	}
 	var aI = 0
 	for a, q := range f.Terrain.Resources.Artifacts {
 		ArtifactsToControlPanel(p, aI, a, q, ArtifactsGUIY*ControlPanelSY)

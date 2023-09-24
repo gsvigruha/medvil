@@ -115,6 +115,10 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 		}
 		TaskToControlPanel(cp, p, i%tirm, TaskGUIY*ControlPanelSY+float64(i/tirm*IconH), task, tiw)
 	}
+	p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/boat", X: 24, Y: VehicleGUIY * ControlPanelSY, SX: IconS, SY: IconS},
+		Highlight: func() bool { return h.IsBoatEnabled() },
+		ClickImpl: func() { h.BoatEnabled = !h.BoatEnabled }})
 	for i, vehicle := range h.Vehicles {
 		VehicleToControlPanel(p, i, VehicleGUIY*ControlPanelSY, vehicle, IconW)
 	}
@@ -170,5 +174,5 @@ func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Veh
 	if !vehicle.InUse {
 		style = gui.ImageLabelStyleDisabled
 	}
-	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(24+i*w), y, IconS, IconS, style)
+	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(24+i*w+IconW), y, IconS, IconS, style)
 }
