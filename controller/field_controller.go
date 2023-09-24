@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"github.com/tfriedel6/canvas"
 	"medvil/model/navigation"
 	"medvil/view/gui"
+	"strconv"
 )
 
 var FieldGUIY = 0.15
@@ -18,7 +20,10 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 
 	}
 	if f.Animal != nil {
-
+		p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {
+			cv.DrawImage("texture/terrain/"+f.Animal.T.Name+"_0.png", 24, FieldGUIY*ControlPanelSY+LargeIconD+float64(IconH*2), 64, 64)
+		}})
+		p.AddTextLabel(strconv.Itoa(int(f.Animal.AgeYears(cp.C.Map.Calendar)))+" years", 100, FieldGUIY*ControlPanelSY+LargeIconD+float64(IconH*2)+32)
 	}
 	var aI = 0
 	for a, q := range f.Terrain.Resources.Artifacts {

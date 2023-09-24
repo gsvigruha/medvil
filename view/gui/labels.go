@@ -147,3 +147,13 @@ func (l *DynamicImageLabel) Render(cv *canvas.Canvas) {
 }
 
 func (l *DynamicImageLabel) CaptureClick(x float64, y float64) {}
+
+type CustomImageLabel struct {
+	RenderFn func(cv *canvas.Canvas)
+}
+
+func (l *CustomImageLabel) Render(cv *canvas.Canvas) {
+	l.RenderFn(cv)
+}
+
+func (l *CustomImageLabel) CaptureClick(x float64, y float64) {}
