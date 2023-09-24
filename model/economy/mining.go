@@ -38,27 +38,38 @@ func (t *MiningTask) Destination() navigation.Destination {
 	return t.F
 }
 
+func (t *MiningTask) mine(a *artifacts.Artifact, q uint16) {
+	if q > t.F.Deposit.Q {
+		t.F.Terrain.Resources.Add(a, q)
+		t.F.Deposit.Q -= q
+	} else {
+		q = t.F.Deposit.Q
+		t.F.Terrain.Resources.Add(a, q)
+		t.F.Deposit = nil
+	}
+}
+
 func (t *MiningTask) Complete(Calendar *time.CalendarType, tool bool) bool {
 	t.Progress++
 	switch t.UseType {
 	case MineFieldUseTypeStone:
 		if t.Progress >= MineTaskDurationStone {
-			t.F.Terrain.Resources.Add(stone, MineTaskQuantityStone)
+			t.mine(stone, MineTaskQuantityStone)
 			return true
 		}
 	case MineFieldUseTypeClay:
 		if t.Progress >= MineTaskDurationClay {
-			t.F.Terrain.Resources.Add(clay, MineTaskQuantityClay)
+			t.mine(clay, MineTaskQuantityClay)
 			return true
 		}
 	case MineFieldUseTypeIron:
 		if t.Progress >= MineTaskDurationIron {
-			t.F.Terrain.Resources.Add(iron, MineTaskQuantityIron)
+			t.mine(iron, MineTaskQuantityIron)
 			return true
 		}
 	case MineFieldUseTypeGold:
 		if t.Progress >= MineTaskDurationGold {
-			t.F.Terrain.Resources.Add(gold, MineTaskQuantityGold)
+			t.mine(gold, MineTaskQuantityGold)
 			return true
 		}
 	}

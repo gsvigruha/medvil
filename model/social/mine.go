@@ -81,16 +81,19 @@ func (m *Mine) AddTransportTask(l MineLand, imap navigation.IMap) {
 }
 
 func CheckMineUseType(useType uint8, f *navigation.Field) bool {
-	if useType == economy.MineFieldUseTypeStone && f.Terrain.T == terrain.Rock {
+	if f.Deposit == nil {
+		return false
+	}
+	if useType == economy.MineFieldUseTypeStone && f.Deposit.T == terrain.Rock {
 		return true
 	}
-	if useType == economy.MineFieldUseTypeClay && f.Terrain.T == terrain.Mud {
+	if useType == economy.MineFieldUseTypeClay && f.Deposit.T == terrain.Mud {
 		return true
 	}
-	if useType == economy.MineFieldUseTypeIron && f.Terrain.T == terrain.IronBog {
+	if useType == economy.MineFieldUseTypeIron && f.Deposit.T == terrain.IronBog {
 		return true
 	}
-	if useType == economy.MineFieldUseTypeGold && f.Terrain.T == terrain.Gold {
+	if useType == economy.MineFieldUseTypeGold && f.Deposit.T == terrain.Gold {
 		return true
 	}
 	return false

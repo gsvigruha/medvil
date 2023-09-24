@@ -14,6 +14,11 @@ func RenderField(ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f
 	fieldImg := ic.Fic.RenderFieldOnBuffer(f, rf, c)
 	cv.DrawImage(fieldImg, xMin, yMin)
 
+	if f.Deposit != nil {
+		xMid, yMid := rf.MidScreenPoint()
+		cv.DrawImage("texture/terrain/"+f.Deposit.T.Name+".png", xMid-60, yMid-40, 120, 80)
+	}
+
 	if f.Construction || f.Road != nil {
 		RenderRoad(cv, rf, f, c)
 	}

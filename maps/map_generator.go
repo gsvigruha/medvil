@@ -70,21 +70,21 @@ func setupTerrain(m *model.Map, config MapConfig) {
 				if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil {
 					if fields[i][j].Terrain.T == terrain.Grass && fields[i][j].Flat() {
 						if rand.Float64() < 0.66 {
-							fields[i][j].Terrain.T = terrain.Mud
+							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Mud, Q: artifacts.InfiniteQuantity}
 						} else {
-							fields[i][j].Terrain.T = terrain.Rock
+							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Rock, Q: artifacts.InfiniteQuantity}
 						}
 					} else if fields[i][j].Terrain.T == terrain.Grass && !fields[i][j].Flat() {
 						if rand.Float64() < 0.66 {
-							fields[i][j].Terrain.T = terrain.IronBog
+							fields[i][j].Deposit = &terrain.Deposit{T: terrain.IronBog, Q: uint16(rand.Intn(5000))}
 						} else {
-							fields[i][j].Terrain.T = terrain.Rock
+							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Rock, Q: artifacts.InfiniteQuantity}
 						}
 					}
 				}
 			} else {
 				if rand.Intn(ResourcesProb) < config.Resources*2 {
-					fields[i][j].Terrain.T = terrain.Gold
+					fields[i][j].Deposit = &terrain.Deposit{T: terrain.Gold, Q: uint16(rand.Intn(5000))}
 				}
 			}
 			if fields[i][j].Terrain.T == terrain.Water {
@@ -184,14 +184,16 @@ func findStartingLocation(m *model.Map) (int, int) {
 									water = true
 								}
 							}
-							if f.Terrain.T == terrain.Rock {
-								rock++
-							} else if f.Terrain.T == terrain.Gold {
-								gold++
-							} else if f.Terrain.T == terrain.IronBog {
-								iron++
-							} else if f.Terrain.T == terrain.Mud {
-								mud++
+							if f.Deposit != nil {
+								if f.Deposit.T == terrain.Rock {
+									rock++
+								} else if f.Deposit.T == terrain.Gold {
+									gold++
+								} else if f.Deposit.T == terrain.IronBog {
+									iron++
+								} else if f.Deposit.T == terrain.Mud {
+									mud++
+								}
 							}
 						}
 					}

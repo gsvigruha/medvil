@@ -87,19 +87,11 @@ func LoadFields(dir string, m *model.Map) {
 				m.Fields[i][j].Terrain.T = terrain.Grass
 			case "S":
 				m.Fields[i][j].Terrain.T = terrain.Sand
-			case "R":
-				m.Fields[i][j].Terrain.T = terrain.Rock
-			case "I":
-				m.Fields[i][j].Terrain.T = terrain.IronBog
 			case "D":
 				m.Fields[i][j].Terrain.T = terrain.Dirt
-			case "M":
-				m.Fields[i][j].Terrain.T = terrain.Mud
 			case "W":
 				m.Fields[i][j].Terrain.T = terrain.Water
 				m.Fields[i][j].Terrain.Resources.Add(artifacts.GetArtifact("water"), artifacts.InfiniteQuantity)
-			case "N":
-				m.Fields[i][j].Terrain.T = terrain.Gold
 			}
 			if m.Fields[i][j].Terrain.T == terrain.Grass {
 				m.Fields[i][j].Terrain.Shape = uint8(rand.Intn(4))
