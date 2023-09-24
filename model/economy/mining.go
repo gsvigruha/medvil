@@ -39,6 +39,9 @@ func (t *MiningTask) Destination() navigation.Destination {
 }
 
 func (t *MiningTask) mine(a *artifacts.Artifact, q uint16) {
+	if t.F.Deposit == nil {
+		return
+	}
 	if t.F.Deposit.Q == artifacts.InfiniteQuantity {
 		t.F.Terrain.Resources.Add(a, q)
 	} else if q < t.F.Deposit.Q {
