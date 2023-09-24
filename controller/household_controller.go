@@ -136,11 +136,19 @@ func PersonToPanel(cp *ControlPanel, p *gui.Panel, i int, person *social.Person,
 	}
 }
 
+func ArtifactQStr(q uint16) string {
+	var qStr = strconv.Itoa(int(q))
+	if q == artifacts.InfiniteQuantity {
+		qStr = "∞"
+	}
+	return qStr
+}
+
 func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
 	xI := i % IconRowMax
 	yI := i / IconRowMax
 	p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*IconW), top+float64(yI*IconH), IconS, IconS, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
+	p.AddTextLabel(ArtifactQStr(q), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 
 func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task economy.Task, w int) {

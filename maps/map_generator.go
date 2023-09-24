@@ -76,7 +76,7 @@ func setupTerrain(m *model.Map, config MapConfig) {
 						}
 					} else if fields[i][j].Terrain.T == terrain.Grass && !fields[i][j].Flat() {
 						if rand.Float64() < 0.66 {
-							fields[i][j].Deposit = &terrain.Deposit{T: terrain.IronBog, Q: uint16(rand.Intn(5000))}
+							fields[i][j].Deposit = &terrain.Deposit{T: terrain.IronBog, Q: uint16((rand.Intn(5) + 1) * 1000)}
 						} else {
 							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Rock, Q: artifacts.InfiniteQuantity}
 						}
@@ -84,7 +84,7 @@ func setupTerrain(m *model.Map, config MapConfig) {
 				}
 			} else {
 				if rand.Intn(ResourcesProb) < config.Resources*2 {
-					fields[i][j].Deposit = &terrain.Deposit{T: terrain.Gold, Q: uint16(rand.Intn(5000))}
+					fields[i][j].Deposit = &terrain.Deposit{T: terrain.Gold, Q: uint16((rand.Intn(5) + 1) * 1000)}
 				}
 			}
 			if fields[i][j].Terrain.T == terrain.Water {
