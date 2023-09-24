@@ -40,6 +40,7 @@ type Household struct {
 	Vehicles        []*vehicles.Vehicle
 	Resources       *artifacts.Resources
 	Heating         uint8
+	BoatEnabled     bool
 }
 
 func (h *Household) NextTask(m navigation.IMap, e *economy.EquipmentType) economy.Task {
@@ -673,4 +674,8 @@ func (h *Household) GetUnallocatedDeck(m navigation.IMap) *navigation.Field {
 
 func (h *Household) IsHomeVehicle() bool {
 	return false
+}
+
+func (h *Household) IsBoatEnabled() bool {
+	return h.BoatEnabled
 }

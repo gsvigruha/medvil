@@ -115,6 +115,10 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 		}
 		TaskToControlPanel(cp, p, i%tirm, TaskGUIY*ControlPanelSY+float64(i/tirm*IconH), task, tiw)
 	}
+	p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/boat", X: 24, Y: VehicleGUIY * ControlPanelSY, SX: IconS, SY: IconS},
+		Highlight: func() bool { return h.IsBoatEnabled() },
+		ClickImpl: func() { h.BoatEnabled = !h.BoatEnabled }})
 	for i, vehicle := range h.Vehicles {
 		VehicleToControlPanel(p, i, VehicleGUIY*ControlPanelSY, vehicle, IconW)
 	}
@@ -136,11 +140,19 @@ func PersonToPanel(cp *ControlPanel, p *gui.Panel, i int, person *social.Person,
 	}
 }
 
+func ArtifactQStr(q uint16) string {
+	var qStr = strconv.Itoa(int(q))
+	if q == artifacts.InfiniteQuantity {
+		qStr = "∞"
+	}
+	return qStr
+}
+
 func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
 	xI := i % IconRowMax
 	yI := i / IconRowMax
 	p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*IconW), top+float64(yI*IconH), IconS, IconS, gui.ImageLabelStyleRegular)
-	p.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
+	p.AddTextLabel(ArtifactQStr(q), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 
 func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task economy.Task, w int) {
@@ -162,5 +174,5 @@ func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Veh
 	if !vehicle.InUse {
 		style = gui.ImageLabelStyleDisabled
 	}
-	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(24+i*w), y, IconS, IconS, style)
+	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(24+i*w+IconW), y, IconS, IconS, style)
 }

@@ -75,7 +75,7 @@ func BuildingsConnectedWithWater(b1, b2 *building.Building, m navigation.IMap) b
 }
 
 func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
-	waterOk := h.GetBuilding() == nil || BuildingsConnectedWithWater(h.GetBuilding(), mp.Building, m)
+	waterOk := h.GetBuilding() == nil || (BuildingsConnectedWithWater(h.GetBuilding(), mp.Building, m) && h.IsBoatEnabled())
 	var vehicle *vehicles.Vehicle
 	var buildingCheckFn = navigation.Field.BuildingNonExtension
 	var buildingExtension = building.NonExtension
@@ -83,7 +83,7 @@ func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
 	var maxVolume uint16 = 0
 	var batchStart = true
 
-	var tasks []economy.Task
+	var tasks []economy.Task = make([]economy.Task, 0, len(h.GetTasks()))
 	for _, ot := range h.GetTasks() {
 		if batchStart {
 			vehicle = h.AllocateVehicle(waterOk)

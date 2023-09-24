@@ -142,7 +142,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if p.Happiness < MaxPersonState {
 				p.Happiness++
 			}
-			if p.Health < MaxPersonState {
+			if p.Health < MaxPersonState && p.Food > 0 && p.Water > 0 {
 				p.Health++
 			}
 		}

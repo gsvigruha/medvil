@@ -249,3 +249,7 @@ func (t *Trader) GetExchange() economy.Exchange {
 func (t *Trader) IsHomeVehicle() bool {
 	return true
 }
+
+func (t *Trader) IsBoatEnabled() bool {
+	return true
+}

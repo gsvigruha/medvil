@@ -81,16 +81,19 @@ func (m *Mine) AddTransportTask(l MineLand, imap navigation.IMap) {
 }
 
 func CheckMineUseType(useType uint8, f *navigation.Field) bool {
-	if useType == economy.MineFieldUseTypeStone && f.Terrain.T == terrain.Rock {
+	if f.Deposit == nil {
+		return false
+	}
+	if useType == economy.MineFieldUseTypeStone && f.Deposit.T == terrain.Rock {
 		return true
 	}
-	if useType == economy.MineFieldUseTypeClay && f.Terrain.T == terrain.Mud {
+	if useType == economy.MineFieldUseTypeClay && f.Deposit.T == terrain.Mud {
 		return true
 	}
-	if useType == economy.MineFieldUseTypeIron && f.Terrain.T == terrain.IronBog {
+	if useType == economy.MineFieldUseTypeIron && f.Deposit.T == terrain.IronBog {
 		return true
 	}
-	if useType == economy.MineFieldUseTypeGold && f.Terrain.T == terrain.Gold {
+	if useType == economy.MineFieldUseTypeGold && f.Deposit.T == terrain.Gold {
 		return true
 	}
 	return false
@@ -104,7 +107,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 			m.AddTransportTask(land, imap)
 			tag := economy.MiningTaskTag(land.F, land.UseType)
 			if m.Household.NumTasks("mining", tag) < numP {
-				if CheckMineUseType(land.UseType, land.F) && land.F.Terrain.Resources.IsEmpty() {
+				if CheckMineUseType(land.UseType, land.F) {
 					m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
 				}
 			}

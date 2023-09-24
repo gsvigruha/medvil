@@ -133,6 +133,8 @@ func LoadStaticType(t reflect.Type, key string) reflect.Value {
 		return reflect.ValueOf(economy.GetVehicleConstruction(key))
 	case "StatueType":
 		return reflect.ValueOf(building.GetStatueType(key))
+	case "DepositType":
+		return reflect.ValueOf(terrain.GetDepositType(key))
 	}
 	panic("Invalid type " + t.Elem().Name())
 }

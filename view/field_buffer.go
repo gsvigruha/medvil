@@ -19,7 +19,7 @@ type FieldImageCache struct {
 }
 
 func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField, season uint8, phase int) {
-	if f.Terrain.T == terrain.Grass || f.Terrain.T.Object {
+	if f.Terrain.T == terrain.Grass {
 		if season == 3 {
 			cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		} else if season == 2 {
@@ -27,7 +27,7 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 		} else {
 			cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
 		}
-	} else if f.Terrain.T == terrain.Water || f.Terrain.T == terrain.Gold {
+	} else if f.Terrain.T == terrain.Water {
 		cv.SetFillStyle("texture/terrain/water_" + strconv.Itoa(int(f.Terrain.Shape)) + "_" + strconv.Itoa(phase) + ".png")
 	} else {
 		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
@@ -35,12 +35,6 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 
 	rf.Draw(cv)
 	cv.Fill()
-
-	if f.Terrain.T.Object || f.Terrain.T == terrain.Gold {
-		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
-		rf.Draw(cv)
-		cv.Fill()
-	}
 
 	if !f.Flat() && (f.SE+f.SW) < (f.NE+f.NW)+4 {
 		slope := 4 + (f.NE + f.NW) - (f.SE + f.SW)
