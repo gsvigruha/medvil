@@ -83,7 +83,7 @@ func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
 	var maxVolume uint16 = 0
 	var batchStart = true
 
-	var tasks []economy.Task
+	var tasks []economy.Task = make([]economy.Task, 0, len(h.GetTasks()))
 	for _, ot := range h.GetTasks() {
 		if batchStart {
 			vehicle = h.AllocateVehicle(waterOk)
