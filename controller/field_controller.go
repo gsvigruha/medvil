@@ -14,12 +14,8 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
 	p.AddTextureLabel("terrain/"+f.Terrain.T.Name, 24, FieldGUIY*ControlPanelSY, LargeIconS, LargeIconS)
 	if f.Deposit != nil {
-		p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {
-			if f.Deposit != nil {
-				cv.DrawImage("texture/terrain/"+f.Deposit.T.Name+".png", 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS)
-			}
-		}})
-		p.AddTextLabel(ArtifactQStr(f.Deposit.Q), 160, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)
+		p.AddImageLabel("terrain/"+f.Deposit.T.Name, 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+		p.AddTextLabel(ArtifactQStr(f.Deposit.Q), 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)
 	}
 	if f.Plant != nil {
 		if f.Plant.T.TreeT != nil {
@@ -35,10 +31,10 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	if f.Animal != nil {
 		p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {
 			if f.Animal != nil {
-				cv.DrawImage("texture/terrain/"+f.Animal.T.Name+"_0.png", 24, FieldGUIY*ControlPanelSY+LargeIconD, 64, 64)
+				cv.DrawImage("texture/terrain/"+f.Animal.T.Name+"_0.png", 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS)
 			}
 		}})
-		p.AddTextLabel(strconv.Itoa(int(f.Animal.AgeYears(cp.C.Map.Calendar)))+" years", 100, FieldGUIY*ControlPanelSY+LargeIconD+32)
+		p.AddTextLabel(strconv.Itoa(int(f.Animal.AgeYears(cp.C.Map.Calendar)))+" years", 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)
 	}
 	if f.Road != nil && !f.Road.Construction {
 		if f.Road.Broken {
