@@ -5,6 +5,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/view/gui"
 	"strconv"
+	"strings"
 )
 
 var FieldGUIY = 0.15
@@ -22,7 +23,7 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	}
 	if f.Plant != nil {
 		if f.Plant.T.TreeT != nil {
-
+			p.AddImageLabel("infra/"+strings.Replace(f.Plant.T.Name, " ", "_", -1), 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconD, LargeIconD, gui.ImageLabelStyleRegular)
 		} else {
 			p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {
 				if f.Plant != nil {
