@@ -16,18 +16,18 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	if f.Deposit != nil {
 		p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {
 			if f.Deposit != nil {
-				cv.DrawImage("texture/terrain/"+f.Deposit.T.Name+".png", 24, FieldGUIY*ControlPanelSY+LargeIconD, 120, 80)
+				cv.DrawImage("texture/terrain/"+f.Deposit.T.Name+".png", 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS)
 			}
 		}})
-		p.AddTextLabel(ArtifactQStr(f.Deposit.Q), 160, FieldGUIY*ControlPanelSY+LargeIconD+40)
+		p.AddTextLabel(ArtifactQStr(f.Deposit.Q), 160, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)
 	}
 	if f.Plant != nil {
 		if f.Plant.T.TreeT != nil {
-			p.AddImageLabel("infra/"+strings.Replace(f.Plant.T.Name, " ", "_", -1), 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconD, LargeIconD, gui.ImageLabelStyleRegular)
+			p.AddImageLabel("infra/"+strings.Replace(f.Plant.T.Name, " ", "_", -1), 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 		} else {
 			p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {
 				if f.Plant != nil {
-					cv.DrawImage("texture/terrain/"+f.Plant.T.Name+".png", 24, FieldGUIY*ControlPanelSY+LargeIconD, 120, 108)
+					cv.DrawImage("texture/terrain/"+f.Plant.T.Name+".png", 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS)
 				}
 			}})
 		}
