@@ -130,6 +130,9 @@ func (f Field) Empty() bool {
 	if f.Plant != nil {
 		return false
 	}
+	if f.Deposit != nil {
+		return false
+	}
 	if f.Road != nil {
 		return false
 	}
@@ -226,6 +229,9 @@ func (f Field) RoadCompatible() bool {
 	if f.Animal != nil {
 		return false
 	}
+	if f.Deposit != nil {
+		return false
+	}
 	if f.Allocated {
 		return false
 	}
@@ -248,6 +254,9 @@ func (f Field) StatueCompatible() bool {
 	if f.Animal != nil {
 		return false
 	}
+	if f.Deposit != nil {
+		return false
+	}
 	if !f.Walkable() {
 		return false
 	}
@@ -262,6 +271,9 @@ func (f Field) Arable() bool {
 		return false
 	}
 	if f.Animal != nil {
+		return false
+	}
+	if f.Deposit != nil {
 		return false
 	}
 	if f.Road != nil {
@@ -281,6 +293,9 @@ func (f Field) Plantable() bool {
 		return false
 	}
 	if f.Animal != nil {
+		return false
+	}
+	if f.Deposit != nil {
 		return false
 	}
 	if f.Statue != nil {
