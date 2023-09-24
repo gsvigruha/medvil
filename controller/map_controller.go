@@ -36,11 +36,7 @@ func MapToControlPanel(cp *ControlPanel) {
 	cv := canvas.New(offscreen)
 	for i, fields := range cp.C.Map.Fields {
 		for j, field := range fields {
-			if field.Terrain.T == terrain.Water {
-				cv.SetFillStyle("#48D")
-			} else if field.Terrain.T == terrain.Grass {
-				cv.SetFillStyle(color.RGBA{R: 0, G: 128 - field.NW, B: 0, A: 255})
-			} else if field.Deposit != nil {
+			if field.Deposit != nil {
 				if field.Deposit.T == terrain.IronBog {
 					cv.SetFillStyle("#A22")
 				} else if field.Deposit.T == terrain.Gold {
@@ -50,6 +46,10 @@ func MapToControlPanel(cp *ControlPanel) {
 				} else if field.Deposit.T == terrain.Rock {
 					cv.SetFillStyle("#BBB")
 				}
+			} else if field.Terrain.T == terrain.Water {
+				cv.SetFillStyle("#48D")
+			} else if field.Terrain.T == terrain.Grass {
+				cv.SetFillStyle(color.RGBA{R: 0, G: 128 - field.NW, B: 0, A: 255})
 			}
 			if field.Building.GetBuilding() != nil {
 				bt := field.Building.GetBuilding().Plan.BuildingType
