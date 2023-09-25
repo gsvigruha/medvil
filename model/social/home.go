@@ -37,6 +37,7 @@ type Home interface {
 	GetExchange() economy.Exchange
 	IsHomeVehicle() bool
 	IsBoatEnabled() bool
+	AssignPerson(*Person, navigation.IMap)
 }
 
 var water = artifacts.GetArtifact("water")

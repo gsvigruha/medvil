@@ -101,7 +101,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			p.Task.SetUp(p.Traveller, p.Home, p)
 			p.Home.GetTown().Stats.StartTask(p.Task, Calendar)
 		} else if !p.IsHome {
-			p.Task = &economy.GoHomeTask{F: home, P: p}
+			p.Task = &economy.GoHomeTask{D: home, P: p}
 		}
 	}
 	p.Traveller.SetHome(p.Home.GetBuilding() != nil && p.Home.GetBuilding() == m.GetField(p.Traveller.FX, p.Traveller.FY).Building.GetBuilding())

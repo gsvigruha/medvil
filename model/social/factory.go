@@ -181,7 +181,7 @@ func PickFactory(fs []*Factory, et *building.BuildingExtensionType, dest *buildi
 		if et == building.NonExtension || fI.Household.Building.HasExtension(et) {
 			if f == nil || orders > len(fI.Orders) {
 				if et == building.Deck {
-					if BuildingsConnectedWithWater(fI.Household.Building, dest, m) {
+					if dest == nil || BuildingsConnectedWithWater(fI.Household.Building, dest, m) {
 						f = fI
 						orders = len(fI.Orders)
 					}

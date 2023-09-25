@@ -96,7 +96,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				h.Town.Townhall.Household.People = append(h.Town.Townhall.Household.People, person)
 				person.Traveller.FX = h.Building.X
 				person.Traveller.FY = h.Building.Y
-				person.Task = &economy.GoHomeTask{F: m.GetField(h.Town.Townhall.Household.Building.X, h.Town.Townhall.Household.Building.Y), P: person}
+				person.Task = &economy.GoHomeTask{D: m.GetField(h.Town.Townhall.Household.Building.X, h.Town.Townhall.Household.Building.Y), P: person}
 			}
 		}
 		if h.HasSurplusPeople() && h.Town.Townhall.Household.HasRoomForPeople() {
@@ -483,14 +483,14 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			h.Town.Stats.RegisterDeparture()
 			if town != nil {
 				town.Townhall.Household.AssignPerson(p, m)
-				p.Task = &economy.GoHomeTask{F: m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y), P: p}
+				p.Task = &economy.GoHomeTask{D: m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y), P: p}
 			} else {
 				m.GetField(p.Traveller.FX, p.Traveller.FY).UnregisterTraveller(p.Traveller)
 			}
 		} else if guard := m.GetNearbyGuard(p.Traveller); guard != nil && h.Town.Country.T == CountryTypeOutlaw {
 			th := guard.Home.GetTown().Townhall
 			th.Household.AssignPerson(p, m)
-			p.Task = &economy.GoHomeTask{F: m.GetField(th.Household.Building.X, th.Household.Building.Y), P: p}
+			p.Task = &economy.GoHomeTask{D: m.GetField(th.Household.Building.X, th.Household.Building.Y), P: p}
 		} else if p.Home == h {
 			newPeople = append(newPeople, p)
 		}
@@ -565,13 +565,13 @@ func (h *Household) HasFreePerson() bool {
 	return false
 }
 
-func (srcH *Household) ReassignFirstPerson(dstH *Household, assingTask bool, m navigation.IMap) {
+func (srcH *Household) ReassignFirstPerson(dstH Home, assingTask bool, m navigation.IMap) {
 	for pi, person := range srcH.People {
 		if person.Task == nil {
 			srcH.People = append(srcH.People[:pi], srcH.People[pi+1:]...)
 			dstH.AssignPerson(person, m)
 			if assingTask {
-				person.Task = &economy.GoHomeTask{F: m.GetField(dstH.Building.X, dstH.Building.Y), P: person}
+				person.Task = &economy.GoHomeTask{D: dstH.Destination(building.NonExtension), P: person}
 			}
 			break
 		}
