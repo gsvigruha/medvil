@@ -253,3 +253,6 @@ func (t *Trader) IsHomeVehicle() bool {
 func (t *Trader) IsBoatEnabled() bool {
 	return true
 }
+
+func (t *Trader) AssignPerson(person *Person, m navigation.IMap) {
+}

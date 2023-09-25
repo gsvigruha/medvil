@@ -54,7 +54,7 @@ type RelaxTask struct {
 
 type GoHomeTask struct {
 	TaskBase
-	F *navigation.Field
+	D navigation.Destination
 	P Person
 }
 
@@ -180,7 +180,7 @@ func (t *RelaxTask) Motion() uint8 {
 }
 
 func (t *GoHomeTask) Destination() navigation.Destination {
-	return t.F
+	return t.D
 }
 
 func (t *GoHomeTask) Complete(Calendar *time.CalendarType, tool bool) bool {

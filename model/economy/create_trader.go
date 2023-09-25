@@ -8,6 +8,7 @@ import (
 
 type Townhall interface {
 	CreateTrader(v *vehicles.Vehicle, p Person)
+	CreateExpedition(v *vehicles.Vehicle, p Person)
 }
 
 type CreateTraderTask struct {

@@ -332,9 +332,8 @@ func CreateExpeditionButtonForTownhall(x, y float64, th *social.Townhall, vc *ec
 			factory := social.PickFactory(h.Town.Factories, vc.BuildingExtensionType, th.Household.Building, m)
 			order := factory.CreateOrder(vc, h)
 			if order != nil {
-				h.AddTask(&economy.FactoryPickupTask{
+				h.AddTask(&economy.CreateExpeditionTask{
 					PickupD:  factory.Household.Destination(building.NonExtension),
-					DropoffD: h.Destination(vc.BuildingExtensionType),
 					Order:    order,
 					TaskBase: economy.TaskBase{FieldCenter: true},
 				})

@@ -12,6 +12,7 @@ type Townhall struct {
 	Household     *Household
 	StorageTarget map[*artifacts.Artifact]int
 	Traders       []*Trader
+	Expeditions   []*Expedition
 }
 
 const StorageRefillBudgetPercentage = 0.5
@@ -138,6 +139,27 @@ func (t *Townhall) getTraderDestField(trader *Trader, m navigation.IMap) *naviga
 		}
 	}
 	return nil
+}
+
+func (t *Townhall) CreateExpedition(v *vehicles.Vehicle, p economy.Person) {
+	for _, pI := range t.Household.People {
+		person := p.(*Person)
+		if pI == person {
+			var r artifacts.Resources
+			r.Init(v.T.MaxVolume)
+			expedition := &Expedition{
+				Money:     0,
+				People:    []*Person{person},
+				Vehicle:   v,
+				Resources: &r,
+				Town:      t.Household.Town,
+			}
+			t.Expeditions = append(t.Expeditions, expedition)
+			person.Home = expedition
+			person.SetHome()
+			return
+		}
+	}
 }
 
 func (t *Townhall) CreateTrader(v *vehicles.Vehicle, p economy.Person) {
