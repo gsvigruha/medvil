@@ -31,7 +31,7 @@ func (e *Expedition) CloseToTown(m navigation.IMap) bool {
 	if e.Vehicle.T.Water && !m.Shore(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY) {
 		return false
 	}
-	return e.DistanceToTown() <= 5
+	return e.DistanceToTown() <= 15
 }
 
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -219,4 +219,16 @@ func (e *Expedition) IsBoatEnabled() bool {
 func (e *Expedition) AssignPerson(person *Person, m navigation.IMap) {
 	person.Home = e
 	e.People = append(e.People, person)
+}
+
+func (e *Expedition) IncTargetNumPeople() {
+	if e.TargetNumPeople < 5 {
+		e.TargetNumPeople++
+	}
+}
+
+func (e *Expedition) DecTargetNumPeople() {
+	if e.TargetNumPeople > 0 {
+		e.TargetNumPeople--
+	}
 }
