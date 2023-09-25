@@ -108,6 +108,9 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	for _, trader := range t.Traders {
 		trader.ElapseTime(Calendar, m)
 	}
+	for _, expedition := range t.Expeditions {
+		expedition.ElapseTime(Calendar, m)
+	}
 }
 
 func (t *Townhall) GetFields() []navigation.FieldWithContext {

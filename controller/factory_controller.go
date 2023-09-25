@@ -107,5 +107,8 @@ func CreateOrderPanelForFactory(x, y float64, factory *social.Factory, vc *econo
 		orders:    orders,
 		m:         m,
 	})
+	for i, as := range vc.Inputs {
+		ArtifactsToControlPanel(p, i+5, as.A, as.Quantity, y-float64(IconH)*2/3)
+	}
 	return p
 }

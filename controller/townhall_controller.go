@@ -8,7 +8,6 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/social"
-	"medvil/model/vehicles"
 	"medvil/renderer"
 	"medvil/view/gui"
 	"strconv"
@@ -181,37 +180,48 @@ func RefreshSubPanels(tc *TownhallController) {
 		aI++
 	}
 
-	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Trader }) {
-		tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
-	}
-	for i := 0; i < th.Household.NumTasks("create_trader", ""); i++ {
-		tc.traderPanel.AddImageLabel("tasks/factory_pickup", float64(24+i*IconW), top+ControlPanelSY*0.15, IconS, IconS, gui.ImageLabelStyleRegular)
-	}
-
 	traderTop := top + ControlPanelSY*0.20
-	for i, t := range th.Traders {
-		tc.traderPanel.AddButton(CreateTraderButton(float64(24+i*IconW), traderTop, tc, t))
-	}
-	if tc.activeTrader != nil {
-		MoneyToControlPanel(tc.traderPanel, &th.Household.Money, &tc.activeTrader.Money, 24, 10, traderTop+float64(IconH)+IconS)
-		for i, task := range tc.activeTrader.Tasks {
-			TaskToControlPanel(tc.cp, tc.traderPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
+	{
+		for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Trader }) {
+			tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
 		}
-		if tc.activeTrader.SourceExchange != nil {
-			tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*5), IconS, IconS, gui.ImageLabelStyleRegular)
-			tc.traderPanel.AddTextLabel(tc.activeTrader.SourceExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH)*5.5)
+		for i := 0; i < th.Household.NumTasks("create_trader", ""); i++ {
+			tc.traderPanel.AddImageLabel("tasks/factory_pickup", float64(24+i*IconW), top+ControlPanelSY*0.15, IconS, IconS, gui.ImageLabelStyleRegular)
 		}
-		if tc.activeTrader.TargetExchange != nil {
-			tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*6), IconS, IconS, gui.ImageLabelStyleRegular)
-			tc.traderPanel.AddTextLabel(tc.activeTrader.TargetExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH)*6.5)
+		for i, t := range th.Traders {
+			tc.traderPanel.AddButton(SelectTraderButton(float64(24+i*IconW), traderTop, tc, t))
+		}
+		if tc.activeTrader != nil {
+			MoneyToControlPanel(tc.traderPanel, &th.Household.Money, &tc.activeTrader.Money, 24, 10, traderTop+float64(IconH)+IconS)
+			for i, task := range tc.activeTrader.Tasks {
+				TaskToControlPanel(tc.cp, tc.traderPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
+			}
+			if tc.activeTrader.SourceExchange != nil {
+				tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*5), IconS, IconS, gui.ImageLabelStyleRegular)
+				tc.traderPanel.AddTextLabel(tc.activeTrader.SourceExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH)*5.5)
+			}
+			if tc.activeTrader.TargetExchange != nil {
+				tc.traderPanel.AddImageLabel("market", 24, traderTop+float64(IconH*6), IconS, IconS, gui.ImageLabelStyleRegular)
+				tc.traderPanel.AddTextLabel(tc.activeTrader.TargetExchange.Town.Name, 24+float64(IconW), traderTop+float64(IconH)*6.5)
+			}
 		}
 	}
-
-	for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Expedition }) {
-		tc.expeditionPanel.AddPanel(CreateExpeditionButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
-	}
-	for i, v := range th.Household.GetVehicles(func(v *vehicles.Vehicle) bool { return v.T.Expedition }) {
-		tc.expeditionPanel.AddButton(CreateExpeditionButton(float64(24+i*IconW), top+ControlPanelSY*0.15, tc, v))
+	{
+		for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Expedition }) {
+			tc.expeditionPanel.AddPanel(CreateExpeditionButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
+		}
+		for i := 0; i < th.Household.NumTasks("create_expedition", ""); i++ {
+			tc.expeditionPanel.AddImageLabel("tasks/factory_pickup", float64(24+i*IconW), top+ControlPanelSY*0.15, IconS, IconS, gui.ImageLabelStyleRegular)
+		}
+		for i, e := range th.Expeditions {
+			tc.expeditionPanel.AddButton(SelectExpeditionButton(float64(24+i*IconW), traderTop, tc, e))
+		}
+		if tc.activeExpedition != nil {
+			MoneyToControlPanel(tc.expeditionPanel, &th.Household.Money, &tc.activeExpedition.Money, 24, 10, traderTop+float64(IconH)+IconS)
+			for i, task := range tc.activeExpedition.Tasks {
+				TaskToControlPanel(tc.cp, tc.expeditionPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
+			}
+		}
 	}
 }
 
@@ -310,7 +320,7 @@ func CreateTraderButtonForTownhall(x, y float64, th *social.Townhall, vc *econom
 	return p
 }
 
-func CreateTraderButton(x, y float64, th *TownhallController, t *social.Trader) gui.Button {
+func SelectTraderButton(x, y float64, th *TownhallController, t *social.Trader) gui.Button {
 	return &gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: x, Y: y, SX: IconS, SY: IconS},
 		ClickImpl: func() {
@@ -336,7 +346,7 @@ func CreateExpeditionButtonForTownhall(x, y float64, th *social.Townhall, vc *ec
 					h.AddTask(&economy.CreateExpeditionTask{
 						PickupD:  factory.Household.Destination(building.NonExtension),
 						Order:    order,
-						TaskBase: economy.TaskBase{FieldCenter: true},
+						Townhall: th,
 					})
 				}
 			}
@@ -348,15 +358,14 @@ func CreateExpeditionButtonForTownhall(x, y float64, th *social.Townhall, vc *ec
 	return p
 }
 
-func CreateExpeditionButton(x, y float64, th *TownhallController, v *vehicles.Vehicle) gui.Button {
-	expedition := &social.Expedition{Vehicle: v}
+func SelectExpeditionButton(x, y float64, th *TownhallController, e *social.Expedition) gui.Button {
 	return &gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/" + v.T.Name, X: x, Y: y, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/" + e.Vehicle.T.Name, X: x, Y: y, SX: IconS, SY: IconS},
 		ClickImpl: func() {
-			th.activeExpedition = expedition
+			th.activeExpedition = e
 		},
 		Highlight: func() bool {
-			return expedition == th.activeExpedition
+			return e == th.activeExpedition
 		},
 	}
 }

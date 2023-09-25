@@ -107,6 +107,8 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(social.Townhall{})
 	case "Town":
 		return reflect.TypeOf(social.Town{})
+	case "Expedition":
+		return reflect.TypeOf(social.Expedition{})
 	}
 	panic("Invalid type " + typeName)
 }
