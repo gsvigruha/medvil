@@ -22,6 +22,8 @@ type Expedition struct {
 	Town            *Town
 }
 
+const MaxDistanceFromTown = 10
+
 func (e *Expedition) DistanceToTown() float64 {
 	return math.Abs(float64(e.Town.Townhall.Household.Building.X)-float64(e.Vehicle.Traveller.FX)) +
 		math.Abs(float64(e.Town.Townhall.Household.Building.Y)-float64(e.Vehicle.Traveller.FY))
@@ -31,13 +33,16 @@ func (e *Expedition) CloseToTown(m navigation.IMap) bool {
 	if e.Vehicle.T.Water && !m.Shore(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY) {
 		return false
 	}
-	return e.DistanceToTown() <= 15
+	return e.DistanceToTown() <= MaxDistanceFromTown
 }
 
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	for _, person := range e.People {
 		person.ElapseTime(Calendar, m)
 	}
+
+	numP := uint16(len(e.People))
+	FindWaterTask(e, numP, m)
 
 	if e.CloseToTown(m) {
 		if e.Town.Settings.UseSupplier {
@@ -222,7 +227,7 @@ func (e *Expedition) AssignPerson(person *Person, m navigation.IMap) {
 }
 
 func (e *Expedition) IncTargetNumPeople() {
-	if e.TargetNumPeople < 5 {
+	if e.TargetNumPeople < e.Vehicle.T.MaxPeople {
 		e.TargetNumPeople++
 	}
 }
