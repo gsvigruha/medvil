@@ -329,14 +329,16 @@ func CreateExpeditionButtonForTownhall(x, y float64, th *social.Townhall, vc *ec
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + 240, Y: y + float64(IconH/4), SX: IconS, SY: IconS},
 		ClickImpl: func() {
 			h := th.Household
-			factory := social.PickFactory(h.Town.Factories, vc.BuildingExtensionType, th.Household.Building, m)
-			order := factory.CreateOrder(vc, h)
-			if order != nil {
-				h.AddTask(&economy.CreateExpeditionTask{
-					PickupD:  factory.Household.Destination(building.NonExtension),
-					Order:    order,
-					TaskBase: economy.TaskBase{FieldCenter: true},
-				})
+			factory := social.PickFactory(h.Town.Factories, vc.BuildingExtensionType, nil, m)
+			if factory != nil {
+				order := factory.CreateOrder(vc, h)
+				if order != nil {
+					h.AddTask(&economy.CreateExpeditionTask{
+						PickupD:  factory.Household.Destination(building.NonExtension),
+						Order:    order,
+						TaskBase: economy.TaskBase{FieldCenter: true},
+					})
+				}
 			}
 		},
 	})

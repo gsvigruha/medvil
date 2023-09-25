@@ -81,6 +81,8 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(economy.TradeTask{})
 	case "CreateTraderTask":
 		return reflect.TypeOf(economy.CreateTraderTask{})
+	case "CreateExpeditionTask":
+		return reflect.TypeOf(economy.CreateExpeditionTask{})
 	case "TerraformTask":
 		return reflect.TypeOf(economy.TerraformTask{})
 	case "RepairTask":
@@ -103,6 +105,8 @@ func GetClassType(m json.RawMessage) reflect.Type {
 		return reflect.TypeOf(social.Person{})
 	case "Townhall":
 		return reflect.TypeOf(social.Townhall{})
+	case "Town":
+		return reflect.TypeOf(social.Town{})
 	}
 	panic("Invalid type " + typeName)
 }
