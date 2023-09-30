@@ -13,6 +13,7 @@ type VehicleType struct {
 	Trader                bool
 	Expedition            bool
 	MaxVolume             uint16
+	MaxPeople             uint16
 	BuildingCheckFn       func(navigation.Field) bool
 	BuildingExtensionType *building.BuildingExtensionType
 }
@@ -25,6 +26,7 @@ var Boat = &VehicleType{
 	Trader:                false,
 	Expedition:            false,
 	MaxVolume:             75,
+	MaxPeople:             1,
 	BuildingCheckFn:       navigation.Field.Sailable,
 	BuildingExtensionType: building.Deck,
 }
@@ -36,6 +38,7 @@ var Cart = &VehicleType{
 	Trader:                false,
 	Expedition:            false,
 	MaxVolume:             50,
+	MaxPeople:             1,
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
 }
@@ -47,6 +50,7 @@ var TradingBoat = &VehicleType{
 	Trader:                true,
 	Expedition:            false,
 	MaxVolume:             75,
+	MaxPeople:             1,
 	BuildingCheckFn:       navigation.Field.Sailable,
 	BuildingExtensionType: building.Deck,
 }
@@ -58,6 +62,7 @@ var TradingCart = &VehicleType{
 	Trader:                true,
 	Expedition:            false,
 	MaxVolume:             50,
+	MaxPeople:             1,
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
 }
@@ -69,6 +74,7 @@ var ExpeditionBoat = &VehicleType{
 	Trader:                false,
 	Expedition:            true,
 	MaxVolume:             250,
+	MaxPeople:             8,
 	BuildingCheckFn:       navigation.Field.Sailable,
 	BuildingExtensionType: building.Deck,
 }
@@ -80,6 +86,7 @@ var ExpeditionCart = &VehicleType{
 	Trader:                false,
 	Expedition:            true,
 	MaxVolume:             150,
+	MaxPeople:             5,
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
 }

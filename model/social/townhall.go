@@ -151,11 +151,16 @@ func (t *Townhall) CreateExpedition(v *vehicles.Vehicle, p economy.Person) {
 			var r artifacts.Resources
 			r.Init(v.T.MaxVolume)
 			expedition := &Expedition{
-				Money:     0,
-				People:    []*Person{person},
-				Vehicle:   v,
-				Resources: &r,
-				Town:      t.Household.Town,
+				Money:           0,
+				People:          []*Person{person},
+				TargetNumPeople: 1,
+				Vehicle:         v,
+				Resources:       &r,
+				Town:            t.Household.Town,
+				StorageTarget:   make(map[*artifacts.Artifact]int),
+			}
+			for _, a := range artifacts.All {
+				expedition.StorageTarget[a] = 0
 			}
 			t.Expeditions = append(t.Expeditions, expedition)
 			person.Home = expedition

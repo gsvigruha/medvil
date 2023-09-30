@@ -76,6 +76,7 @@ type Controller struct {
 	SelectedMarketplace       *social.Marketplace
 	SelectedTraveller         *navigation.Traveller
 	SelectedTrader            *social.Trader
+	SelectedExpedition        *social.Expedition
 	ReverseReferences         *model.ReverseReferences
 	ControlPanel              *ControlPanel
 	Country                   *social.Country
@@ -205,6 +206,7 @@ func (c *Controller) Reset() {
 	c.SelectedWorkshop = nil
 	c.SelectedTraveller = nil
 	c.SelectedTrader = nil
+	c.SelectedExpedition = nil
 	c.ClickHandler = nil
 	c.ControlPanel.GetHelperPanel()
 }
@@ -304,7 +306,13 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				}
 				trader := c.ReverseReferences.TravellerToTrader[c.SelectedTraveller]
 				if trader != nil {
+					c.SelectedTrader = trader
 					TraderToControlPanel(c.ControlPanel, trader)
+				}
+				expedition := c.ReverseReferences.TravellerToExpedition[c.SelectedTraveller]
+				if expedition != nil {
+					c.SelectedExpedition = expedition
+					ExpeditionToControlPanel(c.ControlPanel, expedition)
 				}
 				return
 			}

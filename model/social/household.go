@@ -104,13 +104,14 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	numP := uint16(len(h.People))
+	FindWaterTask(h, numP, m)
 	mp := h.Town.Marketplace
+
 	if mp != nil {
 		if h.NumTasks("exchange", "market") <= len(h.People)/3 {
 			CombineExchangeTasks(h, mp, m)
 		}
 
-		FindWaterTask(h, numP, m)
 		GetFoodTasks(h, numP, mp)
 		numTools := h.Resources.Get(Tools) + h.PeopleWithTools()
 		if numP > numTools && h.NumTasks("exchange", "tools_purchase") == 0 {

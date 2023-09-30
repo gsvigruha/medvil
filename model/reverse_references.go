@@ -17,6 +17,7 @@ type ReverseReferences struct {
 	BuildingToConstruction map[*building.Building]*building.Construction
 	TravellerToPerson      map[*navigation.Traveller]*social.Person
 	TravellerToTrader      map[*navigation.Traveller]*social.Trader
+	TravellerToExpedition  map[*navigation.Traveller]*social.Expedition
 }
 
 func AddPeople(TravellerToPerson map[*navigation.Traveller]*social.Person, h *social.Household) {
@@ -37,6 +38,7 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 	BuildingToConstruction := make(map[*building.Building]*building.Construction)
 	TravellerToPerson := make(map[*navigation.Traveller]*social.Person)
 	TravellerToTrader := make(map[*navigation.Traveller]*social.Trader)
+	TravellerToExpedition := make(map[*navigation.Traveller]*social.Expedition)
 
 	for i := range m.Countries {
 		country := m.Countries[i]
@@ -47,6 +49,10 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 			for k := range town.Townhall.Traders {
 				t := town.Townhall.Traders[k]
 				TravellerToTrader[t.Person.Traveller] = t
+			}
+			for k := range town.Townhall.Expeditions {
+				e := town.Townhall.Expeditions[k]
+				TravellerToExpedition[e.Vehicle.Traveller] = e
 			}
 			if town.Marketplace != nil {
 				BuildingToMarketplace[town.Marketplace.Building] = town.Marketplace
@@ -89,5 +95,6 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 		BuildingToConstruction: BuildingToConstruction,
 		TravellerToPerson:      TravellerToPerson,
 		TravellerToTrader:      TravellerToTrader,
+		TravellerToExpedition:  TravellerToExpedition,
 	}
 }

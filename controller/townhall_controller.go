@@ -176,7 +176,7 @@ func RefreshSubPanels(tc *TownhallController) {
 		if storageQ, ok := th.Household.Resources.Artifacts[a]; ok {
 			q = storageQ
 		}
-		ArtifactStorageToControlPanel(sp, th, aI, a, q, top+50)
+		ArtifactStorageToControlPanel(sp, th.StorageTarget, aI, a, q, top+50)
 		aI++
 	}
 
@@ -225,7 +225,7 @@ func RefreshSubPanels(tc *TownhallController) {
 	}
 }
 
-func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *artifacts.Artifact, q uint16, top float64) {
+func ArtifactStorageToControlPanel(p *gui.Panel, st map[*artifacts.Artifact]int, i int, a *artifacts.Artifact, q uint16, top float64) {
 	rowH := int(IconS * 2)
 	xI := i % IconRowMaxButtons
 	yI := i / IconRowMaxButtons
@@ -233,8 +233,8 @@ func ArtifactStorageToControlPanel(p *gui.Panel, th *social.Townhall, i int, a *
 	p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*w), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
 	p.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*w), top+float64(yI*rowH+IconH+4))
 	p.AddPanel(gui.CreateNumberPanel(float64(24+xI*w), top+float64(yI*rowH+IconH+4), float64(IconW+8), gui.FontSize*1.5, 0, 250, 5, "%v",
-		func() int { return th.StorageTarget[a] },
-		func(v int) { th.StorageTarget[a] = v }).P)
+		func() int { return st[a] },
+		func(v int) { st[a] = v }).P)
 }
 
 func (tc *TownhallController) CaptureClick(x, y float64) {

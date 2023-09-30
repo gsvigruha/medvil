@@ -137,6 +137,10 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		s.Global.Add(trader.Stats())
 		s.Trader.Add(trader.Stats())
 	}
+	for _, expedition := range town.Townhall.Expeditions {
+		s.Global.Add(expedition.Stats())
+		s.Gov.Add(expedition.Stats())
+	}
 	for k := range town.Farms {
 		farm := town.Farms[k]
 		for l := range farm.Household.People {
