@@ -12,14 +12,15 @@ import (
 )
 
 type Expedition struct {
-	Money           uint32
-	People          []*Person
-	TargetNumPeople uint16
-	Vehicle         *vehicles.Vehicle
-	Resources       *artifacts.Resources
-	StorageTarget   map[*artifacts.Artifact]int
-	Tasks           []economy.Task
-	Town            *Town
+	Money            uint32
+	People           []*Person
+	TargetNumPeople  uint16
+	Vehicle          *vehicles.Vehicle
+	Resources        *artifacts.Resources
+	StorageTarget    map[*artifacts.Artifact]int
+	Tasks            []economy.Task
+	Town             *Town
+	DestinationField *navigation.Field
 }
 
 const MaxDistanceFromTown = 10
@@ -75,6 +76,20 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 		for i := 0; i < len(e.Tasks); i++ {
 			if e.Tasks[i].IsPaused() {
 				e.Tasks[i].Pause(false)
+			}
+		}
+	}
+
+	if e.DestinationField != nil {
+		e.Vehicle.Traveller.UseVehicle(e.Vehicle)
+		if e.Vehicle.Traveller.IsAtDestination(e.DestinationField) {
+			e.DestinationField = nil
+		} else {
+			hasPath, computing := e.Vehicle.Traveller.EnsurePath(e.DestinationField, m)
+			if hasPath {
+				e.Vehicle.Traveller.Move(m)
+			} else if !computing {
+				e.DestinationField = nil // no path, cancel destination
 			}
 		}
 	}

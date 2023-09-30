@@ -5,6 +5,7 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/model/social"
+	"medvil/model/terrain"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -58,6 +59,9 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		}
 		TaskToControlPanel(cp, p, i%IconRowMax, ExpeditionTaskGUIY*ControlPanelSY+float64(i/IconRowMax*IconH), task, IconW)
 	}
+	if expedition.DestinationField != nil {
+		p.AddImageLabel("tasks/goto", 24, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
+	}
 }
 
 func (ec *ExpeditionController) CaptureClick(x, y float64) {
@@ -82,7 +86,11 @@ func (ec *ExpeditionController) GetActiveFields(c *Controller, rf *renderer.Rend
 }
 
 func HandleClickForExpedition(expedition *social.Expedition, c *Controller, rf *renderer.RenderedField) bool {
-
+	if expedition.Vehicle.T.Water && rf.F.Terrain.T == terrain.Water {
+		expedition.DestinationField = rf.F
+	} else if !expedition.Vehicle.T.Water && rf.F.Terrain.T == terrain.Grass && rf.F.Empty() {
+		expedition.DestinationField = rf.F
+	}
 	return false
 }
 
