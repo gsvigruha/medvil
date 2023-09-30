@@ -15,6 +15,8 @@ type ExpeditionController struct {
 	cp              *ControlPanel
 }
 
+const ExpeditionTaskGUIY = 0.8
+
 func ExpeditionToControlPanel(cp *ControlPanel, expedition *social.Expedition) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	tc := &ExpeditionController{expeditionPanel: p, expedition: expedition, cp: cp}
@@ -54,7 +56,7 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		if i >= MaxNumTasks {
 			break
 		}
-		TaskToControlPanel(cp, p, i%IconRowMax, TaskGUIY*ControlPanelSY+float64(i/IconRowMax*IconH), task, IconW)
+		TaskToControlPanel(cp, p, i%IconRowMax, ExpeditionTaskGUIY*ControlPanelSY+float64(i/IconRowMax*IconH), task, IconW)
 	}
 }
 
