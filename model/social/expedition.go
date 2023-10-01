@@ -77,9 +77,10 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 				q = storageQ
 			}
 			pickupD := m.GetField(srcH.Building.X, srcH.Building.Y)
-			if e.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) == 0 {
-				targetQ := uint16(e.StorageTarget[a])
-				if q < targetQ {
+			targetQ := uint16(e.StorageTarget[a])
+			if q < targetQ {
+				tasksNeeded := (targetQ - q) / ProductTransportQuantity(a)
+				if e.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) < int(tasksNeeded) {
 					e.AddTask(&economy.TransportTask{
 						PickupD:        pickupD,
 						DropoffD:       &navigation.TravellerDestination{T: e.Vehicle.Traveller},
@@ -267,4 +268,26 @@ func (e *Expedition) DecTargetNumPeople() {
 	if e.TargetNumPeople > 0 {
 		e.TargetNumPeople--
 	}
+}
+
+func (e *Expedition) Filter(Calendar *time.CalendarType, m navigation.IMap) {
+	var newPeople = make([]*Person, 0, len(e.People))
+	for _, p := range e.People {
+		f := m.GetField(p.Traveller.FX, p.Traveller.FY)
+		if p.Health > 0 && p.Home == e {
+			newPeople = append(newPeople, p)
+		} else {
+			f.UnregisterTraveller(p.Traveller)
+			e.Town.Stats.RegisterDeath()
+		}
+	}
+	e.People = newPeople
+
+	var newTasks = make([]economy.Task, 0, len(e.Tasks))
+	for _, t := range e.Tasks {
+		if !t.Expired(Calendar) {
+			newTasks = append(newTasks, t)
+		}
+	}
+	e.Tasks = newTasks
 }

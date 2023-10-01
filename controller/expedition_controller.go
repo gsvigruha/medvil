@@ -60,10 +60,11 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		TaskToControlPanel(cp, p, i%IconRowMax, ExpeditionTaskGUIY*ControlPanelSY+float64(i/IconRowMax*IconH), task, IconW)
 	}
 	if expedition.DestinationField != nil {
-		p.AddImageLabel("tasks/goto", 24, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
-	}
-	if !expedition.IsEveryoneBoarded() {
-		p.AddImageLabel("barrel", 24+float64(IconW), ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
+		if expedition.IsEveryoneBoarded() {
+			p.AddImageLabel("tasks/goto", 24, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
+		} else {
+			p.AddImageLabel("tasks/goto", 24, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleDisabled)
+		}
 	}
 }
 

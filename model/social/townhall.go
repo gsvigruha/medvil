@@ -206,4 +206,16 @@ func (t *Townhall) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	t.Traders = newTraders
+
+	var newExpeditions = make([]*Expedition, 0, len(t.Expeditions))
+	for _, expedition := range t.Expeditions {
+		expedition.Filter(Calendar, m)
+		if len(expedition.People) == 0 {
+			f := m.GetField(expedition.Vehicle.Traveller.FX, expedition.Vehicle.Traveller.FY)
+			f.UnregisterTraveller(expedition.Vehicle.Traveller)
+		} else {
+			newExpeditions = append(newExpeditions, expedition)
+		}
+	}
+	t.Expeditions = newExpeditions
 }
