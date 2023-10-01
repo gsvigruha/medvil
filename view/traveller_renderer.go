@@ -165,7 +165,7 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 		} else if t.T == navigation.TravellerTypeTradingCart {
 			vehicles.DrawTradingCart(cv, t, x, y, c)
 		} else if t.T == navigation.TravellerTypeExpeditionCart {
-			vehicles.DrawCart(cv, t, x, y, c)
+			vehicles.DrawExpeditionCart(cv, t, x, y, c)
 		}
 	}
 }

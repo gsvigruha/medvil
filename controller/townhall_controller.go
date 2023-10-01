@@ -278,6 +278,9 @@ func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedFi
 	if tc.activeTrader != nil {
 		return HandleClickForTrader(tc.activeTrader, c, rf)
 	}
+	if tc.activeExpedition != nil {
+		return HandleClickForExpedition(tc.activeExpedition, c, rf)
+	}
 	for i := range tc.th.Household.Town.Roads {
 		r := tc.th.Household.Town.Roads[i]
 		if r.X == rf.F.X && r.Y == rf.F.Y {
