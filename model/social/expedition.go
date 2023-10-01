@@ -38,6 +38,27 @@ func (e *Expedition) CloseToTown(m navigation.IMap) bool {
 }
 
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+	if e.DestinationField != nil {
+		e.Tasks = nil
+		if e.IsEveryoneBoarded() {
+			e.Vehicle.Traveller.UseVehicle(e.Vehicle)
+			for _, p := range e.People {
+				p.Traveller.MoveWith(m, e.Vehicle.Traveller)
+			}
+
+			if e.Vehicle.Traveller.IsAtDestination(e.DestinationField) {
+				e.DestinationField = nil
+			} else {
+				hasPath, computing := e.Vehicle.Traveller.EnsurePath(e.DestinationField, m)
+				if hasPath {
+					e.Vehicle.Traveller.Move(m)
+				} else if !computing {
+					e.DestinationField = nil // no path, cancel destination
+				}
+			}
+		}
+	}
+
 	for _, person := range e.People {
 		person.ElapseTime(Calendar, m)
 	}
@@ -45,54 +66,50 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 	numP := uint16(len(e.People))
 	FindWaterTask(e, numP, m)
 
-	if e.CloseToTown(m) {
-		if e.Town.Settings.UseSupplier {
-			srcH := e.Town.Townhall.Household
-			if e.HasRoomForPeople() {
-				srcH.ReassignFirstPerson(e, len(e.Tasks) == 0, m)
+	if e.CloseToTown(m) && e.DestinationField == nil {
+		srcH := e.Town.Townhall.Household
+		if e.HasRoomForPeople() {
+			srcH.ReassignFirstPerson(e, len(e.Tasks) == 0, m)
+		}
+		for _, a := range artifacts.All {
+			var q uint16 = 0
+			if storageQ, ok := e.Resources.Artifacts[a]; ok {
+				q = storageQ
 			}
-			for _, a := range artifacts.All {
-				var q uint16 = 0
-				if storageQ, ok := e.Resources.Artifacts[a]; ok {
-					q = storageQ
-				}
-				pickupD := m.GetField(srcH.Building.X, srcH.Building.Y)
-				if e.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) == 0 {
-					targetQ := uint16(e.StorageTarget[a])
-					if q < targetQ {
-						e.AddTask(&economy.TransportTask{
-							PickupD:        pickupD,
-							DropoffD:       &navigation.TravellerDestination{T: e.Vehicle.Traveller},
-							PickupR:        srcH.Resources,
-							DropoffR:       e.Resources,
-							A:              a,
-							TargetQuantity: ProductTransportQuantity(a),
-						})
-					}
+			pickupD := m.GetField(srcH.Building.X, srcH.Building.Y)
+			targetQ := uint16(e.StorageTarget[a])
+			if q < targetQ {
+				tasksNeeded := (targetQ - q) / ProductTransportQuantity(a)
+				if e.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) < int(tasksNeeded) {
+					e.AddTask(&economy.TransportTask{
+						PickupD:        pickupD,
+						DropoffD:       &navigation.TravellerDestination{T: e.Vehicle.Traveller},
+						PickupR:        srcH.Resources,
+						DropoffR:       e.Resources,
+						A:              a,
+						TargetQuantity: ProductTransportQuantity(a),
+					})
 				}
 			}
 		}
 
-		for i := 0; i < len(e.Tasks); i++ {
-			if e.Tasks[i].IsPaused() {
-				e.Tasks[i].Pause(false)
+		if Calendar.Hour == 0 {
+			for i := 0; i < len(e.Tasks); i++ {
+				if e.Tasks[i].IsPaused() {
+					e.Tasks[i].Pause(false)
+				}
 			}
 		}
 	}
+}
 
-	if e.DestinationField != nil {
-		e.Vehicle.Traveller.UseVehicle(e.Vehicle)
-		if e.Vehicle.Traveller.IsAtDestination(e.DestinationField) {
-			e.DestinationField = nil
-		} else {
-			hasPath, computing := e.Vehicle.Traveller.EnsurePath(e.DestinationField, m)
-			if hasPath {
-				e.Vehicle.Traveller.Move(m)
-			} else if !computing {
-				e.DestinationField = nil // no path, cancel destination
-			}
+func (e *Expedition) IsEveryoneBoarded() bool {
+	for _, p := range e.People {
+		if !p.IsHome {
+			return false
 		}
 	}
+	return true
 }
 
 func (e *Expedition) HasRoomForPeople() bool {
@@ -251,4 +268,26 @@ func (e *Expedition) DecTargetNumPeople() {
 	if e.TargetNumPeople > 0 {
 		e.TargetNumPeople--
 	}
+}
+
+func (e *Expedition) Filter(Calendar *time.CalendarType, m navigation.IMap) {
+	var newPeople = make([]*Person, 0, len(e.People))
+	for _, p := range e.People {
+		f := m.GetField(p.Traveller.FX, p.Traveller.FY)
+		if p.Health > 0 && p.Home == e {
+			newPeople = append(newPeople, p)
+		} else {
+			f.UnregisterTraveller(p.Traveller)
+			e.Town.Stats.RegisterDeath()
+		}
+	}
+	e.People = newPeople
+
+	var newTasks = make([]economy.Task, 0, len(e.Tasks))
+	for _, t := range e.Tasks {
+		if !t.Expired(Calendar) {
+			newTasks = append(newTasks, t)
+		}
+	}
+	e.Tasks = newTasks
 }
