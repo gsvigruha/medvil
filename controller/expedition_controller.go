@@ -62,6 +62,9 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 	if expedition.DestinationField != nil {
 		p.AddImageLabel("tasks/goto", 24, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
 	}
+	if !expedition.IsEveryoneBoarded() {
+		p.AddImageLabel("barrel", 24+float64(IconW), ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
+	}
 }
 
 func (ec *ExpeditionController) CaptureClick(x, y float64) {

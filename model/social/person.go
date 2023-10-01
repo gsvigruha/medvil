@@ -104,7 +104,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			p.Task = &economy.GoHomeTask{D: home, P: p}
 		}
 	}
-	p.Traveller.SetHome(p.Home.GetBuilding() != nil && p.Home.GetBuilding() == m.GetField(p.Traveller.FX, p.Traveller.FY).Building.GetBuilding())
+	p.ComputeIsHome(m)
 	if Calendar.Hour == 0 {
 		if p.Food > 0 {
 			p.Food--
@@ -149,6 +149,17 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	if p.Traveller.Vehicle != nil && rand.Float64() < VehicleBreakDownRate {
 		p.Traveller.Vehicle.Break()
+	}
+}
+
+func (p *Person) ComputeIsHome(m navigation.IMap) {
+	f := m.GetField(p.Traveller.FX, p.Traveller.FY)
+	if p.Home.GetBuilding() != nil && p.Home.GetBuilding() == f.Building.GetBuilding() {
+		p.Traveller.SetHome(true)
+	} else if p.Home.Field(m) == f {
+		p.Traveller.SetHome(true)
+	} else {
+		p.Traveller.SetHome(false)
 	}
 }
 
