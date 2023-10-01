@@ -30,7 +30,7 @@ func (tc *TravellerImageCache) RenderTravellerOnBuffer(
 		offscreen, _ := goglbackend.NewOffscreen(w, h, true, tc.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, float64(w), float64(h))
-		DrawTraveller(cv, t, float64(w/2), float64(h), f, c)
+		DrawTraveller(cv, t, float64(w/2), float64(h*5/6), f, c)
 		tc.entries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
@@ -51,19 +51,19 @@ func getZByDir(bpe *navigation.BuildingPathElement, dir uint8) float64 {
 
 func travellerWH(t uint8) (int, int) {
 	if t == navigation.TravellerTypePedestrian {
-		return 8, 32
+		return 16, 48
 	} else if t == navigation.TravellerTypeBoat {
-		return 48, 32
+		return 48, 48
 	} else if t == navigation.TravellerTypeTradingBoat {
-		return 48, 32
+		return 48, 48
 	} else if t == navigation.TravellerTypeExpeditionBoat {
-		return 8, 32
+		return 96, 96
 	} else if t == navigation.TravellerTypeCart {
-		return 24, 32
+		return 48, 48
 	} else if t == navigation.TravellerTypeTradingCart {
-		return 24, 32
+		return 48, 48
 	} else if t == navigation.TravellerTypeExpeditionCart {
-		return 8, 32
+		return 96, 96
 	}
 	return 0, 0
 }
@@ -99,7 +99,7 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 		}
 		w, h := travellerWH(t.T)
 		travellerImg := ic.Tic.RenderTravellerOnBuffer(cv, t, rf.F, w, h, c)
-		cv.DrawImage(travellerImg, x-float64(w/2), y-z-float64(h)-5, float64(w), float64(h))
-		c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y - z - 5, H: float64(w), W: float64(h), Traveller: t})
+		cv.DrawImage(travellerImg, x-float64(w/2), y-z-float64(h*5/6), float64(w), float64(h))
+		c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y - z + float64(h/6), H: float64(h), W: float64(w), Traveller: t})
 	}
 }
