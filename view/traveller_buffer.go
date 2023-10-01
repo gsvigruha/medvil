@@ -18,7 +18,7 @@ type TravellerImageCache struct {
 }
 
 func (tc *TravellerImageCache) RenderTravellerOnBuffer(
-	cv *canvas.Canvas, t *navigation.Traveller, f *navigation.Field, c *controller.Controller) *canvas.Canvas {
+	cv *canvas.Canvas, t *navigation.Traveller, f *navigation.Field, w, h int, c *controller.Controller) *canvas.Canvas {
 	key := t.CacheKey(c.Perspective) + "#" + strconv.FormatBool(tallPlant(f))
 	person := t.Person
 	if person != nil {
@@ -27,10 +27,10 @@ func (tc *TravellerImageCache) RenderTravellerOnBuffer(
 	if ce, ok := tc.entries[key]; ok {
 		return ce.cv
 	} else {
-		offscreen, _ := goglbackend.NewOffscreen(48, 48, true, tc.ctx)
+		offscreen, _ := goglbackend.NewOffscreen(w, h, true, tc.ctx)
 		cv := canvas.New(offscreen)
-		cv.ClearRect(0, 0, 48, 48)
-		DrawTraveller(cv, t, 24, 32, f, c)
+		cv.ClearRect(0, 0, float64(w), float64(h))
+		DrawTraveller(cv, t, float64(w/2), float64(h), f, c)
 		tc.entries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
@@ -47,6 +47,25 @@ func getZByDir(bpe *navigation.BuildingPathElement, dir uint8) float64 {
 		return float64(bpe.GetLocation().Z-1) * buildings.DZ * buildings.BuildingUnitHeight
 	}
 	return 0
+}
+
+func travellerWH(t uint8) (int, int) {
+	if t == navigation.TravellerTypePedestrian {
+		return 8, 32
+	} else if t == navigation.TravellerTypeBoat {
+		return 48, 32
+	} else if t == navigation.TravellerTypeTradingBoat {
+		return 48, 32
+	} else if t == navigation.TravellerTypeExpeditionBoat {
+		return 8, 32
+	} else if t == navigation.TravellerTypeCart {
+		return 24, 32
+	} else if t == navigation.TravellerTypeTradingCart {
+		return 24, 32
+	} else if t == navigation.TravellerTypeExpeditionCart {
+		return 8, 32
+	}
+	return 0, 0
 }
 
 func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigation.Traveller, show func(*navigation.Traveller) bool, rf renderer.RenderedField, c *controller.Controller) {
@@ -78,8 +97,9 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 				}
 			}
 		}
-		travellerImg := ic.Tic.RenderTravellerOnBuffer(cv, t, rf.F, c)
-		cv.DrawImage(travellerImg, x-24, y-z-32-5, 48, 48)
-		c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y - z - 5, H: 32, W: 8, Traveller: t})
+		w, h := travellerWH(t.T)
+		travellerImg := ic.Tic.RenderTravellerOnBuffer(cv, t, rf.F, w, h, c)
+		cv.DrawImage(travellerImg, x-float64(w/2), y-z-float64(h)-5, float64(w), float64(h))
+		c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y - z - 5, H: float64(w), W: float64(h), Traveller: t})
 	}
 }
