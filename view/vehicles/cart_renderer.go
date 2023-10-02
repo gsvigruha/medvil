@@ -127,10 +127,37 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	return f1, f2, z, h1, h2
 }
 
+func drawWheel(cv *canvas.Canvas, pm animation.ProjectionMatrix, phase uint8, x, y, f, h1, z, wr, dir float64) {
+	cv.SetStrokeStyle("#321")
+	cv.SetLineWidth(3)
+	cv.BeginPath()
+	for i := 0.0; i < 8; i++ {
+		p := (i*4 + float64(phase)) / 32.0
+		dx0 := math.Cos(math.Pi*2.0*p)*wr + f
+		dy0 := math.Sin(math.Pi*2.0*p)*wr + h1/2.0
+		cv.LineTo(x+dx0*pm.XX-dy0*pm.XY-z*pm.XZ*dir, y+dx0*pm.YX-dy0*pm.YY-z*pm.YZ*dir)
+	}
+	cv.ClosePath()
+	cv.Stroke()
+
+	cv.SetLineWidth(1)
+	for i := 0.0; i < 8; i++ {
+		p := (i*4 + float64(phase)) / 32.0
+		dx0 := math.Cos(math.Pi*2.0*p)*wr + f
+		dy0 := math.Sin(math.Pi*2.0*p)*wr + h1/2.0
+		cv.BeginPath()
+		cv.MoveTo(x+f*pm.XX-h1/2.0*pm.XY-z*pm.XZ*dir, y+f*pm.YX-h1/2.0*pm.YY-z*pm.YZ*dir)
+		cv.LineTo(x+dx0*pm.XX-dy0*pm.XY-z*pm.XZ*dir, y+dx0*pm.YX-dy0*pm.YY-z*pm.YZ*dir)
+		cv.ClosePath()
+		cv.Stroke()
+	}
+}
+
 func DrawExpeditionCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
 	if !t.Visible {
 		return
 	}
+	p := t.DrawingPhase()
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
 	var r = 8.0 - float64(t.Phase%16)
@@ -151,27 +178,10 @@ func DrawExpeditionCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	h2 := 24.0
 	h3 := 40.0
 
-	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
-	cv.SetStrokeStyle("#321")
-	cv.SetLineWidth(1)
-	cv.BeginPath()
-	for i := 0.0; i < 8; i++ {
-		dx0 := math.Cos(math.Pi*2.0*i/8.0)*(h1/2.0) + f2*0.8 + f1*0.2
-		dy0 := math.Sin(math.Pi*2.0*i/8.0)*(h1/2.0) + h1/2.0
-		cv.LineTo(x+dx0*pm.XX-dy0*pm.XY-z*pm.XZ*dir, y+dx0*pm.YX-dy0*pm.YY-z*pm.YZ*dir)
-	}
-	cv.ClosePath()
-	cv.Fill()
-	cv.Stroke()
-	cv.BeginPath()
-	for i := 0.0; i < 8; i++ {
-		dx0 := math.Cos(math.Pi*2.0*i/8.0)*(h1/2.0) + f2*0.2 + f1*0.8
-		dy0 := math.Sin(math.Pi*2.0*i/8.0)*(h1/2.0) + h1/2.0
-		cv.LineTo(x+dx0*pm.XX-dy0*pm.XY-z*pm.XZ*dir, y+dx0*pm.YX-dy0*pm.YY-z*pm.YZ*dir)
-	}
-	cv.ClosePath()
-	cv.Fill()
-	cv.Stroke()
+	wr := h1 * 3 / 4
+
+	drawWheel(cv, pm, p, x, y, f2*0.8+f1*0.2, h1, z, wr, dir)
+	drawWheel(cv, pm, p, x, y, f2*0.2+f1*0.8, h1, z, wr, dir)
 
 	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
 	cv.BeginPath()
@@ -259,25 +269,6 @@ func DrawExpeditionCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	cv.Fill()
 	cv.Stroke()
 
-	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
-	cv.SetStrokeStyle("#321")
-	cv.SetLineWidth(1)
-	cv.BeginPath()
-	for i := 0.0; i < 8; i++ {
-		dx0 := math.Cos(math.Pi*2.0*i/8.0)*(h1/2.0) + f2*0.8 + f1*0.2
-		dy0 := math.Sin(math.Pi*2.0*i/8.0)*(h1/2.0) + h1/2.0
-		cv.LineTo(x+dx0*pm.XX-dy0*pm.XY+z*pm.XZ*dir, y+dx0*pm.YX-dy0*pm.YY+z*pm.YZ*dir)
-	}
-	cv.ClosePath()
-	cv.Fill()
-	cv.Stroke()
-	cv.BeginPath()
-	for i := 0.0; i < 8; i++ {
-		dx0 := math.Cos(math.Pi*2.0*i/8.0)*(h1/2.0) + f2*0.2 + f1*0.8
-		dy0 := math.Sin(math.Pi*2.0*i/8.0)*(h1/2.0) + h1/2.0
-		cv.LineTo(x+dx0*pm.XX-dy0*pm.XY+z*pm.XZ*dir, y+dx0*pm.YX-dy0*pm.YY+z*pm.YZ*dir)
-	}
-	cv.ClosePath()
-	cv.Fill()
-	cv.Stroke()
+	drawWheel(cv, pm, p, x, y, f2*0.8+f1*0.2, h1, z, wr, -dir)
+	drawWheel(cv, pm, p, x, y, f2*0.2+f1*0.8, h1, z, wr, -dir)
 }

@@ -30,7 +30,7 @@ func (tc *TravellerImageCache) RenderTravellerOnBuffer(
 		offscreen, _ := goglbackend.NewOffscreen(w, h, true, tc.ctx)
 		cv := canvas.New(offscreen)
 		cv.ClearRect(0, 0, float64(w), float64(h))
-		DrawTraveller(cv, t, float64(w/2), float64(h*5/6), f, c)
+		DrawTraveller(cv, t, float64(w/2), float64(h*3/4), f, c)
 		tc.entries[key] = &CacheEntry{
 			offscreen:   offscreen,
 			cv:          cv,
@@ -99,7 +99,7 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 		}
 		w, h := travellerWH(t.T)
 		travellerImg := ic.Tic.RenderTravellerOnBuffer(cv, t, rf.F, w, h, c)
-		cv.DrawImage(travellerImg, x-float64(w/2), y-z-float64(h*5/6), float64(w), float64(h))
-		c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y - z + float64(h/6), H: float64(h), W: float64(w), Traveller: t})
+		cv.DrawImage(travellerImg, x-float64(w/2), y-z-float64(h*3/4), float64(w), float64(h))
+		c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y - z + float64(h/4), H: float64(h), W: float64(w), Traveller: t})
 	}
 }
