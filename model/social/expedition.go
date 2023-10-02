@@ -42,12 +42,13 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 		e.Tasks = nil
 		if e.IsEveryoneBoarded() {
 			e.Vehicle.Traveller.UseVehicle(e.Vehicle)
-			for _, p := range e.People {
-				p.Traveller.MoveWith(m, e.Vehicle.Traveller)
-			}
 
 			if e.Vehicle.Traveller.IsAtDestination(e.DestinationField) {
-				e.DestinationField = nil
+				if !e.Vehicle.Traveller.IsOnFieldCenter() {
+					e.Vehicle.Traveller.MoveToCenter(m)
+				} else {
+					e.DestinationField = nil
+				}
 			} else {
 				hasPath, computing := e.Vehicle.Traveller.EnsurePath(e.DestinationField, m)
 				if hasPath {
@@ -55,6 +56,10 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 				} else if !computing {
 					e.DestinationField = nil // no path, cancel destination
 				}
+			}
+
+			for _, p := range e.People {
+				p.Traveller.MoveWith(m, e.Vehicle.Traveller)
 			}
 		}
 	}

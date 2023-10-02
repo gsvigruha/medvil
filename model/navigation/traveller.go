@@ -174,6 +174,18 @@ func (t *Traveller) MoveToDir(d uint8, stayInField bool, m IMap) {
 	}
 }
 
+func (t *Traveller) MoveToCenter(m IMap) {
+	if t.PX < MaxPX/2 {
+		t.MoveToDir(DirectionE, true, m)
+	} else if t.PX > MaxPX/2 {
+		t.MoveToDir(DirectionW, true, m)
+	} else if t.PY < MaxPY/2 {
+		t.MoveToDir(DirectionS, true, m)
+	} else if t.PY > MaxPY/2 {
+		t.MoveToDir(DirectionN, true, m)
+	}
+}
+
 func (t *Traveller) Move(m IMap) {
 	t.Motion = MotionWalk
 	var steps = 1
@@ -277,7 +289,11 @@ func (t *Traveller) EnsurePath(dest Destination, m IMap) (bool, bool) {
 			case t.PathComp.Path = <-t.PathComp.pc:
 				t.PathComp.computing = false
 				if t.Lane == 0 {
-					t.Lane = uint8(rand.Intn(3) + 1)
+					if t.T == TravellerTypeExpeditionCart || t.T == TravellerTypeExpeditionBoat {
+						t.Lane = 2
+					} else {
+						t.Lane = uint8(rand.Intn(3) + 1)
+					}
 				}
 				t.StuckCntr = 0
 			}
@@ -301,8 +317,8 @@ func (t *Traveller) UseVehicle(v Vehicle) {
 
 func (t *Traveller) ExitVehicle() {
 	if t.Vehicle != nil {
-		t.Vehicle.GetTraveller().PX = 50
-		t.Vehicle.GetTraveller().PY = 50
+		t.Vehicle.GetTraveller().PX = MaxPX / 2
+		t.Vehicle.GetTraveller().PY = MaxPY / 2
 		t.Vehicle.SetInUse(false)
 		t.Vehicle = nil
 	}
