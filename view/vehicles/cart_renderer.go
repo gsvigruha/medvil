@@ -173,10 +173,11 @@ func DrawExpeditionCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	f2 := -24.0
 	f3 := 12.0
 	z := 16.0
-	z3 := 14.0
+	z3 := 12.0
 	h1 := 12.0
 	h2 := 24.0
 	h3 := 40.0
+	h4 := 44.0
 
 	wr := h1 * 3 / 4
 
@@ -235,36 +236,58 @@ func DrawExpeditionCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	cv.SetFillStyle("texture/vehicle/leather.png")
 	cv.SetStrokeStyle("#432")
 	cv.SetLineWidth(2)
+	// side
 	cv.BeginPath()
 	cv.LineTo(x+f2*pm.XX-h2*pm.XY-z*pm.XZ*dir, y+f2*pm.YX-h2*pm.YY-z*pm.YZ*dir)
 	cv.LineTo(x+f3*pm.XX-h2*pm.XY-z*pm.XZ*dir, y+f3*pm.YX-h2*pm.YY-z*pm.YZ*dir)
-	cv.LineTo(x+f3*pm.XX-h3*pm.XY-z3*pm.XZ*dir, y+f3*pm.YX-h3*pm.YY-z3*pm.YZ*dir)
-	cv.LineTo(x+f2*pm.XX-h3*pm.XY-z3*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY-z3*pm.YZ*dir)
+	cv.LineTo(x+f3*pm.XX-h3*pm.XY-z*pm.XZ*dir, y+f3*pm.YX-h3*pm.YY-z*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h3*pm.XY-z*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY-z*pm.YZ*dir)
 	cv.ClosePath()
 	cv.Fill()
 	cv.Stroke()
-	cv.Stroke()
 	cv.BeginPath()
-	cv.LineTo(x+f2*pm.XX-h3*pm.XY-z3*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY-z3*pm.YZ*dir)
+	cv.LineTo(x+f3*pm.XX-h3*pm.XY-z*pm.XZ*dir, y+f3*pm.YX-h3*pm.YY-z*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h3*pm.XY-z*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY-z*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h4*pm.XY-z3*pm.XZ*dir, y+f2*pm.YX-h4*pm.YY-z3*pm.YZ*dir)
+	cv.LineTo(x+f3*pm.XX-h4*pm.XY-z3*pm.XZ*dir, y+f3*pm.YX-h4*pm.YY-z3*pm.YZ*dir)
+	cv.ClosePath()
+	cv.Fill()
+	cv.Stroke()
+	// back
+	cv.BeginPath()
+	cv.LineTo(x+f2*pm.XX-h4*pm.XY-z3*pm.XZ*dir, y+f2*pm.YX-h4*pm.YY-z3*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h3*pm.XY-z*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY-z*pm.YZ*dir)
 	cv.LineTo(x+f2*pm.XX-h2*pm.XY-z*pm.XZ*dir, y+f2*pm.YX-h2*pm.YY-z*pm.YZ*dir)
 	cv.LineTo(x+f2*pm.XX-h2*pm.XY+z*pm.XZ*dir, y+f2*pm.YX-h2*pm.YY+z*pm.YZ*dir)
-	cv.LineTo(x+f2*pm.XX-h3*pm.XY+z3*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY+z3*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h3*pm.XY+z*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY+z*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h4*pm.XY+z3*pm.XZ*dir, y+f2*pm.YX-h4*pm.YY+z3*pm.YZ*dir)
+	cv.ClosePath()
+	cv.Fill()
+	cv.Stroke()
+	// side
+	cv.BeginPath()
+	cv.LineTo(x+f3*pm.XX-h3*pm.XY+z*pm.XZ*dir, y+f3*pm.YX-h3*pm.YY+z*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h3*pm.XY+z*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY+z*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h4*pm.XY+z3*pm.XZ*dir, y+f2*pm.YX-h4*pm.YY+z3*pm.YZ*dir)
+	cv.LineTo(x+f3*pm.XX-h4*pm.XY+z3*pm.XZ*dir, y+f3*pm.YX-h4*pm.YY+z3*pm.YZ*dir)
 	cv.ClosePath()
 	cv.Fill()
 	cv.Stroke()
 	cv.BeginPath()
 	cv.LineTo(x+f2*pm.XX-h2*pm.XY+z*pm.XZ*dir, y+f2*pm.YX-h2*pm.YY+z*pm.YZ*dir)
 	cv.LineTo(x+f3*pm.XX-h2*pm.XY+z*pm.XZ*dir, y+f3*pm.YX-h2*pm.YY+z*pm.YZ*dir)
-	cv.LineTo(x+f3*pm.XX-h3*pm.XY+z3*pm.XZ*dir, y+f3*pm.YX-h3*pm.YY+z3*pm.YZ*dir)
-	cv.LineTo(x+f2*pm.XX-h3*pm.XY+z3*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY+z3*pm.YZ*dir)
+	cv.LineTo(x+f3*pm.XX-h3*pm.XY+z*pm.XZ*dir, y+f3*pm.YX-h3*pm.YY+z*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h3*pm.XY+z*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY+z*pm.YZ*dir)
 	cv.ClosePath()
 	cv.Fill()
+
+	// roof
 	cv.Stroke()
 	cv.BeginPath()
-	cv.LineTo(x+f2*pm.XX-h3*pm.XY-z3*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY-z3*pm.YZ*dir)
-	cv.LineTo(x+f3*pm.XX-h3*pm.XY-z3*pm.XZ*dir, y+f3*pm.YX-h3*pm.YY-z3*pm.YZ*dir)
-	cv.LineTo(x+f3*pm.XX-h3*pm.XY+z3*pm.XZ*dir, y+f3*pm.YX-h3*pm.YY+z3*pm.YZ*dir)
-	cv.LineTo(x+f2*pm.XX-h3*pm.XY+z3*pm.XZ*dir, y+f2*pm.YX-h3*pm.YY+z3*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h4*pm.XY-z3*pm.XZ*dir, y+f2*pm.YX-h4*pm.YY-z3*pm.YZ*dir)
+	cv.LineTo(x+f3*pm.XX-h4*pm.XY-z3*pm.XZ*dir, y+f3*pm.YX-h4*pm.YY-z3*pm.YZ*dir)
+	cv.LineTo(x+f3*pm.XX-h4*pm.XY+z3*pm.XZ*dir, y+f3*pm.YX-h4*pm.YY+z3*pm.YZ*dir)
+	cv.LineTo(x+f2*pm.XX-h4*pm.XY+z3*pm.XZ*dir, y+f2*pm.YX-h4*pm.YY+z3*pm.YZ*dir)
 	cv.ClosePath()
 	cv.Fill()
 	cv.Stroke()
