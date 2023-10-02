@@ -17,11 +17,24 @@ const (
 	RadiusI int     = 30
 )
 
+const RenderPhaseField = 0
+const RenderPhaseObjects = 1
+
 func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
+	RenderPhase(RenderPhaseField, ic, cv, m, c)
+	RenderPhase(RenderPhaseObjects, ic, cv, m, c)
+	c.SwapRenderedObjects()
+	RenderActiveFields(cv, c)
+	c.ControlPanel.Render(cv, c)
+}
+
+func RenderPhase(phase int, ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 	w := float64(cv.Width())
 	h := float64(cv.Height())
-	cv.SetFillStyle("#000")
-	cv.FillRect(0, 0, w, h)
+	if phase == RenderPhaseField {
+		cv.SetFillStyle("#000")
+		cv.FillRect(0, 0, w, h)
+	}
 
 	li := int(c.CenterX) - RadiusI
 	hi := int(c.CenterX) + RadiusI
@@ -84,11 +97,10 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 				Z: [4]float64{DZ * float64(t), DZ * float64(l), DZ * float64(b), DZ * float64(r)},
 				F: f,
 			}
-			RenderField(ic, cv, rf, f, c)
-			c.AddRenderedField(&rf)
+			RenderField(phase, ic, cv, rf, f, c)
+			if phase == RenderPhaseField {
+				c.AddRenderedField(&rf)
+			}
 		}
 	}
-	c.SwapRenderedObjects()
-	RenderActiveFields(cv, c)
-	c.ControlPanel.Render(cv, c)
 }
