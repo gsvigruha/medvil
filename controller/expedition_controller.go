@@ -43,7 +43,8 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		Highlight: func() bool { return false },
 		ClickImpl: func() { expedition.DecTargetNumPeople() }})
 
-	var aI = 0
+	p.AddScaleLabel("barrel", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, expedition.Resources.UsedVolumeCapacity(), false)
+	var aI = 1
 	for _, a := range artifacts.All {
 		var q uint16 = 0
 		if storageQ, ok := expedition.Resources.Artifacts[a]; ok {

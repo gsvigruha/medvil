@@ -163,6 +163,25 @@ func (f Field) Walkable() bool {
 	return f.Terrain.T.Walkable
 }
 
+func (f Field) Driveble() bool {
+	if !f.Building.Empty() {
+		return false
+	}
+	if f.Plant != nil {
+		return false
+	}
+	if f.Deposit != nil {
+		return false
+	}
+	if f.Animal != nil {
+		return false
+	}
+	if f.Statue != nil {
+		return false
+	}
+	return f.Terrain.T == terrain.Grass
+}
+
 func (f Field) BuildingNonExtension() bool {
 	if f.Building.Empty() {
 		return false

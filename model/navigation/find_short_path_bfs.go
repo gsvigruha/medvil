@@ -27,6 +27,8 @@ func AddNextField(pe PathElement, prevE *BFSElement, toVisit *[]*BFSElement, inQ
 func CheckField(pe PathElement, pathType PathType) bool {
 	if pathType == PathTypePedestrian {
 		return pe.Walkable() && !pe.Crowded()
+	} else if pathType == PathTypeCart {
+		return pe.Driveble()
 	} else if pathType == PathTypeBoat {
 		return pe.Sailable()
 	}

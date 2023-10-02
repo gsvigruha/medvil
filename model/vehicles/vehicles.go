@@ -121,6 +121,9 @@ func (v *Vehicle) PathType() navigation.PathType {
 	if v.T.Water {
 		return navigation.PathTypeBoat
 	}
+	if v.T == ExpeditionCart {
+		return navigation.PathTypeCart
+	}
 	return navigation.PathTypePedestrian
 }
 
