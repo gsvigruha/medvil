@@ -25,7 +25,7 @@ func MarketplaceToControlPanel(cp *ControlPanel, m *social.Marketplace) {
 }
 
 func MarketplaceToMarketPanel(mp *gui.Panel, m *social.Marketplace) {
-	MoneyToControlPanel(mp, &m.Town.Townhall.Household.Money, &m.Money, 100, 10, LargeIconD+float64(IconH)+24)
+	MoneyToControlPanel(mp, m.Town.Townhall.Household, m, 100, 10, LargeIconD+float64(IconH)+24)
 	var aI = 0
 	for _, a := range artifacts.All {
 		if q, ok := m.Storage.Artifacts[a]; ok {

@@ -36,7 +36,6 @@ type BuildingsController struct {
 	bt          building.BuildingType
 	p           *gui.Panel
 	cp          *ControlPanel
-	activeTown  *social.Town
 	del         bool
 }
 
@@ -323,7 +322,7 @@ func (bc *BuildingsController) RotatePlan() {
 }
 
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
+	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown().Townhall != nil && !bc.activeTown().Townhall.FieldWithinDistance(rf.F) {
 		return nil
 	}
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
@@ -332,18 +331,22 @@ func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.Rende
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
 
+func (bc *BuildingsController) activeTown() *social.Town {
+	return bc.cp.C.ActiveTown
+}
+
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	if bc.activeTown == nil {
+	if bc.activeTown() == nil {
 		return false
 	}
-	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown.Townhall != nil && !bc.activeTown.Townhall.FieldWithinDistance(rf.F) {
+	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown().Townhall != nil && !bc.activeTown().Townhall.FieldWithinDistance(rf.F) {
 		return false
 	}
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
 		return false
 	}
 	if bc.Plan.IsComplete() {
-		c.Map.AddBuildingConstruction(bc.activeTown, rf.F.X, rf.F.Y, bc.Plan, bc.Direction)
+		c.Map.AddBuildingConstruction(bc.activeTown(), rf.F.X, rf.F.Y, bc.Plan, bc.Direction)
 		return true
 	}
 	return false
@@ -429,7 +432,7 @@ func (bc *BuildingsController) GenerateButtons() {
 	}
 }
 
-func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
+func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *BuildingsController {
 	p := &gui.Panel{
 		X:           0,
 		Y:           ControlPanelDynamicPanelTop * ControlPanelSY,
@@ -442,7 +445,6 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType, activ
 		bt:          bt,
 		p:           p,
 		cp:          cp,
-		activeTown:  activeTown,
 		Direction:   building.DirectionN,
 		Perspective: &cp.C.Perspective}
 
@@ -471,33 +473,33 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 	bc.p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "farm", X: float64(24 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeFarm) },
-		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFarm, bc.cp.C.ActiveTown) }})
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFarm) }})
 	bc.p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "mine", X: float64(24 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeMine) },
-		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMine, bc.cp.C.ActiveTown) }})
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMine) }})
 	bc.p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "workshop", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeWorkshop) },
-		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeWorkshop, bc.cp.C.ActiveTown) }})
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeWorkshop) }})
 	bc.p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeFactory) },
-		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFactory, bc.cp.C.ActiveTown) }})
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFactory) }})
 	bc.p.AddButton(gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "town", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeTownhall) },
-		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeTownhall, bc.cp.C.ActiveTown) }})
+		ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeTownhall) }})
 	if bc.cp.C.ActiveTown != nil && bc.cp.C.ActiveTown.Marketplace == nil {
 		bc.p.AddButton(gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "market", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeMarket) },
-			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMarket, bc.cp.C.ActiveTown) }})
+			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMarket) }})
 	}
 }
 
-func SetupBuildingsController(cp *ControlPanel, bt building.BuildingType, activeTown *social.Town) *BuildingsController {
-	bc := CreateBuildingsController(cp, bt, activeTown)
+func SetupBuildingsController(cp *ControlPanel, bt building.BuildingType) *BuildingsController {
+	bc := CreateBuildingsController(cp, bt)
 	bc.GenerateBuildingTypebuttons()
 
 	cp.SetDynamicPanel(bc.p)
@@ -506,5 +508,5 @@ func SetupBuildingsController(cp *ControlPanel, bt building.BuildingType, active
 }
 
 func BuildingsToControlPanel(cp *ControlPanel) {
-	SetupBuildingsController(cp, building.BuildingTypeFarm, cp.C.ActiveTown)
+	SetupBuildingsController(cp, building.BuildingTypeFarm)
 }

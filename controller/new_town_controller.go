@@ -78,9 +78,9 @@ func (ntc *NewTownController) SetToState() {
 		ntc.bc = nil
 	} else {
 		if ntc.state == NewTownControllerStateBuildTownhall {
-			ntc.bc = CreateBuildingsController(ntc.cp, building.BuildingTypeTownhall, ntc.newTown)
+			ntc.bc = CreateBuildingsController(ntc.cp, building.BuildingTypeTownhall)
 		} else if ntc.state == NewTownControllerStateBuildMarket {
-			ntc.bc = CreateBuildingsController(ntc.cp, building.BuildingTypeMarket, ntc.newTown)
+			ntc.bc = CreateBuildingsController(ntc.cp, building.BuildingTypeMarket)
 		}
 		ntc.cp.C.ClickHandler = ntc
 	}

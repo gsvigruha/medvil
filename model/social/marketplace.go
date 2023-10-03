@@ -248,3 +248,15 @@ func (mp *Marketplace) HasTraded(a *artifacts.Artifact) bool {
 func (mp *Marketplace) UnitPrice(a *artifacts.Artifact) uint32 {
 	return mp.Prices[a]
 }
+
+func (mp *Marketplace) Spend(amount uint32) {
+	mp.Money -= amount
+}
+
+func (mp *Marketplace) Earn(amount uint32) {
+	mp.Money += amount
+}
+
+func (mp *Marketplace) GetMoney() uint32 {
+	return mp.Money
+}

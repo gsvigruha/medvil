@@ -116,6 +116,10 @@ func (bpe *BuildingPathElement) Walkable() bool {
 		bpe.BC.Building().Plan.BuildingType == building.BuildingTypeTower)
 }
 
+func (bpe *BuildingPathElement) Driveble() bool {
+	return bpe.Walkable()
+}
+
 func (bpe *BuildingPathElement) Sailable() bool {
 	if bpe.BC.Building().Plan.BuildingType == building.BuildingTypeGate {
 		return true

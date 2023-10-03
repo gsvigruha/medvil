@@ -78,24 +78,24 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 
 	if t.Household.Town.Supplier != nil && t.Household.Town.Settings.UseSupplier {
-		srcH := t.Household.Town.Supplier.Townhall.Household
+		src := t.Household.Town.Supplier
 		dstH := t.Household
 		if dstH.HasRoomForPeople() {
-			srcH.ReassignFirstPerson(dstH, len(dstH.Tasks) == 0, m)
+			src.ReassignFirstPerson(dstH, len(dstH.Tasks) == 0, m)
 		}
 		for _, a := range artifacts.All {
 			var q uint16 = 0
 			if storageQ, ok := t.Household.Resources.Artifacts[a]; ok {
 				q = storageQ
 			}
-			pickupD := m.GetField(srcH.Building.X, srcH.Building.Y)
+			pickupD := src.GetHome().Field(m)
 			if t.Household.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) == 0 {
 				targetQ := uint16(t.StorageTarget[a])
 				if q < targetQ {
 					t.Household.AddTask(&economy.TransportTask{
 						PickupD:        pickupD,
 						DropoffD:       m.GetField(dstH.Building.X, dstH.Building.Y),
-						PickupR:        srcH.Resources,
+						PickupR:        src.GetHome().GetResources(),
 						DropoffR:       dstH.Resources,
 						A:              a,
 						TargetQuantity: ProductTransportQuantity(a),
