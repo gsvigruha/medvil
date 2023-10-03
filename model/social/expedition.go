@@ -296,3 +296,14 @@ func (e *Expedition) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	e.Tasks = newTasks
 }
+
+func (e *Expedition) ReassignFirstPerson(dstH Home, assingTask bool, m navigation.IMap) {
+
+}
+
+func (e *Expedition) FieldWithinDistance(field *navigation.Field) bool {
+	return WithinDistanceCoords(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, field.X, field.Y, TownhallMaxDistance)
+}
+
+func (e *Expedition) CreateBuildingConstruction(b *building.Building, m navigation.IMap) {
+}

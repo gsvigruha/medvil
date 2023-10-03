@@ -322,7 +322,7 @@ func (bc *BuildingsController) RotatePlan() {
 }
 
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown().Townhall != nil && !bc.activeTown().Townhall.FieldWithinDistance(rf.F) {
+	if bc.Plan.BuildingType != building.BuildingTypeTownhall && !bc.activeSupplier().FieldWithinDistance(rf.F) {
 		return nil
 	}
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
@@ -331,22 +331,27 @@ func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.Rende
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
 
-func (bc *BuildingsController) activeTown() *social.Town {
-	return bc.cp.C.ActiveTown
+func (bc *BuildingsController) activeSupplier() social.Supplier {
+	if bc.cp.C.ActiveTown != nil {
+		return bc.cp.C.ActiveTown
+	} else if bc.cp.C.SelectedExpedition != nil {
+		return bc.cp.C.SelectedExpedition
+	}
+	return nil
 }
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	if bc.activeTown() == nil {
+	if bc.activeSupplier() == nil {
 		return false
 	}
-	if bc.Plan.BuildingType != building.BuildingTypeTownhall && bc.activeTown().Townhall != nil && !bc.activeTown().Townhall.FieldWithinDistance(rf.F) {
+	if bc.Plan.BuildingType != building.BuildingTypeTownhall && !bc.activeSupplier().FieldWithinDistance(rf.F) {
 		return false
 	}
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
 		return false
 	}
 	if bc.Plan.IsComplete() {
-		c.Map.AddBuildingConstruction(bc.activeTown(), rf.F.X, rf.F.Y, bc.Plan, bc.Direction)
+		c.Map.AddBuildingConstruction(bc.activeSupplier(), rf.F.X, rf.F.Y, bc.Plan, bc.Direction)
 		return true
 	}
 	return false

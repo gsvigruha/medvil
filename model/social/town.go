@@ -589,3 +589,7 @@ func (town *Town) GetHome() Home {
 func (town *Town) ReassignFirstPerson(dstH Home, assingTask bool, m navigation.IMap) {
 	town.Townhall.Household.ReassignFirstPerson(dstH, assingTask, m)
 }
+
+func (town *Town) FieldWithinDistance(field *navigation.Field) bool {
+	return town.Townhall.FieldWithinDistance(field)
+}
