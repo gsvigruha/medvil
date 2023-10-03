@@ -74,7 +74,7 @@ type Town struct {
 	Settings      TownSettings
 	Stats         *stats.Stats
 	History       *stats.History
-	Supplier      *Town
+	Supplier      Supplier
 	Name          string
 }
 
@@ -580,4 +580,12 @@ func (town *Town) ArchiveHistory() {
 	}
 	town.Stats = &stats.Stats{}
 	town.Stats.Init(pt)
+}
+
+func (town *Town) GetHome() Home {
+	return town.Townhall.Household
+}
+
+func (town *Town) ReassignFirstPerson(dstH Home, assingTask bool, m navigation.IMap) {
+	town.Townhall.Household.ReassignFirstPerson(dstH, assingTask, m)
 }

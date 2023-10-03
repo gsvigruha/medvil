@@ -27,7 +27,7 @@ func ExpeditionToControlPanel(cp *ControlPanel, expedition *social.Expedition) {
 }
 
 func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedition) {
-	MoneyToControlPanel(p, &expedition.Town.Townhall.Household.Money, &expedition.Money, 100, 10, LargeIconD+float64(IconH)+24)
+	MoneyToControlPanel(p, expedition.Town.Townhall.Household, expedition, 100, 10, LargeIconD+float64(IconH)+24)
 	for i, person := range expedition.People {
 		PersonToPanel(cp, p, i, person, IconW, PersonGUIY*ControlPanelSY)
 	}

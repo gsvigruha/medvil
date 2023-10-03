@@ -43,7 +43,7 @@ func (c *Country) ArchiveHistory() {
 	}
 }
 
-func (c *Country) CreateNewTown(b *building.Building, supplier *Town) {
+func (c *Country) CreateNewTown(b *building.Building, supplier Supplier) {
 	name := TownNames[rand.Intn(len(TownNames))]
 	newTown := &Town{Country: c, Supplier: supplier, Settings: DefaultTownSettings, Name: name}
 	newTown.Townhall = &Townhall{Household: &Household{Building: b, Town: newTown, Resources: &artifacts.Resources{}, BoatEnabled: true}}
