@@ -6,6 +6,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -68,7 +69,7 @@ func (b InfraBuildButton) Enabled() bool {
 }
 
 func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField) bool {
-	if !c.ActiveTown.Townhall.FieldWithinDistance(rf.F) {
+	if !c.ActiveSupplier.FieldWithinDistance(rf.F) {
 		return false
 	}
 	if ic.it == InfraTypeDirtRoad || ic.it == InfraTypeCobbleRoad {
@@ -107,47 +108,50 @@ func (ic *InfraController) GetActiveFields(c *Controller, rf *renderer.RenderedF
 }
 
 func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
-	if c.ActiveTown == nil {
+	if c.ActiveSupplier == nil {
 		return false
 	}
-	if ic.CheckField(c, rf) {
-		if ic.it == InfraTypeDirtRoad {
-			c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.DirtRoadType)
-		} else if ic.it == InfraTypeCobbleRoad {
-			c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.CobbleRoadType)
-		} else if ic.it == InfraTypeCanal {
-			c.Map.AddInfraConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.CanalType)
-		} else if ic.it == InfraTypeBridge {
-			c.Map.AddRoadConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.BridgeRoadType)
-		} else if ic.it == InfraTypeStoneWall1 {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall1Type, building.DirectionNone)
-		} else if ic.it == InfraTypeStoneWall2 {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.StoneWall2Type, building.DirectionNone)
-		} else if ic.it == InfraTypeStoneTower1 {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.Tower1Type, building.DirectionNone)
-		} else if ic.it == InfraTypeStoneTower2 {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.Tower2Type, building.DirectionNone)
-		} else if ic.it == InfraTypeStoneWallRamp {
-			c.Map.AddWallRampConstruction(c.ActiveTown, rf.F.X, rf.F.Y)
-		} else if ic.it == InfraTypeGateNS {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionN)
-		} else if ic.it == InfraTypeGateEW {
-			c.Map.AddBuildingConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionE)
-		} else if ic.it == InfraTypeLevelForBuilding {
-			c.Map.AddLevelingTask(c.ActiveTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForBuilding)
-		} else if ic.it == InfraTypeLevelForRoad {
-			c.Map.AddLevelingTask(c.ActiveTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
-		} else if ic.it == InfraTypeFountain {
-			c.Map.AddStatueConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.FountainType)
-		} else if ic.it == InfraTypeObelisk {
-			c.Map.AddStatueConstruction(c.ActiveTown, rf.F.X, rf.F.Y, building.ObeliskType)
-		} else if ic.it == InfraTypeOakTree {
-			c.ActiveTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingOakTree, F: rf.F, Start: *c.Map.Calendar})
-		} else if ic.it == InfraTypeAppleTree {
-			c.ActiveTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingAppleTree, F: rf.F, Start: *c.Map.Calendar})
+	if activeTown, ok := c.ActiveSupplier.(*social.Town); ok {
+		if ic.CheckField(c, rf) {
+			if ic.it == InfraTypeDirtRoad {
+				c.Map.AddRoadConstruction(activeTown, rf.F.X, rf.F.Y, building.DirtRoadType)
+			} else if ic.it == InfraTypeCobbleRoad {
+				c.Map.AddRoadConstruction(activeTown, rf.F.X, rf.F.Y, building.CobbleRoadType)
+			} else if ic.it == InfraTypeCanal {
+				c.Map.AddInfraConstruction(activeTown, rf.F.X, rf.F.Y, building.CanalType)
+			} else if ic.it == InfraTypeBridge {
+				c.Map.AddRoadConstruction(activeTown, rf.F.X, rf.F.Y, building.BridgeRoadType)
+			} else if ic.it == InfraTypeStoneWall1 {
+				c.Map.AddBuildingConstruction(activeTown, rf.F.X, rf.F.Y, building.StoneWall1Type, building.DirectionNone)
+			} else if ic.it == InfraTypeStoneWall2 {
+				c.Map.AddBuildingConstruction(activeTown, rf.F.X, rf.F.Y, building.StoneWall2Type, building.DirectionNone)
+			} else if ic.it == InfraTypeStoneTower1 {
+				c.Map.AddBuildingConstruction(activeTown, rf.F.X, rf.F.Y, building.Tower1Type, building.DirectionNone)
+			} else if ic.it == InfraTypeStoneTower2 {
+				c.Map.AddBuildingConstruction(activeTown, rf.F.X, rf.F.Y, building.Tower2Type, building.DirectionNone)
+			} else if ic.it == InfraTypeStoneWallRamp {
+				c.Map.AddWallRampConstruction(activeTown, rf.F.X, rf.F.Y)
+			} else if ic.it == InfraTypeGateNS {
+				c.Map.AddBuildingConstruction(activeTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionN)
+			} else if ic.it == InfraTypeGateEW {
+				c.Map.AddBuildingConstruction(activeTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionE)
+			} else if ic.it == InfraTypeLevelForBuilding {
+				c.Map.AddLevelingTask(activeTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForBuilding)
+			} else if ic.it == InfraTypeLevelForRoad {
+				c.Map.AddLevelingTask(activeTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
+			} else if ic.it == InfraTypeFountain {
+				c.Map.AddStatueConstruction(activeTown, rf.F.X, rf.F.Y, building.FountainType)
+			} else if ic.it == InfraTypeObelisk {
+				c.Map.AddStatueConstruction(activeTown, rf.F.X, rf.F.Y, building.ObeliskType)
+			} else if ic.it == InfraTypeOakTree {
+				activeTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingOakTree, F: rf.F, Start: *c.Map.Calendar})
+			} else if ic.it == InfraTypeAppleTree {
+				activeTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingAppleTree, F: rf.F, Start: *c.Map.Calendar})
+			}
 		}
+		return true
 	}
-	return true
+	return false
 }
 
 func InfraToControlPanel(cp *ControlPanel) {

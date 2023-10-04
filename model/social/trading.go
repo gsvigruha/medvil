@@ -256,3 +256,7 @@ func (t *Trader) IsBoatEnabled() bool {
 
 func (t *Trader) AssignPerson(person *Person, m navigation.IMap) {
 }
+
+func (t *Trader) IsPersonVisible() bool {
+	return true
+}

@@ -111,10 +111,10 @@ func (m *Map) ReverseReferences() *ReverseReferences {
 	return &rr
 }
 
-func (m *Map) AddBuildingConstruction(town *social.Town, x, y uint16, bp *building.BuildingPlan, direction uint8) bool {
+func (m *Map) AddBuildingConstruction(supplier social.Supplier, x, y uint16, bp *building.BuildingPlan, direction uint8) bool {
 	b := m.AddBuilding(x, y, bp.Copy(), true, direction)
 	if b != nil {
-		town.CreateBuildingConstruction(b, m)
+		supplier.CreateBuildingConstruction(b, m)
 		return true
 	} else {
 		return false

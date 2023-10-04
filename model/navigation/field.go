@@ -194,6 +194,9 @@ func (f Field) Sailable() bool {
 	if f.Road != nil && !f.Road.Construction {
 		return false
 	}
+	if f.Plant != nil {
+		return false
+	}
 	return f.Terrain.T == terrain.Water
 }
 

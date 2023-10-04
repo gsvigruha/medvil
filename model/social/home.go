@@ -36,6 +36,7 @@ type Home interface {
 	GetPeople() []*Person
 	GetExchange() economy.Exchange
 	IsHomeVehicle() bool
+	IsPersonVisible() bool
 	IsBoatEnabled() bool
 	AssignPerson(*Person, navigation.IMap)
 }
@@ -125,4 +126,59 @@ func PendingCosts(tasks []economy.Task) uint32 {
 		}
 	}
 	return costs
+}
+
+func CreateBuildingConstruction(supplier Supplier, b *building.Building, m navigation.IMap) {
+	bt := b.Plan.BuildingType
+	c := &building.Construction{X: b.X, Y: b.Y, Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
+	c.Storage.Init((b.Plan.Area() + b.Plan.RoofArea()) * StoragePerArea)
+	supplier.AddConstruction(c)
+
+	buildingF := m.GetField(b.X, b.Y)
+	AddConstructionTasks(supplier, c, buildingF, m)
+}
+
+func AddConstructionTasks(supplier Supplier, c *building.Construction, buildingF *navigation.Field, m navigation.IMap) {
+	var dest navigation.Destination
+	if c.Building != nil && c.Building.Broken {
+		dest = buildingF
+	} else {
+		dest = buildingF.TopLocation()
+	}
+	totalTasks := AddTransportTasks(supplier, c.Cost, dest, c.Storage, m)
+	if totalTasks == 0 {
+		totalTasks = 1
+	}
+	c.MaxProgress = totalTasks
+	for i := uint16(0); i < totalTasks; i++ {
+		supplier.GetHome().AddTask(&economy.BuildingTask{
+			D: dest,
+			C: c,
+		})
+	}
+}
+
+func AddTransportTasks(supplier Supplier, cost []artifacts.Artifacts, dest navigation.Destination, storage *artifacts.Resources, m navigation.IMap) uint16 {
+	var totalTasks uint16 = 0
+	for _, a := range cost {
+		var totalQ = a.Quantity
+		totalTasks += totalQ
+		for totalQ > 0 {
+			var q uint16 = ConstructionTransportQuantity
+			if totalQ < ConstructionTransportQuantity {
+				q = totalQ
+			}
+			totalQ -= q
+			supplier.GetHome().AddTask(&economy.TransportTask{
+				PickupD:          supplier.GetHome().Destination(building.NonExtension),
+				DropoffD:         dest,
+				PickupR:          supplier.GetHome().GetResources(),
+				DropoffR:         storage,
+				A:                a.A,
+				TargetQuantity:   q,
+				CompleteQuantity: true,
+			})
+		}
+	}
+	return totalTasks
 }

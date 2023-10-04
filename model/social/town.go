@@ -299,7 +299,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 						Field:      f,
 						Resources:  res,
 					})
-					town.AddTransportTasks(road.Road.RepairCost(), f, res, m)
+					AddTransportTasks(town, road.Road.RepairCost(), f, res, m)
 				}
 			}
 		}
@@ -314,7 +314,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 						Field:      wall.F,
 						Resources:  res,
 					})
-					town.AddTransportTasks(wall.Building.RepairCost(), wall.F, res, m)
+					AddTransportTasks(town, wall.Building.RepairCost(), wall.F, res, m)
 				}
 			}
 		}
@@ -356,7 +356,7 @@ func (town *Town) CreateRoadConstruction(x, y uint16, r *building.Road, m naviga
 
 	roadF := m.GetField(x, y)
 	roadF.Allocated = true
-	town.AddConstructionTasks(c, roadF, m)
+	AddConstructionTasks(town, c, roadF, m)
 }
 
 func (town *Town) CreateStatueConstruction(x, y uint16, s *building.Statue, m navigation.IMap) {
@@ -365,17 +365,11 @@ func (town *Town) CreateStatueConstruction(x, y uint16, s *building.Statue, m na
 	town.Constructions = append(town.Constructions, c)
 
 	f := m.GetField(x, y)
-	town.AddConstructionTasks(c, f, m)
+	AddConstructionTasks(town, c, f, m)
 }
 
 func (town *Town) CreateBuildingConstruction(b *building.Building, m navigation.IMap) {
-	bt := b.Plan.BuildingType
-	c := &building.Construction{X: b.X, Y: b.Y, Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
-	c.Storage.Init((b.Plan.Area() + b.Plan.RoofArea()) * StoragePerArea)
-	town.Constructions = append(town.Constructions, c)
-
-	buildingF := m.GetField(b.X, b.Y)
-	town.AddConstructionTasks(c, buildingF, m)
+	CreateBuildingConstruction(town, b, m)
 }
 
 func (town *Town) CreateIncrementalBuildingConstruction(b *building.Building, cost []artifacts.Artifacts, m navigation.IMap) {
@@ -385,7 +379,7 @@ func (town *Town) CreateIncrementalBuildingConstruction(b *building.Building, co
 	town.Constructions = append(town.Constructions, c)
 
 	buildingF := m.GetField(b.X, b.Y)
-	town.AddConstructionTasks(c, buildingF, m)
+	AddConstructionTasks(town, c, buildingF, m)
 }
 
 func (town *Town) CreateInfraConstruction(x, y uint16, it *building.InfraType, m navigation.IMap) {
@@ -396,7 +390,7 @@ func (town *Town) CreateInfraConstruction(x, y uint16, it *building.InfraType, m
 	f := m.GetField(x, y)
 	f.Allocated = true
 	f.Construction = true
-	town.AddConstructionTasks(c, f, m)
+	AddConstructionTasks(town, c, f, m)
 }
 
 func (town *Town) CreateLevelingTask(f *navigation.Field, taskType uint8, m navigation.IMap) {
@@ -408,51 +402,6 @@ func (town *Town) CreateLevelingTask(f *navigation.Field, taskType uint8, m navi
 			T: taskType,
 		})
 	}
-}
-
-func (town *Town) AddConstructionTasks(c *building.Construction, buildingF *navigation.Field, m navigation.IMap) {
-	var dest navigation.Destination
-	if c.Building != nil && c.Building.Broken {
-		dest = buildingF
-	} else {
-		dest = buildingF.TopLocation()
-	}
-	totalTasks := town.AddTransportTasks(c.Cost, dest, c.Storage, m)
-	if totalTasks == 0 {
-		totalTasks = 1
-	}
-	c.MaxProgress = totalTasks
-	for i := uint16(0); i < totalTasks; i++ {
-		town.Townhall.Household.AddTask(&economy.BuildingTask{
-			D: dest,
-			C: c,
-		})
-	}
-}
-
-func (town *Town) AddTransportTasks(cost []artifacts.Artifacts, dest navigation.Destination, storage *artifacts.Resources, m navigation.IMap) uint16 {
-	var totalTasks uint16 = 0
-	for _, a := range cost {
-		var totalQ = a.Quantity
-		totalTasks += totalQ
-		for totalQ > 0 {
-			var q uint16 = ConstructionTransportQuantity
-			if totalQ < ConstructionTransportQuantity {
-				q = totalQ
-			}
-			totalQ -= q
-			town.Townhall.Household.AddTask(&economy.TransportTask{
-				PickupD:          m.GetField(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y),
-				DropoffD:         dest,
-				PickupR:          town.Townhall.Household.Resources,
-				DropoffR:         storage,
-				A:                a.A,
-				TargetQuantity:   q,
-				CompleteQuantity: true,
-			})
-		}
-	}
-	return totalTasks
 }
 
 func (town *Town) CreateDemolishTask(b *building.Building, r *building.Road, f *navigation.Field, m navigation.IMap) {
@@ -588,4 +537,20 @@ func (town *Town) GetHome() Home {
 
 func (town *Town) ReassignFirstPerson(dstH Home, assingTask bool, m navigation.IMap) {
 	town.Townhall.Household.ReassignFirstPerson(dstH, assingTask, m)
+}
+
+func (town *Town) FieldWithinDistance(field *navigation.Field) bool {
+	return town.Townhall.FieldWithinDistance(field)
+}
+
+func (town *Town) AddConstruction(c *building.Construction) {
+	town.Constructions = append(town.Constructions, c)
+}
+
+func (town *Town) BuildMarketplaceEnabled() bool {
+	return town.Marketplace == nil
+}
+
+func (town *Town) BuildHousesEnabled() bool {
+	return true
 }
