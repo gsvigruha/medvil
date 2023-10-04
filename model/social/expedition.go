@@ -297,6 +297,10 @@ func (e *Expedition) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 	e.Tasks = newTasks
 }
 
+func (e *Expedition) IsPersonVisible() bool {
+	return false
+}
+
 func (e *Expedition) ReassignFirstPerson(dstH Home, assingTask bool, m navigation.IMap) {
 
 }

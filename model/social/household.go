@@ -680,3 +680,7 @@ func (h *Household) IsHomeVehicle() bool {
 func (h *Household) IsBoatEnabled() bool {
 	return h.BoatEnabled
 }
+
+func (h *Household) IsPersonVisible() bool {
+	return false
+}

@@ -156,7 +156,7 @@ func (p *Person) ComputeIsHome(m navigation.IMap) {
 	f := m.GetField(p.Traveller.FX, p.Traveller.FY)
 	if p.Home.GetBuilding() != nil && p.Home.GetBuilding() == f.Building.GetBuilding() {
 		p.Traveller.SetHome(true)
-	} else if p.Home.Field(m) == f && p.Traveller.Vehicle != nil && p.Traveller.Vehicle.Enclosed() {
+	} else if p.Home.Field(m) == f && !p.Home.IsPersonVisible() {
 		p.Traveller.SetHome(true)
 	} else {
 		p.Traveller.SetHome(false)

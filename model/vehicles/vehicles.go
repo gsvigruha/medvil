@@ -155,7 +155,3 @@ func (v *Vehicle) Break() {
 func (v *Vehicle) SetParking(f *navigation.Field) {
 	v.Parking = f
 }
-
-func (v *Vehicle) Enclosed() bool {
-	return v.T.Expedition
-}

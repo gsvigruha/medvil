@@ -36,6 +36,7 @@ type Home interface {
 	GetPeople() []*Person
 	GetExchange() economy.Exchange
 	IsHomeVehicle() bool
+	IsPersonVisible() bool
 	IsBoatEnabled() bool
 	AssignPerson(*Person, navigation.IMap)
 }
