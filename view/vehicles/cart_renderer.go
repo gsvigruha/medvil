@@ -15,7 +15,7 @@ func DrawTradingCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y fl
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
 
-	h3 := 21.0
+	h3 := 18.0
 
 	cv.SetStrokeStyle("#321")
 	cv.SetLineWidth(1)
@@ -77,7 +77,7 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	f2 := 17.0
 	z := 6.0
 	h1 := 8.0
-	h2 := 12.0
+	h2 := 16.0
 
 	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
 	cv.SetStrokeStyle("#321")
@@ -101,7 +101,7 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	cv.ClosePath()
 	cv.Fill()
 
-	cv.SetStrokeStyle("#321")
+	cv.SetStrokeStyle("#432")
 	cv.SetLineWidth(2)
 	cv.BeginPath()
 	cv.LineTo(x+f1*pm.XX-h2*pm.XY-z*pm.XZ, y+f1*pm.YX-h2*pm.YY-z*pm.YZ)
@@ -110,6 +110,20 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	cv.LineTo(x+f2*pm.XX-h2*pm.XY-z*pm.XZ, y+f2*pm.YX-h2*pm.YY-z*pm.YZ)
 	cv.ClosePath()
 	cv.Stroke()
+
+	for i := 0.0; i <= 4.0; i++ {
+		f := (f1*i + f2*(4.0-i)) / 4.0
+		cv.BeginPath()
+		cv.LineTo(x+f*pm.XX-h1*pm.XY+z*pm.XZ, y+f*pm.YX-h1*pm.YY+z*pm.YZ)
+		cv.LineTo(x+f*pm.XX-h2*pm.XY+z*pm.XZ, y+f*pm.YX-h2*pm.YY+z*pm.YZ)
+		cv.ClosePath()
+		cv.Stroke()
+		cv.BeginPath()
+		cv.LineTo(x+f*pm.XX-h1*pm.XY-z*pm.XZ, y+f*pm.YX-h1*pm.YY-z*pm.YZ)
+		cv.LineTo(x+f*pm.XX-h2*pm.XY-z*pm.XZ, y+f*pm.YX-h2*pm.YY-z*pm.YZ)
+		cv.ClosePath()
+		cv.Stroke()
+	}
 
 	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
 	cv.SetStrokeStyle("#321")
