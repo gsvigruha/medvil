@@ -107,12 +107,12 @@ func DrawExpeditionBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
 
-	f1 := 40.0
-	f2 := 12.0
-	s := 16.0
-	z := 12.0
-	h1 := 12.0
-	h2 := 18.0
+	f1 := 48.0
+	f2 := 16.0
+	s := 18.0
+	z := 14.0
+	h1 := 15.0
+	h2 := 24.0
 
 	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
 	cv.BeginPath()
@@ -153,10 +153,10 @@ func DrawExpeditionBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 
 	mw1 := 3.0
 	mw2 := 2.0
-	mh := 54.0
+	mh := 64.0
 	sh1 := 20.0
-	sh2 := 48.0
-	sw := 16.0
+	sh2 := 52.0
+	sw := 18.0
 
 	if dirIdx == 1 || dirIdx == 2 {
 		drawSail(cv, pm, p, x, y, sh1, sh2, sw)
