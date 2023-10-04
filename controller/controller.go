@@ -65,7 +65,7 @@ type Controller struct {
 	TempRenderedBuildingParts []renderer.RenderedBuildingPart
 	TempRenderedTravellers    []*renderer.RenderedTraveller
 	SelectedField             *navigation.Field
-	ActiveTown                *social.Town
+	ActiveSupplier            social.Supplier
 	SelectedFarm              *social.Farm
 	SelectedWorkshop          *social.Workshop
 	SelectedMine              *social.Mine
@@ -172,11 +172,6 @@ func (c *Controller) ShowInfraController() {
 	InfraToControlPanel(c.ControlPanel)
 }
 
-func (c *Controller) ShowNewTownController() {
-	c.Reset()
-	NewTownToControlPanel(c.ControlPanel, c.GetActiveTownhall())
-}
-
 func (c *Controller) ShowDemolishController() {
 	c.Reset()
 	DemolishToControlPanel(c.ControlPanel, c.GetActiveTownhall())
@@ -186,8 +181,10 @@ func (c *Controller) GetActiveTownhall() *social.Townhall {
 	if c.SelectedTownhall != nil {
 		return c.SelectedTownhall
 	}
-	if c.ActiveTown != nil {
-		return c.ActiveTown.Townhall
+	if c.ActiveSupplier != nil {
+		if town, ok := c.ActiveSupplier.(*social.Town); ok {
+			return town.Townhall
+		}
 	}
 	return nil
 }
@@ -256,37 +253,37 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 			c.Reset()
 			c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbp.GetBuilding()]
 			if c.SelectedTownhall != nil {
-				c.ActiveTown = c.SelectedTownhall.Household.Town
+				c.ActiveSupplier = c.SelectedTownhall.Household.Town
 				TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
 			}
 			c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbp.GetBuilding()]
 			if c.SelectedMarketplace != nil {
-				c.ActiveTown = c.SelectedMarketplace.Town
+				c.ActiveSupplier = c.SelectedMarketplace.Town
 				MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
 			}
 			c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbp.GetBuilding()]
 			if c.SelectedFarm != nil {
-				c.ActiveTown = c.SelectedFarm.Household.Town
+				c.ActiveSupplier = c.SelectedFarm.Household.Town
 				FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
 			}
 			c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbp.GetBuilding()]
 			if c.SelectedWorkshop != nil {
-				c.ActiveTown = c.SelectedWorkshop.Household.Town
+				c.ActiveSupplier = c.SelectedWorkshop.Household.Town
 				WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
 			}
 			c.SelectedMine = c.ReverseReferences.BuildingToMine[rbp.GetBuilding()]
 			if c.SelectedMine != nil {
-				c.ActiveTown = c.SelectedMine.Household.Town
+				c.ActiveSupplier = c.SelectedMine.Household.Town
 				MineToControlPanel(c.ControlPanel, c.SelectedMine)
 			}
 			c.SelectedFactory = c.ReverseReferences.BuildingToFactory[rbp.GetBuilding()]
 			if c.SelectedFactory != nil {
-				c.ActiveTown = c.SelectedFactory.Household.Town
+				c.ActiveSupplier = c.SelectedFactory.Household.Town
 				FactoryToControlPanel(c.ControlPanel, c.SelectedFactory)
 			}
 			c.SelectedTower = c.ReverseReferences.BuildingToTower[rbp.GetBuilding()]
 			if c.SelectedTower != nil {
-				c.ActiveTown = c.SelectedTower.Household.Town
+				c.ActiveSupplier = c.SelectedTower.Household.Town
 				TowerToControlPanel(c.ControlPanel, c.SelectedTower)
 			}
 			c.SelectedConstruction = c.ReverseReferences.BuildingToConstruction[rbp.GetBuilding()]
@@ -312,6 +309,7 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				expedition := c.ReverseReferences.TravellerToExpedition[c.SelectedTraveller]
 				if expedition != nil {
 					c.SelectedExpedition = expedition
+					c.ActiveSupplier = expedition
 					ExpeditionToControlPanel(c.ControlPanel, expedition)
 				}
 				return
@@ -407,9 +405,10 @@ func (c *Controller) NewMap(config maps.MapConfig) {
 
 func (c *Controller) LinkMap() {
 	c.Country = c.Map.Countries[0]
-	c.ActiveTown = c.Map.Countries[0].Towns[0]
-	c.CenterX = int(c.ActiveTown.Townhall.Household.Building.X)
-	c.CenterY = int(c.ActiveTown.Townhall.Household.Building.Y)
+	town := c.Map.Countries[0].Towns[0]
+	c.CenterX = int(town.Townhall.Household.Building.X)
+	c.CenterY = int(town.Townhall.Household.Building.Y)
+	c.ActiveSupplier = town
 	c.ControlPanel.GenerateButtons()
 	c.Refresh()
 }

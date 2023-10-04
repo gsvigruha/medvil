@@ -21,6 +21,7 @@ type Expedition struct {
 	Tasks            []economy.Task
 	Town             *Town
 	DestinationField *navigation.Field
+	Constructions    []*building.Construction
 }
 
 const MaxDistanceFromTown = 10
@@ -106,6 +107,30 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 			}
 		}
 	}
+
+	var constructions []*building.Construction
+	for k := range e.Constructions {
+		construction := e.Constructions[k]
+		if construction.IsComplete() {
+			b := construction.Building
+			switch construction.T {
+			case building.BuildingTypeTownhall:
+				e.Town.Country.CreateNewTown(b, e)
+			}
+			if b != nil {
+				m.SetBuildingUnits(b, false)
+				for _, coords := range b.GetBuildingXYs(false) {
+					bf := m.GetField(coords[0], coords[1])
+					navigation.SetRoadConnectionsForNeighbors(m, bf)
+					navigation.SetBuildingDeckForNeighbors(m, bf)
+					navigation.SetWallConnections(m, bf)
+				}
+			}
+		} else {
+			constructions = append(constructions, construction)
+		}
+	}
+	e.Constructions = constructions
 }
 
 func (e *Expedition) IsEveryoneBoarded() bool {
@@ -310,4 +335,17 @@ func (e *Expedition) FieldWithinDistance(field *navigation.Field) bool {
 }
 
 func (e *Expedition) CreateBuildingConstruction(b *building.Building, m navigation.IMap) {
+	CreateBuildingConstruction(e, b, m)
+}
+
+func (e *Expedition) AddConstruction(c *building.Construction) {
+	e.Constructions = append(e.Constructions, c)
+}
+
+func (e *Expedition) BuildMarketplaceEnabled() bool {
+	return false
+}
+
+func (e *Expedition) BuildHousesEnabled() bool {
+	return false
 }

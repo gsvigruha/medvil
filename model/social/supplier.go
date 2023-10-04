@@ -10,4 +10,7 @@ type Supplier interface {
 	ReassignFirstPerson(dstH Home, assingTask bool, m navigation.IMap)
 	FieldWithinDistance(*navigation.Field) bool
 	CreateBuildingConstruction(b *building.Building, m navigation.IMap)
+	AddConstruction(c *building.Construction)
+	BuildMarketplaceEnabled() bool
+	BuildHousesEnabled() bool
 }

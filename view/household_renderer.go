@@ -108,7 +108,7 @@ func DrawLabels(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 			dx := float64(len(name)) * gui.FontSize * 0.24
 			y := midY - z - 10
 			dy := gui.FontSize
-			if c.ActiveTown == townhall.Household.Town {
+			if c.ActiveSupplier == townhall.Household.Town {
 				cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
 				cv.SetLineWidth(4.0)
 				cv.StrokeRect(midX-dx-8, y-dy-2, dx*2+16, dy+10)

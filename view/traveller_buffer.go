@@ -59,9 +59,9 @@ func travellerWH(t uint8) (int, int) {
 	} else if t == navigation.TravellerTypeExpeditionBoat {
 		return 96, 96
 	} else if t == navigation.TravellerTypeCart {
-		return 48, 48
+		return 36, 48
 	} else if t == navigation.TravellerTypeTradingCart {
-		return 48, 48
+		return 36, 48
 	} else if t == navigation.TravellerTypeExpeditionCart {
 		return 96, 96
 	}
@@ -99,7 +99,15 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 		}
 		w, h := travellerWH(t.T)
 		travellerImg := ic.Tic.RenderTravellerOnBuffer(cv, t, rf.F, w, h, c)
-		cv.DrawImage(travellerImg, x-float64(w/2), y-z-float64(h*3/4), float64(w), float64(h))
-		c.AddRenderedTraveller(&renderer.RenderedTraveller{X: x, Y: y - z + float64(h/4), H: float64(h), W: float64(w), Traveller: t})
+		rx := x - float64(w/2)
+		ry := y - z - float64(h*3/4)
+		cv.DrawImage(travellerImg, rx, ry, float64(w), float64(h))
+		rt := &renderer.RenderedTraveller{X: rx, Y: ry, W: float64(w), H: float64(h), Traveller: t}
+		c.AddRenderedTraveller(rt)
+		if c.ReverseReferences.TravellerToExpedition[t] != nil && c.ReverseReferences.TravellerToExpedition[t] == c.ActiveSupplier {
+			rt.Draw(cv)
+		} else if t == c.SelectedTraveller {
+			rt.Draw(cv)
+		}
 	}
 }
