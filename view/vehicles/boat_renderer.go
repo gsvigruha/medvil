@@ -160,20 +160,39 @@ func DrawExpeditionBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 
 	if dirIdx == 1 || dirIdx == 2 {
 		drawSail(cv, pm, p, x, y, sh1, sh2, sw)
-		drawMast(cv, pm, x, y, mw1, mw2, mh)
+		drawMast(cv, pm, x, y, mw1, mw2, mh, sh1, sh2, sw)
 	} else {
-		drawMast(cv, pm, x, y, mw1, mw2, mh)
+		drawMast(cv, pm, x, y, mw1, mw2, mh, sh1, sh2, sw)
 		drawSail(cv, pm, p, x, y, sh1, sh2, sw)
 	}
 }
 
-func drawMast(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, mw1, mw2, mh float64) {
+func drawMast(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, mw1, mw2, mh, sh1, sh2, sw float64) {
 	cv.SetFillStyle("texture/vehicle/boat_side.png")
 	cv.BeginPath()
 	cv.LineTo(x-mw1, y)
 	cv.LineTo(x+mw1, y)
 	cv.LineTo(x+mw2, y-mh)
 	cv.LineTo(x-mw2, y-mh)
+	cv.ClosePath()
+	cv.Fill()
+
+	h1 := sh1 + 4.0
+	h2 := sh2 - 4.0
+	w := sw + 4.0
+	cv.BeginPath()
+	cv.LineTo(x+0*pm.XX-h1*pm.XY+w*pm.XZ, y+0*pm.YX-h1*pm.YY+w*pm.YZ+1)
+	cv.LineTo(x+0*pm.XX-h1*pm.XY+w*pm.XZ, y+0*pm.YX-h1*pm.YY+w*pm.YZ-2)
+	cv.LineTo(x+0*pm.XX-h1*pm.XY-w*pm.XZ, y+0*pm.YX-h1*pm.YY-w*pm.YZ-2)
+	cv.LineTo(x+0*pm.XX-h1*pm.XY-w*pm.XZ, y+0*pm.YX-h1*pm.YY-w*pm.YZ+1)
+	cv.ClosePath()
+	cv.Fill()
+
+	cv.BeginPath()
+	cv.LineTo(x+0*pm.XX-h2*pm.XY+w*pm.XZ, y+0*pm.YX-h2*pm.YY+w*pm.YZ+1)
+	cv.LineTo(x+0*pm.XX-h2*pm.XY+w*pm.XZ, y+0*pm.YX-h2*pm.YY+w*pm.YZ-2)
+	cv.LineTo(x+0*pm.XX-h2*pm.XY-w*pm.XZ, y+0*pm.YX-h2*pm.YY-w*pm.YZ-2)
+	cv.LineTo(x+0*pm.XX-h2*pm.XY-w*pm.XZ, y+0*pm.YX-h2*pm.YY-w*pm.YZ+1)
 	cv.ClosePath()
 	cv.Fill()
 }
