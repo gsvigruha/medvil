@@ -51,7 +51,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				transportQ := MinProductTransportQuantity(purchasableInputs)
 				batch := artifacts.Multiply(purchasableInputs, transportQ)
 				tag := "manufacture_input"
-				if w.Household.Resources.Needs(batch) != nil && w.Household.NumTasks("exchange", tag) == 0 && len(w.Household.Tasks) < int(numP)*5 {
+				if w.Household.Resources.Needs(batch) != nil && w.Household.NumTasks("exchange", tag) < int(numP)/2 && len(w.Household.Tasks) < int(numP)*5 {
 					if w.Household.Money >= mp.Price(batch) {
 						w.Household.AddTask(&economy.BuyTask{
 							Exchange:        mp,

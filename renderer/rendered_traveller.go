@@ -21,6 +21,5 @@ func (rt *RenderedTraveller) Contains(x float64, y float64) bool {
 func (rt *RenderedTraveller) Draw(cv *canvas.Canvas) {
 	cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
 	cv.SetLineWidth(2)
-	cv.Rect(rt.X, rt.Y, rt.W, rt.H)
-	cv.Stroke()
+	cv.StrokeRect(rt.X, rt.Y, rt.W, rt.H)
 }

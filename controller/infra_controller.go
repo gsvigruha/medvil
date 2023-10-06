@@ -111,8 +111,8 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 	if c.ActiveSupplier == nil {
 		return false
 	}
-	if activeTown, ok := c.ActiveSupplier.(*social.Town); ok {
-		if ic.CheckField(c, rf) {
+	if ic.CheckField(c, rf) {
+		if activeTown, ok := c.ActiveSupplier.(*social.Town); ok {
 			if ic.it == InfraTypeDirtRoad {
 				c.Map.AddRoadConstruction(activeTown, rf.F.X, rf.F.Y, building.DirtRoadType)
 			} else if ic.it == InfraTypeCobbleRoad {
@@ -135,10 +135,6 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 				c.Map.AddBuildingConstruction(activeTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionN)
 			} else if ic.it == InfraTypeGateEW {
 				c.Map.AddBuildingConstruction(activeTown, rf.F.X, rf.F.Y, building.SmallGate, building.DirectionE)
-			} else if ic.it == InfraTypeLevelForBuilding {
-				c.Map.AddLevelingTask(activeTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForBuilding)
-			} else if ic.it == InfraTypeLevelForRoad {
-				c.Map.AddLevelingTask(activeTown, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
 			} else if ic.it == InfraTypeFountain {
 				c.Map.AddStatueConstruction(activeTown, rf.F.X, rf.F.Y, building.FountainType)
 			} else if ic.it == InfraTypeObelisk {
@@ -148,8 +144,15 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 			} else if ic.it == InfraTypeAppleTree {
 				activeTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingAppleTree, F: rf.F, Start: *c.Map.Calendar})
 			}
+			return true
 		}
-		return true
+		if ic.it == InfraTypeLevelForBuilding {
+			c.Map.AddLevelingTask(c.ActiveSupplier, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForBuilding)
+			return true
+		} else if ic.it == InfraTypeLevelForRoad {
+			c.Map.AddLevelingTask(c.ActiveSupplier, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
+			return true
+		}
 	}
 	return false
 }
@@ -159,88 +162,92 @@ func InfraToControlPanel(cp *ControlPanel) {
 	ic := &InfraController{it: InfraTypeNone, cp: cp}
 
 	top := InfraPanelTop * ControlPanelSY
-	p.AddButton(InfraBuildButton{
-		b:  gui.ButtonGUI{Texture: "terrain/grass", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS},
-		it: InfraTypeNone,
-		ic: ic,
-	})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/dirt_road", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeDirtRoad,
-		msg: "Build dirt road. Speeds up commute with 50%.",
-		ic:  ic,
-	})
+	if cp.C.ActiveSupplier != nil && cp.C.ActiveSupplier.BuildHousesEnabled() {
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/cobble_road", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeCobbleRoad,
-		msg: "Build cobble road. Speeds up commute with 100%.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:  gui.ButtonGUI{Texture: "terrain/grass", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS},
+			it: InfraTypeNone,
+			ic: ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/canal", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeCanal,
-		msg: "Extend water with canals for drinking and transport.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/dirt_road", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeDirtRoad,
+			msg: "Build dirt road. Speeds up commute with 50%.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/bridge", X: float64(24 + LargeIconD*4), Y: top, SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeBridge,
-		msg: "Build bridges. People can cross small rivers.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/cobble_road", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeCobbleRoad,
+			msg: "Build cobble road. Speeds up commute with 100%.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/wall_small", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeStoneWall1,
-		msg: "Build a small wall.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/canal", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeCanal,
+			msg: "Extend water with canals for drinking and transport.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/wall_large", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeStoneWall2,
-		msg: "Build a large wall.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/bridge", X: float64(24 + LargeIconD*4), Y: top, SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeBridge,
+			msg: "Build bridges. People can cross small rivers.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/tower_1", X: float64(24 + LargeIconD*2), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeStoneTower1,
-		msg: "Build a small tower.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/wall_small", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeStoneWall1,
+			msg: "Build a small wall.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/tower_2", X: float64(24 + LargeIconD*3), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeStoneTower2,
-		msg: "Build a large tower.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/wall_large", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeStoneWall2,
+			msg: "Build a large wall.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/ramp", X: float64(24 + LargeIconD*4), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeStoneWallRamp,
-		msg: "Build a ramp to make walls accessible.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/tower_1", X: float64(24 + LargeIconD*2), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeStoneTower1,
+			msg: "Build a small tower.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/gate_ns", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*2), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeGateNS,
-		msg: "Build a north-south gate over water or land.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/tower_2", X: float64(24 + LargeIconD*3), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeStoneTower2,
+			msg: "Build a large tower.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/gate_ew", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*2), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeGateEW,
-		msg: "Build an east-west gate over water or land.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/ramp", X: float64(24 + LargeIconD*4), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeStoneWallRamp,
+			msg: "Build a ramp to make walls accessible.",
+			ic:  ic,
+		})
+
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/gate_ns", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*2), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeGateNS,
+			msg: "Build a north-south gate over water or land.",
+			ic:  ic,
+		})
+
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/gate_ew", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*2), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeGateEW,
+			msg: "Build an east-west gate over water or land.",
+			ic:  ic,
+		})
+	}
 
 	p.AddButton(InfraBuildButton{
 		b:   gui.ButtonGUI{Icon: "infra/terraform_building", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*3), SX: LargeIconS, SY: LargeIconS},
@@ -256,33 +263,35 @@ func InfraToControlPanel(cp *ControlPanel) {
 		ic:  ic,
 	})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/fountain", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeFountain,
-		msg: "Statues make your population happy.",
-		ic:  ic,
-	})
+	if cp.C.ActiveSupplier != nil && cp.C.ActiveSupplier.BuildHousesEnabled() {
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/fountain", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeFountain,
+			msg: "Statues make your population happy.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/obelisk", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeObelisk,
-		msg: "Statues make your population happy.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/obelisk", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*4), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeObelisk,
+			msg: "Statues make your population happy.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/oak_tree", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeOakTree,
-		msg: "Trees make your population happy and healthy.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/oak_tree", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeOakTree,
+			msg: "Trees make your population happy and healthy.",
+			ic:  ic,
+		})
 
-	p.AddButton(InfraBuildButton{
-		b:   gui.ButtonGUI{Icon: "infra/apple_tree", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
-		it:  InfraTypeAppleTree,
-		msg: "Trees make your population happy and healthy.",
-		ic:  ic,
-	})
+		p.AddButton(InfraBuildButton{
+			b:   gui.ButtonGUI{Icon: "infra/apple_tree", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeAppleTree,
+			msg: "Trees make your population happy and healthy.",
+			ic:  ic,
+		})
+	}
 
 	cp.SetDynamicPanel(p)
 	cp.C.ClickHandler = ic

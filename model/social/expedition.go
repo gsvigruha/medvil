@@ -40,7 +40,9 @@ func (e *Expedition) CloseToTown(m navigation.IMap) bool {
 
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if e.DestinationField != nil {
-		e.Tasks = nil
+		for i := 0; i < len(e.Tasks); i++ {
+			e.Tasks[i].Pause(true)
+		}
 		if e.IsEveryoneBoarded() {
 			e.Vehicle.Traveller.UseVehicle(e.Vehicle)
 
@@ -98,12 +100,12 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 				}
 			}
 		}
+	}
 
-		if Calendar.Hour == 0 {
-			for i := 0; i < len(e.Tasks); i++ {
-				if e.Tasks[i].IsPaused() {
-					e.Tasks[i].Pause(false)
-				}
+	if e.DestinationField == nil && Calendar.Hour == 0 && Calendar.Day == 1 {
+		for i := 0; i < len(e.Tasks); i++ {
+			if e.Tasks[i].IsPaused() {
+				e.Tasks[i].Pause(false)
 			}
 		}
 	}
@@ -348,4 +350,15 @@ func (e *Expedition) BuildMarketplaceEnabled() bool {
 
 func (e *Expedition) BuildHousesEnabled() bool {
 	return false
+}
+
+func (e *Expedition) CreateLevelingTask(f *navigation.Field, taskType uint8, m navigation.IMap) {
+	if e.NumTasks("terraform", economy.TerraformTaskTag(f)) == 0 {
+		f.Construction = true
+		e.AddTask(&economy.TerraformTask{
+			F: f,
+			M: m,
+			T: taskType,
+		})
+	}
 }

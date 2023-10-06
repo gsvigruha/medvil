@@ -174,7 +174,9 @@ func (c *Controller) ShowInfraController() {
 
 func (c *Controller) ShowDemolishController() {
 	c.Reset()
-	DemolishToControlPanel(c.ControlPanel, c.GetActiveTownhall())
+	if c.GetActiveTownhall() != nil {
+		DemolishToControlPanel(c.ControlPanel, c.GetActiveTownhall())
+	}
 }
 
 func (c *Controller) GetActiveTownhall() *social.Townhall {

@@ -140,8 +140,8 @@ func (m *Map) AddInfraConstruction(town *social.Town, x, y uint16, it *building.
 	return true
 }
 
-func (m *Map) AddLevelingTask(town *social.Town, x, y uint16, taskType uint8) bool {
-	town.CreateLevelingTask(m.GetField(x, y), taskType, m)
+func (m *Map) AddLevelingTask(supplier social.Supplier, x, y uint16, taskType uint8) bool {
+	supplier.CreateLevelingTask(m.GetField(x, y), taskType, m)
 	return true
 }
 
