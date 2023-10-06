@@ -13,4 +13,5 @@ type Supplier interface {
 	AddConstruction(c *building.Construction)
 	BuildMarketplaceEnabled() bool
 	BuildHousesEnabled() bool
+	CreateLevelingTask(f *navigation.Field, taskType uint8, m navigation.IMap)
 }
