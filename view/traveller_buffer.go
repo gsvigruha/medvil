@@ -17,8 +17,7 @@ type TravellerImageCache struct {
 	ctx     *goglbackend.GLContext
 }
 
-func (tc *TravellerImageCache) RenderTravellerOnBuffer(
-	cv *canvas.Canvas, t *navigation.Traveller, f *navigation.Field, w, h int, c *controller.Controller) *canvas.Canvas {
+func (tc *TravellerImageCache) RenderTravellerOnBuffer(t *navigation.Traveller, f *navigation.Field, w, h int, c *controller.Controller) *canvas.Canvas {
 	key := t.CacheKey(c.Perspective) + "#" + strconv.FormatBool(tallPlant(f))
 	person := t.Person
 	if person != nil {
@@ -98,7 +97,7 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 			}
 		}
 		w, h := travellerWH(t.T)
-		travellerImg := ic.Tic.RenderTravellerOnBuffer(cv, t, rf.F, w, h, c)
+		travellerImg := ic.Tic.RenderTravellerOnBuffer(t, rf.F, w, h, c)
 		rx := x - float64(w/2)
 		ry := y - z - float64(h*3/4)
 		cv.DrawImage(travellerImg, rx, ry, float64(w), float64(h))
