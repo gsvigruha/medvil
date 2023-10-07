@@ -28,7 +28,7 @@ func CheckField(pe PathElement, pathType PathType) bool {
 	if pathType == PathTypePedestrian {
 		return pe.Walkable() && !pe.Crowded()
 	} else if pathType == PathTypeCart {
-		return pe.Driveble()
+		return pe.Drivable()
 	} else if pathType == PathTypeBoat {
 		return pe.Sailable()
 	}

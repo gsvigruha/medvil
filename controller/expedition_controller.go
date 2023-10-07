@@ -5,7 +5,6 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/model/social"
-	"medvil/model/terrain"
 	"medvil/renderer"
 	"medvil/view/gui"
 )
@@ -86,15 +85,17 @@ func (ec *ExpeditionController) Refresh() {
 
 func (ec *ExpeditionController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	var fs []navigation.FieldWithContext
-
+	//fs = append(fs, ec.cp.C.Map.GetField(ec.expedition.Vehicle.Traveller.FX, ec.expedition.Vehicle.Traveller.FY))
+	if ec.expedition.CheckDestinationField(rf.F) {
+		fs = append(fs, rf.F)
+	}
 	return fs
 }
 
 func HandleClickForExpedition(expedition *social.Expedition, c *Controller, rf *renderer.RenderedField) bool {
-	if expedition.Vehicle.T.Water && rf.F.Terrain.T == terrain.Water {
+	if expedition.CheckDestinationField(rf.F) {
 		expedition.DestinationField = rf.F
-	} else if !expedition.Vehicle.T.Water && rf.F.Terrain.T == terrain.Grass && rf.F.Empty() {
-		expedition.DestinationField = rf.F
+		return true
 	}
 	return false
 }

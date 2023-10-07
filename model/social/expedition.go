@@ -7,6 +7,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/stats"
+	"medvil/model/terrain"
 	"medvil/model/time"
 	"medvil/model/vehicles"
 )
@@ -361,4 +362,13 @@ func (e *Expedition) CreateLevelingTask(f *navigation.Field, taskType uint8, m n
 			T: taskType,
 		})
 	}
+}
+
+func (e *Expedition) CheckDestinationField(f *navigation.Field) bool {
+	if e.Vehicle.T.Water && f.Terrain.T == terrain.Water && f.Sailable() {
+		return true
+	} else if !e.Vehicle.T.Water && f.Terrain.T == terrain.Grass && f.Drivable() {
+		return true
+	}
+	return false
 }

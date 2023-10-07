@@ -163,7 +163,7 @@ func (f Field) Walkable() bool {
 	return f.Terrain.T.Walkable
 }
 
-func (f Field) Driveble() bool {
+func (f Field) Drivable() bool {
 	if !f.Building.Empty() {
 		return false
 	}
