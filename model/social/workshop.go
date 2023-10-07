@@ -50,7 +50,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if float64(mp.Price(purchasableInputs)) < maxUnitCost {
 				transportQ := MinProductTransportQuantity(purchasableInputs)
 				batch := artifacts.Multiply(purchasableInputs, transportQ)
-				tag := "manufacture_input"
+				tag := economy.SingleTag(economy.TagManufactureInput)
 				if w.Household.Resources.Needs(batch) != nil && w.Household.NumTasks("exchange", tag) < int(numP)/2 && len(w.Household.Tasks) < int(numP)*5 {
 					if w.Household.Money >= mp.Price(batch) {
 						w.Household.AddTask(&economy.BuyTask{
@@ -63,7 +63,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 						water := artifacts.GetArtifact("water")
 						if w.Manufacture.IsInput(water) &&
 							w.Household.Resources.Get(water) < economy.MinFoodOrDrinkPerPerson*numP+WaterTransportQuantity &&
-							w.Household.NumTasks("transport", "water") == 0 {
+							w.Household.NumTasks("transport", economy.SingleTag(water.Idx)) == 0 {
 							hf := w.Household.RandomField(m, navigation.Field.BuildingNonExtension)
 							pickup := m.FindDest(navigation.Location{X: hf.X, Y: hf.Y, Z: 0}, economy.WaterDestination{}, navigation.PathTypePedestrian)
 							if pickup != nil {
@@ -92,7 +92,8 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			w.Household.SellArtifacts(w.Manufacture.IsInput, w.Manufacture.IsOutput)
 		}
 
-		if w.AutoSwitch && w.Household.Resources.Get(Paper) < ProductTransportQuantity(Paper) && w.Household.NumTasks("exchange", "paper_purchase") == 0 {
+		paperTag := economy.SingleTag(economy.TagPaperPurchase)
+		if w.AutoSwitch && w.Household.Resources.Get(Paper) < ProductTransportQuantity(Paper) && w.Household.NumTasks("exchange", paperTag) == 0 {
 			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Paper, Quantity: ProductTransportQuantity(Paper)}}
 			if w.Household.Money >= mp.Price(needs) && mp.HasTraded(Paper) {
 				w.Household.AddTask(&economy.BuyTask{
@@ -100,7 +101,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					HouseholdWallet: w.Household,
 					Goods:           needs,
 					MaxPrice:        uint32(float64(w.Household.Money) * ExtrasBudgetRatio),
-					TaskTag:         "paper_purchase",
+					TaskTag:         paperTag,
 				})
 			}
 		}

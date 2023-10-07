@@ -80,8 +80,8 @@ func (t *EatTask) Name() string {
 	return "eat"
 }
 
-func (t *EatTask) Tag() string {
-	return ""
+func (t *EatTask) Tags() Tags {
+	return EmptyTags
 }
 
 func (t *EatTask) Expired(Calendar *time.CalendarType) bool {
@@ -109,8 +109,8 @@ func (t *DrinkTask) Name() string {
 	return "drink"
 }
 
-func (t *DrinkTask) Tag() string {
-	return ""
+func (t *DrinkTask) Tags() Tags {
+	return EmptyTags
 }
 
 func (t *DrinkTask) Expired(Calendar *time.CalendarType) bool {
@@ -138,8 +138,8 @@ func (t *HealTask) Name() string {
 	return "heal"
 }
 
-func (t *HealTask) Tag() string {
-	return ""
+func (t *HealTask) Tags() Tags {
+	return EmptyTags
 }
 
 func (t *HealTask) Expired(Calendar *time.CalendarType) bool {
@@ -167,8 +167,8 @@ func (t *RelaxTask) Name() string {
 	return "relax"
 }
 
-func (t *RelaxTask) Tag() string {
-	return ""
+func (t *RelaxTask) Tags() Tags {
+	return EmptyTags
 }
 
 func (t *RelaxTask) Expired(Calendar *time.CalendarType) bool {
@@ -196,8 +196,8 @@ func (t *GoHomeTask) Name() string {
 	return "gohome"
 }
 
-func (t *GoHomeTask) Tag() string {
-	return ""
+func (t *GoHomeTask) Tags() Tags {
+	return EmptyTags
 }
 
 func (t *GoHomeTask) Expired(Calendar *time.CalendarType) bool {
@@ -224,8 +224,8 @@ func (t *GoToTask) Name() string {
 	return "goto"
 }
 
-func (t *GoToTask) Tag() string {
-	return ""
+func (t *GoToTask) Tags() Tags {
+	return EmptyTags
 }
 
 func (t *GoToTask) Expired(Calendar *time.CalendarType) bool {

@@ -4,7 +4,6 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/model/time"
-	"strconv"
 )
 
 type TransportTask struct {
@@ -18,6 +17,7 @@ type TransportTask struct {
 	CompleteQuantity bool
 	ActualQuantity   uint16
 	Dropoff          bool
+	TaskTags         *Tags
 }
 
 func (t *TransportTask) Destination() navigation.Destination {
@@ -58,18 +58,22 @@ func (t *TransportTask) Name() string {
 	return "transport"
 }
 
-func (t *TransportTask) Tag() string {
-	return TransportTaskTag(t.PickupD, t.A)
+func (t *TransportTask) Tags() Tags {
+	if t.TaskTags == nil {
+		tt := MakeTags(TransportTaskTag(t.PickupD, t.A))
+		t.TaskTags = &tt
+	}
+	return *t.TaskTags
 }
 
-func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) string {
+func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) Tag {
 	if f, ok := dest.(*navigation.Field); ok {
-		return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y)) + "#" + a.Name
+		return SingleTag(a.Idx, f.X, f.Y)
 	}
 	if l, ok := dest.(*navigation.Location); ok {
-		return strconv.Itoa(int(l.X)) + "#" + strconv.Itoa(int(l.Y)) + "#" + strconv.Itoa(int(l.Z)) + "#" + a.Name
+		return SingleTag(a.Idx, l.X, l.Y, uint16(l.Z))
 	}
-	return a.Name
+	return SingleTag(a.Idx)
 }
 
 func (t *TransportTask) Expired(Calendar *time.CalendarType) bool {

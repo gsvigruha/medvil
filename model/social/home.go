@@ -28,7 +28,7 @@ type Home interface {
 	HasEnoughClothes() bool
 	AddVehicle(*vehicles.Vehicle)
 	AllocateVehicle(waterOk bool) *vehicles.Vehicle
-	NumTasks(name string, tag string) int
+	NumTasks(name string, tag economy.Tag) int
 	Destination(extensionType *building.BuildingExtensionType) navigation.Destination
 	PendingCosts() uint32
 	Broken() bool
@@ -45,10 +45,10 @@ var water = artifacts.GetArtifact("water")
 
 func needsWater(h Home, numP uint16) bool {
 	if h.GetResources().Get(water) <= economy.MinFoodOrDrinkPerPerson*numP &&
-		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", "water") {
+		NumBatchesSimple(economy.MaxFoodOrDrinkPerPerson*numP, WaterTransportQuantity) > h.NumTasks("transport", economy.SingleTag(water.Idx)) {
 		return true
 	}
-	if h.GetResources().Get(water) == 0 && h.NumTasks("transport", "water") == 0 {
+	if h.GetResources().Get(water) == 0 && h.NumTasks("transport", economy.SingleTag(water.Idx)) == 0 {
 		return true
 	}
 	return false
@@ -74,7 +74,7 @@ func FindWaterTask(h Home, numP uint16, m navigation.IMap) {
 }
 
 func numFoodBatchesNeeded(h Home, numP uint16, a *artifacts.Artifact) int {
-	tag := "food_shopping#" + a.Name
+	tag := economy.SingleTag(economy.TagFoodShopping, a.Idx)
 	has := uint16(h.NumTasks("exchange", tag)*FoodTransportQuantity) + h.GetResources().Get(a)
 	needs := economy.BuyFoodOrDrinkPerPerson() * numP
 	if needs > has {
@@ -106,7 +106,7 @@ func GetFoodTasks(h Home, numP uint16, mp *Marketplace) {
 				HouseholdWallet: h,
 				Goods:           needs,
 				MaxPrice:        price * 2,
-				TaskTag:         "food_shopping#" + a.Name,
+				TaskTag:         economy.SingleTag(economy.TagFoodShopping, a.Idx),
 			})
 			totalCost += int(price)
 		} else {

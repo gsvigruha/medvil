@@ -43,7 +43,7 @@ type ExchangeTask struct {
 	Vehicle         *vehicles.Vehicle
 	GoodsToBuy      []artifacts.Artifacts
 	GoodsToSell     []artifacts.Artifacts
-	TaskTag         string
+	TaskTags        Tags
 	Goods           []artifacts.Artifacts
 	State           uint8
 }
@@ -94,8 +94,8 @@ func (t *ExchangeTask) Name() string {
 	return "exchange"
 }
 
-func (t *ExchangeTask) Tag() string {
-	return t.TaskTag
+func (t *ExchangeTask) Tags() Tags {
+	return t.TaskTags
 }
 
 func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
@@ -105,13 +105,13 @@ func (t *ExchangeTask) Expired(Calendar *time.CalendarType) bool {
 
 func (t *ExchangeTask) AddBuyTask(bt *BuyTask) {
 	t.GoodsToBuy = append(t.GoodsToBuy, bt.Goods...)
-	t.TaskTag = t.TaskTag + ";" + bt.TaskTag
+	t.TaskTags = AppendTags(t.TaskTags, bt.TaskTag)
 	t.Exchange.RegisterBuyTask(bt, false)
 }
 
 func (t *ExchangeTask) AddSellTask(st *SellTask) {
 	t.GoodsToSell = append(t.GoodsToSell, st.Goods...)
-	t.TaskTag = t.TaskTag + ";" + st.TaskTag
+	t.TaskTags = AppendTags(t.TaskTags, st.TaskTag)
 	t.Exchange.RegisterSellTask(st, false)
 }
 

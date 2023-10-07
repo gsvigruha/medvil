@@ -19,6 +19,7 @@ type RepairTask struct {
 	Field      *navigation.Field
 	Resources  *artifacts.Resources
 	Progress   uint16
+	TaskTags   *Tags
 }
 
 func (t *RepairTask) Destination() navigation.Destination {
@@ -49,8 +50,12 @@ func (t *RepairTask) Name() string {
 	return "repair"
 }
 
-func (t *RepairTask) Tag() string {
-	return BuildingTaskTag(t.Field)
+func (t *RepairTask) Tags() Tags {
+	if t.TaskTags == nil {
+		tt := MakeTags(BuildingTaskTag(t.Field))
+		t.TaskTags = &tt
+	}
+	return *t.TaskTags
 }
 
 func (t *RepairTask) Expired(Calendar *time.CalendarType) bool {

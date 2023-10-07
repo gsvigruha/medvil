@@ -55,12 +55,12 @@ func (t *FactoryPickupTask) Name() string {
 	return "factory_pickup"
 }
 
-func (t *FactoryPickupTask) Tag() string {
-	return FactoryPickupTaskTag(t.Order)
+func (t *FactoryPickupTask) Tags() Tags {
+	return MakeTags(FactoryPickupTaskTag(t.Order))
 }
 
-func FactoryPickupTaskTag(o VehicleOrder) string {
-	return o.Name()
+func FactoryPickupTaskTag(o VehicleOrder) Tag {
+	return SingleTag(o.Idx())
 }
 
 func (t *FactoryPickupTask) Expired(Calendar *time.CalendarType) bool {

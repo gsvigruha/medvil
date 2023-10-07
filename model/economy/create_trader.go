@@ -37,8 +37,8 @@ func (t *CreateTraderTask) Name() string {
 	return "create_trader"
 }
 
-func (t *CreateTraderTask) Tag() string {
-	return FactoryPickupTaskTag(t.Order)
+func (t *CreateTraderTask) Tags() Tags {
+	return MakeTags(FactoryPickupTaskTag(t.Order))
 }
 
 func (t *CreateTraderTask) Expired(Calendar *time.CalendarType) bool {

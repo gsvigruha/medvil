@@ -14,6 +14,7 @@ type VehicleOrder interface {
 	Expire()
 	PickupVehicle() *vehicles.Vehicle
 	Name() string
+	Idx() uint16
 }
 
 type VehicleConstructionTask struct {
@@ -51,8 +52,8 @@ func (t *VehicleConstructionTask) Name() string {
 	return t.T.Name
 }
 
-func (t *VehicleConstructionTask) Tag() string {
-	return ""
+func (t *VehicleConstructionTask) Tags() Tags {
+	return EmptyTags
 }
 
 func (t *VehicleConstructionTask) Expired(Calendar *time.CalendarType) bool {

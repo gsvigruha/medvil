@@ -3,7 +3,6 @@ package economy
 import (
 	"medvil/model/navigation"
 	"medvil/model/time"
-	"strconv"
 )
 
 const TerraformTaskTypeLevelForBuilding uint8 = 1
@@ -47,12 +46,12 @@ func (t *TerraformTask) Name() string {
 	return "terraform"
 }
 
-func (t *TerraformTask) Tag() string {
-	return TerraformTaskTag(t.F)
+func (t *TerraformTask) Tags() Tags {
+	return MakeTags(TerraformTaskTag(t.F))
 }
 
-func TerraformTaskTag(f *navigation.Field) string {
-	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y))
+func TerraformTaskTag(f *navigation.Field) Tag {
+	return SingleTag(f.X, f.Y)
 }
 
 func (t *TerraformTask) Expired(Calendar *time.CalendarType) bool {

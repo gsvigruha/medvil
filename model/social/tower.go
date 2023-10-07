@@ -50,7 +50,7 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if mp != nil {
 		unarmedPeople := t.numUnarmedPeople()
 		if unarmedPeople > 0 {
-			tag := "weapon_buying"
+			tag := economy.SingleTag(economy.TagWeaponBuying)
 			var weapons = h.Resources.Get(Sword)
 			if weapons > h.Resources.Get(Shield) {
 				weapons = h.Resources.Get(Shield)
@@ -91,7 +91,7 @@ func (t *Tower) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 	if Calendar.Hour == 0 && Calendar.Day == 1 && len(t.Household.People) > 0 {
 		patrolDestinations := t.getPatrolDestinations()
-		if h.NumTasks("patrol", "") == 0 && len(patrolDestinations) > 0 {
+		if h.NumTasks("patrol", economy.EmptyTag) == 0 && len(patrolDestinations) > 0 {
 			h.AddTask(&military.PatrolTask{
 				Destinations: patrolDestinations,
 				Start:        *Calendar,
