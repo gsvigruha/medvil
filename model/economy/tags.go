@@ -3,7 +3,7 @@ package economy
 type Tag []uint16
 
 type Tags struct {
-	t []Tag
+	T []Tag
 }
 
 func SingleTag(e ...uint16) Tag {
@@ -11,11 +11,11 @@ func SingleTag(e ...uint16) Tag {
 }
 
 func MakeTags(t Tag) Tags {
-	return Tags{t: []Tag{t}}
+	return Tags{T: []Tag{t}}
 }
 
 func AppendTags(ts Tags, t Tag) Tags {
-	return Tags{t: append(ts.t, t)}
+	return Tags{T: append(ts.T, t)}
 }
 
 func (ts Tags) Count(t Tag) int {
@@ -23,10 +23,10 @@ func (ts Tags) Count(t Tag) int {
 		return 1
 	}
 	var cnt = 0
-	for _, tI := range ts.t {
+	for _, tI := range ts.T {
 		var same = true
 		for i := range t {
-			if t[i] != tI[i] {
+			if i >= len(tI) || t[i] != tI[i] {
 				same = false
 			}
 		}
@@ -37,7 +37,7 @@ func (ts Tags) Count(t Tag) int {
 	return cnt
 }
 
-var EmptyTags = Tags{t: []Tag{}}
+var EmptyTags = Tags{T: []Tag{}}
 var EmptyTag = Tag{}
 
 const TagFoodShopping uint16 = 1

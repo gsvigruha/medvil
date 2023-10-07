@@ -185,7 +185,7 @@ func RefreshSubPanels(tc *TownhallController) {
 		for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Trader }) {
 			tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
 		}
-		for i := 0; i < th.Household.NumTasks("create_trader", ""); i++ {
+		for i := 0; i < th.Household.NumTasks("create_trader", economy.EmptyTag); i++ {
 			tc.traderPanel.AddImageLabel("tasks/factory_pickup", float64(24+i*IconW), top+ControlPanelSY*0.15, IconS, IconS, gui.ImageLabelStyleRegular)
 		}
 		for i, t := range th.Traders {
@@ -210,7 +210,7 @@ func RefreshSubPanels(tc *TownhallController) {
 		for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Expedition }) {
 			tc.expeditionPanel.AddPanel(CreateExpeditionButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
 		}
-		for i := 0; i < th.Household.NumTasks("create_expedition", ""); i++ {
+		for i := 0; i < th.Household.NumTasks("create_expedition", economy.EmptyTag); i++ {
 			tc.expeditionPanel.AddImageLabel("tasks/factory_pickup", float64(24+i*IconW), top+ControlPanelSY*0.15, IconS, IconS, gui.ImageLabelStyleRegular)
 		}
 		for i, e := range th.Expeditions {

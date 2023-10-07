@@ -17,6 +17,7 @@ type TransportTask struct {
 	CompleteQuantity bool
 	ActualQuantity   uint16
 	Dropoff          bool
+	TaskTags         *Tags
 }
 
 func (t *TransportTask) Destination() navigation.Destination {
@@ -58,7 +59,11 @@ func (t *TransportTask) Name() string {
 }
 
 func (t *TransportTask) Tags() Tags {
-	return MakeTags(TransportTaskTag(t.PickupD, t.A))
+	if t.TaskTags == nil {
+		tt := MakeTags(TransportTaskTag(t.PickupD, t.A))
+		t.TaskTags = &tt
+	}
+	return *t.TaskTags
 }
 
 func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) Tag {

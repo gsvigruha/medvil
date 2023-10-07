@@ -30,7 +30,7 @@ func (t *CreateExpeditionTask) Name() string {
 	return "create_expedition"
 }
 
-func (t *CreateExpeditionTask) Tag() Tags {
+func (t *CreateExpeditionTask) Tags() Tags {
 	return MakeTags(FactoryPickupTaskTag(t.Order))
 }
 
