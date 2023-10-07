@@ -319,6 +319,7 @@ func (bc *BuildingsController) RotatePlan() {
 	}
 	bc.Plan = newPlan
 	bc.GenerateButtons()
+	bc.GenerateBuildingTypebuttons()
 }
 
 func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
@@ -390,7 +391,7 @@ func (bc *BuildingsController) GenerateButtons() {
 	}
 
 	bc.p.AddButton(RotationButton{
-		b:  &gui.ButtonGUI{Icon: "building/dir_" + strconv.Itoa(int(bc.Direction)), X: LargeIconD*5 + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS},
+		b:  &gui.ButtonGUI{Icon: "building/rotate_" + strconv.Itoa(int(bc.Direction)), X: LargeIconD*5 + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS},
 		bc: bc,
 	})
 

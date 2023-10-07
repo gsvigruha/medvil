@@ -105,7 +105,7 @@ func DrawLabels(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 	if townhall != nil {
 		name := townhall.Household.Town.Name
 		if name != "" {
-			dx := float64(len(name)) * gui.FontSize * 0.24
+			dx := float64(len(name)) * gui.FontSize * 0.26
 			y := midY - z - 10
 			dy := gui.FontSize
 			if c.ActiveSupplier == townhall.Household.Town {

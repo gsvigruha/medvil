@@ -6,7 +6,7 @@ type PathElement interface {
 	GetSpeed() float64
 	Walkable() bool
 	Sailable() bool
-	Driveble() bool
+	Drivable() bool
 	TravellerVisible() bool
 	Crowded() bool
 	LocationXY() (uint16, uint16)

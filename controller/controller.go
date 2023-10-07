@@ -203,6 +203,7 @@ func (c *Controller) Reset() {
 	c.SelectedFactory = nil
 	c.SelectedTower = nil
 	c.SelectedWorkshop = nil
+	c.SelectedTownhall = nil
 	c.SelectedTraveller = nil
 	c.SelectedTrader = nil
 	c.SelectedExpedition = nil

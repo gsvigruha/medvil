@@ -116,7 +116,7 @@ func (bpe *BuildingPathElement) Walkable() bool {
 		bpe.BC.Building().Plan.BuildingType == building.BuildingTypeTower)
 }
 
-func (bpe *BuildingPathElement) Driveble() bool {
+func (bpe *BuildingPathElement) Drivable() bool {
 	return bpe.Walkable()
 }
 
