@@ -172,7 +172,8 @@ func (p *ControlPanel) GenerateButtons() {
 		Highlight: func() bool { return p.IsInfraType() },
 		ClickImpl: func() { c.ShowInfraController() }})
 	p.topPanel.AddButton(gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS,
+			Disabled: func() bool { return c.GetActiveTownhall() == nil }},
 		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },
 		ClickImpl: func() { c.ShowDemolishController() }})
 	p.topPanel.AddButton(gui.SimpleButton{

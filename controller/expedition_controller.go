@@ -85,7 +85,6 @@ func (ec *ExpeditionController) Refresh() {
 
 func (ec *ExpeditionController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	var fs []navigation.FieldWithContext
-	//fs = append(fs, ec.cp.C.Map.GetField(ec.expedition.Vehicle.Traveller.FX, ec.expedition.Vehicle.Traveller.FY))
 	if ec.expedition.CheckDestinationField(rf.F) {
 		fs = append(fs, rf.F)
 	}
