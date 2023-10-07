@@ -87,6 +87,8 @@ func (ec *ExpeditionController) GetActiveFields(c *Controller, rf *renderer.Rend
 	var fs []navigation.FieldWithContext
 	if ec.expedition.CheckDestinationField(rf.F) {
 		fs = append(fs, rf.F)
+	} else if rf.F.Building.GetBuilding() != nil && c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()] != nil {
+		fs = append(fs, rf.F)
 	}
 	return fs
 }
@@ -95,6 +97,8 @@ func HandleClickForExpedition(expedition *social.Expedition, c *Controller, rf *
 	if expedition.CheckDestinationField(rf.F) {
 		expedition.DestinationField = rf.F
 		return true
+	} else if rf.F.Building.GetBuilding() != nil && c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()] != nil {
+		c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()].Household.Town.Supplier = expedition
 	}
 	return false
 }
