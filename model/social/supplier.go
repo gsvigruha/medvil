@@ -14,4 +14,5 @@ type Supplier interface {
 	BuildMarketplaceEnabled() bool
 	BuildHousesEnabled() bool
 	CreateLevelingTask(f *navigation.Field, taskType uint8, m navigation.IMap)
+	GetName() string
 }

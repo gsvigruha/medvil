@@ -684,3 +684,13 @@ func (h *Household) IsBoatEnabled() bool {
 func (h *Household) IsPersonVisible() bool {
 	return false
 }
+
+func (h *Household) NearbyTowns(m navigation.IMap) []*Town {
+	var result []*Town
+	for _, town := range h.Town.Country.Towns {
+		if town.Townhall.FieldWithinDistance(m.GetField(h.Building.X, h.Building.Y)) {
+			result = append(result, town)
+		}
+	}
+	return result
+}

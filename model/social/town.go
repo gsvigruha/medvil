@@ -554,3 +554,7 @@ func (town *Town) BuildMarketplaceEnabled() bool {
 func (town *Town) BuildHousesEnabled() bool {
 	return true
 }
+
+func (town *Town) GetName() string {
+	return town.Name
+}
