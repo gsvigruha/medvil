@@ -133,7 +133,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if mp.Prices[Textile] < mp.Prices[Leather] {
 			h.MaybeBuyExtras(Textile, h.clothesNeeded(), economy.SingleTag(economy.TagTextileShopping))
 		} else {
-			h.MaybeBuyExtras(Leather, h.clothesNeeded(), economy.SingleTag(economy.TagTextileShopping))
+			h.MaybeBuyExtras(Leather, h.clothesNeeded(), economy.SingleTag(economy.TagLeatherShopping))
 		}
 
 		if h.Building.Broken {

@@ -14,6 +14,7 @@ type BuildingTask struct {
 	C        *building.Construction
 	Started  bool
 	Progress uint16
+	TaskTags *Tags
 }
 
 func (t *BuildingTask) Destination() navigation.Destination {
@@ -48,7 +49,11 @@ func (t *BuildingTask) Name() string {
 }
 
 func (t *BuildingTask) Tags() Tags {
-	return MakeTags(BuildingTaskTag(t.D))
+	if t.TaskTags == nil {
+		tt := MakeTags(BuildingTaskTag(t.D))
+		t.TaskTags = &tt
+	}
+	return *t.TaskTags
 }
 
 func BuildingTaskTag(dest navigation.Destination) Tag {
