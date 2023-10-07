@@ -258,6 +258,6 @@ func (p *ControlPanel) HelperMessage(msg string) {
 	p.GetHelperPanel().AddTextLabel(msg, ControlPanelSX*0.03, ControlPanelSY*0.95)
 }
 
-func (p *ControlPanel) Getsuggestion() {
+func (p *ControlPanel) GetSuggestion() {
 	p.suggestion = GetHelperSuggestions(p)
 }
