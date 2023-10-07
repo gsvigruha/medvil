@@ -90,6 +90,9 @@ func (ec *ExpeditionController) GetActiveFields(c *Controller, rf *renderer.Rend
 	} else if rf.F.Building.GetBuilding() != nil && c.ReverseReferences.BuildingToTownhall[rf.F.Building.GetBuilding()] != nil {
 		fs = append(fs, rf.F)
 	}
+	if ec.expedition.DestinationField != nil {
+		fs = append(fs, ec.expedition.DestinationField)
+	}
 	return fs
 }
 
