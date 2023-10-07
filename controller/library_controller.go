@@ -96,6 +96,10 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		ButtonGUI: gui.ButtonGUI{Icon: "label", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*3, SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowLabels },
 		ClickImpl: func() { cp.C.ViewSettings.ShowLabels = !cp.C.ViewSettings.ShowLabels }})
+	p.AddButton(gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*4, SX: IconS, SY: IconS},
+		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
+		ClickImpl: func() { cp.C.ViewSettings.ShowSuggestions = !cp.C.ViewSettings.ShowSuggestions }})
 
 	cp.SetDynamicPanel(p)
 }
