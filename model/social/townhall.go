@@ -1,6 +1,7 @@
 package social
 
 import (
+	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
@@ -152,6 +153,7 @@ func (t *Townhall) CreateExpedition(v *vehicles.Vehicle, p economy.Person) {
 			var r artifacts.Resources
 			r.Init(v.T.MaxVolume)
 			expedition := &Expedition{
+				Name:            ExpeditionNames[rand.Intn(len(ExpeditionNames))],
 				Money:           0,
 				People:          []*Person{person},
 				TargetNumPeople: 1,

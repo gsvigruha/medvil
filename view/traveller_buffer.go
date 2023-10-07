@@ -3,11 +3,13 @@ package view
 import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
+	"image/color"
 	"medvil/controller"
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/renderer"
 	"medvil/view/buildings"
+	"medvil/view/gui"
 	"strconv"
 	"time"
 )
@@ -105,6 +107,22 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 		c.AddRenderedTraveller(rt)
 		if c.ReverseReferences.TravellerToExpedition[t] != nil && c.ReverseReferences.TravellerToExpedition[t] == c.ActiveSupplier {
 			rt.Draw(cv)
+			expedition := c.ReverseReferences.TravellerToExpedition[t]
+			if expedition != nil {
+				name := expedition.Name
+				if name != "" {
+					dx := float64(len(name)) * gui.FontSize * 0.26
+					dy := gui.FontSize
+					cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
+					cv.SetLineWidth(4.0)
+					cv.StrokeRect(x-dx-8, y-z-float64(h)-dy-2, dx*2+16, dy+10)
+					cv.SetFillStyle("texture/wood.png")
+					cv.FillRect(x-dx-8, y-z-float64(h)-dy-2, dx*2+16, dy+10)
+					cv.SetFillStyle("#FED")
+					cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
+					cv.FillText(name, x-dx, y-z-float64(h))
+				}
+			}
 		} else if t == c.SelectedTraveller {
 			rt.Draw(cv)
 		}

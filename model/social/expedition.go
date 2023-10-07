@@ -13,6 +13,7 @@ import (
 )
 
 type Expedition struct {
+	Name             string
 	Money            uint32
 	People           []*Person
 	TargetNumPeople  uint16
