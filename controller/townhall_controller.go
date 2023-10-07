@@ -169,6 +169,9 @@ func RefreshSubPanels(tc *TownhallController) {
 			town.Settings.UseSupplier = !town.Settings.UseSupplier
 			tc.cp.HelperMessage("Start or stop relying on supplies from the hometown")
 		}})
+	if town.Supplier != nil {
+		tp.AddTextLabel(town.Supplier.GetName(), 24+LargeIconD*2, top+LargeIconD*10+LargeIconD/2)
+	}
 
 	var aI = 0
 	for _, a := range artifacts.All {

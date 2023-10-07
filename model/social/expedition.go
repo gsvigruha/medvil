@@ -373,3 +373,7 @@ func (e *Expedition) CheckDestinationField(f *navigation.Field) bool {
 	}
 	return false
 }
+
+func (e *Expedition) GetName() string {
+	return e.Name
+}
