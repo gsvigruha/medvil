@@ -47,11 +47,12 @@ const TagBeerShopping uint16 = 4
 const TagMedicineShopping uint16 = 5
 const TagTextileShopping uint16 = 6
 const TagLeatherShopping uint16 = 7
-const TagRepairShopping uint16 = 8
-const TagOrderInput uint16 = 9
+const TagPaperPurchase uint16 = 8
+const TagRepairShopping uint16 = 9
 const TagWeaponBuying uint16 = 10
-const TagPaperPurchase uint16 = 11
-const TagManufactureInput uint16 = 12
+
+const TagManufactureInput uint16 = 11
+const TagOrderInput uint16 = 12
 
 const TagSellArtifacts uint16 = 21
 
