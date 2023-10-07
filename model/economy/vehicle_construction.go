@@ -7,6 +7,7 @@ import (
 )
 
 type VehicleConstruction struct {
+	Idx                   uint16
 	Name                  string
 	Time                  uint16
 	Power                 uint16
@@ -16,6 +17,7 @@ type VehicleConstruction struct {
 }
 
 var BoatConstruction = &VehicleConstruction{
+	Idx:                   1,
 	Name:                  "boat",
 	Time:                  30 * 24,
 	Power:                 1000,
@@ -28,6 +30,7 @@ var BoatConstruction = &VehicleConstruction{
 }
 
 var CartConstruction = &VehicleConstruction{
+	Idx:                   2,
 	Name:                  "cart",
 	Time:                  30 * 24,
 	Power:                 1000,
@@ -41,6 +44,7 @@ var CartConstruction = &VehicleConstruction{
 }
 
 var TradingBoatConstruction = &VehicleConstruction{
+	Idx:                   3,
 	Name:                  "trading_boat",
 	Time:                  30 * 24,
 	Power:                 1000,
@@ -54,6 +58,7 @@ var TradingBoatConstruction = &VehicleConstruction{
 }
 
 var TradingCartConstruction = &VehicleConstruction{
+	Idx:                   4,
 	Name:                  "trading_cart",
 	Time:                  30 * 24,
 	Power:                 1000,
@@ -68,6 +73,7 @@ var TradingCartConstruction = &VehicleConstruction{
 }
 
 var ExpeditionBoatConstruction = &VehicleConstruction{
+	Idx:                   5,
 	Name:                  "expedition_boat",
 	Time:                  30 * 24 * 3,
 	Power:                 1000,
@@ -81,6 +87,7 @@ var ExpeditionBoatConstruction = &VehicleConstruction{
 }
 
 var ExpeditionCartConstruction = &VehicleConstruction{
+	Idx:                   6,
 	Name:                  "expedition_cart",
 	Time:                  30 * 24 * 3,
 	Power:                 1000,

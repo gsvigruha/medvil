@@ -215,7 +215,7 @@ func (e *Expedition) AllocateVehicle(waterOk bool) *vehicles.Vehicle {
 	return e.Vehicle
 }
 
-func (e *Expedition) NumTasks(name string, tag string) int {
+func (e *Expedition) NumTasks(name string, tag economy.Tag) int {
 	var i = 0
 	for _, t := range e.Tasks {
 		i += CountTags(t, name, tag)

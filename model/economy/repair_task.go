@@ -49,8 +49,8 @@ func (t *RepairTask) Name() string {
 	return "repair"
 }
 
-func (t *RepairTask) Tag() string {
-	return BuildingTaskTag(t.Field)
+func (t *RepairTask) Tags() Tags {
+	return MakeTags(BuildingTaskTag(t.Field))
 }
 
 func (t *RepairTask) Expired(Calendar *time.CalendarType) bool {

@@ -43,6 +43,10 @@ func (o *VehicleOrder) Name() string {
 	return o.T.Name
 }
 
+func (o *VehicleOrder) Idx() uint16 {
+	return o.T.Idx
+}
+
 func (o *VehicleOrder) CompleteBuild(f *navigation.Field) {
 	o.State = OrderStateBuilt
 	var travellerType uint8
@@ -93,7 +97,7 @@ func (f *Factory) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 
 		for a, q := range needs.Artifacts {
-			tag := "order_input#" + a.Name
+			tag := economy.SingleTag(economy.TagOrderInput, a.Idx)
 			transportQ := ProductTransportQuantity(a)
 			e := f.Household.Resources.Get(a)
 			if q > e && NumBatchesSimple(q-e, transportQ)+1 > f.Household.NumTasks("exchange", tag) {

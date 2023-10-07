@@ -27,7 +27,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 	if mp != nil {
 		for _, a := range artifacts.All {
-			tag := "storage_target#" + a.Name
+			tag := economy.SingleTag(economy.TagStorageTarget, a.Idx)
 			transportQuantity := ProductTransportQuantity(a)
 			goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: transportQuantity}}
 			var q uint16 = 0
@@ -60,7 +60,8 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 
-		if t.Household.Resources.Get(Paper) < ProductTransportQuantity(Paper) && t.Household.NumTasks("exchange", "paper_purchase") == 0 {
+		paperTag := economy.SingleTag(economy.TagPaperPurchase)
+		if t.Household.Resources.Get(Paper) < ProductTransportQuantity(Paper) && t.Household.NumTasks("exchange", paperTag) == 0 {
 			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Paper, Quantity: ProductTransportQuantity(Paper)}}
 			if t.Household.Money >= mp.Price(needs) && mp.HasTraded(Paper) {
 				t.Household.AddTask(&economy.BuyTask{
@@ -68,7 +69,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					HouseholdWallet: t.Household,
 					Goods:           needs,
 					MaxPrice:        uint32(float64(t.Household.Money) * PaperBudgetRatio),
-					TaskTag:         "paper_purchase",
+					TaskTag:         paperTag,
 				})
 			}
 		}

@@ -108,13 +108,13 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	mp := h.Town.Marketplace
 
 	if mp != nil {
-		if h.NumTasks("exchange", "market") <= len(h.People)/3 {
+		if h.NumTasks("exchange", economy.SingleTag(economy.TagMarket)) <= len(h.People)/3 {
 			CombineExchangeTasks(h, mp, m)
 		}
 
 		GetFoodTasks(h, numP, mp)
 		numTools := h.Resources.Get(Tools) + h.PeopleWithTools()
-		if numP > numTools && h.NumTasks("exchange", "tools_purchase") == 0 {
+		if numP > numTools && h.NumTasks("exchange", economy.SingleTag(economy.TagToolPurchase)) == 0 {
 			needs := []artifacts.Artifacts{artifacts.Artifacts{A: Tools, Quantity: 1}}
 			if h.Money >= mp.Price(needs) && mp.HasTraded(Tools) {
 				h.AddTask(&economy.BuyTask{
@@ -122,18 +122,18 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 					HouseholdWallet: h,
 					Goods:           needs,
 					MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
-					TaskTag:         "tools_purchase",
+					TaskTag:         economy.SingleTag(economy.TagToolPurchase),
 				})
 			}
 		}
 
-		h.MaybeBuyExtras(Log, MinLog, "heating_fuel_shopping")
-		h.MaybeBuyExtras(economy.Medicine, numP, "medicine_shopping")
-		h.MaybeBuyExtras(economy.Beer, numP, "beer_shopping")
+		h.MaybeBuyExtras(Log, MinLog, economy.SingleTag(economy.TagHeatingFuelShopping))
+		h.MaybeBuyExtras(economy.Medicine, numP, economy.SingleTag(economy.TagMedicineShopping))
+		h.MaybeBuyExtras(economy.Beer, numP, economy.SingleTag(economy.TagBeerShopping))
 		if mp.Prices[Textile] < mp.Prices[Leather] {
-			h.MaybeBuyExtras(Textile, h.clothesNeeded(), "textile_shopping")
+			h.MaybeBuyExtras(Textile, h.clothesNeeded(), economy.SingleTag(economy.TagTextileShopping))
 		} else {
-			h.MaybeBuyExtras(Leather, h.clothesNeeded(), "leather_shopping")
+			h.MaybeBuyExtras(Leather, h.clothesNeeded(), economy.SingleTag(economy.TagTextileShopping))
 		}
 
 		if h.Building.Broken {
@@ -147,13 +147,13 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 
 			needs := h.Resources.Needs(h.Building.Plan.RepairCost())
-			if len(needs) > 0 && h.Money >= mp.Price(needs) && h.NumTasks("exchange", "repair_shopping") == 0 {
+			if len(needs) > 0 && h.Money >= mp.Price(needs) && h.NumTasks("exchange", economy.SingleTag(economy.TagRepairShopping)) == 0 {
 				h.AddTask(&economy.BuyTask{
 					Exchange:        mp,
 					HouseholdWallet: h,
 					Goods:           needs,
 					MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
-					TaskTag:         "repair_shopping",
+					TaskTag:         economy.SingleTag(economy.TagRepairShopping),
 				})
 			}
 		}
@@ -198,7 +198,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 }
 
-func (h *Household) MaybeBuyExtras(a *artifacts.Artifact, threshold uint16, tag string) {
+func (h *Household) MaybeBuyExtras(a *artifacts.Artifact, threshold uint16, tag economy.Tag) {
 	mp := h.Town.Marketplace
 	if h.Resources.Get(a) < threshold {
 		if NumBatchesSimple(ProductTransportQuantity(a), ProductTransportQuantity(a)) > h.NumTasks("exchange", tag) {
@@ -217,7 +217,7 @@ func (h *Household) MaybeBuyExtras(a *artifacts.Artifact, threshold uint16, tag 
 }
 
 func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap) {
-	if h.NumDecks() > h.numVehicles(vehicles.Boat) && h.NumTasks("factory_pickup", economy.BoatConstruction.Name) == 0 {
+	if h.NumDecks() > h.numVehicles(vehicles.Boat) && h.NumTasks("factory_pickup", economy.SingleTag(economy.BoatConstruction.Idx)) == 0 {
 		factory := PickFactory(h.Town.Factories, building.Deck, h.Building, m)
 		deckField := h.GetUnallocatedDeck(m)
 		if deckField != nil {
@@ -239,7 +239,7 @@ func (h *Household) MaybeBuyBoat(Calendar *time.CalendarType, m navigation.IMap)
 }
 
 func (h *Household) MaybeBuyCart(Calendar *time.CalendarType, m navigation.IMap) {
-	if h.numVehicles(vehicles.Cart) < len(h.People)/2 && h.NumTasks("factory_pickup", economy.CartConstruction.Name) == 0 {
+	if h.numVehicles(vehicles.Cart) < len(h.People)/2 && h.NumTasks("factory_pickup", economy.SingleTag(economy.CartConstruction.Idx)) == 0 {
 		factory := PickFactory(h.Town.Factories, building.NonExtension, h.Building, m)
 		if factory != nil && factory.Price(economy.CartConstruction) < uint32(float64(h.Money)*ExtrasBudgetRatio) {
 			order := factory.CreateOrder(economy.CartConstruction, h)
@@ -303,7 +303,7 @@ func (h *Household) SellArtifacts(isInput func(*artifacts.Artifact) bool, isProd
 	for a, q := range h.Resources.Artifacts {
 		qToSell := h.ArtifactToSell(a, q, isInput(a), isProduct(a))
 		if qToSell > 0 {
-			tag := "sell_artifacts#" + a.Name
+			tag := economy.SingleTag(economy.TagSellArtifacts, a.Idx)
 			if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > h.NumTasks("exchange", tag) {
 				goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantityWithLimit(a, qToSell)}}
 				h.AddTask(&economy.SellTask{
@@ -407,7 +407,7 @@ func (h *Household) HasBeer() bool {
 	return economy.HasBeer(*h.Resources)
 }
 
-func (h *Household) NumTasks(name string, tag string) int {
+func (h *Household) NumTasks(name string, tag economy.Tag) int {
 	var i = 0
 	for _, t := range h.Tasks {
 		i += CountTags(t, name, tag)

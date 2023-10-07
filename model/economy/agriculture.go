@@ -226,8 +226,8 @@ func (t *AgriculturalTask) Name() string {
 	return ""
 }
 
-func (t *AgriculturalTask) Tag() string {
-	return ""
+func (t *AgriculturalTask) Tags() Tags {
+	return EmptyTags
 }
 
 func (t *AgriculturalTask) Expired(Calendar *time.CalendarType) bool {

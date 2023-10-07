@@ -34,8 +34,8 @@ func (t *PatrolTask) Name() string {
 	return "patrol"
 }
 
-func (t *PatrolTask) Tag() string {
-	return ""
+func (t *PatrolTask) Tags() economy.Tags {
+	return economy.EmptyTags
 }
 
 func (t *PatrolTask) Expired(Calendar *time.CalendarType) bool {

@@ -4,7 +4,6 @@ import (
 	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/model/time"
-	"strconv"
 )
 
 const MineFieldUseTypeNone uint8 = 0
@@ -89,12 +88,12 @@ func (t *MiningTask) Name() string {
 	return "mining"
 }
 
-func MiningTaskTag(f *navigation.Field, ut uint8) string {
-	return strconv.Itoa(int(f.X)) + "#" + strconv.Itoa(int(f.Y)) + "#" + strconv.Itoa(int(ut))
+func MiningTaskTag(f *navigation.Field, ut uint8) Tag {
+	return SingleTag(uint16(ut), f.X, f.Y)
 }
 
-func (t *MiningTask) Tag() string {
-	return MiningTaskTag(t.F, t.UseType)
+func (t *MiningTask) Tags() Tags {
+	return MakeTags(MiningTaskTag(t.F, t.UseType))
 }
 
 func (t *MiningTask) Expired(Calendar *time.CalendarType) bool {

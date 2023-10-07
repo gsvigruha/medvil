@@ -30,8 +30,8 @@ func (t *CreateExpeditionTask) Name() string {
 	return "create_expedition"
 }
 
-func (t *CreateExpeditionTask) Tag() string {
-	return FactoryPickupTaskTag(t.Order)
+func (t *CreateExpeditionTask) Tag() Tags {
+	return MakeTags(FactoryPickupTaskTag(t.Order))
 }
 
 func (t *CreateExpeditionTask) Expired(Calendar *time.CalendarType) bool {

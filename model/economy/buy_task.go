@@ -12,7 +12,7 @@ type BuyTask struct {
 	HouseholdWallet Wallet
 	Goods           []artifacts.Artifacts
 	MaxPrice        uint32
-	TaskTag         string
+	TaskTag         Tag
 }
 
 func (t *BuyTask) Destination() navigation.Destination {
@@ -31,8 +31,8 @@ func (t *BuyTask) Name() string {
 	return "exchange"
 }
 
-func (t *BuyTask) Tag() string {
-	return t.TaskTag
+func (t *BuyTask) Tags() Tags {
+	return MakeTags(t.TaskTag)
 }
 
 func (t *BuyTask) Expired(Calendar *time.CalendarType) bool {

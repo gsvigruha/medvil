@@ -23,7 +23,7 @@ type TradeTask struct {
 	Vehicle           *vehicles.Vehicle
 	GoodsSourceToDest []artifacts.Artifacts
 	GoodsDestToSource []artifacts.Artifacts
-	TaskTag           string
+	TaskTag           Tag
 	Goods             []artifacts.Artifacts
 	State             uint8
 }
@@ -74,8 +74,8 @@ func (t *TradeTask) Name() string {
 	return "trade"
 }
 
-func (t *TradeTask) Tag() string {
-	return t.TaskTag
+func (t *TradeTask) Tags() Tags {
+	return MakeTags(t.TaskTag)
 }
 
 func (t *TradeTask) Expired(Calendar *time.CalendarType) bool {

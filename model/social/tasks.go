@@ -20,41 +20,11 @@ func NumBatches(totalQuantity, minTransportQuantity, maxTransportQuantity uint16
 	return int(math.Ceil(float64(totalQuantity) / float64(maxTransportQuantity)))
 }
 
-func CountTags(task economy.Task, name, tag string) int {
+func CountTags(task economy.Task, name string, tag economy.Tag) int {
 	if task.Name() != name {
 		return 0
 	}
-	if tag == "" {
-		return 1
-	}
-	var cnt = 0
-	var it = 0
-	var started = true
-	taskTag := task.Tag()
-	for i := range taskTag {
-		c := taskTag[i]
-		if c == tag[it] {
-			if !started {
-				it = 1
-				started = true
-			} else {
-				if it == len(tag)-1 {
-					cnt++
-					started = false
-					it = 0
-				} else {
-					it++
-				}
-			}
-		} else if c == ';' {
-			it = 0
-			started = true
-		} else {
-			it = 0
-			started = false
-		}
-	}
-	return cnt
+	return task.Tags().Count(tag)
 }
 
 func IsExchangeBaseTask(t economy.Task) bool {
@@ -116,7 +86,7 @@ func CombineExchangeTasks(h Home, mp *Marketplace, m navigation.IMap) {
 				Vehicle:         vehicle,
 				GoodsToBuy:      nil,
 				GoodsToSell:     nil,
-				TaskTag:         "market",
+				TaskTags:        economy.MakeTags(economy.SingleTag(economy.TagMarket)),
 			}
 			batchStart = false
 		}
