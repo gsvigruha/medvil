@@ -86,6 +86,8 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	} else {
 		MoneyToControlPanel(p, h.Town.Townhall.Household, h, 100, 24, LargeIconD*2+float64(IconH)+24)
 	}
+	p.AddTextLabel(h.Town.Name, 200, LargeIconD*2+float64(IconH)+24)
+
 	piw := personIconW(h)
 	for i, person := range h.People {
 		PersonToPanel(cp, p, i, person, piw, PersonGUIY*ControlPanelSY)

@@ -10,7 +10,7 @@ import (
 
 const IconRowMaxButtons = 7
 
-var MarketplaceGUIY = 0.15
+var MarketplaceGUIY = 0.175
 
 type MarketplaceController struct {
 	mp          *gui.Panel
@@ -25,7 +25,7 @@ func MarketplaceToControlPanel(cp *ControlPanel, m *social.Marketplace) {
 }
 
 func MarketplaceToMarketPanel(mp *gui.Panel, m *social.Marketplace) {
-	MoneyToControlPanel(mp, m.Town.Townhall.Household, m, 100, 10, LargeIconD+float64(IconH)+24)
+	MoneyToControlPanel(mp, m.Town.Townhall.Household, m, 100, 24, LargeIconD*2+float64(IconH)+24)
 	var aI = 0
 	for _, a := range artifacts.All {
 		if q, ok := m.Storage.Artifacts[a]; ok {
@@ -40,9 +40,9 @@ func ArtifactsToMarketPanel(mp *gui.Panel, i int, a *artifacts.Artifact, q uint1
 	xI := i % IconRowMaxButtons
 	yI := i / IconRowMaxButtons
 	w := int(float64(IconW) * float64(IconRowMax) / float64(IconRowMaxButtons))
-	mp.AddImageLabel("artifacts/"+a.Name, float64(10+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
-	mp.AddTextLabel(strconv.Itoa(int(q)), float64(10+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4))
-	mp.AddPanel(gui.CreateNumberPanel(float64(10+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4), float64(IconW+8), gui.FontSize*1.5, 0, 1000, 10, "$%v",
+	mp.AddImageLabel("artifacts/"+a.Name, float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
+	mp.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4))
+	mp.AddPanel(gui.CreateNumberPanel(float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4), float64(IconW+8), gui.FontSize*1.5, 0, 1000, 10, "$%v",
 		func() int { return int(m.Prices[a]) },
 		func(v int) {
 			if uint32(v) > m.Prices[a] {
