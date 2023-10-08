@@ -76,6 +76,9 @@ func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) Tag {
 	if _, ok := dest.(*navigation.TravellerDestination); ok {
 		return SingleTag(a.Idx)
 	}
+	if b, ok := dest.(*navigation.BuildingDestination); ok {
+		return SingleTag(a.Idx, b.B.X, b.B.Y)
+	}
 	return SingleTag(a.Idx)
 }
 

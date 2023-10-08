@@ -63,6 +63,12 @@ func BuildingTaskTag(dest navigation.Destination) Tag {
 	if l, ok := dest.(*navigation.Location); ok {
 		return SingleTag(l.X, l.Y, uint16(l.Z))
 	}
+	if _, ok := dest.(*navigation.TravellerDestination); ok {
+		return EmptyTag
+	}
+	if b, ok := dest.(*navigation.BuildingDestination); ok {
+		return SingleTag(b.B.X, b.B.Y)
+	}
 	return EmptyTag
 }
 
