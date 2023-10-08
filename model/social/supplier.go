@@ -15,4 +15,5 @@ type Supplier interface {
 	BuildHousesEnabled() bool
 	CreateLevelingTask(f *navigation.Field, taskType uint8, m navigation.IMap)
 	GetName() string
+	CloseToTown(town *Town, m navigation.IMap) bool
 }

@@ -113,6 +113,8 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	tiw, tirm := taskIconW(h)
 	for i, task := range h.Tasks {
 		if i >= MaxNumTasks {
+			tasksStr := strconv.Itoa(len(h.Tasks))
+			p.AddTextLabel(tasksStr, ControlPanelSX-24-float64(len(tasksStr))*gui.FontSize*0.5, TaskGUIY*ControlPanelSY+float64(IconH*2))
 			break
 		}
 		TaskToControlPanel(cp, p, i%tirm, TaskGUIY*ControlPanelSY+float64(i/tirm*IconH), task, tiw)

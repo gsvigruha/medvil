@@ -1,6 +1,7 @@
 package social
 
 import (
+	"log"
 	"math/rand"
 	"medvil/model/artifacts"
 	"medvil/model/building"
@@ -8,6 +9,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/time"
 	"medvil/model/vehicles"
+	"os"
 )
 
 type Townhall struct {
@@ -80,7 +82,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		t.Household.MaybeBuyCart(Calendar, m)
 	}
 
-	if t.Household.Town.Supplier != nil && t.Household.Town.Settings.UseSupplier {
+	if t.Household.Town.Supplier != nil && t.Household.Town.Settings.UseSupplier && t.Household.Town.Supplier.CloseToTown(t.Household.Town, m) {
 		src := t.Household.Town.Supplier
 		dstH := t.Household
 		if dstH.HasRoomForPeople() {
@@ -95,6 +97,9 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if t.Household.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) == 0 {
 				targetQ := uint16(t.StorageTarget[a])
 				if q < targetQ {
+					if os.Getenv("MEDVIL_VERBOSE") == "2" {
+						log.Printf("Created Transport Task")
+					}
 					t.Household.AddTask(&economy.TransportTask{
 						PickupD:        pickupD,
 						DropoffD:       m.GetField(dstH.Building.X, dstH.Building.Y),
