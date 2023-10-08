@@ -55,6 +55,10 @@ func (b ControlPanelButton) Render(cv *canvas.Canvas) {
 	b.b.Render(cv)
 }
 
+func (b *ControlPanelButton) SetHoover(h bool) {
+	b.b.SetHoover(h)
+}
+
 func (b ControlPanelButton) Contains(x float64, y float64) bool {
 	return b.b.Contains(x, y)
 }
@@ -164,28 +168,28 @@ func (p *ControlPanel) GenerateButtons() {
 	p.buildingsLabel = p.topPanel.AddTextLabel("", ControlPanelSX*0.85+IconS, th+gui.FontSize)
 
 	iconTop := 15 + IconS
-	p.topPanel.AddButton(gui.SimpleButton{
+	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "house", X: float64(24 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsBuildingType() },
 		ClickImpl: func() { c.ShowBuildingController() }})
-	p.topPanel.AddButton(gui.SimpleButton{
+	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "infra", X: float64(24 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsInfraType() },
 		ClickImpl: func() { c.ShowInfraController() }})
-	p.topPanel.AddButton(gui.SimpleButton{
+	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS,
 			Disabled: func() bool { return c.GetActiveTownhall() == nil }},
 		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },
 		ClickImpl: func() { c.ShowDemolishController() }})
-	p.topPanel.AddButton(gui.SimpleButton{
+	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "library", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsDynamicPanelType("LibraryController") },
 		ClickImpl: func() { c.ShowLibraryController() }})
-	p.topPanel.AddButton(gui.SimpleButton{
+	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "map", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsDynamicPanelType("MapController") },
 		ClickImpl: func() { c.ShowMapController() }})
-	p.topPanel.AddButton(ControlPanelButton{
+	p.topPanel.AddButton(&ControlPanelButton{
 		b: gui.ButtonGUI{Icon: "cancel", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		c: c, action: CPActionCancel})
 	p.timeButton = &ControlPanelButton{
@@ -204,6 +208,13 @@ func (p *ControlPanel) CaptureClick(x, y float64) {
 	p.topPanel.CaptureClick(x, y)
 	if p.dynamicPanel != nil {
 		p.dynamicPanel.CaptureClick(x, y)
+	}
+}
+
+func (p *ControlPanel) CaptureMove(x, y float64) {
+	p.topPanel.CaptureMove(x, y)
+	if p.dynamicPanel != nil {
+		p.dynamicPanel.CaptureMove(x, y)
 	}
 }
 

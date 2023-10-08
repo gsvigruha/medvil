@@ -17,7 +17,7 @@ const PerspectiveSE uint8 = 1
 const PerspectiveSW uint8 = 2
 const PerspectiveNW uint8 = 3
 
-const MaxRenderCnt = 10
+const MaxRenderCnt = 6
 
 type Window interface {
 	GetGLFWWindow() *glfw.Window
@@ -340,6 +340,7 @@ func (c *Controller) MouseMoveCallback(wnd *glfw.Window, x float64, y float64) {
 	fbw, fbh := wnd.GetFramebufferSize()
 	c.X = x * float64(fbw) / float64(w)
 	c.Y = y * float64(fbh) / float64(h)
+	c.ControlPanel.CaptureMove(c.X, c.Y)
 }
 
 func (c *Controller) MouseScrollCallback(wnd *glfw.Window, x float64, y float64) {

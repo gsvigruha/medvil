@@ -72,6 +72,11 @@ func (mc *MineController) RefreshLandUseButtons() {
 	}
 }
 
+func (mc *MineController) CaptureMove(x, y float64) {
+	mc.householdPanel.CaptureMove(x, y)
+	mc.minePanel.CaptureMove(x, y)
+}
+
 func (mc *MineController) CaptureClick(x, y float64) {
 	mc.householdPanel.CaptureClick(x, y)
 	mc.minePanel.CaptureClick(x, y)
@@ -87,6 +92,7 @@ func (mc *MineController) Clear() {}
 func (mc *MineController) Refresh() {
 	mc.householdPanel.Clear()
 	HouseholdToControlPanel(mc.cp, mc.householdPanel, mc.mine.Household)
+	mc.CaptureMove(mc.cp.C.X, mc.cp.C.Y)
 }
 
 func (mc *MineController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {

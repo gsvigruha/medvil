@@ -98,6 +98,11 @@ func (fc *FarmController) RefreshLandUseButtons() {
 	}
 }
 
+func (fc *FarmController) CaptureMove(x, y float64) {
+	fc.householdPanel.CaptureMove(x, y)
+	fc.farmPanel.CaptureMove(x, y)
+}
+
 func (fc *FarmController) CaptureClick(x, y float64) {
 	fc.householdPanel.CaptureClick(x, y)
 	fc.farmPanel.CaptureClick(x, y)
@@ -113,6 +118,7 @@ func (fc *FarmController) Clear() {}
 func (fc *FarmController) Refresh() {
 	fc.householdPanel.Clear()
 	HouseholdToControlPanel(fc.cp, fc.householdPanel, fc.farm.Household)
+	fc.CaptureMove(fc.cp.C.X, fc.cp.C.Y)
 }
 
 func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {

@@ -23,9 +23,13 @@ var HouseholdControllerSY = 0.7
 var HouseholdControllerGUIBottomY = 0.75
 
 type HouseholdControllerButton struct {
-	b      gui.ButtonGUI
+	b      *gui.ButtonGUI
 	h      *social.Household
 	action func(*social.Household)
+}
+
+func (b *HouseholdControllerButton) SetHoover(h bool) {
+	b.b.SetHoover(h)
 }
 
 func (b HouseholdControllerButton) Click() {
@@ -95,11 +99,12 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	for i := len(h.People); i < int(h.TargetNumPeople); i++ {
 		p.AddImageLabel("person", float64(24+i*piw), PersonGUIY*ControlPanelSY, IconS, IconS, gui.ImageLabelStyleDisabled)
 	}
-	p.AddButton(HouseholdControllerButton{
-		b: gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 40, Y: PersonGUIY * ControlPanelSY, SX: 16, SY: 16},
+	s := IconS / 2
+	p.AddButton(&HouseholdControllerButton{
+		b: &gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 24 - s, Y: PersonGUIY * ControlPanelSY, SX: s, SY: s},
 		h: h, action: IncreaseHouseholdTargetNumPeople})
-	p.AddButton(HouseholdControllerButton{
-		b: gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 40, Y: PersonGUIY*ControlPanelSY + 16, SX: 16, SY: 16},
+	p.AddButton(&HouseholdControllerButton{
+		b: &gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 24 - s, Y: PersonGUIY*ControlPanelSY + s, SX: s, SY: s},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
 	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(h.GetHeating())/100, false)
 	p.AddScaleLabel("barrel", 24+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false)
@@ -119,7 +124,7 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 		}
 		TaskToControlPanel(cp, p, i%tirm, TaskGUIY*ControlPanelSY+float64(i/tirm*IconH), task, tiw)
 	}
-	p.AddButton(gui.SimpleButton{
+	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/boat", X: 24, Y: VehicleGUIY * ControlPanelSY, SX: IconS, SY: IconS},
 		Highlight: func() bool { return h.IsBoatEnabled() },
 		ClickImpl: func() { h.BoatEnabled = !h.BoatEnabled }})

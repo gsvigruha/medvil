@@ -59,7 +59,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 		},
 	})
 
-	wp.AddButton(gui.SimpleButton{
+	wp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24, Y: hcy + LargeIconD, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return workshop.AutoSwitch },
 		ClickImpl: func() {
@@ -69,6 +69,11 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	wp.AddTextLabel("pick most profitable", 24+LargeIconD, hcy+LargeIconD*1.5)
 
 	cp.SetDynamicPanel(wc)
+}
+
+func (wc *WorkshopController) CaptureMove(x, y float64) {
+	wc.householdPanel.CaptureMove(x, y)
+	wc.workshopPanel.CaptureMove(x, y)
 }
 
 func (wc *WorkshopController) CaptureClick(x, y float64) {
@@ -87,4 +92,5 @@ func (wc *WorkshopController) Clear() {}
 func (wc *WorkshopController) Refresh() {
 	wc.householdPanel.Clear()
 	HouseholdToControlPanel(wc.cp, wc.householdPanel, wc.workshop.Household)
+	wc.CaptureMove(wc.cp.C.X, wc.cp.C.Y)
 }

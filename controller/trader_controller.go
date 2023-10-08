@@ -51,6 +51,10 @@ func TraderToPanel(cp *ControlPanel, p *gui.Panel, trader *social.Trader) {
 	}
 }
 
+func (tc *TraderController) CaptureMove(x, y float64) {
+	tc.traderPanel.CaptureMove(x, y)
+}
+
 func (tc *TraderController) CaptureClick(x, y float64) {
 	tc.traderPanel.CaptureClick(x, y)
 }

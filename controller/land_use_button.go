@@ -19,6 +19,10 @@ type LandUseButton struct {
 	cnt     int
 }
 
+func (b *LandUseButton) SetHoover(h bool) {
+	b.b.SetHoover(h)
+}
+
 func (b LandUseButton) Click() {
 	b.luc.SetUseType(b.useType)
 }

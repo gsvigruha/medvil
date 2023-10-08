@@ -15,11 +15,12 @@ var MarketplaceGUIY = 0.175
 type MarketplaceController struct {
 	mp          *gui.Panel
 	marketplace *social.Marketplace
+	cp          *ControlPanel
 }
 
 func MarketplaceToControlPanel(cp *ControlPanel, m *social.Marketplace) {
 	mp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
-	mc := &MarketplaceController{mp: mp, marketplace: m}
+	mc := &MarketplaceController{mp: mp, marketplace: m, cp: cp}
 	MarketplaceToMarketPanel(mp, m)
 	cp.SetDynamicPanel(mc)
 }
@@ -42,7 +43,7 @@ func ArtifactsToMarketPanel(mp *gui.Panel, i int, a *artifacts.Artifact, q uint1
 	w := int(float64(IconW) * float64(IconRowMax) / float64(IconRowMaxButtons))
 	mp.AddImageLabel("artifacts/"+a.Name, float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
 	mp.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4))
-	mp.AddPanel(gui.CreateNumberPanel(float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4), float64(IconW+8), gui.FontSize*1.5, 0, 1000, 10, "$%v",
+	mp.AddPanel(gui.CreateNumberPanel(float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4), float64(IconW+8), gui.FontSize*1.5, 0, 1000, 10, "$%v", false,
 		func() int { return int(m.Prices[a]) },
 		func(v int) {
 			if uint32(v) > m.Prices[a] {
@@ -51,6 +52,10 @@ func ArtifactsToMarketPanel(mp *gui.Panel, i int, a *artifacts.Artifact, q uint1
 				m.DecPrice(a)
 			}
 		}).P)
+}
+
+func (mc *MarketplaceController) CaptureMove(x, y float64) {
+	mc.mp.CaptureMove(x, y)
 }
 
 func (mc *MarketplaceController) CaptureClick(x, y float64) {
@@ -66,4 +71,5 @@ func (mc *MarketplaceController) Clear() {}
 func (mc *MarketplaceController) Refresh() {
 	mc.mp.Clear()
 	MarketplaceToMarketPanel(mc.mp, mc.marketplace)
+	mc.CaptureMove(mc.cp.C.X, mc.cp.C.Y)
 }
