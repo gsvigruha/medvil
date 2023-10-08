@@ -634,6 +634,7 @@ func (h *Household) Destroy(m navigation.IMap) {
 	}
 	dstH.Money += h.Money
 	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(*h.Resources)
+	h.Resources.Deleted = true
 }
 
 func (h *Household) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {

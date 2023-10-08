@@ -90,6 +90,9 @@ func (t *TransportTask) Expired(Calendar *time.CalendarType) bool {
 	if !t.CompleteQuantity && t.Paused {
 		return true
 	}
+	if t.PickupR.Deleted || t.DropoffR.Deleted {
+		return true
+	}
 	return false
 }
 

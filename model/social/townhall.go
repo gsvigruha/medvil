@@ -222,6 +222,7 @@ func (t *Townhall) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 		if len(expedition.People) == 0 {
 			f := m.GetField(expedition.Vehicle.Traveller.FX, expedition.Vehicle.Traveller.FY)
 			f.UnregisterTraveller(expedition.Vehicle.Traveller)
+			expedition.Resources.Deleted = true
 		} else {
 			newExpeditions = append(newExpeditions, expedition)
 		}

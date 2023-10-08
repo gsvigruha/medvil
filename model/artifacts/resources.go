@@ -74,6 +74,7 @@ func (a Artifacts) Wrap() []Artifacts {
 type Resources struct {
 	Artifacts      map[*Artifact]uint16
 	VolumeCapacity uint16
+	Deleted bool
 }
 
 func (r *Resources) Init(volumeCapacity uint16) {
