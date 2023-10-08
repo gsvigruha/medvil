@@ -35,7 +35,7 @@ func (p *Panel) Render(cv *canvas.Canvas) {
 
 func (p *Panel) CaptureMove(x float64, y float64) {
 	for i := range p.Buttons {
-		if p.Buttons[i].Contains(x, y) && p.Buttons[i].Enabled() {
+		if p.Buttons[i].Contains(x, y) {
 			p.Buttons[i].SetHoover(true)
 		} else {
 			p.Buttons[i].SetHoover(false)
