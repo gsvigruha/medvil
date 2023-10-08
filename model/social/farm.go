@@ -133,6 +133,7 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		for _, land := range f.Land {
 			f.AddTransportTask(land, m)
 		}
+		f.ReleaseClearedLand()
 	}
 
 	if f.Household.Town.Marketplace != nil {
@@ -191,7 +192,7 @@ func (f *Farm) GetLandDistribution() map[uint8]int {
 func (f *Farm) ReleaseClearedLand() {
 	var newLand []FarmLand = make([]FarmLand, 0, len(f.Land))
 	for _, land := range f.Land {
-		if land.UseType != economy.FarmFieldUseTypeBarren {
+		if land.UseType != economy.FarmFieldUseTypeBarren || land.F.Plant != nil || !land.F.Terrain.Resources.IsEmpty() {
 			newLand = append(newLand, land)
 		} else {
 			land.F.Allocated = false
