@@ -3,6 +3,7 @@ package social
 import (
 	"math/rand"
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
@@ -90,7 +91,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if storageQ, ok := t.Household.Resources.Artifacts[a]; ok {
 				q = storageQ
 			}
-			pickupD := src.GetHome().Field(m)
+			pickupD := src.GetHome().Destination(building.NonExtension)
 			if t.Household.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) == 0 {
 				targetQ := uint16(t.StorageTarget[a])
 				if q < targetQ {
