@@ -79,10 +79,6 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: FarmFieldUseTypeDisallocate,
 	})
-	fp.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "release_clear_land", X: float64(24 + IconW*0), Y: hcy + float64(IconH*3), SX: IconS, SY: IconS},
-		ClickImpl: func() { fc.farm.ReleaseClearedLand() },
-	})
 	fc.RefreshLandUseButtons()
 
 	cp.SetDynamicPanel(fc)
@@ -96,6 +92,11 @@ func (fc *FarmController) RefreshLandUseButtons() {
 			lub.cnt = landDist[lub.useType]
 		}
 	}
+}
+
+func (fc *FarmController) CaptureMove(x, y float64) {
+	fc.householdPanel.CaptureMove(x, y)
+	fc.farmPanel.CaptureMove(x, y)
 }
 
 func (fc *FarmController) CaptureClick(x, y float64) {
@@ -113,6 +114,7 @@ func (fc *FarmController) Clear() {}
 func (fc *FarmController) Refresh() {
 	fc.householdPanel.Clear()
 	HouseholdToControlPanel(fc.cp, fc.householdPanel, fc.farm.Household)
+	fc.CaptureMove(fc.cp.C.X, fc.cp.C.Y)
 }
 
 func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {

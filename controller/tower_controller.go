@@ -33,12 +33,12 @@ func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 	tc.UseType = military.MilitaryLandUseTypeNone
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
-	tp.AddButton(LandUseButton{
+	tp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Texture: "terrain/grass", X: float64(10), Y: hcy, SX: IconS, SY: IconS},
 		luc:     tc,
 		useType: military.MilitaryLandUseTypeNone,
 	})
-	tp.AddButton(LandUseButton{
+	tp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/shield", X: float64(10 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
 		luc:     tc,
 		useType: military.MilitaryLandUseTypePatrol,
@@ -46,6 +46,11 @@ func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 
 	cp.SetDynamicPanel(tc)
 	cp.C.ClickHandler = tc
+}
+
+func (tc *TowerController) CaptureMove(x, y float64) {
+	tc.householdPanel.CaptureMove(x, y)
+	tc.towerPanel.CaptureMove(x, y)
 }
 
 func (tc *TowerController) CaptureClick(x, y float64) {
@@ -63,6 +68,7 @@ func (tc *TowerController) Clear() {}
 func (tc *TowerController) Refresh() {
 	tc.householdPanel.Clear()
 	HouseholdToControlPanel(tc.cp, tc.householdPanel, tc.tower.Household)
+	tc.CaptureMove(tc.cp.C.X, tc.cp.C.Y)
 }
 
 func (tc *TowerController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {

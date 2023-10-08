@@ -68,6 +68,10 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 	}
 }
 
+func (ec *ExpeditionController) CaptureMove(x, y float64) {
+	ec.expeditionPanel.CaptureMove(x, y)
+}
+
 func (ec *ExpeditionController) CaptureClick(x, y float64) {
 	ec.expeditionPanel.CaptureClick(x, y)
 }

@@ -50,6 +50,8 @@ func (dc *DemolishController) GetActiveFields(c *Controller, rf *renderer.Render
 	return fields
 }
 
+func (dc *DemolishController) CaptureMove(x, y float64) {}
+
 func (dc *DemolishController) CaptureClick(x, y float64) {}
 
 func (dc *DemolishController) Render(cv *canvas.Canvas) {}

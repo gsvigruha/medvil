@@ -12,6 +12,7 @@ type Button interface {
 	Render(cv *canvas.Canvas)
 	Contains(x float64, y float64) bool
 	Enabled() bool
+	SetHoover(bool)
 }
 
 type ButtonGUI struct {
@@ -21,7 +22,12 @@ type ButtonGUI struct {
 	SY       float64
 	Icon     string
 	Texture  string
+	Hoover   bool
 	Disabled func() bool
+}
+
+func (b *ButtonGUI) SetHoover(h bool) {
+	b.Hoover = h
 }
 
 func (b ButtonGUI) Render(cv *canvas.Canvas) {
@@ -35,6 +41,10 @@ func (b ButtonGUI) Render(cv *canvas.Canvas) {
 	if !b.Enabled() {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 128})
 		cv.FillRect(b.X, b.Y, b.SX, b.SY)
+	}
+	if b.Hoover && b.Enabled() {
+		cv.SetStrokeStyle("#DDD")
+		cv.StrokeRect(b.X-1, b.Y-1, b.SX+2, b.SY+2)
 	}
 }
 

@@ -15,6 +15,10 @@ type MoneyControllerButton struct {
 	amount       uint32
 }
 
+func (b *MoneyControllerButton) SetHoover(h bool) {
+	b.b.SetHoover(h)
+}
+
 func (b MoneyControllerButton) Click() {
 	if b.sourceWallet.GetMoney() >= b.amount {
 		b.sourceWallet.Spend(b.amount)
@@ -41,7 +45,7 @@ func (b MoneyControllerButton) Enabled() bool {
 func MoneyToControlPanel(p *gui.Panel, srcWallet economy.Wallet, targetWallet economy.Wallet, amount uint32, x, y float64) {
 	p.AddTextLabel("$ "+strconv.Itoa(int(targetWallet.GetMoney())), x, y)
 	if srcWallet != nil {
-		p.AddButton(MoneyControllerButton{
+		p.AddButton(&MoneyControllerButton{
 			b:            gui.ButtonGUI{Icon: "plus", X: x + gui.FontSize*4, Y: y - gui.FontSize*3/4, SX: gui.FontSize, SY: gui.FontSize},
 			sourceWallet: srcWallet,
 			targetWallet: targetWallet,

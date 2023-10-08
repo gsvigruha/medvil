@@ -31,6 +31,11 @@ func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 	cp.SetDynamicPanel(fc)
 }
 
+func (fc *FactoryController) CaptureMove(x, y float64) {
+	fc.householdPanel.CaptureMove(x, y)
+	fc.factoryPanel.CaptureMove(x, y)
+}
+
 func (fc *FactoryController) CaptureClick(x, y float64) {
 	fc.householdPanel.CaptureClick(x, y)
 	fc.factoryPanel.CaptureClick(x, y)
@@ -46,6 +51,7 @@ func (fc *FactoryController) Clear() {}
 func (fc *FactoryController) Refresh() {
 	fc.householdPanel.Clear()
 	HouseholdToControlPanel(fc.cp, fc.householdPanel, fc.factory.Household)
+	fc.CaptureMove(fc.cp.C.X, fc.cp.C.Y)
 }
 
 type OrderButton struct {
@@ -85,6 +91,8 @@ func (b OrderButton) Render(cv *canvas.Canvas) {
 	b.price.Text = fmt.Sprintf("$%v", b.factories[0].Price(b.vc))
 	b.orders.Text = fmt.Sprintf("%v", b.NumOrders())
 }
+
+func (b OrderButton) SetHoover(h bool) {}
 
 func (b OrderButton) Contains(x float64, y float64) bool {
 	return false
