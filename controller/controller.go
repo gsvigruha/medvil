@@ -31,17 +31,17 @@ type ClickHandler interface {
 }
 
 type ViewSettings struct {
-	ShowHouseIcons       bool
-	ShowAllocatedFields  bool
-	ShowLabels           bool
-	ShowTutorialMessages bool
+	ShowHouseIcons      bool
+	ShowAllocatedFields bool
+	ShowLabels          bool
+	ShowSuggestions     bool
 }
 
 var DefaultViewSettings = ViewSettings{
-	ShowHouseIcons:       true,
-	ShowAllocatedFields:  false,
-	ShowLabels:           true,
-	ShowTutorialMessages: true,
+	ShowHouseIcons:      true,
+	ShowAllocatedFields: false,
+	ShowLabels:          true,
+	ShowSuggestions:     true,
 }
 
 type Controller struct {

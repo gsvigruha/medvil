@@ -73,6 +73,12 @@ func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) Tag {
 	if l, ok := dest.(*navigation.Location); ok {
 		return SingleTag(a.Idx, l.X, l.Y, uint16(l.Z))
 	}
+	if _, ok := dest.(*navigation.TravellerDestination); ok {
+		return SingleTag(a.Idx)
+	}
+	if b, ok := dest.(*navigation.BuildingDestination); ok {
+		return SingleTag(a.Idx, b.B.X, b.B.Y)
+	}
 	return SingleTag(a.Idx)
 }
 
@@ -82,6 +88,9 @@ func (t *TransportTask) Expired(Calendar *time.CalendarType) bool {
 		return true
 	}
 	if !t.CompleteQuantity && t.Paused {
+		return true
+	}
+	if t.PickupR.Deleted || t.DropoffR.Deleted {
 		return true
 	}
 	return false

@@ -558,3 +558,7 @@ func (town *Town) BuildHousesEnabled() bool {
 func (town *Town) GetName() string {
 	return town.Name
 }
+
+func (town *Town) CloseToTown(t *Town, m navigation.IMap) bool {
+	return true
+}

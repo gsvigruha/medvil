@@ -112,6 +112,13 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 		return false
 	}
 	if ic.CheckField(c, rf) {
+		if ic.it == InfraTypeLevelForBuilding {
+			c.Map.AddLevelingTask(c.ActiveSupplier, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForBuilding)
+			return true
+		} else if ic.it == InfraTypeLevelForRoad {
+			c.Map.AddLevelingTask(c.ActiveSupplier, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
+			return true
+		}
 		if activeTown, ok := c.ActiveSupplier.(*social.Town); ok {
 			if ic.it == InfraTypeDirtRoad {
 				c.Map.AddRoadConstruction(activeTown, rf.F.X, rf.F.Y, building.DirtRoadType)
@@ -144,13 +151,6 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 			} else if ic.it == InfraTypeAppleTree {
 				activeTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingAppleTree, F: rf.F, Start: *c.Map.Calendar})
 			}
-			return true
-		}
-		if ic.it == InfraTypeLevelForBuilding {
-			c.Map.AddLevelingTask(c.ActiveSupplier, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForBuilding)
-			return true
-		} else if ic.it == InfraTypeLevelForRoad {
-			c.Map.AddLevelingTask(c.ActiveSupplier, rf.F.X, rf.F.Y, economy.TerraformTaskTypeLevelForRoad)
 			return true
 		}
 	}

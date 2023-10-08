@@ -105,17 +105,18 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 		cv.DrawImage(travellerImg, rx, ry, float64(w), float64(h))
 		rt := &renderer.RenderedTraveller{X: rx, Y: ry, W: float64(w), H: float64(h), Traveller: t}
 		c.AddRenderedTraveller(rt)
-		if c.ReverseReferences.TravellerToExpedition[t] != nil && c.ReverseReferences.TravellerToExpedition[t] == c.ActiveSupplier {
-			rt.Draw(cv)
+		if c.ViewSettings.ShowLabels && c.ReverseReferences.TravellerToExpedition[t] != nil {
 			expedition := c.ReverseReferences.TravellerToExpedition[t]
 			if expedition != nil {
 				name := expedition.Name
 				if name != "" {
 					dx := float64(len(name)) * gui.FontSize * 0.26
 					dy := gui.FontSize
-					cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
-					cv.SetLineWidth(4.0)
-					cv.StrokeRect(x-dx-8, y-z-float64(h)-dy-2, dx*2+16, dy+10)
+					if c.ActiveSupplier == expedition {
+						cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
+						cv.SetLineWidth(4.0)
+						cv.StrokeRect(x-dx-8, y-z-float64(h)-dy-2, dx*2+16, dy+10)
+					}
 					cv.SetFillStyle("texture/wood.png")
 					cv.FillRect(x-dx-8, y-z-float64(h)-dy-2, dx*2+16, dy+10)
 					cv.SetFillStyle("#FED")
@@ -123,7 +124,8 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 					cv.FillText(name, x-dx, y-z-float64(h))
 				}
 			}
-		} else if t == c.SelectedTraveller {
+		}
+		if t == c.SelectedTraveller {
 			rt.Draw(cv)
 		}
 	}

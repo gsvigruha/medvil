@@ -28,6 +28,7 @@ type ControlPanel struct {
 	artifactsLabel *gui.TextLabel
 	buildingsLabel *gui.TextLabel
 	timeButton     *ControlPanelButton
+	suggestion     *Suggestion
 	C              *Controller
 	buffer         *canvas.Canvas
 }
@@ -215,6 +216,9 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 		p.helperPanel.Render(p.buffer)
 	}
 	cv.DrawImage(p.buffer, 0, 0, ControlPanelSX, ControlPanelSY)
+	if p.suggestion != nil {
+		p.suggestion.Render(cv)
+	}
 }
 
 func (p *ControlPanel) IsDynamicPanelType(typeName string) bool {
@@ -252,4 +256,8 @@ func (p *ControlPanel) IsInfraType() bool {
 
 func (p *ControlPanel) HelperMessage(msg string) {
 	p.GetHelperPanel().AddTextLabel(msg, ControlPanelSX*0.03, ControlPanelSY*0.95)
+}
+
+func (p *ControlPanel) GetSuggestion() {
+	p.suggestion = GetHelperSuggestions(p)
 }

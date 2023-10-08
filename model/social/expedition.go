@@ -28,16 +28,16 @@ type Expedition struct {
 
 const MaxDistanceFromTown = 10
 
-func (e *Expedition) DistanceToTown() float64 {
-	return math.Abs(float64(e.Town.Townhall.Household.Building.X)-float64(e.Vehicle.Traveller.FX)) +
-		math.Abs(float64(e.Town.Townhall.Household.Building.Y)-float64(e.Vehicle.Traveller.FY))
+func (e *Expedition) DistanceToTown(town *Town) float64 {
+	return math.Abs(float64(town.Townhall.Household.Building.X)-float64(e.Vehicle.Traveller.FX)) +
+		math.Abs(float64(town.Townhall.Household.Building.Y)-float64(e.Vehicle.Traveller.FY))
 }
 
-func (e *Expedition) CloseToTown(m navigation.IMap) bool {
+func (e *Expedition) CloseToTown(town *Town, m navigation.IMap) bool {
 	if e.Vehicle.T.Water && !m.Shore(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY) {
 		return false
 	}
-	return e.DistanceToTown() <= MaxDistanceFromTown
+	return e.DistanceToTown(town) <= MaxDistanceFromTown
 }
 
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -76,7 +76,7 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 	numP := uint16(len(e.People))
 	FindWaterTask(e, numP, m)
 
-	if e.CloseToTown(m) && e.DestinationField == nil {
+	if e.CloseToTown(e.Town, m) && e.DestinationField == nil {
 		srcH := e.Town.Townhall.Household
 		if e.HasRoomForPeople() {
 			srcH.ReassignFirstPerson(e, len(e.Tasks) == 0, m)
@@ -331,7 +331,18 @@ func (e *Expedition) IsPersonVisible() bool {
 }
 
 func (e *Expedition) ReassignFirstPerson(dstH Home, assingTask bool, m navigation.IMap) {
-
+	if len(e.People) > 1 && e.CloseToTown(dstH.GetTown(), m) {
+		for pi, person := range e.People {
+			if person.Task == nil {
+				e.People = append(e.People[:pi], e.People[pi+1:]...)
+				dstH.AssignPerson(person, m)
+				if assingTask {
+					person.Task = &economy.GoHomeTask{D: dstH.Destination(building.NonExtension), P: person}
+				}
+				break
+			}
+		}
+	}
 }
 
 func (e *Expedition) FieldWithinDistance(field *navigation.Field) bool {

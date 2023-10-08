@@ -105,6 +105,14 @@ func (s *Stats) StartTask(t economy.Task, calendar *time.CalendarType) {
 	}
 }
 
+func (s *Stats) DeleteTask(t economy.Task) {
+	if s.PendingT != nil {
+		if _, ok := s.PendingT[t]; ok {
+			delete(s.PendingT, t)
+		}
+	}
+}
+
 func (s *Stats) FinishTask(t economy.Task, calendar *time.CalendarType) {
 	if s.PendingT != nil {
 		if start, ok := s.PendingT[t]; ok {

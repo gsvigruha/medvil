@@ -187,3 +187,15 @@ func (f *Farm) GetLandDistribution() map[uint8]int {
 	}
 	return result
 }
+
+func (f *Farm) ReleaseClearedLand() {
+	var newLand []FarmLand = make([]FarmLand, 0, len(f.Land))
+	for _, land := range f.Land {
+		if land.UseType != economy.FarmFieldUseTypeBarren {
+			newLand = append(newLand, land)
+		} else {
+			land.F.Allocated = false
+		}
+	}
+	f.Land = newLand
+}

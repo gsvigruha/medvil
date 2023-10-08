@@ -1,6 +1,7 @@
 package social
 
 import (
+	"log"
 	"math"
 	"math/rand"
 	"medvil/model/artifacts"
@@ -10,6 +11,7 @@ import (
 	"medvil/model/stats"
 	"medvil/model/time"
 	"medvil/model/vehicles"
+	"os"
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
@@ -162,6 +164,9 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if Calendar.Hour == 0 && Calendar.Day == 30 {
 		for i := 0; i < len(h.Tasks); i++ {
 			if h.Tasks[i].IsPaused() {
+				if os.Getenv("MEDVIL_VERBOSE") == "2" {
+					log.Printf("Unpaused Task: %T\n", h.Tasks[i])
+				}
 				h.Tasks[i].Pause(false)
 			}
 		}
@@ -502,6 +507,8 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 	for _, t := range h.Tasks {
 		if !t.Expired(Calendar) {
 			newTasks = append(newTasks, t)
+		} else {
+			h.Town.Stats.DeleteTask(t)
 		}
 	}
 	h.Tasks = newTasks
@@ -627,6 +634,7 @@ func (h *Household) Destroy(m navigation.IMap) {
 	}
 	dstH.Money += h.Money
 	m.GetField(h.Building.X, h.Building.Y).Terrain.Resources.AddResources(*h.Resources)
+	h.Resources.Deleted = true
 }
 
 func (h *Household) Destination(extensionType *building.BuildingExtensionType) navigation.Destination {
