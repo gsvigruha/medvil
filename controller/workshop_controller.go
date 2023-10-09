@@ -96,5 +96,13 @@ func (wc *WorkshopController) Refresh() {
 }
 
 func (wc *WorkshopController) GetHelperSuggestions() *gui.Suggestion {
+	suggestion := GetHouseholdHelperSuggestions(wc.workshop.Household)
+	if suggestion != nil {
+		return suggestion
+	}
+	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
+	if wc.workshop.Manufacture == nil {
+		return &gui.Suggestion{Message: "Select goods to produce.", Icon: "workshop_mixed", X: IconS + gui.FontSize*16 + 32 + float64(IconW), Y: hcy + float64(IconH)/2.0}
+	}
 	return nil
 }
