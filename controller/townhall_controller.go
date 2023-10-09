@@ -120,8 +120,8 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*8, tpw-tw, s, 0, 100, 10, "tax rate %v", true, &th.Household.Town.Transfers.Trader.Rate).P)
 	tp.AddPanel(gui.CreateNumberPaneFromVal(tw, top+h*9, tpw-tw, s, 0, 1000, 50, "subsidy %v", true, &th.Household.Town.Transfers.Trader.Threshold).P)
 
-	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*8, tpw-s, s, 0, 100, 50, "military %v", true, &th.Household.Town.Transfers.Tower.Threshold).P)
-	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*9, tpw-s, s, 0, 100, 10, "market %v", true, &th.Household.Town.Transfers.MarketFundingRate).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*8, tpw-tw, s, 0, 1000, 50, "military %v", true, &th.Household.Town.Transfers.Tower.Threshold).P)
+	tp.AddPanel(gui.CreateNumberPaneFromVal(tw+tpw, top+h*9, tpw-tw, s, 0, 100, 10, "market %v", true, &th.Household.Town.Transfers.MarketFundingRate).P)
 
 	tp.AddLargeTextLabel("Activities", 24, top+LargeIconD*4+s)
 	tp.AddImageLabel("infra/cobble_road", 24, top+LargeIconD*5, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
@@ -310,6 +310,14 @@ func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedFi
 }
 
 func (tc *TownhallController) GetHelperSuggestions() *gui.Suggestion {
+	suggestion := GetHouseholdHelperSuggestions(tc.th.Household)
+	if suggestion != nil {
+		return suggestion
+	}
+	top := 15 + IconS + LargeIconD
+	if int(tc.th.Household.Money) < int(tc.th.Household.Town.Stats.Global.Money)/10 {
+		return &gui.Suggestion{Message: "Your townhall needs more money. You can either\nincrease tax rates or reduce the subsidies your town\ngives out for poor households.", Icon: "coin", X: float64(24 + LargeIconD*2), Y: top + LargeIconD/2.0}
+	}
 	return nil
 }
 
