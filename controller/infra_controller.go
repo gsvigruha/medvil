@@ -76,8 +76,10 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 	if !c.ActiveSupplier.FieldWithinDistance(rf.F) {
 		return false
 	}
-	if ic.it == InfraTypeDirtRoad || ic.it == InfraTypeCobbleRoad {
+	if ic.it == InfraTypeDirtRoad {
 		return rf.F.RoadCompatible()
+	} else if ic.it == InfraTypeCobbleRoad {
+		return rf.F.RoadCompatible() || (rf.F.Road != nil && rf.F.Road.T == building.DirtRoadType)
 	} else if ic.it == InfraTypeCanal {
 		return rf.F.Buildable()
 	} else if ic.it == InfraTypeBridge {
