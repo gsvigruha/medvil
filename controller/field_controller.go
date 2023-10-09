@@ -27,6 +27,7 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 				}
 			}})
 		}
+		p.AddTextLabel(strconv.Itoa(int(f.Plant.AgeYears(cp.C.Map.Calendar)))+" years", 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)
 	}
 	if f.Animal != nil {
 		p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {

@@ -10,7 +10,7 @@ import (
 	"medvil/model/time"
 )
 
-const PlantSpreadRate = 0.00004
+const PlantSpreadRate = 0.0001
 const PlantDeathRate = 0.00001
 const GrassGrowRate = 0.0001
 
@@ -63,7 +63,7 @@ func (m *Map) ElapseTime() {
 						f.Plant = nil
 					}
 				} else {
-					if f.Plant.IsMature(m.Calendar) && r.Float64() < PlantDeathRate {
+					if f.Plant.IsMature(m.Calendar) && rand.Float64() < PlantDeathRate {
 						f.Plant = nil
 					}
 				}
