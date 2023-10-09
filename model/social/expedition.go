@@ -74,7 +74,7 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 	}
 
 	numP := uint16(len(e.People))
-	FindWaterTask(e, numP, m)
+	FindWaterTask(e, numP, true, m)
 
 	if e.CloseToTown(e.Town, m) && e.DestinationField == nil {
 		srcH := e.Town.Townhall.Household
@@ -311,6 +311,9 @@ func (e *Expedition) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 		if p.Health > 0 && p.Home == e {
 			newPeople = append(newPeople, p)
 		} else {
+			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
+				e.AddTask(p.Task)
+			}
 			f.UnregisterTraveller(p.Traveller)
 			e.Town.Stats.RegisterDeath()
 		}

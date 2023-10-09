@@ -32,7 +32,7 @@ func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		CombineExchangeTasks(t, t.SourceExchange, m)
 	}
 	if t.Person.IsHome {
-		FindWaterTask(t, 1, m)
+		FindWaterTask(t, 1, false, m)
 		GetFoodTasks(t, 1, t.SourceExchange)
 		if t.NumTasks("trade", economy.EmptyTag) == 0 {
 			task := t.GetTradeTask(m)

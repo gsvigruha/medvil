@@ -116,11 +116,17 @@ var ArtifactToPersonState = map[*artifacts.Artifact]PersonStateChange{
 	Medicine:  PersonStateChange{Food: 0, Water: 0, Happiness: 0, Health: 150},
 }
 
-type WaterDestination struct{}
+type WaterDestination struct {
+	DeckOk bool
+}
 
 func (d WaterDestination) Check(pe navigation.PathElement) bool {
 	if f, ok := pe.(*navigation.Field); ok {
-		return f.Terrain.T.Water
+		if d.DeckOk {
+			return f.Terrain.T.Water
+		} else {
+			return f.Terrain.T.Water && f.Building.Empty()
+		}
 	}
 	return false
 }
