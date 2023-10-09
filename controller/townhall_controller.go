@@ -336,6 +336,11 @@ func (tc *TownhallController) GetHelperSuggestions() *gui.Suggestion {
 			Message: "Your townhall needs more money. You can either\nincrease tax rates or reduce the subsidies your town\ngives out for poor households.",
 			Icon:    "coin", X: float64(24 + LargeIconD*2), Y: top + LargeIconD/2.0,
 		}
+	} else if len(tc.th.Household.Town.Country.Towns) > 1 && len(tc.th.Traders) == 0 {
+		return &gui.Suggestion{
+			Message: "Create traders to trade with other towns.\nYou can direct them by clicking on other town's marketplaces.",
+			Icon:    "trader", X: float64(24 + LargeIconD*4), Y: top + LargeIconD/2.0,
+		}
 	}
 	return nil
 }
