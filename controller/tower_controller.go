@@ -98,3 +98,7 @@ func (tc *TowerController) HandleClick(c *Controller, rf *renderer.RenderedField
 	}
 	return false
 }
+
+func (tc *TowerController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}

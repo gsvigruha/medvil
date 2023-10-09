@@ -309,6 +309,10 @@ func (tc *TownhallController) HandleClick(c *Controller, rf *renderer.RenderedFi
 	return false
 }
 
+func (tc *TownhallController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}
+
 func CreateTraderButtonForTownhall(x, y float64, th *social.Townhall, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
 	p.AddImageLabel("vehicles/"+vc.Name, 24, y, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)

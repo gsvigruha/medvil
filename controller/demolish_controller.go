@@ -5,6 +5,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
+	"medvil/view/gui"
 )
 
 func DemolishToControlPanel(cp *ControlPanel, th *social.Townhall) {
@@ -19,6 +20,10 @@ func DemolishToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 type DemolishController struct {
 	th *social.Townhall
+}
+
+func (dc *DemolishController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
 }
 
 func (dc *DemolishController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {

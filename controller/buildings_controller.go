@@ -328,6 +328,16 @@ func (b RotationButton) Enabled() bool {
 	return true
 }
 
+func (bc *BuildingsController) GetHelperSuggestions() *gui.Suggestion {
+	if !bc.Plan.IsComplete() && bc.RoofM == nil && bc.UnitM == nil {
+		return &gui.Suggestion{Message: "Pick wall material and click to build units.\nAfterwards pick a roof material and add a roof.", Icon: "house", X: LargeIconD*2 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)}
+	}
+	if bc.Plan.IsComplete() && bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
+		return &gui.Suggestion{Message: "Pick building extensions like\nworkshop, water wheel or a forge.", Icon: "building/workshop", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5}
+	}
+	return nil
+}
+
 func (bc *BuildingsController) RotatePlan() {
 	newPlan := &building.BuildingPlan{BuildingType: bc.Plan.BuildingType}
 	for i := 0; i < building.BuildingBaseMaxSize-1; i++ {
@@ -352,6 +362,26 @@ func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.Rende
 
 func (bc *BuildingsController) activeSupplier() social.Supplier {
 	return bc.cp.C.ActiveSupplier
+}
+
+func (bc *BuildingsController) CaptureClick(x, y float64) {
+	bc.p.CaptureClick(x, y)
+}
+
+func (bc *BuildingsController) CaptureMove(x, y float64) {
+	bc.p.CaptureMove(x, y)
+}
+
+func (bc *BuildingsController) Clear() {
+	bc.p.Clear()
+}
+
+func (bc *BuildingsController) Refresh() {
+	bc.p.Refresh()
+}
+
+func (bc *BuildingsController) Render(cv *canvas.Canvas) {
+	bc.p.Render(cv)
 }
 
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
@@ -525,7 +555,7 @@ func SetupBuildingsController(cp *ControlPanel, bt building.BuildingType) *Build
 	bc := CreateBuildingsController(cp, bt)
 	bc.GenerateBuildingTypebuttons()
 
-	cp.SetDynamicPanel(bc.p)
+	cp.SetDynamicPanel(bc)
 	cp.C.ClickHandler = bc
 	return bc
 }

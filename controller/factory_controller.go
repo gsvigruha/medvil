@@ -54,6 +54,10 @@ func (fc *FactoryController) Refresh() {
 	fc.CaptureMove(fc.cp.C.X, fc.cp.C.Y)
 }
 
+func (fc *FactoryController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}
+
 type OrderButton struct {
 	factories []*social.Factory
 	vc        *economy.VehicleConstruction

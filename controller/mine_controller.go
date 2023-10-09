@@ -140,3 +140,7 @@ func (mc *MineController) HandleClick(c *Controller, rf *renderer.RenderedField)
 	}
 	return false
 }
+
+func (mc *MineController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}

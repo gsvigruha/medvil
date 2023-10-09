@@ -119,3 +119,7 @@ func HandleClickForExpedition(expedition *social.Expedition, c *Controller, rf *
 func (ec *ExpeditionController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	return HandleClickForExpedition(ec.expedition, c, rf)
 }
+
+func (ec *ExpeditionController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}

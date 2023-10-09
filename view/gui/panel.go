@@ -80,6 +80,10 @@ func (p *Panel) Clear() {
 
 func (p *Panel) Refresh() {}
 
+func (p *Panel) GetHelperSuggestions() *Suggestion {
+	return nil
+}
+
 func (p *Panel) AddPanel(panel *Panel) {
 	p.Panels = append(p.Panels, panel)
 }

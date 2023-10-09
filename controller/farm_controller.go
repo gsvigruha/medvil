@@ -158,3 +158,7 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 	}
 	return false
 }
+
+func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}
