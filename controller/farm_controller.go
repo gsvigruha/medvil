@@ -158,3 +158,15 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 	}
 	return false
 }
+
+func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
+	suggestion := GetHouseholdHelperSuggestions(fc.farm.Household)
+	if suggestion != nil {
+		return suggestion
+	}
+	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
+	if len(fc.farm.Land) == 0 {
+		return &gui.Suggestion{Message: "Allocate land to grow vegetables, grain,\ntrees and sheep.", Icon: "farm_mixed", X: float64(24 + IconW*4), Y: hcy + float64(IconH)}
+	}
+	return nil
+}

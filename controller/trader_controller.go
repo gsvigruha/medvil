@@ -103,3 +103,7 @@ func HandleClickForTrader(trader *social.Trader, c *Controller, rf *renderer.Ren
 func (tc *TraderController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	return HandleClickForTrader(tc.trader, c, rf)
 }
+
+func (tc *TraderController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}

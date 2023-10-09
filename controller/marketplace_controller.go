@@ -73,3 +73,7 @@ func (mc *MarketplaceController) Refresh() {
 	MarketplaceToMarketPanel(mc.mp, mc.marketplace)
 	mc.CaptureMove(mc.cp.C.X, mc.cp.C.Y)
 }
+
+func (mc *MarketplaceController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}

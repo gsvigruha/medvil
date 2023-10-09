@@ -18,9 +18,14 @@ const CPButtonHighlightNone = 0
 const CPButtonHighlightSmall = 1
 const CPButtonHighlightLarge = 2
 
+type ControlSubPanel interface {
+	Panel
+	GetHelperSuggestions() *gui.Suggestion
+}
+
 type ControlPanel struct {
 	topPanel       *gui.Panel
-	dynamicPanel   Panel
+	dynamicPanel   ControlSubPanel
 	helperPanel    *gui.Panel
 	dateLabel      *gui.TextLabel
 	moneyLabel     *gui.TextLabel
@@ -28,7 +33,7 @@ type ControlPanel struct {
 	artifactsLabel *gui.TextLabel
 	buildingsLabel *gui.TextLabel
 	timeButton     *ControlPanelButton
-	suggestion     *Suggestion
+	suggestion     *gui.Suggestion
 	C              *Controller
 	buffer         *canvas.Canvas
 }
@@ -199,7 +204,7 @@ func (p *ControlPanel) GenerateButtons() {
 	p.topPanel.AddButton(p.timeButton)
 }
 
-func (p *ControlPanel) SetDynamicPanel(dp Panel) {
+func (p *ControlPanel) SetDynamicPanel(dp ControlSubPanel) {
 	p.Clear()
 	p.dynamicPanel = dp
 }
@@ -225,10 +230,11 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 			p.dynamicPanel.Render(p.buffer)
 		}
 		p.helperPanel.Render(p.buffer)
+		p.GetSuggestion()
 	}
 	cv.DrawImage(p.buffer, 0, 0, ControlPanelSX, ControlPanelSY)
-	if p.suggestion != nil {
-		p.suggestion.Render(cv)
+	if p.suggestion != nil && p.C.ViewSettings.ShowSuggestions {
+		p.suggestion.Render(cv, LargeIconS, LargeIconD)
 	}
 }
 
@@ -270,5 +276,20 @@ func (p *ControlPanel) HelperMessage(msg string) {
 }
 
 func (p *ControlPanel) GetSuggestion() {
-	p.suggestion = GetHelperSuggestions(p)
+	if p.dynamicPanel != nil {
+		p.suggestion = p.dynamicPanel.GetHelperSuggestions()
+	} else {
+		p.suggestion = p.GetHelperSuggestions()
+	}
+}
+
+func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
+	if p.C.Map != nil {
+		if len(p.C.Map.Countries[0].Towns[0].Farms) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
+			return &gui.Suggestion{Message: "Build farms.\nYour village has no farms.", Icon: "farm", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0}
+		} else if len(p.C.Map.Countries[0].Towns[0].Workshops) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
+			return &gui.Suggestion{Message: "Build workshops.\nYour village has no workshops.", Icon: "farm", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0}
+		}
+	}
+	return nil
 }

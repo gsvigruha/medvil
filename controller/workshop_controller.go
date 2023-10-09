@@ -94,3 +94,7 @@ func (wc *WorkshopController) Refresh() {
 	HouseholdToControlPanel(wc.cp, wc.householdPanel, wc.workshop.Household)
 	wc.CaptureMove(wc.cp.C.X, wc.cp.C.Y)
 }
+
+func (wc *WorkshopController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}

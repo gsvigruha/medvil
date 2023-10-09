@@ -185,3 +185,10 @@ func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Veh
 	}
 	p.AddImageLabel("vehicles/"+vehicle.T.Name, float64(24+i*w+IconW), y, IconS, IconS, style)
 }
+
+func GetHouseholdHelperSuggestions(h *social.Household) *gui.Suggestion {
+	if h.TargetNumPeople < 2 {
+		return &gui.Suggestion{Message: "Add people to your house.\nPeople will move over from the townhall.", Icon: "person", X: ControlPanelSX - 24, Y: PersonGUIY*ControlPanelSY + IconS/4}
+	}
+	return nil
+}
