@@ -188,7 +188,7 @@ func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Veh
 
 func GetHouseholdHelperSuggestions(h *social.Household) *gui.Suggestion {
 	if h.TargetNumPeople < 2 {
-		return &gui.Suggestion{Message: "Add people to your house.", Icon: "person", X: ControlPanelSX - 24, Y: PersonGUIY*ControlPanelSY + IconS/4}
+		return &gui.Suggestion{Message: "Add people to your house.\nPeople will move over from the townhall.", Icon: "person", X: ControlPanelSX - 24, Y: PersonGUIY*ControlPanelSY + IconS/4}
 	}
 	return nil
 }
