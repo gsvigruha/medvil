@@ -40,10 +40,10 @@ func (s *Suggestion) Render(cv *canvas.Canvas, iconS, iconD float64) {
 	cv.ClosePath()
 	cv.Fill()
 	cv.Stroke()
-	cv.DrawImage("icon/gui/"+s.Icon+".png", s.X+130, s.Y-iconD/2.0, iconS, iconS)
+	cv.DrawImage("icon/gui/"+s.Icon+".png", s.X+130, s.Y-iconS/2.0, iconS, iconS)
 	cv.SetFillStyle("#FED")
 	cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
 	for i, line := range lines {
-		cv.FillText(line, s.X+130+iconD, s.Y+float64(i)*FontSize)
+		cv.FillText(line, s.X+130+iconD, s.Y-float64(len(lines)-2)*FontSize/2.0-4+float64(i)*FontSize)
 	}
 }
