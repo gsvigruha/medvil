@@ -16,13 +16,15 @@ import (
 var TownhallControllerGUIBottomY = 0.75
 
 type TownhallControllerButton struct {
-	tc       *TownhallController
-	b        gui.ButtonGUI
-	subPanel *gui.Panel
+	tc        *TownhallController
+	b         gui.ButtonGUI
+	subPanel  *gui.Panel
+	helperMsg string
 }
 
 func (b *TownhallControllerButton) Click() {
 	b.tc.subPanel = b.subPanel
+	b.tc.cp.HelperMessage(b.helperMsg)
 }
 
 func (b *TownhallControllerButton) Render(cv *canvas.Canvas) {
@@ -71,11 +73,25 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 
 	tc := &TownhallController{cp: cp, th: th, topPanel: topPanel, householdPanel: hp, taxPanel: mp, storagePanel: sp, traderPanel: tp, expeditionPanel: ep}
 	tc.buttons = []*TownhallControllerButton{
-		&TownhallControllerButton{tc: tc, subPanel: hp, b: gui.ButtonGUI{Icon: "town", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS}},
-		&TownhallControllerButton{tc: tc, subPanel: mp, b: gui.ButtonGUI{Icon: "taxes", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS}},
-		&TownhallControllerButton{tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS}},
-		&TownhallControllerButton{tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS}},
-		&TownhallControllerButton{tc: tc, subPanel: ep, b: gui.ButtonGUI{Icon: "expedition", X: float64(24 + LargeIconD*4), Y: top, SX: LargeIconS, SY: LargeIconS}},
+		&TownhallControllerButton{
+			tc: tc, subPanel: hp, b: gui.ButtonGUI{Icon: "town", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS},
+		},
+		&TownhallControllerButton{
+			tc: tc, subPanel: mp, b: gui.ButtonGUI{Icon: "taxes", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS},
+			helperMsg: "Adjust taxes, subsidies and switch on/off activities.",
+		},
+		&TownhallControllerButton{
+			tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS},
+			helperMsg: "Store or offload goods.",
+		},
+		&TownhallControllerButton{
+			tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
+			helperMsg: "Create traders to trade goods with other towns.",
+		},
+		&TownhallControllerButton{
+			tc: tc, subPanel: ep, b: gui.ButtonGUI{Icon: "expedition", X: float64(24 + LargeIconD*4), Y: top, SX: LargeIconS, SY: LargeIconS},
+			helperMsg: "Start expeditions to found new towns.",
+		},
 	}
 
 	tc.subPanel = tc.householdPanel
@@ -316,7 +332,10 @@ func (tc *TownhallController) GetHelperSuggestions() *gui.Suggestion {
 	}
 	top := 15 + IconS + LargeIconD
 	if int(tc.th.Household.Money) < int(tc.th.Household.Town.Stats.Global.Money)/10 {
-		return &gui.Suggestion{Message: "Your townhall needs more money. You can either\nincrease tax rates or reduce the subsidies your town\ngives out for poor households.", Icon: "coin", X: float64(24 + LargeIconD*2), Y: top + LargeIconD/2.0}
+		return &gui.Suggestion{
+			Message: "Your townhall needs more money. You can either\nincrease tax rates or reduce the subsidies your town\ngives out for poor households.",
+			Icon:    "coin", X: float64(24 + LargeIconD*2), Y: top + LargeIconD/2.0,
+		}
 	}
 	return nil
 }

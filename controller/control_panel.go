@@ -300,6 +300,11 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 				Message: "Build mines to get metals and raw building materials.\nClay and stone are used to produce bricks for roads and houses.\nGold is used as a currency, iron is needed for weapons and vehicles.",
 				Icon:    "mine", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
 			}
+		} else if len(p.C.Map.Countries[0].Towns) == 1 && p.C.Map.Countries[0].Towns[0].Stats.Global.People > 80 {
+			return &gui.Suggestion{
+				Message: "Establish a new town by building a new townhall.\nYou can extract materials from distant lands and trade.",
+				Icon:    "town", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
+			}
 		}
 	}
 	return nil
