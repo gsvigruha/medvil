@@ -190,6 +190,8 @@ func GetSurroundingType(f *Field, of1 *Field, of2 *Field, of3 *Field) uint8 {
 	if f.Terrain.T == terrain.Grass && of1.Terrain.T == terrain.Grass && of2.Terrain.T == terrain.Grass && of3.Terrain.T == terrain.Grass {
 		if f.Flat() && !of1.Flat() && !of2.Flat() && !of3.Flat() {
 			return SurroundingDarkSlope
+		} else if !f.Flat() && of1.Flat() && of2.Flat() && of3.Flat() {
+			return SurroundingGrass
 		}
 	}
 	return SurroundingSame

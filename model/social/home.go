@@ -54,11 +54,11 @@ func needsWater(h Home, numP uint16) bool {
 	return false
 }
 
-func FindWaterTask(h Home, numP uint16, m navigation.IMap) {
+func FindWaterTask(h Home, numP uint16, deckOk bool, m navigation.IMap) {
 	if needsWater(h, numP) {
 		hf := h.RandomField(m, navigation.Field.BuildingNonExtension)
 		if hf != nil {
-			dest := m.FindDest(navigation.Location{X: hf.X, Y: hf.Y, Z: 0}, economy.WaterDestination{}, navigation.PathTypePedestrian)
+			dest := m.FindDest(navigation.Location{X: hf.X, Y: hf.Y, Z: 0}, economy.WaterDestination{DeckOk: deckOk}, navigation.PathTypePedestrian)
 			if dest != nil {
 				h.AddPriorityTask(&economy.TransportTask{
 					PickupD:        dest,

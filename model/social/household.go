@@ -106,7 +106,7 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		}
 	}
 	numP := uint16(len(h.People))
-	FindWaterTask(h, numP, m)
+	FindWaterTask(h, numP, true, m)
 	mp := h.Town.Marketplace
 
 	if mp != nil {
