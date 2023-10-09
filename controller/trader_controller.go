@@ -49,6 +49,14 @@ func TraderToPanel(cp *ControlPanel, p *gui.Panel, trader *social.Trader) {
 			}
 		}
 	}
+	if trader.SourceExchange != nil {
+		p.AddImageLabel("market", 24, VehicleGUIY*ControlPanelSY+float64(IconH*3), IconS, IconS, gui.ImageLabelStyleRegular)
+		p.AddTextLabel(trader.SourceExchange.Town.Name, 24+float64(IconW), VehicleGUIY*ControlPanelSY+float64(IconH)*3.5)
+	}
+	if trader.TargetExchange != nil {
+		p.AddImageLabel("market", 24, VehicleGUIY*ControlPanelSY+float64(IconH*4), IconS, IconS, gui.ImageLabelStyleRegular)
+		p.AddTextLabel(trader.TargetExchange.Town.Name, 24+float64(IconW), VehicleGUIY*ControlPanelSY+float64(IconH)*4.5)
+	}
 }
 
 func (tc *TraderController) CaptureMove(x, y float64) {
