@@ -13,22 +13,31 @@ type Label interface {
 }
 
 type TextLabel struct {
-	X     float64
-	Y     float64
-	SX    float64
-	SY    float64
-	Text  string
-	Large bool
+	X        float64
+	Y        float64
+	SX       float64
+	SY       float64
+	Text     string
+	Large    bool
+	Editable bool
 }
 
 func (l *TextLabel) Render(cv *canvas.Canvas) {
+	if l.Editable {
+		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 192})
+		cv.FillRect(l.X, l.Y, l.SX, l.SY)
+	}
 	cv.SetFillStyle("#FED")
 	if l.Large {
 		cv.SetFont("texture/font/Go-Regular.ttf", FontSize*1.5)
 	} else {
 		cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
 	}
-	cv.FillText(l.Text, l.X, l.Y)
+	if l.Editable {
+		cv.FillText(l.Text, l.X+8, l.Y+(l.SY+FontSize)/2)
+	} else {
+		cv.FillText(l.Text, l.X, l.Y)
+	}
 }
 
 func (l *TextLabel) CaptureClick(x float64, y float64) {}

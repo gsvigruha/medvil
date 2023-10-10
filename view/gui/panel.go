@@ -98,6 +98,12 @@ func (p *Panel) AddTextLabel(text string, x float64, y float64) *TextLabel {
 	return l
 }
 
+func (p *Panel) AddEditableTextLabel(x, y, sx, sy float64) *TextLabel {
+	l := &TextLabel{Text: "", X: x, Y: y, SX: sx, SY: sy, Editable: true}
+	p.Labels = append(p.Labels, l)
+	return l
+}
+
 func (p *Panel) AddLargeTextLabel(text string, x float64, y float64) *TextLabel {
 	l := &TextLabel{Text: text, X: x, Y: y, Large: true}
 	p.Labels = append(p.Labels, l)
