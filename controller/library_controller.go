@@ -43,9 +43,7 @@ func (lc *LibraryController) Render(cv *canvas.Canvas) {
 
 func (lc *LibraryController) Clear() {}
 
-func (lc *LibraryController) Refresh() {
-
-}
+func (lc *LibraryController) Refresh() {}
 
 func (lc *LibraryController) GetHelperSuggestions() *gui.Suggestion {
 	return nil
