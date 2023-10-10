@@ -33,7 +33,11 @@ func (l *TextLabel) Render(cv *canvas.Canvas) {
 	} else {
 		cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
 	}
-	cv.FillText(l.Text, l.X+8, l.Y+(l.SY+FontSize)/2)
+	if l.Editable {
+		cv.FillText(l.Text, l.X+8, l.Y+(l.SY+FontSize)/2)
+	} else {
+		cv.FillText(l.Text, l.X, l.Y)
+	}
 }
 
 func (l *TextLabel) CaptureClick(x float64, y float64) {}
