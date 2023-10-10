@@ -30,6 +30,10 @@ type ClickHandler interface {
 	GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext
 }
 
+type KeyHandler interface {
+	CaptureKey(key glfw.Key)
+}
+
 type ViewSettings struct {
 	ShowHouseIcons      bool
 	ShowAllocatedFields bool
@@ -81,6 +85,7 @@ type Controller struct {
 	ControlPanel              *ControlPanel
 	Country                   *social.Country
 	ClickHandler              ClickHandler
+	KeyHandler                KeyHandler
 	TimeSpeed                 int
 	RenderCnt                 int
 	ctx                       *goglbackend.GLContext
@@ -103,6 +108,12 @@ func (c *Controller) MoveCenter(dViewX, dViewY int) {
 }
 
 func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, action glfw.Action, mod glfw.ModifierKey) {
+	if c.KeyHandler != nil {
+		if action == glfw.Release {
+			c.KeyHandler.CaptureKey(key)
+		}
+		return
+	}
 	if key == glfw.KeyEnter && action == glfw.Release {
 		c.Perspective = (c.Perspective + 1) % 4
 	}
@@ -208,6 +219,7 @@ func (c *Controller) Reset() {
 	c.SelectedTrader = nil
 	c.SelectedExpedition = nil
 	c.ClickHandler = nil
+	c.KeyHandler = nil
 	c.ControlPanel.GetHelperPanel()
 }
 

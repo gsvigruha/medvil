@@ -2,15 +2,58 @@ package controller
 
 import (
 	"fmt"
+	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/tfriedel6/canvas"
 	"io/ioutil"
 	"medvil/maps"
 	"medvil/view/gui"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
+type LibraryController struct {
+	p             *gui.Panel
+	fileTextField *gui.TextLabel
+}
+
+func (lc *LibraryController) CaptureKey(key glfw.Key) {
+	if (key >= glfw.KeyA && key <= glfw.KeyZ) || key == glfw.KeySpace {
+		if len(lc.fileTextField.Text) < 15 {
+			lc.fileTextField.Text = lc.fileTextField.Text + strings.ToLower(string(key))
+		}
+	} else if key == glfw.KeyBackspace {
+		if len(lc.fileTextField.Text) > 0 {
+			lc.fileTextField.Text = lc.fileTextField.Text[:len(lc.fileTextField.Text)-1]
+		}
+	}
+}
+
+func (lc *LibraryController) CaptureMove(x, y float64) {
+	lc.p.CaptureMove(x, y)
+}
+
+func (lc *LibraryController) CaptureClick(x, y float64) {
+	lc.p.CaptureClick(x, y)
+}
+
+func (lc *LibraryController) Render(cv *canvas.Canvas) {
+	lc.p.Render(cv)
+}
+
+func (lc *LibraryController) Clear() {}
+
+func (lc *LibraryController) Refresh() {
+
+}
+
+func (lc *LibraryController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}
+
 func LibraryToControlPanel(cp *ControlPanel) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
+	lc := &LibraryController{p: p}
 
 	p.AddLargeTextLabel("New", 24, ControlPanelSY*0.15)
 	nTop := ControlPanelSY * 0.15
@@ -50,9 +93,9 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	lasTop := ControlPanelSY*0.45 + float64(IconH)
 	filesDropdown := &gui.DropDown{
-		X:        24,
+		X:        float64(24 + IconW*2),
 		Y:        lasTop,
-		SX:       IconS + gui.FontSize*16,
+		SX:       IconS + gui.FontSize*12,
 		SY:       IconS,
 		Options:  savedGames,
 		Icons:    icons,
@@ -61,14 +104,14 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddDropDown(filesDropdown)
 
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "load", X: float64(24 + IconW*0), Y: lasTop + float64(IconH*2), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "load", X: float64(24 + IconW*0), Y: lasTop, SX: IconS, SY: IconS},
 		ClickImpl: func() {
 			go cp.C.Load(filesDropdown.GetSelectedValue())
 			CPActionCancel(cp.C)
 		}})
 
 	savedButton := &gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "save", X: float64(24 + IconW*1), Y: lasTop + float64(IconH*2), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "save", X: float64(24 + IconW*1), Y: lasTop, SX: IconS, SY: IconS},
 		ClickImpl: func() {
 			go cp.C.Save(filesDropdown.GetSelectedValue())
 		}}
@@ -76,13 +119,15 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddButton(savedButton)
 
 	plusButton := &gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: float64(24 + IconW*2), Y: lasTop + float64(IconH*2), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "plus_save", X: float64(24 + IconW*1), Y: lasTop + float64(IconH*1), SX: IconS, SY: IconS},
 		ClickImpl: func() {
-			go cp.C.Save(time.Now().Format(time.RFC3339) + ".mdvl")
+			go cp.C.Save(lc.fileTextField.Text + ".mdvl")
 			CPActionCancel(cp.C)
 		}}
 	plusButton.Disabled = func() bool { return cp.C.Map == nil }
 	p.AddButton(plusButton)
+
+	lc.fileTextField = p.AddEditableTextLabel(float64(24+IconW*2), lasTop+float64(IconH*1), IconS+gui.FontSize*12, IconS)
 
 	p.AddLargeTextLabel("Settings", 24, ControlPanelSY*0.7)
 	p.AddButton(&gui.SimpleButton{
@@ -102,7 +147,8 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
 		ClickImpl: func() { cp.C.ViewSettings.ShowSuggestions = !cp.C.ViewSettings.ShowSuggestions }})
 
-	cp.SetDynamicPanel(p)
+	cp.SetDynamicPanel(lc)
+	cp.C.KeyHandler = lc
 }
 
 func GetLatestFile() string {
