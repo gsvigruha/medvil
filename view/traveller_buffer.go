@@ -110,7 +110,7 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 			if expedition != nil {
 				name := expedition.Name
 				if name != "" {
-					dx := float64(len(name)) * gui.FontSize * 0.26
+					dx := gui.EstimateWidth(name) * gui.FontSize / 2.0
 					dy := gui.FontSize
 					if c.ActiveSupplier == expedition {
 						cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
