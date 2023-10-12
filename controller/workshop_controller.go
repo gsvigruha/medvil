@@ -80,13 +80,13 @@ func (wc *WorkshopController) UpdateSubPanel() {
 	if wc.workshop.Manufacture != nil {
 		var aI = 0
 		for _, a := range wc.workshop.Manufacture.Inputs {
-			ArtifactsToControlPanel(wc.workshopSubPanel, aI, a.A, a.Quantity, hcy+LargeIconD)
+			ArtifactsToControlPanel(wc.cp, wc.workshopSubPanel, aI, a.A, a.Quantity, hcy+LargeIconD)
 			aI++
 		}
 		wc.workshopSubPanel.AddImageLabel("arrow", float64(24+aI*IconW), hcy+LargeIconD, IconS, IconS, gui.ImageLabelStyleRegular)
 		aI++
 		for _, a := range wc.workshop.Manufacture.Outputs {
-			ArtifactsToControlPanel(wc.workshopSubPanel, aI, a.A, a.Quantity, hcy+LargeIconD)
+			ArtifactsToControlPanel(wc.cp, wc.workshopSubPanel, aI, a.A, a.Quantity, hcy+LargeIconD)
 			aI++
 		}
 	}

@@ -12,6 +12,7 @@ type Manufacture struct {
 	BuildingExtensionType *building.BuildingExtensionType
 	Inputs                []artifacts.Artifacts
 	Outputs               []artifacts.Artifacts
+	Description           string
 }
 
 var AllManufacture = [...]*Manufacture{

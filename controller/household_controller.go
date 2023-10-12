@@ -111,7 +111,7 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	var aI = 2
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {
-			ArtifactsToControlPanel(p, aI, a, q, ArtifactsGUIY*ControlPanelSY)
+			ArtifactsToControlPanel(cp, p, aI, a, q, ArtifactsGUIY*ControlPanelSY)
 			aI++
 		}
 	}
@@ -157,10 +157,15 @@ func ArtifactQStr(q uint16) string {
 	return qStr
 }
 
-func ArtifactsToControlPanel(p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
+func ArtifactsToControlPanel(cp *ControlPanel, p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*IconW), top+float64(yI*IconH), IconS, IconS, gui.ImageLabelStyleRegular)
+	p.AddButton(&gui.ImageButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "artifacts/" + a.Name, X: float64(24 + xI*IconW), Y: top + float64(yI*IconH), SX: IconS, SY: IconS},
+		ClickImpl: func() {
+			ArtifactToHelperPanel(cp.GetHelperPanel(), a)
+		},
+	})
 	p.AddTextLabel(ArtifactQStr(q), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 

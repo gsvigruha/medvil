@@ -12,12 +12,12 @@ func ConstructionToControlPanel(cp *ControlPanel, c *building.Construction) {
 	p.AddScaleLabel("tasks/building", 10, ConstructionControllerTop, 32, 32, 4, float64(c.Progress)/float64(c.MaxProgress), false)
 	var i = 0
 	for _, a := range c.Cost {
-		ArtifactsToControlPanel(p, i, a.A, a.Quantity, ConstructionControllerTop+50)
+		ArtifactsToControlPanel(cp, p, i, a.A, a.Quantity, ConstructionControllerTop+50)
 		i++
 	}
 	i = 0
 	for a, q := range c.Storage.Artifacts {
-		ArtifactsToControlPanel(p, i, a, q, ConstructionControllerTop+250)
+		ArtifactsToControlPanel(cp, p, i, a, q, ConstructionControllerTop+250)
 		i++
 	}
 	cp.SetDynamicPanel(p)
