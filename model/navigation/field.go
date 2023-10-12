@@ -366,8 +366,12 @@ func min(x, y uint8) uint8 {
 	}
 }
 
+func (f *Field) Base() uint8 {
+	return min(f.SW, min(f.NW, min(f.NE, f.SE)))
+}
+
 func (f *Field) CacheKey() string {
-	base := min(f.SW, min(f.NW, min(f.NE, f.SE)))
+	base := f.Base()
 	return (strconv.Itoa(int(f.NE-base)) + "#" +
 		strconv.Itoa(int(f.SE-base)) + "#" +
 		strconv.Itoa(int(f.SW-base)) + "#" +

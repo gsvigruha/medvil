@@ -11,7 +11,7 @@ import (
 )
 
 const PlantSpreadRate = 0.0001
-const PlantDeathRate = 0.00001
+const PlantDeathRate = 0.0001
 const GrassGrowRate = 0.0001
 
 type Map struct {
@@ -52,19 +52,21 @@ func (m *Map) ElapseTime() {
 			f := m.Fields[i][j]
 			if f.Plant != nil {
 				f.Plant.ElapseTime(m.Calendar)
-				if f.Plant.IsMature(m.Calendar) {
-					m.SpreadPlant(i-1, j, f.Plant, m.Calendar, r)
-					m.SpreadPlant(i, j-1, f.Plant, m.Calendar, r)
-					m.SpreadPlant(i+1, j, f.Plant, m.Calendar, r)
-					m.SpreadPlant(i, j+1, f.Plant, m.Calendar, r)
-				}
-				if f.Plant.T.IsAnnual() {
-					if m.Calendar.Season() == time.Winter {
-						f.Plant = nil
+				if m.Calendar.Hour == 0 {
+					if f.Plant.IsMature(m.Calendar) {
+						m.SpreadPlant(i-1, j, f.Plant, m.Calendar, r)
+						m.SpreadPlant(i, j-1, f.Plant, m.Calendar, r)
+						m.SpreadPlant(i+1, j, f.Plant, m.Calendar, r)
+						m.SpreadPlant(i, j+1, f.Plant, m.Calendar, r)
 					}
-				} else {
-					if f.Plant.IsMature(m.Calendar) && rand.Float64() < PlantDeathRate {
-						f.Plant = nil
+					if f.Plant.T.IsAnnual() {
+						if m.Calendar.Season() == time.Winter {
+							f.Plant = nil
+						}
+					} else {
+						if f.Plant.IsMature(m.Calendar) && rand.Float64() < PlantDeathRate {
+							f.Plant = nil
+						}
 					}
 				}
 			}
@@ -87,6 +89,11 @@ func (m *Map) ElapseTime() {
 			}
 			if f.Plant == nil && f.Terrain.T == terrain.Dirt && r.Float64() < GrassGrowRate && m.Calendar.Season() == time.Winter {
 				f.Terrain.T = terrain.Grass
+			}
+			if (m.Calendar.Season() == time.Autumn && 50-(m.Calendar.Hour+(m.Calendar.Day-1)*24) <= f.Base()) ||
+				(m.Calendar.Season() == time.Spring && (m.Calendar.Hour+(m.Calendar.Day-1)*24) >= f.Base()) ||
+				(m.Calendar.Season() == time.Winter && 50-(m.Calendar.Hour+(m.Calendar.Day-1)*24) <= f.Base()) {
+				f.Terrain.Season = m.Calendar.Season()
 			}
 		}
 	}
