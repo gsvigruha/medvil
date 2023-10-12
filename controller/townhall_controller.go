@@ -109,7 +109,7 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp.AddLargeTextLabel("Finances", 24, 15+IconS+LargeIconD*3)
 	top := 15 + IconS + LargeIconD*3
 
-	HouseholdToControlPanel(tc.cp, tc.householdPanel, th.Household)
+	HouseholdToControlPanel(tc.cp, tc.householdPanel, th.Household, "townhall")
 
 	tpw := (ControlPanelSX - 30) / 2
 	s := IconS / 2

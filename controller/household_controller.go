@@ -84,13 +84,13 @@ func taskIconW(h *social.Household) (int, int) {
 	return w, n
 }
 
-func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household) {
+func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household, name string) {
 	if h.Town.Townhall.Household == h && h.Town.Supplier != nil {
 		MoneyToControlPanel(p, h.Town.Supplier.GetHome(), h, 100, 24, LargeIconD*2+float64(IconH)+24)
 	} else {
 		MoneyToControlPanel(p, h.Town.Townhall.Household, h, 100, 24, LargeIconD*2+float64(IconH)+24)
 	}
-	p.AddTextLabel(h.Town.Name, 200, LargeIconD*2+float64(IconH)+24)
+	p.AddTextLabel(name+" / "+h.Town.Name, 200, LargeIconD*2+float64(IconH)+24)
 
 	piw := personIconW(h)
 	for i, person := range h.People {

@@ -30,7 +30,7 @@ func (fc *FarmController) SetUseType(ut uint8) {
 func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(cp, hp, farm.Household)
+	HouseholdToControlPanel(cp, hp, farm.Household, "farm")
 	fc := &FarmController{householdPanel: hp, farmPanel: fp, farm: farm, UseType: economy.FarmFieldUseTypeBarren, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
@@ -113,7 +113,7 @@ func (fc *FarmController) Clear() {}
 
 func (fc *FarmController) Refresh() {
 	fc.householdPanel.Clear()
-	HouseholdToControlPanel(fc.cp, fc.householdPanel, fc.farm.Household)
+	HouseholdToControlPanel(fc.cp, fc.householdPanel, fc.farm.Household, "farm")
 	fc.CaptureMove(fc.cp.C.X, fc.cp.C.Y)
 }
 
@@ -166,7 +166,35 @@ func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
 	}
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	if len(fc.farm.Land) == 0 {
-		return &gui.Suggestion{Message: "Allocate land to grow vegetables, grain,\ntrees and sheep.", Icon: "farm_mixed", X: float64(24 + IconW*4), Y: hcy + float64(IconH)}
+		return &gui.Suggestion{
+			Message: "Select land cultivation method, then allocate land\nfor various purposes like growing vegetables, grain,\ntrees and sheep by clicking on the land.",
+			Icon:    "farm_mixed", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	landDist := fc.farm.GetLandDistribution()
+	if landDist[economy.FarmFieldUseTypeVegetables] < 2 {
+		return &gui.Suggestion{
+			Message: "It's recommended to allocate some land to grow vegetables\nin order to make the farm self sustaining.\nOther crops like grain need to be processed.",
+			Icon:    "artifacts/vegetable", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if landDist[economy.FarmFieldUseTypePasture] < 2 {
+		return &gui.Suggestion{
+			Message: "Sheeps are useful, they produce meat and materials for clothes.\nThey take several years to mature though.",
+			Icon:    "artifacts/sheep", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if landDist[economy.FarmFieldUseTypeForestry] < 5 {
+		return &gui.Suggestion{
+			Message: "Make sure to grow some trees for firewood and building materials.\nTrees grow slowly and don't need much work, so it's best\nto allocate a bit more land for them.",
+			Icon:    "artifacts/log", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if len(fc.farm.Land) > int(fc.farm.Household.TargetNumPeople)*3 {
+		return &gui.Suggestion{
+			Message: "Be careful allocating too much land for one farm.\nThe villagers might not be able to cultivate all the\nland before winter. You can either release\nthe land or add more villagers to this farm.",
+			Icon:    "warning", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
 	}
 	return nil
 }

@@ -28,7 +28,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	wp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
 	wsp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(cp, hp, workshop.Household)
+	HouseholdToControlPanel(cp, hp, workshop.Household, "workshop")
 	wc := &WorkshopController{workshopPanel: wp, workshopSubPanel: wsp, householdPanel: hp, workshop: workshop, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
@@ -112,7 +112,7 @@ func (wc *WorkshopController) Clear() {}
 
 func (wc *WorkshopController) Refresh() {
 	wc.householdPanel.Clear()
-	HouseholdToControlPanel(wc.cp, wc.householdPanel, wc.workshop.Household)
+	HouseholdToControlPanel(wc.cp, wc.householdPanel, wc.workshop.Household, "workshop")
 	wc.workshopSubPanel.Clear()
 	wc.UpdateSubPanel()
 	wc.CaptureMove(wc.cp.C.X, wc.cp.C.Y)
