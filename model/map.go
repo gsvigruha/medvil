@@ -88,9 +88,9 @@ func (m *Map) ElapseTime() {
 			if f.Plant == nil && f.Terrain.T == terrain.Dirt && r.Float64() < GrassGrowRate && m.Calendar.Season() == time.Winter {
 				f.Terrain.T = terrain.Grass
 			}
-			if (m.Calendar.Season() == time.Autumn && 50-(m.Calendar.Hour+m.Calendar.Day*24) <= f.Base()) ||
-				(m.Calendar.Season() == time.Spring && (m.Calendar.Hour+m.Calendar.Day*24) >= f.Base()) ||
-				(m.Calendar.Season() == time.Winter && 50-(m.Calendar.Hour+m.Calendar.Day*24) <= f.Base()) {
+			if (m.Calendar.Season() == time.Autumn && 50-(m.Calendar.Hour+(m.Calendar.Day-1)*24) <= f.Base()) ||
+				(m.Calendar.Season() == time.Spring && (m.Calendar.Hour+(m.Calendar.Day-1)*24) >= f.Base()) ||
+				(m.Calendar.Season() == time.Winter && 50-(m.Calendar.Hour+(m.Calendar.Day-1)*24) <= f.Base()) {
 				f.Terrain.Season = m.Calendar.Season()
 			}
 		}
