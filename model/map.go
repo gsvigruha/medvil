@@ -88,11 +88,32 @@ func (m *Map) ElapseTime() {
 			if f.Plant == nil && f.Terrain.T == terrain.Dirt && r.Float64() < GrassGrowRate && m.Calendar.Season() == time.Winter {
 				f.Terrain.T = terrain.Grass
 			}
+			if (m.Calendar.Season() == time.Autumn && 50-(m.Calendar.Hour+m.Calendar.Day*24) <= f.Base()) ||
+				(m.Calendar.Season() == time.Spring && (m.Calendar.Hour+m.Calendar.Day*24) >= f.Base()) ||
+				(m.Calendar.Season() == time.Winter && 50-(m.Calendar.Hour+m.Calendar.Day*24) <= f.Base()) {
+				f.Terrain.Season = m.Calendar.Season()
+			}
 		}
 	}
 	if m.Calendar.Hour == 12 && m.Calendar.Day%5 == 0 {
 		navigation.LabelIslands(m, m.SX, m.SY)
 	}
+}
+
+func (m *Map) HasNeighborWithSeason(i, j uint16, season uint8) bool {
+	if m.GetField(i+1, j) != nil && m.GetField(i+1, j).Terrain.Season == season {
+		return true
+	}
+	if m.GetField(i-1, j) != nil && m.GetField(i-1, j).Terrain.Season == season {
+		return true
+	}
+	if m.GetField(i, j+1) != nil && m.GetField(i, j+1).Terrain.Season == season {
+		return true
+	}
+	if m.GetField(i, j-1) != nil && m.GetField(i, j-1).Terrain.Season == season {
+		return true
+	}
+	return false
 }
 
 func (m *Map) GetNField(x uint16, dx int, y uint16, dy int) *navigation.Field {

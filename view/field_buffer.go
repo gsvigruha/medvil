@@ -102,12 +102,9 @@ func phase(d, h, s uint8, ts int) int {
 func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
 	season := f.Terrain.Season
 	phase := phase(c.Map.Calendar.Day, c.Map.Calendar.Hour, f.Terrain.Shape, c.TimeSpeed)
-	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective))
+	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(season))
 	if f.Terrain.T == terrain.Water {
 		key = key + "#" + strconv.Itoa(phase)
-	}
-	if f.Terrain.T == terrain.Grass {
-		key = key + "#" + strconv.Itoa(int(season))
 	}
 	t := time.Now().UnixNano()
 	if ce, ok := ic.entries[key]; ok {
