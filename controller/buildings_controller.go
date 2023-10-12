@@ -14,6 +14,7 @@ import (
 
 var BuildingButtonPanelTop = 0.2
 var BuildingBasePanelTop = 0.5
+var BuildingCostTop = 0.75
 
 var DX = 24.0
 var DY = 16.0
@@ -512,6 +513,10 @@ func (bc *BuildingsController) GenerateButtons() {
 				}
 			}
 		}
+	}
+
+	for i, a := range bc.Plan.ConstructionCost() {
+		ArtifactsToControlPanel(bc.p, i, a.A, a.Quantity, BuildingCostTop*ControlPanelSY)
 	}
 }
 
