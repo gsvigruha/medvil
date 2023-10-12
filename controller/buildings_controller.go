@@ -330,10 +330,22 @@ func (b RotationButton) Enabled() bool {
 
 func (bc *BuildingsController) GetHelperSuggestions() *gui.Suggestion {
 	if !bc.Plan.IsComplete() && bc.RoofM == nil && bc.UnitM == nil {
-		return &gui.Suggestion{Message: "Pick wall material and click to build units.\nAfterwards pick a roof material and add a roof.", Icon: "house", X: LargeIconD*2 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)}
+		return &gui.Suggestion{
+			Message: "Design your house. First pick wall material\nand click to build units. Afterwards pick\na roof material and add a roof.",
+			Icon:    "house", X: LargeIconD*2 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD),
+		}
 	}
 	if bc.Plan.IsComplete() && bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
-		return &gui.Suggestion{Message: "Pick building extensions like\nworkshop, water wheel or a forge.", Icon: "building/workshop", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5}
+		return &gui.Suggestion{
+			Message: ("Pick building extensions like workshop, water wheel or a forge,\nthen click on the building plan to add them.\n" +
+				"Each extension lets your workshop to perform a few different tasks.\n" +
+				" - Waterwheels sre needed to mill grain or paper, or saw wood.\n" +
+				" - Forges let you work metals such as iron or gold, or create tools and weapons.\n" +
+				" - Kilns are needed to burn clay to produce bricks, tiles or pots.\n" +
+				" - Cookers are used to make bread, brew beer or make medicine.\n" +
+				" - Workshop tools let you transform raw materials like logs or stones to\n    building materials. They are also needed for butcher shops."),
+			Icon: "building/workshop", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5,
+		}
 	}
 	return nil
 }
