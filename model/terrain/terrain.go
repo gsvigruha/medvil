@@ -46,6 +46,7 @@ type Terrain struct {
 	T         *TerrainType
 	Resources *artifacts.Resources
 	Shape     uint8
+	Season    uint8
 }
 
 func (t *Terrain) UnmarshalJSON(data []byte) error {
