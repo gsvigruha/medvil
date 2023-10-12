@@ -91,7 +91,7 @@ var ExpeditionCartConstruction = &VehicleConstruction{
 	Name:                  "expedition_cart",
 	Time:                  30 * 24 * 3,
 	Power:                 1000,
-	BuildingExtensionType: building.Deck,
+	BuildingExtensionType: nil,
 	Inputs: []artifacts.Artifacts{
 		artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 6},
 		artifacts.Artifacts{A: artifacts.GetArtifact("iron_bar"), Quantity: 2},

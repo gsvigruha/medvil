@@ -28,7 +28,7 @@ func (tc *TowerController) SetUseType(ut uint8) {
 func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	tp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(cp, hp, tower.Household)
+	HouseholdToControlPanel(cp, hp, tower.Household, "tower")
 	tc := &TowerController{towerPanel: tp, householdPanel: hp, tower: tower, cp: cp}
 	tc.UseType = military.MilitaryLandUseTypeNone
 
@@ -67,7 +67,7 @@ func (tc *TowerController) Clear() {}
 
 func (tc *TowerController) Refresh() {
 	tc.householdPanel.Clear()
-	HouseholdToControlPanel(tc.cp, tc.householdPanel, tc.tower.Household)
+	HouseholdToControlPanel(tc.cp, tc.householdPanel, tc.tower.Household, "tower")
 	tc.CaptureMove(tc.cp.C.X, tc.cp.C.Y)
 }
 

@@ -14,6 +14,7 @@ import (
 
 var BuildingButtonPanelTop = 0.2
 var BuildingBasePanelTop = 0.5
+var BuildingCostTop = 0.75
 
 var DX = 24.0
 var DY = 16.0
@@ -330,10 +331,44 @@ func (b RotationButton) Enabled() bool {
 
 func (bc *BuildingsController) GetHelperSuggestions() *gui.Suggestion {
 	if !bc.Plan.IsComplete() && bc.RoofM == nil && bc.UnitM == nil {
-		return &gui.Suggestion{Message: "Pick wall material and click to build units.\nAfterwards pick a roof material and add a roof.", Icon: "house", X: LargeIconD*2 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)}
+		return &gui.Suggestion{
+			Message: "Design your house. First pick wall material\nand click to build units. Afterwards pick\na roof material and add a roof.",
+			Icon:    "house", X: LargeIconD*2 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD),
+		}
 	}
 	if bc.Plan.IsComplete() && bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
-		return &gui.Suggestion{Message: "Pick building extensions like\nworkshop, water wheel or a forge.", Icon: "building/workshop", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5}
+		if bc.ExtensionT == nil {
+			return &gui.Suggestion{
+				Message: ("Pick building extensions like workshop, water wheel or a forge,\nthen click on the building plan to add them.\n" +
+					"Each extension lets your workshop to perform a few different tasks."),
+				Icon: "building/workshop", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5,
+			}
+		} else if bc.ExtensionT == building.WaterMillWheel {
+			return &gui.Suggestion{
+				Message: "Waterwheels are needed to mill grain or paper, or saw wood.\nThe building needs to be adjacent to water.",
+				Icon:    "building/water_mill_wheel", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5,
+			}
+		} else if bc.ExtensionT == building.Forge {
+			return &gui.Suggestion{
+				Message: "Forges let you work metals such as iron or gold, or create tools and weapons.",
+				Icon:    "building/forge", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5,
+			}
+		} else if bc.ExtensionT == building.Kiln {
+			return &gui.Suggestion{
+				Message: "Kilns are needed to burn clay to produce bricks, tiles or pots.",
+				Icon:    "building/kiln", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5,
+			}
+		} else if bc.ExtensionT == building.Cooker {
+			return &gui.Suggestion{
+				Message: "Cookers are used to bake bread, brew beer or make medicine.",
+				Icon:    "building/cooker", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5,
+			}
+		} else if bc.ExtensionT == building.Workshop {
+			return &gui.Suggestion{
+				Message: "Workshop tools let you transform raw materials like logs or stones to\nbuilding materials, or to make textiles from wool.\nThey are also needed for butcher shops.",
+				Icon:    "building/workshop", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5,
+			}
+		}
 	}
 	return nil
 }
@@ -478,6 +513,10 @@ func (bc *BuildingsController) GenerateButtons() {
 				}
 			}
 		}
+	}
+
+	for i, a := range bc.Plan.ConstructionCost() {
+		ArtifactsToControlPanel(bc.p, i, a.A, a.Quantity, BuildingCostTop*ControlPanelSY)
 	}
 }
 

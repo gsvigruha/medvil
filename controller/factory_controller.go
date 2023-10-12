@@ -20,7 +20,7 @@ type FactoryController struct {
 func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
-	HouseholdToControlPanel(cp, hp, factory.Household)
+	HouseholdToControlPanel(cp, hp, factory.Household, "factory")
 	fc := &FactoryController{factoryPanel: fp, householdPanel: hp, factory: factory, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
@@ -50,7 +50,7 @@ func (fc *FactoryController) Clear() {}
 
 func (fc *FactoryController) Refresh() {
 	fc.householdPanel.Clear()
-	HouseholdToControlPanel(fc.cp, fc.householdPanel, fc.factory.Household)
+	HouseholdToControlPanel(fc.cp, fc.householdPanel, fc.factory.Household, "factory")
 	fc.CaptureMove(fc.cp.C.X, fc.cp.C.Y)
 }
 

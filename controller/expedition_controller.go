@@ -3,6 +3,8 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
+	"medvil/model/building"
+	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
@@ -121,5 +123,23 @@ func (ec *ExpeditionController) HandleClick(c *Controller, rf *renderer.Rendered
 }
 
 func (ec *ExpeditionController) GetHelperSuggestions() *gui.Suggestion {
+	if ec.expedition.TargetNumPeople < 3 {
+		return &gui.Suggestion{
+			Message: "Add people to your expedition. These people\nwill build a new townhall and become the first\noccupants of the new city your found.",
+			Icon:    "person", X: ControlPanelSX - 24, Y: PersonGUIY*ControlPanelSY + IconS/4,
+		}
+	}
+	if ec.expedition.StorageTarget[economy.Vegetable] == 0 && ec.expedition.StorageTarget[economy.Fruit] == 0 && ec.expedition.StorageTarget[economy.Bread] == 0 && ec.expedition.StorageTarget[economy.Meat] == 0 {
+		return &gui.Suggestion{
+			Message: "Add food to your expedition to stock up from the townhall.\nMake sure to have enough to feed your people during the journey\nand afterwards, until the new town becomes self sufficient.",
+			Icon:    "food_mixed", X: ControlPanelSX - 24, Y: ArtifactsGUIY*ControlPanelSY + float64(IconH*3),
+		}
+	}
+	if ec.expedition.StorageTarget[building.Board] == 0 && ec.expedition.StorageTarget[building.Cube] == 0 && ec.expedition.StorageTarget[building.Tile] == 0 && ec.expedition.StorageTarget[building.Brick] == 0 {
+		return &gui.Suggestion{
+			Message: "Add building materials to your expedition to stock up from\nthe townhall. They will be used to build your new city,\nincluding both the new townhall and the new farms or workshops.",
+			Icon:    "building_mixed", X: ControlPanelSX - 24, Y: ArtifactsGUIY*ControlPanelSY + float64(IconH*3),
+		}
+	}
 	return nil
 }
