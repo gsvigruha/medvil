@@ -100,22 +100,6 @@ func (m *Map) ElapseTime() {
 	}
 }
 
-func (m *Map) HasNeighborWithSeason(i, j uint16, season uint8) bool {
-	if m.GetField(i+1, j) != nil && m.GetField(i+1, j).Terrain.Season == season {
-		return true
-	}
-	if m.GetField(i-1, j) != nil && m.GetField(i-1, j).Terrain.Season == season {
-		return true
-	}
-	if m.GetField(i, j+1) != nil && m.GetField(i, j+1).Terrain.Season == season {
-		return true
-	}
-	if m.GetField(i, j-1) != nil && m.GetField(i, j-1).Terrain.Season == season {
-		return true
-	}
-	return false
-}
-
 func (m *Map) GetNField(x uint16, dx int, y uint16, dy int) *navigation.Field {
 	return m.GetField(uint16(int(x)+dx), uint16(int(y)+dy))
 }
