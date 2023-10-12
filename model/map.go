@@ -10,8 +10,8 @@ import (
 	"medvil/model/time"
 )
 
-const PlantSpreadRate = 0.0001 * 24.0
-const PlantDeathRate = 0.00001 * 24.0
+const PlantSpreadRate = 0.0001
+const PlantDeathRate = 0.0001
 const GrassGrowRate = 0.0001
 
 type Map struct {
