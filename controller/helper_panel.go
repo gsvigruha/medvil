@@ -52,3 +52,9 @@ func ArtifactsToHelperPanel(p *gui.Panel, as []artifacts.Artifacts, sx, y float6
 		p.AddTextLabel(strconv.Itoa(int(as.Quantity)), x+IconS*0.75, y+IconS)
 	}
 }
+
+func ArtifactToHelperPanel(p *gui.Panel, a *artifacts.Artifact) {
+	y := ControlPanelSY * 0.95
+	p.AddImageLabel("artifacts/"+a.Name, 24, y, IconS, IconS, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(a.Description, 24+float64(IconW), y+IconS-gui.FontSize/2.0)
+}

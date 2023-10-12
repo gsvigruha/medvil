@@ -171,29 +171,82 @@ func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
 			Icon:    "farm_mixed", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
+
 	landDist := fc.farm.GetLandDistribution()
 	if landDist[economy.FarmFieldUseTypeVegetables] < 2 {
 		return &gui.Suggestion{
-			Message: "It's recommended to allocate some land to grow vegetables\nin order to make the farm self sustaining.\nOther crops like grain need to be processed.",
-			Icon:    "artifacts/vegetable", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			Message: ("It's recommended to allocate some land to grow vegetables\nin order to make the farm self sustaining.\n" +
+				"The farmers will sell excess vegetables on the market,\nso it can be used to feed other villagers."),
+			Icon: "artifacts/vegetable", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
 	if landDist[economy.FarmFieldUseTypePasture] < 2 {
 		return &gui.Suggestion{
-			Message: "Sheeps are useful, they produce meat and materials for clothes.\nThey take several years to mature though.",
-			Icon:    "artifacts/sheep", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			Message: ("Sheeps are useful, they produce meat and materials for clothes.\nThey take several years to mature though. The villagers will\n" +
+				"sell the sheep at the marketplace. you will need a butchershop,\na certain type of workshop, to produce meat and leather."),
+			Icon: "artifacts/sheep", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
 	if landDist[economy.FarmFieldUseTypeForestry] < 5 {
 		return &gui.Suggestion{
-			Message: "Make sure to grow some trees for firewood and building materials.\nTrees grow slowly and don't need much work, so it's best\nto allocate a bit more land for them.",
-			Icon:    "artifacts/log", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			Message: ("Make sure to grow some trees for firewood and building materials.\nTrees grow slowly and don't need much work, so it's best\n" +
+				"to allocate a bit more land for them."),
+			Icon: "artifacts/log", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
 	if len(fc.farm.Land) > int(fc.farm.Household.TargetNumPeople)*3 {
 		return &gui.Suggestion{
-			Message: "Be careful allocating too much land for one farm.\nThe villagers might not be able to cultivate all the\nland before winter. You can either release\nthe land or add more villagers to this farm.",
-			Icon:    "warning", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			Message: ("Be careful allocating too much land for one farm.\nThe villagers might not be able to cultivate all the\n" +
+				"land before winter. You can either release\nthe land or add more villagers to this farm."),
+			Icon: "warning", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if fc.UseType == economy.FarmFieldUseTypeWheat {
+		return &gui.Suggestion{
+			Message: ("Grow wheat to produce grain. It will need to be\nturned into flour using waterwheel mills,\nthen baked as bread."),
+			Icon:    "artifacts/grain", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if fc.UseType == economy.FarmFieldUseTypeHerb {
+		return &gui.Suggestion{
+			Message: ("Grow herbs to produce medicine."),
+			Icon:    "artifacts/herb", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if fc.UseType == economy.FarmFieldUseTypeReed {
+		return &gui.Suggestion{
+			Message: ("Grow reed to produce thatch for roofs or paper."),
+			Icon:    "artifacts/reed", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if fc.UseType == economy.FarmFieldUseTypeOrchard {
+		return &gui.Suggestion{
+			Message: ("Grow an orchard to produce fruits."),
+			Icon:    "artifacts/fruit", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if fc.UseType == economy.FarmFieldUseTypeForestry {
+		return &gui.Suggestion{
+			Message: "Grow trees for firewood and building materials.",
+			Icon:    "artifacts/log", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if fc.UseType == economy.FarmFieldUseTypeVegetables {
+		return &gui.Suggestion{
+			Message: "Grow vegetables for food.",
+			Icon:    "artifacts/vegetable", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if fc.UseType == economy.FarmFieldUseTypePasture {
+		return &gui.Suggestion{
+			Message: "Raise sheep for food and textile.",
+			Icon:    "artifacts/fruit", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		}
+	}
+	if fc.UseType == economy.FarmFieldUseTypeBarren {
+		return &gui.Suggestion{
+			Message: ("Clear land in order to build houses on them."),
+			Icon:    "artifacts/herb", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
 	return nil

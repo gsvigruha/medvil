@@ -516,7 +516,7 @@ func (bc *BuildingsController) GenerateButtons() {
 	}
 
 	for i, a := range bc.Plan.ConstructionCost() {
-		ArtifactsToControlPanel(bc.p, i, a.A, a.Quantity, BuildingCostTop*ControlPanelSY)
+		ArtifactsToControlPanel(bc.cp, bc.p, i, a.A, a.Quantity, BuildingCostTop*ControlPanelSY)
 	}
 }
 

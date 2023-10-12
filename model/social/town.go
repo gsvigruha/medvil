@@ -287,7 +287,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	}
 	town.Constructions = constructions
 	town.Stats = s
-	if Calendar.Day == 30 && Calendar.Hour == 0 && town.Townhall.Household.Resources.Remove(Paper, 1) > 0 {
+	if Calendar.Day == 30 && Calendar.Hour == 0 {
 		if town.Settings.RoadRepairs {
 			for _, road := range town.Roads {
 				if road.Road.Broken && town.Townhall.Household.NumTasks("repair", economy.BuildingTaskTag(road)) == 0 {

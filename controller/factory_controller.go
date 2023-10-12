@@ -25,7 +25,7 @@ func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	for i, vc := range economy.GetVehicleConstructions(factory.Household.Building.Plan.GetExtensions()) {
-		fp.AddPanel(CreateOrderPanelForFactory(10, float64(i*IconH)+hcy, factory, vc, cp.C.Map))
+		fp.AddPanel(CreateOrderPanelForFactory(cp, 10, float64(i*IconH)+hcy, factory, vc, cp.C.Map))
 	}
 
 	cp.SetDynamicPanel(fc)
@@ -106,7 +106,7 @@ func (b OrderButton) Enabled() bool {
 	return true
 }
 
-func CreateOrderPanelForFactory(x, y float64, factory *social.Factory, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
+func CreateOrderPanelForFactory(cp *ControlPanel, x, y float64, factory *social.Factory, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
 	orders := p.AddTextLabel("", 24+x+float64(IconW)*2, y)
 	price := p.AddTextLabel("", 24+x+float64(IconW)*3, y)
@@ -120,7 +120,7 @@ func CreateOrderPanelForFactory(x, y float64, factory *social.Factory, vc *econo
 		m:         m,
 	})
 	for i, as := range vc.Inputs {
-		ArtifactsToControlPanel(p, i+5, as.A, as.Quantity, y-float64(IconH)*2/3)
+		ArtifactsToControlPanel(cp, p, i+5, as.A, as.Quantity, y-float64(IconH)*2/3)
 	}
 	return p
 }

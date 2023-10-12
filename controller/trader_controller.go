@@ -32,7 +32,7 @@ func TraderToPanel(cp *ControlPanel, p *gui.Panel, trader *social.Trader) {
 	var aI = 2
 	for _, a := range artifacts.All {
 		if q, ok := trader.Resources.Artifacts[a]; ok {
-			ArtifactsToControlPanel(p, aI, a, q, ArtifactsGUIY*ControlPanelSY)
+			ArtifactsToControlPanel(cp, p, aI, a, q, ArtifactsGUIY*ControlPanelSY)
 			aI++
 		}
 	}
@@ -45,7 +45,7 @@ func TraderToPanel(cp *ControlPanel, p *gui.Panel, trader *social.Trader) {
 	if trader.Person.Task != nil {
 		if tradeTask, ok := trader.Person.Task.(*economy.TradeTask); ok {
 			for i, as := range tradeTask.Goods {
-				ArtifactsToControlPanel(p, i, as.A, as.Quantity, VehicleGUIY*ControlPanelSY)
+				ArtifactsToControlPanel(cp, p, i, as.A, as.Quantity, VehicleGUIY*ControlPanelSY)
 			}
 		}
 	}

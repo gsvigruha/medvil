@@ -46,7 +46,7 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	}
 	var aI = 0
 	for a, q := range f.Terrain.Resources.Artifacts {
-		ArtifactsToControlPanel(p, aI, a, q, ArtifactsGUIY*ControlPanelSY)
+		ArtifactsToControlPanel(cp, p, aI, a, q, ArtifactsGUIY*ControlPanelSY)
 		aI++
 	}
 	cp.SetDynamicPanel(p)

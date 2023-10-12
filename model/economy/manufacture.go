@@ -12,6 +12,7 @@ type Manufacture struct {
 	BuildingExtensionType *building.BuildingExtensionType
 	Inputs                []artifacts.Artifacts
 	Outputs               []artifacts.Artifacts
+	Description           string
 }
 
 var AllManufacture = [...]*Manufacture{
@@ -34,7 +35,7 @@ var AllManufacture = [...]*Manufacture{
 		Time:                  10 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.Workshop,
-		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 1}},
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 2}},
 		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "tiling",
@@ -42,7 +43,7 @@ var AllManufacture = [...]*Manufacture{
 		Power:                 1000,
 		BuildingExtensionType: building.Kiln,
 		Inputs: []artifacts.Artifacts{
-			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
+			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 3},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("tile"), Quantity: 2}}},
 	&Manufacture{
@@ -51,7 +52,7 @@ var AllManufacture = [...]*Manufacture{
 		Power:                 1000,
 		BuildingExtensionType: building.Kiln,
 		Inputs: []artifacts.Artifacts{
-			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
+			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 4},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("brick"), Quantity: 2}}},
 	&Manufacture{
