@@ -171,6 +171,7 @@ var Brick = artifacts.GetArtifact("brick")
 var Thatch = artifacts.GetArtifact("thatch")
 var Tile = artifacts.GetArtifact("tile")
 var Textile = artifacts.GetArtifact("textile")
+var Paper = artifacts.GetArtifact("paper")
 
 func (b BuildingPlan) RepairCost() []artifacts.Artifacts {
 	cc := b.ConstructionCost()
@@ -188,6 +189,7 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 	var thatches uint16 = 0
 	var tiles uint16 = 0
 	var textiles uint16 = 0
+	var papers uint16 = 0
 	for i := 0; i < BuildingBaseMaxSize; i++ {
 		for j := 0; j < BuildingBaseMaxSize; j++ {
 			if b.BaseShape[i][j] != nil {
@@ -210,6 +212,9 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 					case materials.GetMaterial("whitewash"):
 						boards += 1
 						bricks += 2
+					}
+					if b.BuildingType == BuildingTypeGate {
+						papers += 2
 					}
 				}
 				if b.BaseShape[i][j].Roof != nil && !b.BaseShape[i][j].Roof.Flat() {
@@ -256,6 +261,7 @@ func (b BuildingPlan) ConstructionCost() []artifacts.Artifacts {
 		artifacts.Artifacts{A: Thatch, Quantity: thatches},
 		artifacts.Artifacts{A: Tile, Quantity: tiles},
 		artifacts.Artifacts{A: Textile, Quantity: textiles},
+		artifacts.Artifacts{A: Paper, Quantity: papers},
 	})
 }
 

@@ -20,7 +20,7 @@ var CobbleRoadType = &RoadType{
 }
 var BridgeRoadType = &RoadType{
 	Name: "bridge", Speed: 1.5, Bridge: true,
-	Cost: []artifacts.Artifacts{artifacts.Artifacts{artifacts.GetArtifact("board"), 3}},
+	Cost: []artifacts.Artifacts{artifacts.Artifacts{artifacts.GetArtifact("board"), 3}, artifacts.Artifacts{artifacts.GetArtifact("paper"), 2}},
 }
 
 var RoadTypes = [...]*RoadType{
