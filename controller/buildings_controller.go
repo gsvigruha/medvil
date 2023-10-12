@@ -365,7 +365,7 @@ func (bc *BuildingsController) GetHelperSuggestions() *gui.Suggestion {
 			}
 		} else if bc.ExtensionT == building.Workshop {
 			return &gui.Suggestion{
-				Message: "Workshop tools let you transform raw materials like logs or stones to\nbuilding materials. They are also needed for butcher shops.",
+				Message: "Workshop tools let you transform raw materials like logs or stones to\nbuilding materials, or to make textiles from wool.\nThey are also needed for butcher shops.",
 				Icon:    "building/workshop", X: LargeIconD*5 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2.5,
 			}
 		}
