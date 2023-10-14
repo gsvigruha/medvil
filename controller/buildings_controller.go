@@ -578,7 +578,7 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 	}
 	if bc.cp.C.ActiveSupplier != nil {
 		bc.p.AddButton(&gui.SimpleButton{
-			ButtonGUI: gui.ButtonGUI{Icon: "town", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			ButtonGUI: gui.ButtonGUI{Icon: "townhall", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeTownhall) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeTownhall) }})
 	}

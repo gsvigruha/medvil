@@ -189,7 +189,7 @@ func (p *ControlPanel) GenerateButtons() {
 					c.ShowBuildingControllerForType(building.BuildingTypeFactory)
 				} else if suggestion.Icon == "mine" {
 					c.ShowBuildingControllerForType(building.BuildingTypeMine)
-				} else if suggestion.Icon == "town" {
+				} else if suggestion.Icon == "townhall" {
 					c.ShowBuildingControllerForType(building.BuildingTypeTownhall)
 				} else if suggestion.Icon == "market" {
 					c.ShowBuildingControllerForType(building.BuildingTypeMarket)
@@ -334,7 +334,7 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 		} else if len(p.C.Map.Countries[0].Towns) == 1 && p.C.Map.Countries[0].Towns[0].Stats.Global.People > 80 {
 			return &gui.Suggestion{
 				Message: "Establish a new town by building a new townhall.\nYou can extract materials from distant lands and trade.",
-				Icon:    "town", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
+				Icon:    "townhall", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
 			}
 		} else if p.C.GetActiveTownhall() != nil && p.C.GetActiveTownhall().Household.Town.Marketplace == nil && len(p.C.GetActiveTownhall().Household.Town.Constructions) == 0 {
 			return &gui.Suggestion{
