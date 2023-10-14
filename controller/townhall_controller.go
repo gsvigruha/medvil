@@ -177,6 +177,7 @@ func RefreshSubPanels(tc *TownhallController) {
 			town.Settings.ArtifactCollection = !town.Settings.ArtifactCollection
 			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items")
 		}})
+	tp.AddTextLabel("Storage is "+strconv.Itoa(int(th.Household.Resources.UsedVolumeCapacity()*100.0))+"% full", 24+LargeIconD*2, top+LargeIconD*8+LargeIconD/2)
 
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: 24 + LargeIconD, Y: top + LargeIconD*9, SX: LargeIconS, SY: LargeIconS},
