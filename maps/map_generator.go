@@ -18,7 +18,8 @@ const MaxIter = 6
 const HillBranching = 2
 const LakeBranching = 4
 const TreeProb = 30
-const ResourcesProb = 1000
+const ResourcesProb = 0.001
+const ResourcesProbGold = 0.002
 
 type MapConfig struct {
 	Size      int
@@ -67,7 +68,7 @@ func setupTerrain(m *model.Map, config MapConfig) {
 		for j := range fields[i] {
 			navigation.SetSurroundingTypes(m, fields[i][j])
 			if !m.Shore(uint16(i), uint16(j)) {
-				if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil && fields[i][j].Terrain.T == terrain.Grass {
+				if rand.Float64() < ResourcesProb*float64(config.Resources) && fields[i][j].Plant == nil && fields[i][j].Terrain.T == terrain.Grass {
 					if fields[i][j].Flat() {
 						if rand.Float64() < float64(i)/float64(config.Size) {
 							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Mud, Q: artifacts.InfiniteQuantity}
@@ -83,7 +84,7 @@ func setupTerrain(m *model.Map, config MapConfig) {
 					}
 				}
 			} else {
-				if rand.Intn(ResourcesProb) < config.Resources*2 {
+				if rand.Float64() < ResourcesProbGold*float64(config.Resources) {
 					fields[i][j].Deposit = &terrain.Deposit{T: terrain.Gold, Q: uint16((rand.Intn(5) + 1) * 1000)}
 				}
 			}
