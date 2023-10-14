@@ -8,3 +8,4 @@ cp -r icon Medville.app/Contents/Resources
 cp -r texture Medville.app/Contents/Resources
 cp -r samples Medville.app/Contents/Resources
 mkdir -p Medville.app/Contents/Resources/saved
+cp saved/example* Medville.app/Contents/Resources/saved

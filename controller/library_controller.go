@@ -19,7 +19,7 @@ type LibraryController struct {
 
 func (lc *LibraryController) CaptureKey(key glfw.Key) {
 	if (key >= glfw.KeyA && key <= glfw.KeyZ) || key == glfw.KeySpace || (key >= glfw.Key0 && key <= glfw.Key9) {
-		if len(lc.fileTextField.Text) < 15 {
+		if len(lc.fileTextField.Text) < 20 {
 			lc.fileTextField.Text = lc.fileTextField.Text + strings.ToLower(string(key))
 		}
 	} else if key == glfw.KeyBackspace {
@@ -115,7 +115,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			go cp.C.Save(filesDropdown.GetSelectedValue())
 		}}
 	saveButton.Disabled = func() bool {
-		return cp.C.Map == nil || strings.HasPrefix(filesDropdown.GetSelectedValue(), "tutorial")
+		return cp.C.Map == nil || strings.HasPrefix(filesDropdown.GetSelectedValue(), "example")
 	}
 	p.AddButton(saveButton)
 
