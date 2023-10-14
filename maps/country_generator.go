@@ -1,24 +1,28 @@
 package maps
 
 import (
+	"math/rand"
 	"medvil/model"
 	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/social"
 	"medvil/model/stats"
+	"medvil/model/terrain"
 )
 
 type CountryConf struct {
-	TownhallPlan    string
-	MarketplacePlan string
-	FarmPlan        string
-	WorkshopPlan    string
-	TownhallRes     map[string]uint16
-	MarketplaceRes  map[string]uint16
-	People          uint16
-	Money           uint32
-	Village         bool
+	TownhallPlan         string
+	MarketplacePlan      string
+	FarmPlan             string
+	WorkshopPlan         string
+	TownhallRes          map[string]uint16
+	MarketplaceRes       map[string]uint16
+	People               uint16
+	Money                uint32
+	Village              bool
+	OptimizeForResources bool
+	OptimizeForDistance  bool
 }
 
 var PlayerConf = CountryConf{
@@ -43,9 +47,11 @@ var PlayerConf = CountryConf{
 		"log":       20,
 		"textile":   30,
 	},
-	People:  5,
-	Money:   5000,
-	Village: false,
+	People:               5,
+	Money:                5000,
+	Village:              false,
+	OptimizeForResources: true,
+	OptimizeForDistance:  false,
 }
 
 var OutlawConf = CountryConf{
@@ -65,12 +71,15 @@ var OutlawConf = CountryConf{
 		"log":       20,
 		"textile":   30,
 	},
-	People:  8,
-	Money:   1500,
-	Village: true,
+	People:               10,
+	Money:                1500,
+	Village:              true,
+	OptimizeForResources: false,
+	OptimizeForDistance:  true,
 }
 
-func addFarm(conf CountryConf, town *social.Town, x, y int, m *model.Map) {
+func addFarm(conf CountryConf, town *social.Town, villageSize int, m *model.Map) {
+	x, y := pickHouseCoord(int(town.Marketplace.Building.X), int(town.Marketplace.Building.Y), 2, villageSize+5, m)
 	farmB := &building.Building{
 		Plan: building.BuildingPlanFromJSON(conf.FarmPlan),
 		X:    uint16(x),
@@ -101,14 +110,38 @@ func addFarm(conf CountryConf, town *social.Town, x, y int, m *model.Map) {
 func addFarmLand(farm *social.Farm, useType uint8, dx, dy int, m *model.Map) {
 	x := uint16(int(farm.Household.Building.X) + dx)
 	y := uint16(int(farm.Household.Building.Y) + dy)
-	farm.Land = append(farm.Land,
-		social.FarmLand{
-			X:       x,
-			Y:       y,
-			UseType: useType,
-			F:       m.GetField(x, y),
-		},
-	)
+	f := m.GetField(x, y)
+	if f != nil && f.Arable() {
+		farm.Land = append(farm.Land,
+			social.FarmLand{
+				X:       x,
+				Y:       y,
+				UseType: useType,
+				F:       f,
+			},
+		)
+	}
+}
+
+func pickHouseCoord(cx, cy, minD, maxD int, m *model.Map) (int, int) {
+	var x, y int
+	var success bool = false
+	for !success {
+		x = cx + rand.Intn(maxD*2) - maxD
+		y = cy + rand.Intn(maxD*2) - maxD
+		success = true
+		for dx := -minD; dx <= minD; dx++ {
+			for dy := -minD; dy <= minD; dy++ {
+				f := m.GetField(uint16(x+dx), uint16(y+dy))
+				if f != nil {
+					success = success && f.Building.Empty() && f.Terrain.T == terrain.Grass && f.Flat()
+				} else {
+					success = false
+				}
+			}
+		}
+	}
+	return x, y
 }
 
 func GenerateCountry(t uint8, m *model.Map) bool {
@@ -119,7 +152,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 	case social.CountryTypeOutlaw:
 		conf = OutlawConf
 	}
-	tx, ty := findStartingLocation(m)
+	tx, ty := findStartingLocation(m, conf)
 	if tx == 0 && ty == 0 {
 		return false
 	}
@@ -170,13 +203,13 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 	}
 
 	if conf.Village {
-		addFarm(conf, town, tx+2, ty-4, m)
-		addFarm(conf, town, tx+2, ty+4, m)
+		villageSize := rand.Intn(2)
 		{
+			x, y := pickHouseCoord(int(marketplace.X), int(marketplace.Y), 2, 4, m)
 			workshopB := &building.Building{
 				Plan: building.BuildingPlanFromJSON(conf.WorkshopPlan),
-				X:    uint16(tx - 1),
-				Y:    uint16(ty - 4),
+				X:    uint16(x),
+				Y:    uint16(y),
 			}
 			workshopB.Plan.BaseShape[2][2].Extension = &building.BuildingExtension{T: building.Workshop}
 			workshopB.Plan.BuildingType = building.BuildingTypeWorkshop
@@ -188,10 +221,11 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 			town.Workshops = append(town.Workshops, workshop)
 		}
 		{
+			x, y := pickHouseCoord(int(marketplace.X), int(marketplace.Y), 2, 4, m)
 			workshopB := &building.Building{
 				Plan: building.BuildingPlanFromJSON(conf.WorkshopPlan),
-				X:    uint16(tx - 1),
-				Y:    uint16(ty - 5),
+				X:    uint16(x),
+				Y:    uint16(y),
 			}
 			workshopB.Plan.BaseShape[2][2].Extension = &building.BuildingExtension{T: building.Workshop}
 			workshopB.Plan.BuildingType = building.BuildingTypeWorkshop
@@ -202,7 +236,9 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 			workshop.Manufacture = economy.GetManufacture("sewing")
 			town.Workshops = append(town.Workshops, workshop)
 		}
-
+		for i := 0; i < villageSize+2; i++ {
+			addFarm(conf, town, villageSize, m)
+		}
 		town.Townhall.Household.TargetNumPeople = 2
 	}
 

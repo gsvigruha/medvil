@@ -62,7 +62,7 @@ func main() {
 
 			c.Refresh()
 			ic.Clean()
-			if os.Getenv("MEDVIL_VERBOSE") == "1" {
+			if os.Getenv("MEDVIL_VERBOSE") == "2" {
 				log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
 				log.Printf("%s", c.Map.Calendar)
 			}

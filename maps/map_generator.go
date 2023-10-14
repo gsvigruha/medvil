@@ -1,6 +1,7 @@
 package maps
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"medvil/model"
@@ -9,6 +10,7 @@ import (
 	"medvil/model/social"
 	"medvil/model/terrain"
 	"medvil/model/time"
+	"os"
 )
 
 const HillAreaRatio = 10000
@@ -150,9 +152,10 @@ func GenerateHills(x, y, peak, n int, angle float64, fields [][]*navigation.Fiel
 	}
 }
 
-func findStartingLocation(m *model.Map) (int, int) {
+func findStartingLocation(m *model.Map, conf CountryConf) (int, int) {
 	var x, y = 0, 0
 	var maxScore = 0
+	mapR := math.Sqrt(float64(m.SX)*float64(m.SX) + float64(m.SY)*float64(m.SY))
 	for i := range m.Fields {
 		for j := range m.Fields[i] {
 			if i < 5 || j < 5 || i > len(m.Fields)-5 || j > len(m.Fields[i])-5 {
@@ -160,7 +163,13 @@ func findStartingLocation(m *model.Map) (int, int) {
 			}
 			dx := float64(int(m.SX/2) - i)
 			dy := float64(int(m.SY/2) - j)
-			var score = int(m.SX+m.SY)/4 - int(math.Sqrt(dx*dx+dy*dy))
+			var score = 0
+			scoreD := mapR/2.0 - math.Sqrt(dx*dx+dy*dy)
+			if conf.OptimizeForDistance {
+				score += int(math.Log(scoreD))
+			} else {
+				score += int(scoreD)
+			}
 			var suitable = true
 			var water = false
 			var rock = 0
@@ -206,13 +215,27 @@ func findStartingLocation(m *model.Map) (int, int) {
 					break
 				}
 			}
-			score += 10*int(math.Log2(float64(rock+1))) + 10*int(math.Log2(float64(gold+1))) + 10*int(math.Log2(float64(iron+1))) + 10*int(math.Log2(float64(mud+1)))
+			if conf.OptimizeForResources {
+				score += 10*int(math.Log2(float64(rock+1))) + 10*int(math.Log2(float64(gold+1))) + 10*int(math.Log2(float64(iron+1))) + 10*int(math.Log2(float64(mud+1)))
+			}
+			if conf.OptimizeForDistance {
+				for _, country := range m.Countries {
+					for _, town := range country.Towns {
+						dx := float64(i) - float64(town.Townhall.Household.Building.X)
+						dy := float64(j) - float64(town.Townhall.Household.Building.Y)
+						score += int(math.Log(math.Sqrt(dx*dx + dy*dy)))
+					}
+				}
+			}
 			if water && suitable && score > maxScore {
 				maxScore = score
 				x = i
 				y = j
 			}
 		}
+	}
+	if os.Getenv("MEDVIL_VERBOSE") == "1" {
+		fmt.Println("Found location: ", x, y, maxScore)
 	}
 	return x, y
 }

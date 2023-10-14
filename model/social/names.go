@@ -55,3 +55,25 @@ var ExpeditionNames = []string{
 	"Buccaneer's Pride",
 	"Elusive Kraken",
 }
+
+var OutlawColonyNames = []string{
+	"Thorn Haven",
+	"Rusty Shack",
+	"Wild Vipers",
+	"Iron Hideout",
+	"Black Serpents",
+	"Blood Ravine",
+	"Shadow Cliff",
+	"Skull Cove",
+	"Dusty Hideaway",
+	"Grim Thicket",
+	"Dagger Grove",
+	"Bone Pit",
+	"Midnight Den",
+	"Lawless Lair",
+	"Broken Trail",
+	"Ghost Watch",
+	"Marauder's Roost",
+	"Rogue's Retreat",
+	"Dark Canyon",
+}
