@@ -155,6 +155,7 @@ func GenerateHills(x, y, peak, n int, angle float64, fields [][]*navigation.Fiel
 func findStartingLocation(m *model.Map, conf CountryConf) (int, int) {
 	var x, y = 0, 0
 	var maxScore = 0
+	mapR := math.Sqrt(float64(m.SX)*float64(m.SX) + float64(m.SY)*float64(m.SY))
 	for i := range m.Fields {
 		for j := range m.Fields[i] {
 			if i < 5 || j < 5 || i > len(m.Fields)-5 || j > len(m.Fields[i])-5 {
@@ -163,8 +164,11 @@ func findStartingLocation(m *model.Map, conf CountryConf) (int, int) {
 			dx := float64(int(m.SX/2) - i)
 			dy := float64(int(m.SY/2) - j)
 			var score = 0
-			if !conf.OptimizeForDistance {
-				score += int(m.SX+m.SY)/2 - int(math.Sqrt(dx*dx+dy*dy))
+			scoreD := mapR/2.0 - math.Sqrt(dx*dx+dy*dy)
+			if conf.OptimizeForDistance {
+				score += int(math.Log(scoreD))
+			} else {
+				score += int(scoreD)
 			}
 			var suitable = true
 			var water = false
@@ -219,7 +223,7 @@ func findStartingLocation(m *model.Map, conf CountryConf) (int, int) {
 					for _, town := range country.Towns {
 						dx := float64(i) - float64(town.Townhall.Household.Building.X)
 						dy := float64(j) - float64(town.Townhall.Household.Building.Y)
-						score += int(math.Log(math.Sqrt(dx*dx + dy + dy)))
+						score += int(math.Log(math.Sqrt(dx*dx + dy*dy)))
 					}
 				}
 			}
