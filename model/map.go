@@ -11,7 +11,7 @@ import (
 )
 
 const PlantSpreadRate = 0.0001
-const PlantDeathRate = 0.0001
+const PlantDeathRate = 0.0002
 const GrassGrowRate = 0.0001
 
 type Map struct {

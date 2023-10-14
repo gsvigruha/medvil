@@ -43,10 +43,11 @@ func (b MoneyControllerButton) Enabled() bool {
 }
 
 func MoneyToControlPanel(p *gui.Panel, srcWallet economy.Wallet, targetWallet economy.Wallet, amount uint32, x, y float64) {
-	p.AddTextLabel("$ "+strconv.Itoa(int(targetWallet.GetMoney())), x, y)
+	p.AddImageLabel("coin", x, y-gui.FontSize*0.8, gui.FontSize, gui.FontSize, gui.ImageLabelStyleRegular)
+	p.AddTextLabel(strconv.Itoa(int(targetWallet.GetMoney())), x+gui.FontSize+4, y)
 	if srcWallet != nil {
 		p.AddButton(&MoneyControllerButton{
-			b:            gui.ButtonGUI{Icon: "plus", X: x + gui.FontSize*4, Y: y - gui.FontSize*3/4, SX: gui.FontSize, SY: gui.FontSize},
+			b:            gui.ButtonGUI{Icon: "plus", X: x + gui.FontSize*4, Y: y - gui.FontSize*0.8, SX: gui.FontSize, SY: gui.FontSize},
 			sourceWallet: srcWallet,
 			targetWallet: targetWallet,
 			amount:       amount,
