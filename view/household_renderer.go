@@ -13,7 +13,7 @@ import (
 
 func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string) {
 	if int(h.Money) < moneyThreshold {
-		*icons = append(*icons, "icon/gui/profitable.png")
+		*icons = append(*icons, "icon/gui/coin.png")
 	}
 
 	if len(h.People) > 0 {
@@ -48,6 +48,8 @@ func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string
 		if h.Building.Broken {
 			*icons = append(*icons, "icon/gui/tasks/repair.png")
 		}
+	} else {
+		*icons = append(*icons, "icon/gui/person.png")
 	}
 }
 
@@ -84,12 +86,13 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 	market := c.ReverseReferences.BuildingToMarketplace[f.Building.GetBuilding()]
 	if market != nil {
 		if int(market.Money) < int(market.Town.Stats.Global.Money)/10 {
-			icons = append(icons, "icon/gui/profitable.png")
+			icons = append(icons, "icon/gui/coin.png")
 		}
 	}
 
+	s := controller.IconS * 0.6
 	for i, icon := range icons {
-		cv.DrawImage(icon, midX-float64(len(icons))*24/2+float64(i)*24, midY-z, 24, 24)
+		cv.DrawImage(icon, midX-float64(len(icons))*s/2+float64(i)*s, midY-z, s, s)
 	}
 }
 
