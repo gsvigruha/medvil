@@ -121,6 +121,7 @@ func addFarmLand(farm *social.Farm, useType uint8, dx, dy int, m *model.Map) {
 			},
 		)
 	}
+	f.Allocated = true
 }
 
 func pickHouseCoord(cx, cy, minD, maxD int, m *model.Map) (int, int) {

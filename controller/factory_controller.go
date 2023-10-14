@@ -55,6 +55,10 @@ func (fc *FactoryController) Refresh() {
 }
 
 func (fc *FactoryController) GetHelperSuggestions() *gui.Suggestion {
+	suggestion := GetHouseholdHelperSuggestions(fc.factory.Household)
+	if suggestion != nil {
+		return suggestion
+	}
 	return nil
 }
 

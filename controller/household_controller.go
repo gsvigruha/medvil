@@ -127,7 +127,10 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/boat", X: 24, Y: VehicleGUIY * ControlPanelSY, SX: IconS, SY: IconS},
 		Highlight: func() bool { return h.IsBoatEnabled() },
-		ClickImpl: func() { h.BoatEnabled = !h.BoatEnabled }})
+		ClickImpl: func() {
+			h.BoatEnabled = !h.BoatEnabled
+			cp.HelperMessage("Start or stop using boats and waterways")
+		}})
 	for i, vehicle := range h.Vehicles {
 		VehicleToControlPanel(p, i, VehicleGUIY*ControlPanelSY, vehicle, IconW)
 	}

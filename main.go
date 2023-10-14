@@ -30,6 +30,10 @@ func init() {
 }
 
 func main() {
+	path, err := os.Getwd()
+	if err == nil {
+		fmt.Println("CWD: " + path)
+	}
 	if os.Getenv("MEDVIL_PROFILE") == "1" {
 		// This crashes the Mac app bundle for some reason
 		defer profile.Start(profile.ProfilePath(".")).Stop()

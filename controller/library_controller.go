@@ -69,6 +69,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		ClickImpl: func() {
 			go cp.C.NewMap(*config)
 		}})
+	p.AddTextLabel("Start a new game", 24+float64(LargeIconD), nTop+float64(IconS*7.66))
 
 	p.AddLargeTextLabel("Load and save", 24, ControlPanelSY*0.45)
 
@@ -132,18 +133,22 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24, Y: ControlPanelSY*0.7 + float64(IconH), SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowHouseIcons },
 		ClickImpl: func() { cp.C.ViewSettings.ShowHouseIcons = !cp.C.ViewSettings.ShowHouseIcons }})
+	p.AddTextLabel("Show warning icons for houses", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*1.5)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*2, SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowAllocatedFields },
 		ClickImpl: func() { cp.C.ViewSettings.ShowAllocatedFields = !cp.C.ViewSettings.ShowAllocatedFields }})
+	p.AddTextLabel("Show flags for allocated land", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*2.5)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "label", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*3, SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowLabels },
 		ClickImpl: func() { cp.C.ViewSettings.ShowLabels = !cp.C.ViewSettings.ShowLabels }})
+	p.AddTextLabel("Show town and expedition names", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*3.5)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*4, SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
 		ClickImpl: func() { cp.C.ViewSettings.ShowSuggestions = !cp.C.ViewSettings.ShowSuggestions }})
+	p.AddTextLabel("Show helper suggestions", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*4.5)
 
 	cp.SetDynamicPanel(lc)
 	cp.C.KeyHandler = lc

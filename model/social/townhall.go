@@ -23,6 +23,7 @@ const StorageRefillBudgetPercentage = 0.5
 const ConstructionStorageCapacity = 0.7
 
 const TownhallMaxDistance = 25
+const OutlawMaxDistance = 30
 
 func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	t.Household.ElapseTime(Calendar, m)
