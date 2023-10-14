@@ -234,7 +234,9 @@ func NewMap(config MapConfig) *model.Map {
 
 		var success = true
 		success = success && GenerateCountry(social.CountryTypePlayer, m)
-		success = success && GenerateCountry(social.CountryTypeOutlaw, m)
+		for i := 0; i < (config.Size-50)/50; i++ {
+			success = success && GenerateCountry(social.CountryTypeOutlaw, m)
+		}
 
 		if !success {
 			continue
