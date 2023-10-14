@@ -10,15 +10,17 @@ import (
 )
 
 type CountryConf struct {
-	TownhallPlan    string
-	MarketplacePlan string
-	FarmPlan        string
-	WorkshopPlan    string
-	TownhallRes     map[string]uint16
-	MarketplaceRes  map[string]uint16
-	People          uint16
-	Money           uint32
-	Village         bool
+	TownhallPlan         string
+	MarketplacePlan      string
+	FarmPlan             string
+	WorkshopPlan         string
+	TownhallRes          map[string]uint16
+	MarketplaceRes       map[string]uint16
+	People               uint16
+	Money                uint32
+	Village              bool
+	OptimizeForResources bool
+	OptimizeForDistance  bool
 }
 
 var PlayerConf = CountryConf{
@@ -43,9 +45,11 @@ var PlayerConf = CountryConf{
 		"log":       20,
 		"textile":   30,
 	},
-	People:  5,
-	Money:   5000,
-	Village: false,
+	People:               5,
+	Money:                5000,
+	Village:              false,
+	OptimizeForResources: true,
+	OptimizeForDistance:  false,
 }
 
 var OutlawConf = CountryConf{
@@ -65,9 +69,11 @@ var OutlawConf = CountryConf{
 		"log":       20,
 		"textile":   30,
 	},
-	People:  8,
-	Money:   1500,
-	Village: true,
+	People:               8,
+	Money:                1500,
+	Village:              true,
+	OptimizeForResources: false,
+	OptimizeForDistance:  true,
 }
 
 func addFarm(conf CountryConf, town *social.Town, x, y int, m *model.Map) {
@@ -101,14 +107,17 @@ func addFarm(conf CountryConf, town *social.Town, x, y int, m *model.Map) {
 func addFarmLand(farm *social.Farm, useType uint8, dx, dy int, m *model.Map) {
 	x := uint16(int(farm.Household.Building.X) + dx)
 	y := uint16(int(farm.Household.Building.Y) + dy)
-	farm.Land = append(farm.Land,
-		social.FarmLand{
-			X:       x,
-			Y:       y,
-			UseType: useType,
-			F:       m.GetField(x, y),
-		},
-	)
+	f := m.GetField(x, y)
+	if f != nil {
+		farm.Land = append(farm.Land,
+			social.FarmLand{
+				X:       x,
+				Y:       y,
+				UseType: useType,
+				F:       f,
+			},
+		)
+	}
 }
 
 func GenerateCountry(t uint8, m *model.Map) bool {
@@ -119,7 +128,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 	case social.CountryTypeOutlaw:
 		conf = OutlawConf
 	}
-	tx, ty := findStartingLocation(m)
+	tx, ty := findStartingLocation(m, conf)
 	if tx == 0 && ty == 0 {
 		return false
 	}

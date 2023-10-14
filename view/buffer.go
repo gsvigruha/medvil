@@ -76,7 +76,7 @@ func (ic *ImageCache) Clean() {
 			delete(ic.Bic.extensionEntries, k)
 		}
 	}
-	if os.Getenv("MEDVIL_VERBOSE") == "1" {
+	if os.Getenv("MEDVIL_VERBOSE") == "2" {
 		log.Printf("Buffer sizes: Plant %s, Fields %s, Building units %s, Building roofs %s, Building extensions %s",
 			len(ic.Pic.entries), len(ic.Fic.entries), len(ic.Bic.roofEntries), len(ic.Bic.unitEntries), len(ic.Bic.extensionEntries))
 	}
