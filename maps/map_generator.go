@@ -67,18 +67,18 @@ func setupTerrain(m *model.Map, config MapConfig) {
 		for j := range fields[i] {
 			navigation.SetSurroundingTypes(m, fields[i][j])
 			if !m.Shore(uint16(i), uint16(j)) {
-				if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil {
-					if fields[i][j].Terrain.T == terrain.Grass && fields[i][j].Flat() {
-						if rand.Float64() < 0.66 {
+				if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil && fields[i][j].Terrain.T == terrain.Grass {
+					if fields[i][j].Flat() {
+						if rand.Float64() < float64(i)/float64(config.Size) {
 							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Mud, Q: artifacts.InfiniteQuantity}
 						} else {
 							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Rock, Q: artifacts.InfiniteQuantity}
 						}
-					} else if fields[i][j].Terrain.T == terrain.Grass && !fields[i][j].Flat() {
-						if rand.Float64() < 0.66 {
-							fields[i][j].Deposit = &terrain.Deposit{T: terrain.IronBog, Q: uint16((rand.Intn(5) + 1) * 1000)}
-						} else {
+					} else {
+						if rand.Float64() < float64(j)/float64(config.Size) {
 							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Rock, Q: artifacts.InfiniteQuantity}
+						} else {
+							fields[i][j].Deposit = &terrain.Deposit{T: terrain.IronBog, Q: uint16((rand.Intn(5) + 1) * 1000)}
 						}
 					}
 				}
