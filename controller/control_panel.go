@@ -338,7 +338,7 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 			}
 		} else if p.C.GetActiveTownhall() != nil && p.C.GetActiveTownhall().Household.Town.Marketplace == nil && len(p.C.GetActiveTownhall().Household.Town.Constructions) == 0 {
 			return &gui.Suggestion{
-				Message: "Build a marketplace for your new town.",
+				Message: "Build a marketplace for your new town. The villagers need a place\nto trade goods with each other.",
 				Icon:    "market", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
 			}
 		} else if len(p.C.Map.Countries[0].Towns[0].Towers) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
