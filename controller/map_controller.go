@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"image/color"
+	"math"
 	"medvil/model"
 	"medvil/model/building"
 	"medvil/model/terrain"
@@ -19,6 +20,14 @@ type MapLabel struct {
 
 func (l MapLabel) Render(cv *canvas.Canvas) {
 	cv.DrawImage(l.img, 24, ControlPanelSY*0.15, float64(l.img.Width()), float64(l.img.Height()))
+	cv.SetLineWidth(2)
+	cv.SetStrokeStyle("#D00")
+	x := float64(l.cp.C.CenterX)*l.d + 24
+	y := float64(l.cp.C.CenterY)*l.d + ControlPanelSY*0.15
+	cv.BeginPath()
+	cv.Arc(x, y, l.d*12, 0, math.Pi*2.0, true)
+	cv.ClosePath()
+	cv.Stroke()
 }
 
 func (l MapLabel) CaptureClick(x float64, y float64) {

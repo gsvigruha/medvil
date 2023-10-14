@@ -107,7 +107,7 @@ func (tc *TowerController) GetHelperSuggestions() *gui.Suggestion {
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	if len(tc.tower.Land) == 0 {
 		return &gui.Suggestion{
-			Message: "Add lands for your soldiers to patrol. Patrolling soldiers will both\nscare away outlaws and keep your citizens from joining them.",
+			Message: "Select lands for your soldiers to patrol. Patrolling soldiers will both\nscare away outlaws and keep your citizens from joining them.",
 			Icon:    "tasks/patrol", X: float64(24 + IconW*2), Y: hcy + float64(IconH)/2.0,
 		}
 	}
