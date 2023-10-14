@@ -78,8 +78,8 @@ var OutlawConf = CountryConf{
 	OptimizeForDistance:  true,
 }
 
-func addFarm(conf CountryConf, town *social.Town, size int, m *model.Map) {
-	x, y := pickHouseCoord(int(town.Marketplace.Building.X), int(town.Marketplace.Building.Y), 2, size+5, m)
+func addFarm(conf CountryConf, town *social.Town, villageSize int, m *model.Map) {
+	x, y := pickHouseCoord(int(town.Marketplace.Building.X), int(town.Marketplace.Building.Y), 2, villageSize+5, m)
 	farmB := &building.Building{
 		Plan: building.BuildingPlanFromJSON(conf.FarmPlan),
 		X:    uint16(x),
@@ -111,7 +111,7 @@ func addFarmLand(farm *social.Farm, useType uint8, dx, dy int, m *model.Map) {
 	x := uint16(int(farm.Household.Building.X) + dx)
 	y := uint16(int(farm.Household.Building.Y) + dy)
 	f := m.GetField(x, y)
-	if f != nil && f.Terrain.T == terrain.Grass && f.Arable() {
+	if f != nil && f.Arable() {
 		farm.Land = append(farm.Land,
 			social.FarmLand{
 				X:       x,
@@ -203,7 +203,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 	}
 
 	if conf.Village {
-		size := rand.Intn(2)
+		villageSize := rand.Intn(2)
 		{
 			x, y := pickHouseCoord(int(marketplace.X), int(marketplace.Y), 2, 4, m)
 			workshopB := &building.Building{
@@ -236,8 +236,8 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 			workshop.Manufacture = economy.GetManufacture("sewing")
 			town.Workshops = append(town.Workshops, workshop)
 		}
-		for i := 0; i < size+2; i++ {
-			addFarm(conf, town, size, m)
+		for i := 0; i < villageSize+2; i++ {
+			addFarm(conf, town, villageSize, m)
 		}
 		town.Townhall.Household.TargetNumPeople = 2
 	}
