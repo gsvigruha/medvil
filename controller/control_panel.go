@@ -315,6 +315,11 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 				Message: "Build towers and walls to protect your town from the outlaws.\nThey live in small villages with wooden buildings and\nsteal your crops if you build too close to them.",
 				Icon:    "infra/tower_2", X: float64(24 + LargeIconD*2), Y: IconS + 15 + LargeIconD/2.0,
 			}
+		} else if len(p.C.Map.Countries[0].Towns[0].Factories) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
+			return &gui.Suggestion{
+				Message: "Build factories to create vehicles. Vehicles make it more\nefficient for your villagers to transport goods to and\nfrom the market. They can also be used to launch expeditions.",
+				Icon:    "factory", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
+			}
 		}
 	}
 	return nil
