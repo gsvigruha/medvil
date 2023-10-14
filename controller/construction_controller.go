@@ -36,5 +36,6 @@ func ConstructionToControlPanel(cp *ControlPanel, c *building.Construction) {
 			i++
 		}
 	}
+	cp.HelperMessage("Construction in progress")
 	cp.SetDynamicPanel(p)
 }

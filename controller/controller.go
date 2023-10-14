@@ -168,6 +168,11 @@ func (c *Controller) ShowBuildingController() {
 	BuildingsToControlPanel(c.ControlPanel)
 }
 
+func (c *Controller) ShowBuildingControllerForType(bt building.BuildingType) {
+	c.Reset()
+	SetupBuildingsController(c.ControlPanel, bt)
+}
+
 func (c *Controller) ShowLibraryController() {
 	c.Reset()
 	LibraryToControlPanel(c.ControlPanel)
