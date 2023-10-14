@@ -44,7 +44,7 @@ var PlayerConf = CountryConf{
 		"textile":   30,
 	},
 	People:  5,
-	Money:   2000,
+	Money:   5000,
 	Village: false,
 }
 
@@ -66,7 +66,7 @@ var OutlawConf = CountryConf{
 		"textile":   30,
 	},
 	People:  8,
-	Money:   1000,
+	Money:   1500,
 	Village: true,
 }
 

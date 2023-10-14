@@ -267,37 +267,37 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 		if rbp != nil {
 			c.Reset()
 			c.SelectedTownhall = c.ReverseReferences.BuildingToTownhall[rbp.GetBuilding()]
-			if c.SelectedTownhall != nil {
+			if c.SelectedTownhall != nil && c.SelectedTownhall.Household.Town.Country.T == social.CountryTypePlayer {
 				c.ActiveSupplier = c.SelectedTownhall.Household.Town
 				TownhallToControlPanel(c.ControlPanel, c.SelectedTownhall)
 			}
 			c.SelectedMarketplace = c.ReverseReferences.BuildingToMarketplace[rbp.GetBuilding()]
-			if c.SelectedMarketplace != nil {
+			if c.SelectedMarketplace != nil && c.SelectedMarketplace.Town.Country.T == social.CountryTypePlayer {
 				c.ActiveSupplier = c.SelectedMarketplace.Town
 				MarketplaceToControlPanel(c.ControlPanel, c.SelectedMarketplace)
 			}
 			c.SelectedFarm = c.ReverseReferences.BuildingToFarm[rbp.GetBuilding()]
-			if c.SelectedFarm != nil {
+			if c.SelectedFarm != nil && c.SelectedFarm.Household.Town.Country.T == social.CountryTypePlayer {
 				c.ActiveSupplier = c.SelectedFarm.Household.Town
 				FarmToControlPanel(c.ControlPanel, c.SelectedFarm)
 			}
 			c.SelectedWorkshop = c.ReverseReferences.BuildingToWorkshop[rbp.GetBuilding()]
-			if c.SelectedWorkshop != nil {
+			if c.SelectedWorkshop != nil && c.SelectedWorkshop.Household.Town.Country.T == social.CountryTypePlayer {
 				c.ActiveSupplier = c.SelectedWorkshop.Household.Town
 				WorkshopToControlPanel(c.ControlPanel, c.SelectedWorkshop)
 			}
 			c.SelectedMine = c.ReverseReferences.BuildingToMine[rbp.GetBuilding()]
-			if c.SelectedMine != nil {
+			if c.SelectedMine != nil && c.SelectedMine.Household.Town.Country.T == social.CountryTypePlayer {
 				c.ActiveSupplier = c.SelectedMine.Household.Town
 				MineToControlPanel(c.ControlPanel, c.SelectedMine)
 			}
 			c.SelectedFactory = c.ReverseReferences.BuildingToFactory[rbp.GetBuilding()]
-			if c.SelectedFactory != nil {
+			if c.SelectedFactory != nil && c.SelectedFactory.Household.Town.Country.T == social.CountryTypePlayer {
 				c.ActiveSupplier = c.SelectedFactory.Household.Town
 				FactoryToControlPanel(c.ControlPanel, c.SelectedFactory)
 			}
 			c.SelectedTower = c.ReverseReferences.BuildingToTower[rbp.GetBuilding()]
-			if c.SelectedTower != nil {
+			if c.SelectedTower != nil && c.SelectedTower.Household.Town.Country.T == social.CountryTypePlayer {
 				c.ActiveSupplier = c.SelectedTower.Household.Town
 				TowerToControlPanel(c.ControlPanel, c.SelectedTower)
 			}
@@ -313,16 +313,16 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 				c.Reset()
 				c.SelectedTraveller = rt.Traveller
 				person := c.ReverseReferences.TravellerToPerson[c.SelectedTraveller]
-				if person != nil {
+				if person != nil && person.Home.GetTown().Country.T == social.CountryTypePlayer {
 					PersonToControlPanel(c.ControlPanel, person)
 				}
 				trader := c.ReverseReferences.TravellerToTrader[c.SelectedTraveller]
-				if trader != nil {
+				if trader != nil && trader.Town.Country.T == social.CountryTypePlayer {
 					c.SelectedTrader = trader
 					TraderToControlPanel(c.ControlPanel, trader)
 				}
 				expedition := c.ReverseReferences.TravellerToExpedition[c.SelectedTraveller]
-				if expedition != nil {
+				if expedition != nil && expedition.Town.Country.T == social.CountryTypePlayer {
 					c.SelectedExpedition = expedition
 					c.ActiveSupplier = expedition
 					ExpeditionToControlPanel(c.ControlPanel, expedition)
