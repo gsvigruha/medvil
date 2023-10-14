@@ -327,6 +327,16 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				}
 			}
 		}
+		if town.Country.T == CountryTypeOutlaw {
+			for i := -OutlawMaxDistance; i <= OutlawMaxDistance; i++ {
+				for j := -OutlawMaxDistance; j <= OutlawMaxDistance; j++ {
+					f := m.GetField(uint16(int(town.Townhall.Household.Building.X)+i), uint16(int(town.Townhall.Household.Building.Y)+j))
+					if f != nil && !f.Terrain.Resources.IsEmpty() {
+						town.AddTransportTask(f)
+					}
+				}
+			}
+		}
 	}
 }
 
