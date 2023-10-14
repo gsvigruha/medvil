@@ -102,10 +102,6 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 		wnd.Close()
 	})
 
-	path, err := os.Getwd()
-	if err == nil {
-		fmt.Println("CWD: " + path)
-	}
 	icon, err := os.Open("icon/gui/house.png")
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("Error loading icon: %v", err)
