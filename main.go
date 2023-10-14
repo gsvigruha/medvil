@@ -30,7 +30,9 @@ func init() {
 }
 
 func main() {
-	defer profile.Start(profile.ProfilePath(".")).Stop()
+	if os.Getenv("MEDVIL_PROFILE") == "1" {
+		defer profile.Start(profile.ProfilePath(".")).Stop()
+	}
 
 	rand.Seed(time.Now().UnixNano())
 	wnd, cv, ctx, err := view.CreateWindow(1920, 1080, "Medvil")
