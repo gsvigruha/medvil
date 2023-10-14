@@ -18,7 +18,8 @@ const MaxIter = 6
 const HillBranching = 2
 const LakeBranching = 4
 const TreeProb = 30
-const ResourcesProb = 1000
+const ResourcesProb = 0.001
+const ResourcesProbGold = 0.002
 
 type MapConfig struct {
 	Size      int
@@ -67,23 +68,23 @@ func setupTerrain(m *model.Map, config MapConfig) {
 		for j := range fields[i] {
 			navigation.SetSurroundingTypes(m, fields[i][j])
 			if !m.Shore(uint16(i), uint16(j)) {
-				if rand.Intn(ResourcesProb) < config.Resources && fields[i][j].Plant == nil {
-					if fields[i][j].Terrain.T == terrain.Grass && fields[i][j].Flat() {
-						if rand.Float64() < 0.66 {
+				if rand.Float64() < ResourcesProb*float64(config.Resources) && fields[i][j].Plant == nil && fields[i][j].Terrain.T == terrain.Grass {
+					if fields[i][j].Flat() {
+						if rand.Float64() < float64(i)/float64(config.Size) {
 							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Mud, Q: artifacts.InfiniteQuantity}
 						} else {
 							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Rock, Q: artifacts.InfiniteQuantity}
 						}
-					} else if fields[i][j].Terrain.T == terrain.Grass && !fields[i][j].Flat() {
-						if rand.Float64() < 0.66 {
-							fields[i][j].Deposit = &terrain.Deposit{T: terrain.IronBog, Q: uint16((rand.Intn(5) + 1) * 1000)}
-						} else {
+					} else {
+						if rand.Float64() < float64(j)/float64(config.Size) {
 							fields[i][j].Deposit = &terrain.Deposit{T: terrain.Rock, Q: artifacts.InfiniteQuantity}
+						} else {
+							fields[i][j].Deposit = &terrain.Deposit{T: terrain.IronBog, Q: uint16((rand.Intn(5) + 1) * 1000)}
 						}
 					}
 				}
 			} else {
-				if rand.Intn(ResourcesProb) < config.Resources*2 {
+				if rand.Float64() < ResourcesProbGold*float64(config.Resources) {
 					fields[i][j].Deposit = &terrain.Deposit{T: terrain.Gold, Q: uint16((rand.Intn(5) + 1) * 1000)}
 				}
 			}
@@ -234,7 +235,9 @@ func NewMap(config MapConfig) *model.Map {
 
 		var success = true
 		success = success && GenerateCountry(social.CountryTypePlayer, m)
-		success = success && GenerateCountry(social.CountryTypeOutlaw, m)
+		for i := 0; i < (config.Size-50)/50; i++ {
+			success = success && GenerateCountry(social.CountryTypeOutlaw, m)
+		}
 
 		if !success {
 			continue
