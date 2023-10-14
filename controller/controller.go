@@ -168,6 +168,11 @@ func (c *Controller) ShowBuildingController() {
 	BuildingsToControlPanel(c.ControlPanel)
 }
 
+func (c *Controller) ShowBuildingControllerForType(bt building.BuildingType) {
+	c.Reset()
+	SetupBuildingsController(c.ControlPanel, bt)
+}
+
 func (c *Controller) ShowLibraryController() {
 	c.Reset()
 	LibraryToControlPanel(c.ControlPanel)
@@ -409,6 +414,8 @@ func (c *Controller) Load(fileName string) {
 	c.Map = m
 	c.LinkMap()
 	c.MapLock.Unlock()
+	c.Reset()
+	c.ControlPanel.dynamicPanel = nil
 }
 
 func (c *Controller) NewMap(config maps.MapConfig) {
@@ -417,6 +424,8 @@ func (c *Controller) NewMap(config maps.MapConfig) {
 	c.Map = m
 	c.LinkMap()
 	c.MapLock.Unlock()
+	c.Reset()
+	c.ControlPanel.dynamicPanel = nil
 }
 
 func (c *Controller) LinkMap() {

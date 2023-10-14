@@ -176,7 +176,28 @@ func (p *ControlPanel) GenerateButtons() {
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "house", X: float64(24 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsBuildingType() },
-		ClickImpl: func() { c.ShowBuildingController() }})
+		ClickImpl: func() {
+			suggestion := p.GetHelperSuggestions()
+			if suggestion == nil {
+				c.ShowBuildingController()
+			} else {
+				if suggestion.Icon == "farm" {
+					c.ShowBuildingControllerForType(building.BuildingTypeFarm)
+				} else if suggestion.Icon == "workshop" {
+					c.ShowBuildingControllerForType(building.BuildingTypeWorkshop)
+				} else if suggestion.Icon == "factory" {
+					c.ShowBuildingControllerForType(building.BuildingTypeFactory)
+				} else if suggestion.Icon == "mine" {
+					c.ShowBuildingControllerForType(building.BuildingTypeMine)
+				} else if suggestion.Icon == "townhall" {
+					c.ShowBuildingControllerForType(building.BuildingTypeTownhall)
+				} else if suggestion.Icon == "market" {
+					c.ShowBuildingControllerForType(building.BuildingTypeMarket)
+				} else {
+					c.ShowBuildingController()
+				}
+			}
+		}})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "infra", X: float64(24 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsInfraType() },
@@ -305,20 +326,25 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 				Message: "Build roads and bridges to make commuting faster for your\n villagers. This will make your economy more efficient.\nHowever, roads need to be maintained by the townhall.",
 				Icon:    "infra/cobble_road", X: float64(24 + LargeIconD*2), Y: IconS + 15 + LargeIconD/2.0,
 			}
+		} else if len(p.C.Map.Countries[0].Towns[0].Factories) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
+			return &gui.Suggestion{
+				Message: "Build factories to create vehicles. Vehicles make it more\nefficient for your villagers to transport goods to and\nfrom the market. They can also be used to create traders\n and to launch expeditions.",
+				Icon:    "factory", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
+			}
 		} else if len(p.C.Map.Countries[0].Towns) == 1 && p.C.Map.Countries[0].Towns[0].Stats.Global.People > 80 {
 			return &gui.Suggestion{
 				Message: "Establish a new town by building a new townhall.\nYou can extract materials from distant lands and trade.",
-				Icon:    "town", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
+				Icon:    "townhall", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
+			}
+		} else if p.C.GetActiveTownhall() != nil && p.C.GetActiveTownhall().Household.Town.Marketplace == nil && len(p.C.GetActiveTownhall().Household.Town.Constructions) == 0 {
+			return &gui.Suggestion{
+				Message: "Build a marketplace for your new town. The villagers need a place\nto trade goods with each other.",
+				Icon:    "market", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
 			}
 		} else if len(p.C.Map.Countries[0].Towns[0].Towers) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
 			return &gui.Suggestion{
 				Message: "Build towers and walls to protect your town from the outlaws.\nThey live in small villages with wooden buildings and\nsteal your crops if you build too close to them.",
 				Icon:    "infra/tower_2", X: float64(24 + LargeIconD*2), Y: IconS + 15 + LargeIconD/2.0,
-			}
-		} else if len(p.C.Map.Countries[0].Towns[0].Factories) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
-			return &gui.Suggestion{
-				Message: "Build factories to create vehicles. Vehicles make it more\nefficient for your villagers to transport goods to and\nfrom the market. They can also be used to launch expeditions.",
-				Icon:    "factory", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
 			}
 		}
 	}

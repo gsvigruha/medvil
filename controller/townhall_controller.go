@@ -148,6 +148,7 @@ func RefreshSubPanels(tc *TownhallController) {
 			town.Settings.RoadRepairs = !town.Settings.RoadRepairs
 			tc.cp.HelperMessage("Start or stop repairing roads")
 		}})
+	tp.AddTextLabel("Repair "+strconv.Itoa(len(town.Roads))+" roads", 24+LargeIconD*2, top+LargeIconD*5+LargeIconD/2)
 
 	tp.AddImageLabel("infra/wall_small", 24, top+LargeIconD*6, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
@@ -157,7 +158,9 @@ func RefreshSubPanels(tc *TownhallController) {
 			town.Settings.WallRepairs = !town.Settings.WallRepairs
 			tc.cp.HelperMessage("Start or stop repairing walls")
 		}})
+	tp.AddTextLabel("Repair "+strconv.Itoa(len(town.Walls))+" walls", 24+LargeIconD*2, top+LargeIconD*6+LargeIconD/2)
 
+	tp.AddImageLabel("building/market", 24, top+LargeIconD*7, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: 24 + LargeIconD, Y: top + LargeIconD*7, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return town.Settings.Trading },
@@ -165,6 +168,7 @@ func RefreshSubPanels(tc *TownhallController) {
 			town.Settings.Trading = !town.Settings.Trading
 			tc.cp.HelperMessage("Enable or disable trading with this city")
 		}})
+	tp.AddTextLabel("This city has "+strconv.Itoa(len(town.Townhall.Traders))+" traders", 24+LargeIconD*2, top+LargeIconD*7+LargeIconD/2)
 
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "barrel", X: 24 + LargeIconD, Y: top + LargeIconD*8, SX: LargeIconS, SY: LargeIconS},
@@ -173,6 +177,7 @@ func RefreshSubPanels(tc *TownhallController) {
 			town.Settings.ArtifactCollection = !town.Settings.ArtifactCollection
 			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items")
 		}})
+	tp.AddTextLabel("Storage is "+strconv.Itoa(int(th.Household.Resources.UsedVolumeCapacity()*100.0))+"% full", 24+LargeIconD*2, top+LargeIconD*8+LargeIconD/2)
 
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: 24 + LargeIconD, Y: top + LargeIconD*9, SX: LargeIconS, SY: LargeIconS},
@@ -181,6 +186,7 @@ func RefreshSubPanels(tc *TownhallController) {
 			town.Settings.Coinage = !town.Settings.Coinage
 			tc.cp.HelperMessage("Start or stop minting gold coins")
 		}})
+	tp.AddTextLabel(""+strconv.Itoa(int(town.Stats.Global.Money))+" coins in circulation", 24+LargeIconD*2, top+LargeIconD*9+LargeIconD/2)
 
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "town", X: 24 + LargeIconD, Y: top + LargeIconD*10, SX: LargeIconS, SY: LargeIconS},
@@ -190,7 +196,9 @@ func RefreshSubPanels(tc *TownhallController) {
 			tc.cp.HelperMessage("Start or stop relying on supplies from the hometown")
 		}})
 	if town.Supplier != nil {
-		tp.AddTextLabel(town.Supplier.GetName(), 24+LargeIconD*2, top+LargeIconD*10+LargeIconD/2)
+		tp.AddTextLabel(town.Supplier.GetName()+" supplies "+town.GetName(), 24+LargeIconD*2, top+LargeIconD*10+LargeIconD/2)
+	} else {
+		tp.AddTextLabel("No supplier", 24+LargeIconD*2, top+LargeIconD*10+LargeIconD/2)
 	}
 
 	var aI = 0
@@ -336,7 +344,7 @@ func (tc *TownhallController) GetHelperSuggestions() *gui.Suggestion {
 			Message: "Your townhall needs more money. You can either\nincrease tax rates or reduce the subsidies your town\ngives out for poor households.",
 			Icon:    "coin", X: float64(24 + LargeIconD*2), Y: top + LargeIconD/2.0,
 		}
-	} else if len(tc.th.Household.Town.Country.Towns) > 1 && len(tc.th.Traders) == 0 {
+	} else if len(tc.th.Household.Town.Country.Towns) > 1 && len(tc.th.Traders) == 0 && len(tc.th.Household.Town.Factories) > 0 {
 		return &gui.Suggestion{
 			Message: "Create traders to trade with other towns.\nYou can direct them by clicking on other town's marketplaces.",
 			Icon:    "trader", X: float64(24 + LargeIconD*4), Y: top + LargeIconD/2.0,
