@@ -31,6 +31,7 @@ func init() {
 
 func main() {
 	if os.Getenv("MEDVIL_PROFILE") == "1" {
+		// This crashes the Mac app bundle for some reason
 		defer profile.Start(profile.ProfilePath(".")).Stop()
 	}
 
