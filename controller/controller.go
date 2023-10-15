@@ -35,11 +35,17 @@ type KeyHandler interface {
 	CaptureKey(key glfw.Key)
 }
 
+const SizeAuto uint8 = 0
+const SizeSmall uint8 = 1
+const SizeMedium uint8 = 2
+const SizeLarge uint8 = 3
+
 type ViewSettings struct {
 	ShowHouseIcons      bool
 	ShowAllocatedFields bool
 	ShowLabels          bool
 	ShowSuggestions     bool
+	Size                uint8
 }
 
 var DefaultViewSettings = ViewSettings{
@@ -47,6 +53,7 @@ var DefaultViewSettings = ViewSettings{
 	ShowAllocatedFields: false,
 	ShowLabels:          true,
 	ShowSuggestions:     true,
+	Size:                SizeAuto,
 }
 
 type Controller struct {

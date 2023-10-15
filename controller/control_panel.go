@@ -116,9 +116,8 @@ func (p *ControlPanel) GetHelperPanel() *gui.Panel {
 	return p.helperPanel
 }
 
-func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
-	p.C = c
-	if c.H < 1000 {
+func SetDims(c *Controller, size uint8) {
+	if size == SizeSmall {
 		ControlPanelSX = 300.0
 		ControlPanelSY = float64(c.H)
 		IconS = 24.0
@@ -128,7 +127,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 		LargeIconD = 40.0
 		gui.FontSize = 12.0
 		ScaleBuildingControllerElements(0.75)
-	} else if c.H < 1500 {
+	} else if size == SizeMedium {
 		ControlPanelSX = 400.0
 		ControlPanelSY = float64(c.H)
 		IconS = 32.0
@@ -138,7 +137,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 		LargeIconD = 52.0
 		gui.FontSize = 16.0
 		ScaleBuildingControllerElements(1.0)
-	} else {
+	} else if size == SizeLarge {
 		ControlPanelSX = 600.0
 		ControlPanelSY = float64(c.H)
 		IconS = 48.0
@@ -149,12 +148,41 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 		gui.FontSize = 24.0
 		ScaleBuildingControllerElements(1.5)
 	}
+}
+
+func SetupDims(c *Controller) {
+	p := c.ControlPanel
+	if c.ViewSettings.Size == SizeAuto {
+		if c.H < 1000 {
+			SetDims(c, SizeSmall)
+		} else if c.H < 1500 {
+			SetDims(c, SizeMedium)
+		} else {
+			SetDims(c, SizeLarge)
+		}
+	} else {
+		SetDims(c, c.ViewSettings.Size)
+	}
+
+	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, c.ctx)
+	p.buffer = canvas.New(offscreen)
+
+	p.topPanel.SX = ControlPanelSX
+	p.topPanel.SY = ControlPanelSY
+	p.helperPanel.Y = ControlPanelSY * 0.95
+	p.helperPanel.SX = ControlPanelSX
+	p.helperPanel.SY = ControlPanelSY * 0.05
+
+	p.GenerateButtons()
+}
+
+func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
+	p.C = c
 
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
 
-	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, ctx)
-	p.buffer = canvas.New(offscreen)
+	SetupDims(c)
 }
 
 func (p *ControlPanel) GenerateButtons() {
