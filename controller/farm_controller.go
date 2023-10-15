@@ -119,7 +119,8 @@ func (fc *FarmController) Refresh() {
 
 func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	fields := fc.farm.GetFields()
-	if fc.farm.FieldUsableFor(fc.cp.C.Map, rf.F, fc.UseType) && !rf.F.Allocated {
+	if fc.farm.FieldUsableFor(fc.cp.C.Map, rf.F, fc.UseType) && !rf.F.Allocated &&
+		(fc.farm.FieldWithinDistance(rf.F) || fc.UseType == economy.FarmFieldUseTypeBarren && fc.farm.FieldWithinDistanceClearing(rf.F)) {
 		fields = append(fields, social.FarmLand{
 			X:       rf.F.X,
 			Y:       rf.F.Y,
@@ -145,7 +146,8 @@ func (fc *FarmController) HandleClick(c *Controller, rf *renderer.RenderedField)
 			return true
 		}
 	}
-	if fc.UseType != FarmFieldUseTypeDisallocate && !rf.F.Allocated && fc.farm.FieldUsableFor(c.Map, rf.F, fc.UseType) && fc.farm.FieldWithinDistance(rf.F) {
+	if fc.UseType != FarmFieldUseTypeDisallocate && !rf.F.Allocated && fc.farm.FieldUsableFor(c.Map, rf.F, fc.UseType) &&
+		(fc.farm.FieldWithinDistance(rf.F) || fc.UseType == economy.FarmFieldUseTypeBarren && fc.farm.FieldWithinDistanceClearing(rf.F)) {
 		fc.farm.Land = append(fc.farm.Land, social.FarmLand{
 			X:       rf.F.X,
 			Y:       rf.F.Y,

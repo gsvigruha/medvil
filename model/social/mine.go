@@ -8,7 +8,7 @@ import (
 	"medvil/model/time"
 )
 
-const MineMaxDistance = 10
+const MineMaxDistance = 12
 
 type MineLand struct {
 	X       uint16
