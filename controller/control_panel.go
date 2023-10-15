@@ -116,7 +116,8 @@ func (p *ControlPanel) GetHelperPanel() *gui.Panel {
 	return p.helperPanel
 }
 
-func SetDims(c *Controller, size uint8) {
+func (p *ControlPanel) SetDims(size uint8) {
+	c := p.C
 	if size == SizeSmall {
 		ControlPanelSX = 300.0
 		ControlPanelSY = float64(c.H)
@@ -150,18 +151,18 @@ func SetDims(c *Controller, size uint8) {
 	}
 }
 
-func SetupDims(c *Controller) {
-	p := c.ControlPanel
+func (p *ControlPanel) SetupDims() {
+	c := p.C
 	if c.ViewSettings.Size == SizeAuto {
 		if c.H < 1000 {
-			SetDims(c, SizeSmall)
+			p.SetDims(SizeSmall)
 		} else if c.H < 1500 {
-			SetDims(c, SizeMedium)
+			p.SetDims(SizeMedium)
 		} else {
-			SetDims(c, SizeLarge)
+			p.SetDims(SizeLarge)
 		}
 	} else {
-		SetDims(c, c.ViewSettings.Size)
+		p.SetDims(c.ViewSettings.Size)
 	}
 
 	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, c.ctx)
@@ -173,7 +174,9 @@ func SetupDims(c *Controller) {
 	p.helperPanel.SX = ControlPanelSX
 	p.helperPanel.SY = ControlPanelSY * 0.05
 
-	p.GenerateButtons()
+	if c.Map != nil {
+		p.GenerateButtons()
+	}
 }
 
 func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
@@ -182,7 +185,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
 
-	SetupDims(c)
+	p.SetupDims()
 }
 
 func (p *ControlPanel) GenerateButtons() {

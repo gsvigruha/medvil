@@ -97,6 +97,7 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 			fbw, fbh := window.GetFramebufferSize()
 			backend.SetBounds(0, 0, fbw, fbh)
 		}
+		wnd.c.ControlPanel.SetupDims()
 	})
 	window.SetCloseCallback(func(w *glfw.Window) {
 		wnd.c.Save("latest_autosave.mdvl")

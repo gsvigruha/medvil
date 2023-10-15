@@ -156,7 +156,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		Highlight: func() bool { return false },
 		ClickImpl: func() {
 			cp.C.ViewSettings.Size = (cp.C.ViewSettings.Size + 1) % 4
-			SetupDims(cp.C)
+			cp.SetupDims()
 			cp.C.ShowLibraryController()
 		}})
 	p.AddTextLabel("Show helper suggestions", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*5.5)
