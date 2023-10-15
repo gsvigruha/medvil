@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"math/rand"
+	"medvil/model/building"
 	"strconv"
 )
 
@@ -12,7 +13,8 @@ const TravellerMinD = 25
 
 const MaxStuckCntr = 5
 
-const TravellerTypePedestrian uint8 = 0
+const TravellerTypePedestrianM uint8 = 0
+const TravellerTypePedestrianF uint8 = 7
 const TravellerTypeBoat uint8 = 1
 const TravellerTypeCart uint8 = 2
 const TravellerTypeTradingBoat uint8 = 3
@@ -99,6 +101,22 @@ func (t *Traveller) HasRoom(m IMap, dir uint8) bool {
 	for _, ot := range field.Travellers {
 		if t != ot && ot.Visible {
 			if t.BlockedBy(dir, ot.PX, ot.PY) {
+				return false
+			}
+		}
+	}
+	if !field.Building.Empty() {
+		if ext, ok := field.Building.BuildingComponents[0].(*building.ExtensionUnit); ok {
+			if ext.Direction == DirectionN && t.BlockedBy(dir, MaxPX/2, MaxPY/4) {
+				return false
+			}
+			if ext.Direction == DirectionS && t.BlockedBy(dir, MaxPX/2, MaxPY*3/4) {
+				return false
+			}
+			if ext.Direction == DirectionW && t.BlockedBy(dir, MaxPX/4, MaxPY/2) {
+				return false
+			}
+			if ext.Direction == DirectionE && t.BlockedBy(dir, MaxPX*3/4, MaxPY/2) {
 				return false
 			}
 		}
@@ -320,6 +338,8 @@ func (t *Traveller) ExitVehicle() {
 	if t.Vehicle != nil {
 		t.Vehicle.GetTraveller().PX = MaxPX / 2
 		t.Vehicle.GetTraveller().PY = MaxPY / 2
+		t.PX = MaxPX / 2
+		t.PY = MaxPY / 2
 		t.Vehicle.SetInUse(false)
 		t.Vehicle = nil
 	}

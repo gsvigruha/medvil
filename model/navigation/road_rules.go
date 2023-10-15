@@ -131,7 +131,7 @@ func SetWallConnections(m IMap, f *Field) {
 	}
 }
 
-func SetBuildingDeck(m IMap, f *Field, of *Field) {
+func SetBuildingDeck(m IMap, f *Field, of *Field, d int) {
 	if f.Allocated {
 		return
 	}
@@ -147,6 +147,9 @@ func SetBuildingDeck(m IMap, f *Field, of *Field) {
 		if i < 5 && j < 5 {
 			b.Plan.BaseShape[i][j] = &building.PlanUnits{Extension: &building.BuildingExtension{T: building.Deck}}
 			f.Building.BuildingComponents = b.ToBuildingUnits(uint8(i), uint8(j), false)
+			if unit, ok := of.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
+				unit.Walls[(d+2)%4].Door = true
+			}
 		}
 	}
 }
@@ -156,10 +159,10 @@ func SetBuildingDeckForNeighbors(m IMap, f *Field) {
 		d := DirectionOrthogonalXY[i]
 		of := m.GetNField(f.X, d[0], f.Y, d[1])
 		if f != nil && f.Terrain.T == terrain.Water && of != nil && of.Building.GetBuilding() != nil {
-			SetBuildingDeck(m, f, of)
+			SetBuildingDeck(m, f, of, i)
 		}
 		if of != nil && of.Terrain.T == terrain.Water && f != nil && f.Building.GetBuilding() != nil {
-			SetBuildingDeck(m, of, f)
+			SetBuildingDeck(m, of, f, i)
 		}
 	}
 }

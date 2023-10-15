@@ -148,7 +148,7 @@ func tallPlant(f *navigation.Field) bool {
 
 func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, f *navigation.Field, c *controller.Controller) {
 	if cv != nil {
-		if t.T == navigation.TravellerTypePedestrian {
+		if t.T == navigation.TravellerTypePedestrianM || t.T == navigation.TravellerTypePedestrianF {
 			inBoat := t.Vehicle != nil && t.Vehicle.Water()
 			if inBoat {
 				y += 5
@@ -168,6 +168,26 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 			vehicles.DrawExpeditionCart(cv, t, x, y, c)
 		}
 	}
+}
+
+func drawHair(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) {
+	cv.SetFillStyle("#630")
+	cv.BeginPath()
+	if t.T == navigation.TravellerTypePedestrianM {
+		cv.Ellipse(x, y-32, 3, 4, 0, 0, math.Pi*2, false)
+	} else if t.T == navigation.TravellerTypePedestrianF {
+		cv.Ellipse(x, y-31, 4, 6, 0, 0, math.Pi*2, false)
+	}
+	cv.ClosePath()
+	cv.Fill()
+}
+
+func drawHead(cv *canvas.Canvas, x float64, y float64) {
+	cv.SetFillStyle("#A64")
+	cv.BeginPath()
+	cv.Arc(x, y-30, 3, 0, math.Pi*2, false)
+	cv.ClosePath()
+	cv.Fill()
 }
 
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, drawLeg bool, c *controller.Controller) {
@@ -203,6 +223,20 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 		}
 	}
 
+	if drawLeg {
+		if dirIdx >= 2 {
+			DrawRightLeg(cv, pm, m, x, y, p)
+		} else {
+			DrawLeftLeg(cv, pm, m, x, y, p)
+		}
+	}
+
+	if dirIdx == 0 || dirIdx == 3 {
+		drawHair(cv, t, x, y)
+	} else {
+		drawHead(cv, x, y)
+	}
+
 	// Body
 	cv.SetFillStyle("#BA6")
 	person := c.ReverseReferences.TravellerToPerson[t]
@@ -226,25 +260,30 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 			}
 		}
 	}
+	if t.T == navigation.TravellerTypePedestrianM {
+		cv.FillRect(x-2, y-28, 4, 3)
+		cv.FillRect(x-4, y-25, 8, 11)
+	} else if t.T == navigation.TravellerTypePedestrianF {
+		cv.BeginPath()
+		cv.LineTo(x-2, y-28)
+		cv.LineTo(x-4, y-25)
+		cv.LineTo(x-5, y-8)
+		cv.LineTo(x+5, y-8)
+		cv.LineTo(x+4, y-25)
+		cv.LineTo(x+2, y-28)
+		cv.ClosePath()
+		cv.Fill()
+	}
 
-	cv.FillRect(x-2, y-28, 4, 3)
-	cv.FillRect(x-4, y-25, 8, 10)
-	cv.SetFillStyle("#840")
-	// Head
-	cv.BeginPath()
-	cv.Arc(x, y-30, 3, 0, math.Pi*2, false)
-	cv.ClosePath()
-	cv.Fill()
+	if dirIdx == 0 || dirIdx == 3 {
+		drawHead(cv, x, y)
+	} else {
+		drawHair(cv, t, x, y)
+	}
 
 	if dirIdx >= 2 {
-		if drawLeg {
-			DrawRightLeg(cv, pm, m, x, y, p)
-		}
 		DrawRightArm(cv, pm, m, x, y, p)
 	} else {
-		if drawLeg {
-			DrawLeftLeg(cv, pm, m, x, y, p)
-		}
 		DrawLeftArm(cv, pm, m, x, y, p)
 	}
 	if dirIdx == 0 || dirIdx == 3 {
