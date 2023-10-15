@@ -1,4 +1,4 @@
-GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build
+CGO_CFLAGS="-mmacosx-version-min=11.6" CGO_LDFLAGS="-mmacosx-version-min=11.6" GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build
 rm -rf Medville.app
 mkdir -p Medville.app/Contents/MacOS
 mkdir -p Medville.app/Contents/Resources
