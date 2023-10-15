@@ -426,6 +426,12 @@ func (h *Household) NumTasks(name string, tag economy.Tag) int {
 }
 
 func (h *Household) NewPerson(m navigation.IMap) *Person {
+	var tt uint8
+	if rand.Float64() < 0.5 {
+		tt = navigation.TravellerTypePedestrianM
+	} else {
+		tt = navigation.TravellerTypePedestrianF
+	}
 	f := h.RandomField(m, func(navigation.Field) bool { return true })
 	traveller := &navigation.Traveller{
 		FX: f.X,
@@ -433,7 +439,7 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 		FZ: 0,
 		PX: 0,
 		PY: 0,
-		T:  navigation.TravellerTypePedestrian,
+		T:  tt,
 	}
 	traveller.InitPathElement(f)
 	person := &Person{

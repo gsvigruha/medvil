@@ -51,7 +51,9 @@ func getZByDir(bpe *navigation.BuildingPathElement, dir uint8) float64 {
 }
 
 func travellerWH(t uint8) (int, int) {
-	if t == navigation.TravellerTypePedestrian {
+	if t == navigation.TravellerTypePedestrianM {
+		return 16, 48
+	} else if t == navigation.TravellerTypePedestrianF {
 		return 16, 48
 	} else if t == navigation.TravellerTypeBoat {
 		return 48, 48

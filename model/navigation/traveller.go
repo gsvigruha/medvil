@@ -13,7 +13,8 @@ const TravellerMinD = 25
 
 const MaxStuckCntr = 5
 
-const TravellerTypePedestrian uint8 = 0
+const TravellerTypePedestrianM uint8 = 0
+const TravellerTypePedestrianF uint8 = 7
 const TravellerTypeBoat uint8 = 1
 const TravellerTypeCart uint8 = 2
 const TravellerTypeTradingBoat uint8 = 3
