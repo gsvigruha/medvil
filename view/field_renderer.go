@@ -24,8 +24,11 @@ func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.Rende
 			RenderRoad(cv, rf, f, c)
 		}
 
-		if f.Building.GetBuilding() != nil && f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeMarket {
-			if _, ok := f.Building.BuildingComponents[0].(*building.ExtensionUnit); !ok {
+		if f.Building.GetBuilding() != nil {
+			if extension, ok := f.Building.BuildingComponents[0].(*building.ExtensionUnit); ok && extension.T == building.Deck {
+				extensionImg, x, y := ic.Bic.RenderBuildingExtensionOnBuffer(extension, rf, 0, c)
+				cv.DrawImage(extensionImg, x, y, float64(extensionImg.Width()), float64(extensionImg.Height()))
+			} else if f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeMarket {
 				cv.SetFillStyle("texture/building/market.png")
 				rf.Draw(cv)
 				cv.Fill()
@@ -76,8 +79,10 @@ func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.Rende
 					cv.DrawImage(roofImg, x, y, float64(roofImg.Width()), float64(roofImg.Height()))
 					c.AddRenderedBuildingPart(&rbr)
 				} else if extension, ok := components[k].(*building.ExtensionUnit); ok {
-					extensionImg, x, y := ic.Bic.RenderBuildingExtensionOnBuffer(extension, rf, k, c)
-					cv.DrawImage(extensionImg, x, y, float64(extensionImg.Width()), float64(extensionImg.Height()))
+					if extension.T != building.Deck {
+						extensionImg, x, y := ic.Bic.RenderBuildingExtensionOnBuffer(extension, rf, k, c)
+						cv.DrawImage(extensionImg, x, y, float64(extensionImg.Width()), float64(extensionImg.Height()))
+					}
 				}
 			}
 			if c.ViewSettings.ShowHouseIcons {

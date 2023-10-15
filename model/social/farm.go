@@ -10,6 +10,7 @@ import (
 )
 
 const FarmMaxDistance = 6
+const FarmMaxDistanceClearing = 12
 
 type FarmLand struct {
 	X       uint16
@@ -171,6 +172,10 @@ func (f *Farm) FieldUsableFor(m navigation.IMap, field *navigation.Field, useTyp
 
 func (f *Farm) FieldWithinDistance(field *navigation.Field) bool {
 	return WithinDistance(f.Household.Building, field, FarmMaxDistance)
+}
+
+func (f *Farm) FieldWithinDistanceClearing(field *navigation.Field) bool {
+	return WithinDistance(f.Household.Building, field, FarmMaxDistanceClearing)
 }
 
 func (f *Farm) GetHome() Home {
