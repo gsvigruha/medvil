@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/navigation"
 	"medvil/view/gui"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -23,7 +24,7 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 		} else {
 			p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {
 				if f.Plant != nil {
-					cv.DrawImage("texture/terrain/"+f.Plant.T.Name+".png", 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS)
+					cv.DrawImage(filepath.FromSlash("texture/terrain/"+f.Plant.T.Name+".png"), 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS)
 				}
 			}})
 		}
@@ -32,7 +33,7 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	if f.Animal != nil {
 		p.AddLabel(&gui.CustomImageLabel{RenderFn: func(cv *canvas.Canvas) {
 			if f.Animal != nil {
-				cv.DrawImage("texture/terrain/"+f.Animal.T.Name+"_0.png", 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS)
+				cv.DrawImage(filepath.FromSlash("texture/terrain/"+f.Animal.T.Name+"_0.png"), 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS)
 			}
 		}})
 		p.AddTextLabel(strconv.Itoa(int(f.Animal.AgeYears(cp.C.Map.Calendar)))+" years", 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)

@@ -9,6 +9,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
+	"path/filepath"
 	"sync"
 )
 
@@ -404,12 +405,12 @@ func (c *Controller) Save(fileName string) {
 		return
 	}
 	c.MapLock.Lock()
-	maps.Serialize(c.Map, "saved/"+fileName)
+	maps.Serialize(c.Map, filepath.FromSlash("saved/"+fileName))
 	c.MapLock.Unlock()
 }
 
 func (c *Controller) Load(fileName string) {
-	m := maps.Deserialize("saved/" + fileName).(*model.Map)
+	m := maps.Deserialize(filepath.FromSlash("saved/" + fileName)).(*model.Map)
 	c.MapLock.Lock()
 	c.Map = m
 	c.LinkMap()

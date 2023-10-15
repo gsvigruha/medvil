@@ -35,7 +35,7 @@ func (b LandUseButton) Render(cv *canvas.Canvas) {
 	}
 	if b.cnt > 0 {
 		cv.SetFillStyle("#FED")
-		cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
+		cv.SetFont(gui.Font, gui.FontSize)
 		text := strconv.Itoa(b.cnt)
 		cv.FillText(text, b.b.X+b.b.SX-float64(len(text))*gui.FontSize*0.5+4, b.b.Y+b.b.SY)
 	}

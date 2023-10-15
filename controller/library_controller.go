@@ -73,7 +73,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	p.AddLargeTextLabel("Load and save", 24, ControlPanelSY*0.45)
 
-	files, err := ioutil.ReadDir("saved/")
+	files, err := ioutil.ReadDir(filepath.FromSlash("saved/"))
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -157,7 +157,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 }
 
 func GetLatestFile() string {
-	files, err := ioutil.ReadDir("saved/")
+	files, err := ioutil.ReadDir(filepath.FromSlash("saved/"))
 	if err != nil {
 		fmt.Println(err)
 	}

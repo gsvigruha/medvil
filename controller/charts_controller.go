@@ -8,6 +8,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/stats"
 	"medvil/view/gui"
+	"path/filepath"
 	"strconv"
 )
 
@@ -39,7 +40,7 @@ type ElementLookup func(stats.HistoryElement) uint32
 
 func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 	cv.ClearRect(0, 0, float64(l.img.Width()), float64(l.img.Height()))
-	cv.SetFillStyle("texture/parchment.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/parchment.png"))
 	cv.FillRect(0, 0, float64(l.img.Width()), float64(l.img.Height()))
 
 	cv.SetLineWidth(2)
@@ -185,11 +186,11 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 	}
 
 	for i, icon := range icons {
-		cv.DrawImage(icon+".png", float64(i*32), float64(y-131), 32, 32)
+		cv.DrawImage(filepath.FromSlash(icon+".png"), float64(i*32), float64(y-131), 32, 32)
 	}
 
 	cv.SetFillStyle("#22B")
-	cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
+	cv.SetFont(gui.Font, gui.FontSize)
 	text := strconv.Itoa(int(max))
 	cv.FillText(text, ControlPanelSX-60-float64(len(text))*gui.FontSize*0.5, float64(y-112))
 }
