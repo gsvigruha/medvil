@@ -8,6 +8,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/materials"
 	"medvil/renderer"
+	"path/filepath"
 	"strconv"
 )
 
@@ -47,7 +48,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			x1, y1, x2, y2 = xi, yi, xo, yo
 		}
 
-		cv.SetFillStyle("texture/building/waterwheel_wood.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/building/waterwheel_wood.png"))
 		cv.SetStrokeStyle("#310")
 		cv.SetLineWidth(2)
 
@@ -75,7 +76,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			cv.Stroke()
 		}
 
-		cv.SetFillStyle("texture/building/waterwheel_wood_2.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/building/waterwheel_wood_2.png"))
 		for i := 0.0; i < 12; i++ {
 			dx0 := math.Cos(math.Pi*2.0*i/12.0 + phi)
 			dy0 := math.Sin(math.Pi*2.0*i/12.0 + phi)
@@ -99,7 +100,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			cv.Fill()
 		}
 
-		cv.SetFillStyle("texture/building/waterwheel_wood.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/building/waterwheel_wood.png"))
 		for i := 0.0; i < 12; i++ {
 			dx0 := math.Cos(math.Pi*2.0*i/12.0 + phi)
 			dy0 := math.Sin(math.Pi*2.0*i/12.0 + phi)
@@ -127,7 +128,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			RenderBuildingUnit(cv, building.ForgeBuildingUnit(extension.B, materials.GetMaterial("brick"), extension.Construction), rf, 0, c)
 		}
 		if !extension.Construction {
-			cv.SetFillStyle("texture/building/fire_" + strconv.Itoa(int(phase/3)) + ".png")
+			cv.SetFillStyle(filepath.FromSlash("texture/building/fire_" + strconv.Itoa(int(phase/3)) + ".png"))
 			cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 192})
 			RenderFactoryWindows(cv, rf, 1, 2, 0, false)
 			RenderFactoryWindows(cv, rf, 2, 3, 0, false)
@@ -157,7 +158,7 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 		yw2 := (rf.Y[rfIdx2]*2.0 + rf.Y[rfIdx3]*1.0) / 3.0
 		zw2 := (rf.Z[rfIdx2]*2.0 + rf.Z[rfIdx3]*1.0) / 3.0
 
-		cv.SetFillStyle("texture/building/deck.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/building/deck.png"))
 		cv.BeginPath()
 		cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-rf.Z[rfIdx1])
 		cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-rf.Z[rfIdx2])

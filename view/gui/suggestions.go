@@ -3,6 +3,7 @@ package gui
 import (
 	"github.com/tfriedel6/canvas"
 	"math"
+	"path/filepath"
 	"strings"
 )
 
@@ -31,7 +32,7 @@ func (s *Suggestion) Render(cv *canvas.Canvas, iconS, iconD float64) {
 	p := iconD / 3.0
 	dw := iconD * 2.0
 
-	cv.SetFillStyle("texture/wood.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/wood.png"))
 	cv.SetStrokeStyle("#DDD")
 	cv.SetLineWidth(2)
 	cv.BeginPath()
@@ -45,9 +46,9 @@ func (s *Suggestion) Render(cv *canvas.Canvas, iconS, iconD float64) {
 	cv.ClosePath()
 	cv.Fill()
 	cv.Stroke()
-	cv.DrawImage("icon/gui/"+s.Icon+".png", s.X+dw+p, s.Y-iconS/2.0+dh, iconS, iconS)
+	cv.DrawImage(filepath.FromSlash("icon/gui/"+s.Icon+".png"), s.X+dw+p, s.Y-iconS/2.0+dh, iconS, iconS)
 	cv.SetFillStyle("#FED")
-	cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
+	cv.SetFont(Font, FontSize)
 	for i, line := range lines {
 		cv.FillText(line, s.X+dw+p+iconD, s.Y-float64(len(lines)-2)*(FontSize+4)/2.0-4+float64(i)*(FontSize+4)+dh)
 	}

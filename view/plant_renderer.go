@@ -11,6 +11,7 @@ import (
 	"medvil/model/terrain"
 	"medvil/model/time"
 	"medvil/renderer"
+	"path/filepath"
 )
 
 const PhaseBark = 0
@@ -19,6 +20,13 @@ const PhaseLeaves = 2
 const PhaseBlooming = 3
 const PhaseColored = 4
 const PhaseFruit = 5
+
+var bark = filepath.FromSlash("texture/terrain/tree_bark.png")
+var snow = filepath.FromSlash("texture/terrain/snow_patches.png")
+var leaves = filepath.FromSlash("texture/terrain/leaves_v2.png")
+var leavesBlooming = filepath.FromSlash("texture/terrain/leaves_blooming.png")
+var leavesColored = filepath.FromSlash("texture/terrain/leaves_colored.png")
+var fruit = filepath.FromSlash("texture/terrain/fruit.png")
 
 func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 	sx float64, sy float64, width float64, length float64, angle float64,
@@ -135,25 +143,25 @@ func DrawBranchPhase(cv *canvas.Canvas, plant *terrain.Plant, phase int, fill st
 }
 
 func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {
-	DrawBranchPhase(cv, plant, PhaseBark, "texture/terrain/tree_bark.png", c)
+	DrawBranchPhase(cv, plant, PhaseBark, bark, c)
 	if c.Map.Calendar.Season() == time.Winter {
-		DrawBranchPhase(cv, plant, PhaseSnowPatches, "texture/terrain/snow_patches.png", c)
+		DrawBranchPhase(cv, plant, PhaseSnowPatches, snow, c)
 	} else {
-		DrawBranchPhase(cv, plant, PhaseLeaves, "texture/terrain/leaves_v2.png", c)
+		DrawBranchPhase(cv, plant, PhaseLeaves, leaves, c)
 	}
 	if c.Map.Calendar.Season() == time.Spring {
-		DrawBranchPhase(cv, plant, PhaseBlooming, "texture/terrain/leaves_blooming.png", c)
+		DrawBranchPhase(cv, plant, PhaseBlooming, leavesBlooming, c)
 	}
 	if c.Map.Calendar.Season() == time.Autumn {
-		DrawBranchPhase(cv, plant, PhaseColored, "texture/terrain/leaves_colored.png", c)
+		DrawBranchPhase(cv, plant, PhaseColored, leavesColored, c)
 	}
 	if c.Map.Calendar.Season() == time.Summer {
-		DrawBranchPhase(cv, plant, PhaseFruit, "texture/terrain/fruit.png", c)
+		DrawBranchPhase(cv, plant, PhaseFruit, fruit, c)
 	}
 }
 
 func RenderRegularPlant(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {
-	cv.DrawImage("texture/terrain/"+plant.T.Name+".png", 0, float64(cv.Height())-108, 120, 108)
+	cv.DrawImage(filepath.FromSlash("texture/terrain/"+plant.T.Name+".png"), 0, float64(cv.Height())-108, 120, 108)
 }
 
 func RenderPlant(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {

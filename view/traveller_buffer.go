@@ -10,6 +10,7 @@ import (
 	"medvil/renderer"
 	"medvil/view/buildings"
 	"medvil/view/gui"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -119,10 +120,10 @@ func RenderTravellers(ic *ImageCache, cv *canvas.Canvas, travellers []*navigatio
 						cv.SetLineWidth(4.0)
 						cv.StrokeRect(x-dx-8, y-z-float64(h)-dy-2, dx*2+16, dy+10)
 					}
-					cv.SetFillStyle("texture/wood.png")
+					cv.SetFillStyle(filepath.FromSlash("texture/wood.png"))
 					cv.FillRect(x-dx-8, y-z-float64(h)-dy-2, dx*2+16, dy+10)
 					cv.SetFillStyle("#FED")
-					cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
+					cv.SetFont(filepath.FromSlash("texture/font/Go-Regular.ttf"), gui.FontSize)
 					cv.FillText(name, x-dx, y-z-float64(h))
 				}
 			}

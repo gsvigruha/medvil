@@ -9,11 +9,23 @@ import (
 	"medvil/renderer"
 	"medvil/view/buildings"
 	"medvil/view/gui"
+	"path/filepath"
 )
+
+var coinI = filepath.FromSlash("icon/gui/coin.png")
+var foodI = filepath.FromSlash("icon/gui/food.png")
+var drinkI = filepath.FromSlash("icon/gui/drink.png")
+var happinessI = filepath.FromSlash("icon/gui/happiness.png")
+var healthI = filepath.FromSlash("icon/gui/health.png")
+var clothesI = filepath.FromSlash("icon/gui/artifacts/clothes.png")
+var heatingI = filepath.FromSlash("icon/gui/heating.png")
+var repairI = filepath.FromSlash("icon/gui/tasks/repair.png")
+var personI = filepath.FromSlash("icon/gui/person.png")
+var woodI = filepath.FromSlash("texture/wood.png")
 
 func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string) {
 	if int(h.Money) < moneyThreshold {
-		*icons = append(*icons, "icon/gui/coin.png")
+		*icons = append(*icons, coinI)
 	}
 
 	if len(h.People) > 0 {
@@ -28,28 +40,28 @@ func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string
 			health += int(person.Health)
 		}
 		if food/len(h.People) < 25 {
-			*icons = append(*icons, "icon/gui/food.png")
+			*icons = append(*icons, foodI)
 		}
 		if water/len(h.People) < 25 {
-			*icons = append(*icons, "icon/gui/drink.png")
+			*icons = append(*icons, drinkI)
 		}
 		if happiness/len(h.People) < 25 {
-			*icons = append(*icons, "icon/gui/happiness.png")
+			*icons = append(*icons, happinessI)
 		}
 		if health/len(h.People) < 25 {
-			*icons = append(*icons, "icon/gui/health.png")
+			*icons = append(*icons, healthI)
 		}
 		if !h.HasEnoughClothes() {
-			*icons = append(*icons, "icon/gui/artifacts/clothes.png")
+			*icons = append(*icons, clothesI)
 		}
 		if h.GetHeating() < 100 {
-			*icons = append(*icons, "icon/gui/heating.png")
+			*icons = append(*icons, heatingI)
 		}
 		if h.Building.Broken {
-			*icons = append(*icons, "icon/gui/tasks/repair.png")
+			*icons = append(*icons, repairI)
 		}
 	} else {
-		*icons = append(*icons, "icon/gui/person.png")
+		*icons = append(*icons, personI)
 	}
 }
 
@@ -86,7 +98,7 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 	market := c.ReverseReferences.BuildingToMarketplace[f.Building.GetBuilding()]
 	if market != nil {
 		if int(market.Money) < int(market.Town.Stats.Global.Money)/10 {
-			icons = append(icons, "icon/gui/coin.png")
+			icons = append(icons, coinI)
 		}
 	}
 
@@ -116,10 +128,10 @@ func DrawLabels(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 				cv.SetLineWidth(4.0)
 				cv.StrokeRect(midX-dx-8, y-dy-2, dx*2+16, dy+10)
 			}
-			cv.SetFillStyle("texture/wood.png")
+			cv.SetFillStyle(woodI)
 			cv.FillRect(midX-dx-8, y-dy-2, dx*2+16, dy+10)
 			cv.SetFillStyle("#FED")
-			cv.SetFont("texture/font/Go-Regular.ttf", gui.FontSize)
+			cv.SetFont(gui.Font, gui.FontSize)
 			cv.FillText(name, midX-dx, y)
 		}
 	}

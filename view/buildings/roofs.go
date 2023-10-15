@@ -9,6 +9,7 @@ import (
 	"medvil/model/materials"
 	"medvil/renderer"
 	"medvil/view/util"
+	"path/filepath"
 	"strconv"
 )
 
@@ -69,9 +70,9 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + suffix + ".png")
+						cv.SetFillStyle(filepath.FromSlash("texture/building/" + RoofMaterialName(roof) + suffix + ".png"))
 					} else {
-						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
+						cv.SetFillStyle(filepath.FromSlash("texture/building/construction" + suffix + ".png"))
 					}
 
 					cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
@@ -95,9 +96,9 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + suffix + ".png")
+						cv.SetFillStyle(filepath.FromSlash("texture/building/" + RoofMaterialName(roof) + suffix + ".png"))
 					} else {
-						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
+						cv.SetFillStyle(filepath.FromSlash("texture/building/construction" + suffix + ".png"))
 					}
 					cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 32})
 					cv.SetLineWidth(3)
@@ -116,7 +117,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 			}}
 			roofPolygons = append(roofPolygons, rp1)
 			if cv != nil {
-				cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + "_flat.png")
+				cv.SetFillStyle(filepath.FromSlash("texture/building/" + RoofMaterialName(roof) + "_flat.png"))
 				util.RenderPolygon(cv, rp1, false)
 				RenderRoofFence(cv, roof, rp1, c)
 			}
@@ -153,9 +154,9 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 
 				if cv != nil {
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + suffix + ".png")
+						cv.SetFillStyle(filepath.FromSlash("texture/building/" + RoofMaterialName(roof) + suffix + ".png"))
 					} else {
-						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
+						cv.SetFillStyle(filepath.FromSlash("texture/building/construction" + suffix + ".png"))
 					}
 
 					cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
@@ -165,9 +166,9 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					util.RenderPolygon(cv, rp2, true)
 
 					if !roof.Construction {
-						cv.SetFillStyle("texture/building/" + RoofMaterialName(roof) + "_flat.png")
+						cv.SetFillStyle(filepath.FromSlash("texture/building/" + RoofMaterialName(roof) + "_flat.png"))
 					} else {
-						cv.SetFillStyle("texture/building/construction" + suffix + ".png")
+						cv.SetFillStyle(filepath.FromSlash("texture/building/construction" + suffix + ".png"))
 					}
 
 					util.RenderPolygon(cv, rp3, true)
@@ -195,7 +196,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
-	cv.SetFillStyle("texture/building/stone_dark.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_dark.png"))
 	util.RenderPolygon(cv, rp1, true)
 
 	rp2 := renderer.Polygon{Points: []renderer.Point{
@@ -204,7 +205,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
-	cv.SetFillStyle("texture/building/stone_dark_flipped.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_dark_flipped.png"))
 	util.RenderPolygon(cv, rp2, true)
 
 	rp3 := renderer.Polygon{Points: []renderer.Point{
@@ -213,12 +214,12 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ - h - 12},
 	}}
-	cv.SetFillStyle("texture/building/stone_flat.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_flat.png"))
 	util.RenderPolygon(cv, rp3, true)
 	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 224})
 	util.RenderPolygon(cv, rp3, true)
 
 	if phase != 255 {
-		cv.DrawImage("texture/building/smoke_"+strconv.Itoa(int(phase/3))+".png", midX-16, midY-z-BuildingUnitHeight*DZ-h-52, 32, 48)
+		cv.DrawImage(filepath.FromSlash("texture/building/smoke_"+strconv.Itoa(int(phase/3))+".png"), midX-16, midY-z-BuildingUnitHeight*DZ-h-52, 32, 48)
 	}
 }

@@ -2,6 +2,7 @@ package gui
 
 import (
 	"github.com/tfriedel6/canvas"
+	"path/filepath"
 )
 
 type Panel struct {
@@ -17,7 +18,7 @@ type Panel struct {
 }
 
 func (p *Panel) Render(cv *canvas.Canvas) {
-	cv.SetFillStyle("texture/wood.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/wood.png"))
 	cv.FillRect(p.X, p.Y, p.SX, p.SY)
 	for i := range p.Panels {
 		p.Panels[i].Render(cv)

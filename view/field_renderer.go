@@ -6,8 +6,13 @@ import (
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/renderer"
+	"path/filepath"
 	"sort"
 )
+
+var market = filepath.FromSlash("texture/building/market.png")
+var barrel = filepath.FromSlash("texture/terrain/barrel.png")
+var flag = filepath.FromSlash("icon/gui/flag.png")
 
 func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	xMin, yMin, _, _ := rf.BoundingBox()
@@ -17,7 +22,7 @@ func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.Rende
 
 		if f.Deposit != nil {
 			xMid, yMid := rf.MidScreenPoint()
-			cv.DrawImage("texture/terrain/"+f.Deposit.T.Name+".png", xMid-60, yMid-40, 120, 80)
+			cv.DrawImage(filepath.FromSlash("texture/terrain/"+f.Deposit.T.Name+".png"), xMid-60, yMid-40, 120, 80)
 		}
 
 		if f.Construction || f.Road != nil {
@@ -29,7 +34,7 @@ func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.Rende
 				extensionImg, x, y := ic.Bic.RenderBuildingExtensionOnBuffer(extension, rf, 0, c)
 				cv.DrawImage(extensionImg, x, y, float64(extensionImg.Width()), float64(extensionImg.Height()))
 			} else if f.Building.GetBuilding().Plan.BuildingType == building.BuildingTypeMarket {
-				cv.SetFillStyle("texture/building/market.png")
+				cv.SetFillStyle(market)
 				rf.Draw(cv)
 				cv.Fill()
 			}
@@ -50,7 +55,7 @@ func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.Rende
 			RenderTravellers(ic, cv, f.Travellers, show, rf, c)
 		}
 		if f.Terrain.Resources.HasRealArtifacts() {
-			cv.DrawImage("texture/terrain/barrel.png", rf.X[1]+40, rf.Y[2]-72, 32, 32)
+			cv.DrawImage(barrel, rf.X[1]+40, rf.Y[2]-72, 32, 32)
 		}
 		if f.Plant != nil && f.Plant.IsTree() {
 			RenderPlantOnBuffer(ic, cv, rf, f, c)
@@ -59,7 +64,7 @@ func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.Rende
 			RenderAnimal(cv, rf, f, c)
 		}
 		if f.Statue != nil && !f.Statue.Construction {
-			cv.DrawImage("icon/gui/infra/"+f.Statue.T.Name+".png", rf.X[0]-32, rf.Y[2]-80, 64, 64)
+			cv.DrawImage(filepath.FromSlash("icon/gui/infra/"+f.Statue.T.Name+".png"), rf.X[0]-32, rf.Y[2]-80, 64, 64)
 		}
 		if f.Travellers != nil {
 			// Travellers on the ground ahead other ground objects
@@ -101,7 +106,7 @@ func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.Rende
 
 		if c.ViewSettings.ShowAllocatedFields {
 			if f.Allocated {
-				cv.DrawImage("icon/gui/flag.png", rf.X[0]-32, rf.Y[2]-80, 64, 64)
+				cv.DrawImage(flag, rf.X[0]-32, rf.Y[2]-80, 64, 64)
 			}
 		}
 	}

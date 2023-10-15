@@ -7,6 +7,7 @@ import (
 	"medvil/controller"
 	"medvil/model/navigation"
 	"medvil/view/animation"
+	"path/filepath"
 )
 
 type BoatConfig struct {
@@ -35,9 +36,9 @@ func DrawTradingBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y fl
 	pm := animation.ProjectionMatrices[dirIdx]
 
 	if dirIdx == 0 || dirIdx == 2 {
-		cv.SetFillStyle("texture/vehicle/textile.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/vehicle/textile.png"))
 	} else {
-		cv.SetFillStyle("texture/vehicle/textile_flipped.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/vehicle/textile_flipped.png"))
 	}
 	cv.BeginPath()
 	cv.LineTo(x+bc.f1*pm.XX-bc.h1*pm.XY+0*pm.XZ, y+bc.f1*pm.YX-bc.h1*pm.YY+0*pm.YZ)
@@ -78,7 +79,7 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 		r = -r
 	}
 
-	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_bottom.png"))
 	cv.BeginPath()
 	cv.LineTo(x-c.f1*pm.XX+0*pm.XY+0*pm.XZ, y-c.f1*pm.YX+0*pm.YY+0*pm.YZ)
 	cv.LineTo(x-c.f2*pm.XX+0*pm.XY-c.z*pm.XZ, y-c.f2*pm.YX+0*pm.YY-c.z*pm.YZ)
@@ -89,7 +90,7 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 	cv.ClosePath()
 	cv.Fill()
 
-	cv.SetFillStyle("texture/vehicle/boat_side.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_side.png"))
 	cv.BeginPath()
 	cv.LineTo(x-c.f1*pm.XX+0*pm.XY+0*pm.XZ, y-c.f1*pm.YX+0*pm.YY+0*pm.YZ)
 	cv.LineTo(x-c.f2*pm.XX+0*pm.XY-c.z*pm.XZ, y-c.f2*pm.YX+0*pm.YY-c.z*pm.YZ)
@@ -102,7 +103,7 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 	cv.ClosePath()
 	cv.Fill()
 
-	cv.SetFillStyle("texture/vehicle/boat_side.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_side.png"))
 	cv.BeginPath()
 	cv.LineTo(x-c.f1*pm.XX+0*pm.XY+0*pm.XZ, y-c.f1*pm.YX+0*pm.YY+0*pm.YZ)
 	cv.LineTo(x-c.f2*pm.XX+0*pm.XY+c.z*pm.XZ, y-c.f2*pm.YX+0*pm.YY+c.z*pm.YZ)
@@ -145,7 +146,7 @@ func DrawExpeditionBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	h1 := 15.0
 	h2 := 24.0
 
-	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_bottom.png"))
 	cv.BeginPath()
 	cv.LineTo(x-f1*pm.XX+0*pm.XY+0*pm.XZ, y-f1*pm.YX+0*pm.YY+0*pm.YZ)
 	cv.LineTo(x-f2*pm.XX+0*pm.XY-z*pm.XZ, y-f2*pm.YX+0*pm.YY-z*pm.YZ)
@@ -156,7 +157,7 @@ func DrawExpeditionBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	cv.ClosePath()
 	cv.Fill()
 
-	cv.SetFillStyle("texture/vehicle/boat_side.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_side.png"))
 	cv.BeginPath()
 	cv.LineTo(x-f1*pm.XX+0*pm.XY+0*pm.XZ, y-f1*pm.YX+0*pm.YY+0*pm.YZ)
 	cv.LineTo(x-f2*pm.XX+0*pm.XY-z*pm.XZ, y-f2*pm.YX+0*pm.YY-z*pm.YZ)
@@ -169,7 +170,7 @@ func DrawExpeditionBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	cv.ClosePath()
 	cv.Fill()
 
-	cv.SetFillStyle("texture/vehicle/boat_side.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_side.png"))
 	cv.BeginPath()
 	cv.LineTo(x-f1*pm.XX+0*pm.XY+0*pm.XZ, y-f1*pm.YX+0*pm.YY+0*pm.YZ)
 	cv.LineTo(x-f2*pm.XX+0*pm.XY+z*pm.XZ, y-f2*pm.YX+0*pm.YY+z*pm.YZ)
@@ -199,7 +200,7 @@ func DrawExpeditionBoat(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 }
 
 func drawMast(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, mw1, mw2, mh, sh1, sh2, sw float64) {
-	cv.SetFillStyle("texture/vehicle/boat_side.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_side.png"))
 	cv.BeginPath()
 	cv.LineTo(x-mw1, y)
 	cv.LineTo(x+mw1, y)
@@ -230,7 +231,7 @@ func drawMast(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, mw1, mw2, 
 
 func drawSail(cv *canvas.Canvas, pm animation.ProjectionMatrix, p uint8, x, y, sh1, sh2, sw float64) {
 	p2 := (p + 1) % 8
-	cv.SetFillStyle("texture/vehicle/boat_sail.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_sail.png"))
 	cv.BeginPath()
 	for i := 0.0; i <= 6.0; i++ {
 		h := (sh1*i + sh2*(6-i)) / 6

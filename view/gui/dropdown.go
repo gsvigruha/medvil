@@ -3,6 +3,7 @@ package gui
 import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
+	"path/filepath"
 )
 
 type DropDown struct {
@@ -43,15 +44,15 @@ func (d *DropDown) Render(cv *canvas.Canvas) {
 		cv.FillRect(d.X, d.Y, d.SX, d.SY)
 	}
 	cv.SetFillStyle("#FED")
-	cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
+	cv.SetFont(Font, FontSize)
 	textPadding := (d.SY - FontSize) / 2
 	if d.Selected > -1 {
-		cv.DrawImage("icon/gui/"+d.Icons[d.Selected]+".png", d.X, d.Y, d.SY, d.SY)
+		cv.DrawImage(filepath.FromSlash("icon/gui/"+d.Icons[d.Selected]+".png"), d.X, d.Y, d.SY, d.SY)
 		cv.FillText(d.Options[d.Selected], d.X+d.SY+IconPadding, d.Y+d.SY-textPadding)
 	}
 	if d.Open {
 		for i, t := range d.Options {
-			cv.DrawImage("icon/gui/"+d.Icons[i]+".png", d.X, d.Y+float64(i)*d.SY+d.SY, d.SY, d.SY)
+			cv.DrawImage(filepath.FromSlash("icon/gui/"+d.Icons[i]+".png"), d.X, d.Y+float64(i)*d.SY+d.SY, d.SY, d.SY)
 			cv.FillText(t, d.X+d.SY+IconPadding, d.Y+float64(i)*d.SY+d.SY*2-textPadding)
 		}
 	}

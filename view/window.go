@@ -12,6 +12,7 @@ import (
 	_ "image/png"
 	"medvil/controller"
 	"os"
+	"path/filepath"
 	"runtime"
 	"time"
 )
@@ -102,7 +103,7 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 		wnd.Close()
 	})
 
-	icon, err := os.Open("icon/gui/house.png")
+	icon, err := os.Open(filepath.FromSlash("icon/gui/house.png"))
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("Error loading icon: %v", err)
 	}
