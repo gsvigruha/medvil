@@ -1,4 +1,5 @@
 GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build
+rm -rf Medville.app
 mkdir -p Medville.app/Contents/MacOS
 mkdir -p Medville.app/Contents/Resources
 cp res/MacOS/Info.plist Medville.app/Contents/

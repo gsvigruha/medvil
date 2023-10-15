@@ -4,8 +4,10 @@ import (
 	"log"
 	"math/rand"
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
+	"medvil/model/terrain"
 	"medvil/model/time"
 	"os"
 	"strconv"
@@ -155,7 +157,12 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 func (p *Person) ComputeIsHome(m navigation.IMap) {
 	f := m.GetField(p.Traveller.FX, p.Traveller.FY)
 	if p.Home.GetBuilding() != nil && p.Home.GetBuilding() == f.Building.GetBuilding() {
-		p.Traveller.SetHome(true)
+		if _, ok := f.Building.BuildingComponents[0].(*building.ExtensionUnit); ok && f.Terrain.T == terrain.Water {
+			// On water building extensions like decks should not make people disappear
+			p.Traveller.SetHome(false)
+		} else {
+			p.Traveller.SetHome(true)
+		}
 	} else if p.Home.Field(m) == f && !p.Home.IsPersonVisible() {
 		p.Traveller.SetHome(true)
 	} else {

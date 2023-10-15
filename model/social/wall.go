@@ -24,7 +24,7 @@ func (w *Wall) Context() string {
 }
 
 func (w *Wall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
-	if rand.Float64() < WallBrokenRate {
+	if w.Building.Plan.BuildingType == building.BuildingTypeWall && rand.Float64() < WallBrokenRate {
 		w.Building.Broken = true
 	}
 }
