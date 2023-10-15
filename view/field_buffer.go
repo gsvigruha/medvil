@@ -9,6 +9,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/terrain"
 	"medvil/renderer"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -21,16 +22,16 @@ type FieldImageCache struct {
 func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Field, rf renderer.RenderedField, season uint8, phase int) {
 	if f.Terrain.T == terrain.Grass {
 		if season == 3 {
-			cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+			cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 		} else if season == 2 {
-			cv.SetFillStyle("texture/terrain/grass_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+			cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 		} else {
-			cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+			cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 		}
 	} else if f.Terrain.T == terrain.Water {
-		cv.SetFillStyle("texture/terrain/water_" + strconv.Itoa(int(f.Terrain.Shape)) + "_" + strconv.Itoa(phase) + ".png")
+		cv.SetFillStyle(filepath.FromSlash("texture/terrain/water_" + strconv.Itoa(int(f.Terrain.Shape)) + "_" + strconv.Itoa(phase) + ".png"))
 	} else {
-		cv.SetFillStyle("texture/terrain/" + f.Terrain.T.Name + ".png")
+		cv.SetFillStyle(filepath.FromSlash("texture/terrain/" + f.Terrain.T.Name + ".png"))
 	}
 
 	rf.Draw(cv)
@@ -49,14 +50,14 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 		idx4 := (0 - (-c.Perspective + i)) % 4
 		if f.Surroundings[(i-1)%4] == navigation.SurroundingGrass || f.Surroundings[(i-1)%4] == navigation.SurroundingDarkSlope {
 			if season == 3 {
-				cv.SetFillStyle("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+				cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 			} else if season == 2 {
-				cv.SetFillStyle("texture/terrain/grass_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+				cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 			} else {
-				cv.SetFillStyle("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png")
+				cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 			}
 		} else if f.Surroundings[(i-1)%4] == navigation.SurroundingWater {
-			cv.SetFillStyle("texture/terrain/water.png")
+			cv.SetFillStyle(filepath.FromSlash("texture/terrain/water.png"))
 		} else {
 			continue
 		}

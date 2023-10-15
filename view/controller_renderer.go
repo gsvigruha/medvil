@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"medvil/controller"
 	"medvil/model/artifacts"
+	"path/filepath"
 )
 
 func RenderActiveFields(cv *canvas.Canvas, c *controller.Controller) {
@@ -20,7 +21,7 @@ func RenderActiveFields(cv *canvas.Canvas, c *controller.Controller) {
 					if f.Context() != "" {
 						midX, midY := rf.MidScreenPoint()
 						a := artifacts.GetArtifact(f.Context())
-						cv.DrawImage("icon/gui/artifacts/"+a.Name+".png", midX-16, midY-32, 32, 32)
+						cv.DrawImage(filepath.FromSlash("icon/gui/artifacts/"+a.Name+".png"), midX-16, midY-32, 32, 32)
 					}
 					break
 				}

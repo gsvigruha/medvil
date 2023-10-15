@@ -11,6 +11,7 @@ import (
 	"medvil/renderer"
 	"medvil/view/animation"
 	"medvil/view/vehicles"
+	"path/filepath"
 )
 
 const MaxPX = navigation.MaxPX
@@ -72,7 +73,7 @@ func DrawLimb(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, w1, w2 flo
 
 func DrawLeftArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
 	// Arm
-	cv.SetFillStyle("texture/people/textile_arm.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/people/textile_arm.png"))
 	// LeftElbow
 	DrawLimb(cv, pm, x, y, 1, 2, m.LeftShoulder, m.LeftElbow[p])
 	// LeftHand
@@ -81,7 +82,7 @@ func DrawLeftArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.P
 
 func DrawLeftLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
 	// Legs
-	cv.SetFillStyle("texture/people/leather.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/people/leather.png"))
 	// LeftKnee
 	DrawLimb(cv, pm, x, y, 3, 2, m.LeftHip, m.LeftKnee[p])
 	// LeftShin
@@ -92,7 +93,7 @@ func DrawLeftLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.P
 
 func DrawRightLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
 	// Legs
-	cv.SetFillStyle("texture/people/leather.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/people/leather.png"))
 	// RightKnee
 	DrawLimb(cv, pm, x, y, 3, 2, m.RightHip, m.RightKnee[p])
 	// LeftShin
@@ -103,7 +104,7 @@ func DrawRightLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.
 
 func DrawRightArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
 	// Arm
-	cv.SetFillStyle("texture/people/textile_arm.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/people/textile_arm.png"))
 	// RightElbow
 	DrawLimb(cv, pm, x, y, 1, 2, m.RightShoulder, m.RightElbow[p])
 	// LeftHand
@@ -244,19 +245,19 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 		if person.Home.GetTown().Country.T == social.CountryTypeOutlaw {
 			cv.SetFillStyle("#952")
 		} else if person.Equipment.Weapon {
-			cv.SetFillStyle("texture/people/metal.png")
+			cv.SetFillStyle(filepath.FromSlash("texture/people/metal.png"))
 		} else if person.Home.GetBuilding() != nil {
 			switch person.Home.GetBuilding().Plan.BuildingType {
 			case building.BuildingTypeFarm:
-				cv.SetFillStyle("texture/people/textile_yellow.png")
+				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_yellow.png"))
 			case building.BuildingTypeMine:
-				cv.SetFillStyle("texture/people/textile_red.png")
+				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_red.png"))
 			case building.BuildingTypeWorkshop:
-				cv.SetFillStyle("texture/people/textile_purple.png")
+				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_purple.png"))
 			case building.BuildingTypeFactory:
-				cv.SetFillStyle("texture/people/textile_purple.png")
+				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_purple.png"))
 			case building.BuildingTypeTownhall:
-				cv.SetFillStyle("texture/people/textile_blue.png")
+				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_blue.png"))
 			}
 		}
 	}

@@ -3,8 +3,10 @@ package gui
 import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
+	"path/filepath"
 )
 
+var Font = filepath.FromSlash("texture/font/Go-Regular.ttf")
 var FontSize = 12.0
 
 type Label interface {
@@ -29,9 +31,9 @@ func (l *TextLabel) Render(cv *canvas.Canvas) {
 	}
 	cv.SetFillStyle("#FED")
 	if l.Large {
-		cv.SetFont("texture/font/Go-Regular.ttf", FontSize*1.5)
+		cv.SetFont(Font, FontSize*1.5)
 	} else {
-		cv.SetFont("texture/font/Go-Regular.ttf", FontSize)
+		cv.SetFont(Font, FontSize)
 	}
 	if l.Editable {
 		cv.FillText(l.Text, l.X+8, l.Y+(l.SY+FontSize)/2)
@@ -60,7 +62,7 @@ func (l *ImageLabel) Render(cv *canvas.Canvas) {
 		cv.SetFillStyle(color.RGBA{R: 224, G: 240, B: 255, A: 240})
 		cv.FillRect(l.X, l.Y, l.SX, l.SY)
 	}
-	cv.DrawImage("icon/gui/"+l.Icon+".png", l.X, l.Y, l.SX, l.SY)
+	cv.DrawImage(filepath.FromSlash("icon/gui/"+l.Icon+".png"), l.X, l.Y, l.SX, l.SY)
 	if l.Style == ImageLabelStyleDisabled {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 64})
 		cv.FillRect(l.X, l.Y, l.SX, l.SY)
@@ -84,8 +86,8 @@ func (l *DoubleImageLabel) Render(cv *canvas.Canvas) {
 		cv.SetFillStyle(color.RGBA{R: 224, G: 240, B: 255, A: 240})
 		cv.FillRect(l.X, l.Y, l.SX, l.SY)
 	}
-	cv.DrawImage("icon/gui/"+l.Icon+".png", l.X, l.Y, l.SX, l.SY)
-	cv.DrawImage("icon/gui/"+l.SubIcon+".png", l.X, l.Y, l.SX/2, l.SY/2)
+	cv.DrawImage(filepath.FromSlash("icon/gui/"+l.Icon+".png"), l.X, l.Y, l.SX, l.SY)
+	cv.DrawImage(filepath.FromSlash("icon/gui/"+l.SubIcon+".png"), l.X, l.Y, l.SX/2, l.SY/2)
 	if l.Style == ImageLabelStyleDisabled {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 64})
 		cv.FillRect(l.X, l.Y, l.SX, l.SY)
@@ -108,7 +110,7 @@ type ScaleLabel struct {
 func (l *ScaleLabel) Render(cv *canvas.Canvas) {
 	if l.Stacked {
 		iconTop := l.Y + l.SY - l.SX
-		cv.DrawImage("icon/gui/"+l.Icon+".png", l.X, iconTop, l.SX, l.SX)
+		cv.DrawImage(filepath.FromSlash("icon/gui/"+l.Icon+".png"), l.X, iconTop, l.SX, l.SX)
 		cv.SetFillStyle("#B00")
 		var s = l.Scale
 		if s >= 1.0 {
@@ -116,7 +118,7 @@ func (l *ScaleLabel) Render(cv *canvas.Canvas) {
 		}
 		cv.FillRect(l.X+l.SX/2-l.ScaleW/2, iconTop, l.ScaleW, -(l.SY-l.SX)*s)
 	} else {
-		cv.DrawImage("icon/gui/"+l.Icon+".png", l.X, l.Y, l.SX, l.SY)
+		cv.DrawImage(filepath.FromSlash("icon/gui/"+l.Icon+".png"), l.X, l.Y, l.SX, l.SY)
 		cv.SetFillStyle("#B00")
 		var s = l.Scale
 		if s >= 1.0 {
@@ -137,7 +139,7 @@ type TextureLabel struct {
 }
 
 func (l *TextureLabel) Render(cv *canvas.Canvas) {
-	cv.SetFillStyle("texture/" + l.Texture + ".png")
+	cv.SetFillStyle(filepath.FromSlash("texture/" + l.Texture + ".png"))
 	cv.FillRect(l.X, l.Y, l.SX, l.SY)
 }
 
@@ -152,7 +154,7 @@ type DynamicImageLabel struct {
 }
 
 func (l *DynamicImageLabel) Render(cv *canvas.Canvas) {
-	cv.DrawImage("icon/gui/"+l.Icon()+".png", l.X, l.Y, l.SX, l.SY)
+	cv.DrawImage(filepath.FromSlash("icon/gui/"+l.Icon()+".png"), l.X, l.Y, l.SX, l.SY)
 }
 
 func (l *DynamicImageLabel) CaptureClick(x float64, y float64) {}

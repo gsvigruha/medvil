@@ -9,6 +9,7 @@ import (
 	"medvil/model/social"
 	"medvil/model/stats"
 	"medvil/model/terrain"
+	"path/filepath"
 )
 
 type CountryConf struct {
@@ -26,8 +27,8 @@ type CountryConf struct {
 }
 
 var PlayerConf = CountryConf{
-	TownhallPlan:    "samples/building/townhouse_1.building.json",
-	MarketplacePlan: "samples/building/marketplace_1.building.json",
+	TownhallPlan:    filepath.FromSlash("samples/building/townhouse_1.building.json"),
+	MarketplacePlan: filepath.FromSlash("samples/building/marketplace_1.building.json"),
 	TownhallRes: map[string]uint16{
 		"fruit":     50,
 		"vegetable": 50,
@@ -55,10 +56,10 @@ var PlayerConf = CountryConf{
 }
 
 var OutlawConf = CountryConf{
-	TownhallPlan:    "samples/building/outlaw_townhouse_1.building.json",
-	MarketplacePlan: "samples/building/outlaw_marketplace_1.building.json",
-	FarmPlan:        "samples/building/outlaw_farm_1.building.json",
-	WorkshopPlan:    "samples/building/outlaw_workshop_1.building.json",
+	TownhallPlan:    filepath.FromSlash("samples/building/outlaw_townhouse_1.building.json"),
+	MarketplacePlan: filepath.FromSlash("samples/building/outlaw_marketplace_1.building.json"),
+	FarmPlan:        filepath.FromSlash("samples/building/outlaw_farm_1.building.json"),
+	WorkshopPlan:    filepath.FromSlash("samples/building/outlaw_workshop_1.building.json"),
 	TownhallRes: map[string]uint16{
 		"fruit":     20,
 		"vegetable": 20,

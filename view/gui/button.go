@@ -3,6 +3,7 @@ package gui
 import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
+	"path/filepath"
 )
 
 var ButtonColorHighlight = color.RGBA{R: 192, G: 224, B: 255, A: 192}
@@ -32,11 +33,11 @@ func (b *ButtonGUI) SetHoover(h bool) {
 
 func (b ButtonGUI) Render(cv *canvas.Canvas) {
 	if b.Texture != "" {
-		cv.SetFillStyle("texture/" + b.Texture + ".png")
+		cv.SetFillStyle(filepath.FromSlash("texture/" + b.Texture + ".png"))
 		cv.FillRect(b.X, b.Y, b.SX, b.SY)
 	}
 	if b.Icon != "" {
-		cv.DrawImage("icon/gui/"+b.Icon+".png", b.X, b.Y, b.SX, b.SY)
+		cv.DrawImage(filepath.FromSlash("icon/gui/"+b.Icon+".png"), b.X, b.Y, b.SX, b.SY)
 	}
 	if !b.Enabled() {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 128})

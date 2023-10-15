@@ -8,6 +8,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/materials"
 	"medvil/renderer"
+	"path/filepath"
 )
 
 func BrickMaterialName(shape uint8) string {
@@ -67,9 +68,9 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 		}
 		if cv != nil {
 			if !unit.Construction {
-				cv.SetFillStyle("texture/building/" + WallMaterialName(unit.B.Plan.BuildingType, wall.M, unit.B.Shape, unit.B.Broken) + suffix + ".png")
+				cv.SetFillStyle(filepath.FromSlash("texture/building/" + WallMaterialName(unit.B.Plan.BuildingType, wall.M, unit.B.Shape, unit.B.Broken) + suffix + ".png"))
 			} else {
-				cv.SetFillStyle("texture/building/construction" + suffix + ".png")
+				cv.SetFillStyle(filepath.FromSlash("texture/building/construction" + suffix + ".png"))
 			}
 		}
 
@@ -127,11 +128,11 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			if !unit.Construction && wall.Windows != building.WindowTypeNone {
 				cv.SetLineWidth(2)
 				if wall.Windows == building.WindowTypeFactory {
-					cv.SetFillStyle("texture/building/glass_3.png")
+					cv.SetFillStyle(filepath.FromSlash("texture/building/glass_3.png"))
 					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 192})
 					RenderFactoryWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
 				} else {
-					cv.SetFillStyle("texture/building/glass_2.png")
+					cv.SetFillStyle(filepath.FromSlash("texture/building/glass_2.png"))
 					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
 					RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench)
 					if wall.Windows == building.WindowTypeBalcony {
@@ -141,7 +142,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 			}
 
 			if wall.Door && !unit.Construction {
-				cv.SetFillStyle("texture/building/door.png")
+				cv.SetFillStyle(filepath.FromSlash("texture/building/door.png"))
 				cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 64})
 				cv.SetLineWidth(2)
 
@@ -170,7 +171,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 					cv.ClosePath()
 					cv.Stroke()
 					cv.Fill()
-					cv.DrawImage("icon/gui/tasks/"+workshop.Manufacture.Name+".png", xm+dX*2, ym+5, 16*dX, 16)
+					cv.DrawImage(filepath.FromSlash("icon/gui/tasks/"+workshop.Manufacture.Name+".png"), xm+dX*2, ym+5, 16*dX, 16)
 				}
 			}
 		}

@@ -7,6 +7,7 @@ import (
 	"medvil/controller"
 	"medvil/model/navigation"
 	"medvil/view/animation"
+	"path/filepath"
 )
 
 func DrawTradingCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
@@ -45,9 +46,9 @@ func DrawTradingCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y fl
 	cv.Stroke()
 
 	if dirIdx == 1 || dirIdx == 3 {
-		cv.SetFillStyle("texture/vehicle/textile.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/vehicle/textile.png"))
 	} else {
-		cv.SetFillStyle("texture/vehicle/textile_flipped.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/vehicle/textile_flipped.png"))
 	}
 	cv.BeginPath()
 	cv.LineTo(x+f1*pm.XX-h3*pm.XY-z*pm.XZ, y+f1*pm.YX-h3*pm.YY-z*pm.YZ)
@@ -79,7 +80,7 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	h1 := 8.0
 	h2 := 16.0
 
-	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_bottom.png"))
 	cv.SetStrokeStyle("#321")
 	cv.SetLineWidth(1)
 	cv.BeginPath()
@@ -92,7 +93,7 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	cv.Fill()
 	cv.Stroke()
 
-	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_bottom.png"))
 	cv.BeginPath()
 	cv.LineTo(x+f1*pm.XX-h1*pm.XY-z*pm.XZ, y+f1*pm.YX-h1*pm.YY-z*pm.YZ)
 	cv.LineTo(x+f1*pm.XX-h1*pm.XY+z*pm.XZ, y+f1*pm.YX-h1*pm.YY+z*pm.YZ)
@@ -125,7 +126,7 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 		cv.Stroke()
 	}
 
-	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_bottom.png"))
 	cv.SetStrokeStyle("#321")
 	cv.SetLineWidth(1)
 	cv.BeginPath()
@@ -198,7 +199,7 @@ func DrawExpeditionCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	drawWheel(cv, pm, p, x, y, f2*0.8+f1*0.2, h1, z, wr, dir)
 	drawWheel(cv, pm, p, x, y, f2*0.2+f1*0.8, h1, z, wr, dir)
 
-	cv.SetFillStyle("texture/vehicle/boat_bottom.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_bottom.png"))
 	cv.BeginPath()
 	cv.LineTo(x+f1*pm.XX-h1*pm.XY-z*pm.XZ, y+f1*pm.YX-h1*pm.YY-z*pm.YZ)
 	cv.LineTo(x+f1*pm.XX-h1*pm.XY+z*pm.XZ, y+f1*pm.YX-h1*pm.YY+z*pm.YZ)
@@ -207,7 +208,7 @@ func DrawExpeditionCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	cv.ClosePath()
 	cv.Fill()
 
-	cv.SetFillStyle("texture/vehicle/boat_side.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_side.png"))
 	cv.BeginPath()
 	cv.LineTo(x+f1*pm.XX-h1*pm.XY-z*pm.XZ, y+f1*pm.YX-h1*pm.YY-z*pm.YZ)
 	cv.LineTo(x+f1*pm.XX-h1*pm.XY+z*pm.XZ, y+f1*pm.YX-h1*pm.YY+z*pm.YZ)
@@ -247,7 +248,7 @@ func DrawExpeditionCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y
 	cv.ClosePath()
 	cv.Stroke()
 
-	cv.SetFillStyle("texture/vehicle/leather.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/leather.png"))
 	cv.SetStrokeStyle("#432")
 	cv.SetLineWidth(2)
 	// side

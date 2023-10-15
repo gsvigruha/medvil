@@ -9,6 +9,7 @@ import (
 	"medvil/model/social"
 	"medvil/renderer"
 	"medvil/view/gui"
+	"path/filepath"
 	"strconv"
 )
 
@@ -99,11 +100,11 @@ func (b BuildingBaseButton) Click() {
 func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
 	if b.ET == nil || b.ET == building.Forge || b.ET == building.Kiln {
 		if b.M != nil {
-			cv.SetFillStyle("texture/building/" + b.M.Name + ".png")
+			cv.SetFillStyle(filepath.FromSlash("texture/building/" + b.M.Name + ".png"))
 		} else if b.ET == building.Forge {
-			cv.SetFillStyle("texture/building/stone.png")
+			cv.SetFillStyle(filepath.FromSlash("texture/building/stone.png"))
 		} else if b.ET == building.Kiln {
-			cv.SetFillStyle("texture/building/brick.png")
+			cv.SetFillStyle(filepath.FromSlash("texture/building/brick.png"))
 		}
 		cv.SetStrokeStyle("#666")
 		cv.SetLineWidth(2)
@@ -118,7 +119,7 @@ func (b BuildingBaseButton) Render(cv *canvas.Canvas) {
 		cv.Stroke()
 	} else {
 		if b.ET == building.WaterMillWheel {
-			img := "icon/gui/building/" + b.ET.Name + ".png"
+			img := filepath.FromSlash("icon/gui/building/" + b.ET.Name + ".png")
 			cv.DrawImage(img, b.p.Points[0].X-IconS/2, b.p.Points[0].Y+4, IconS, IconS)
 		}
 	}

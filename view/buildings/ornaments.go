@@ -5,11 +5,12 @@ import (
 	"medvil/controller"
 	"medvil/model/building"
 	"medvil/renderer"
+	"path/filepath"
 )
 
 func RenderOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer.RenderedField, rw renderer.RenderedWall) {
 	if unit.B.Plan.BuildingType == building.BuildingTypeWorkshop || unit.B.Plan.BuildingType == building.BuildingTypeTownhall {
-		cv.SetFillStyle("texture/building/ornament.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/building/ornament.png"))
 		cv.BeginPath()
 		cv.LineTo(rw.X[1], rw.Y[1])
 		cv.LineTo(rw.X[2], rw.Y[2])
@@ -30,7 +31,7 @@ func RenderOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer
 		cv.ClosePath()
 		cv.Fill()
 	} else if unit.B.Plan.BuildingType == building.BuildingTypeFarm {
-		cv.SetFillStyle("texture/building/ornament_wood.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/building/ornament_wood.png"))
 		cv.BeginPath()
 		cv.LineTo(rw.X[1], rw.Y[1])
 		cv.LineTo(rw.X[2], rw.Y[2])
@@ -57,7 +58,7 @@ func RenderOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer
 
 func RenderRoofFence(cv *canvas.Canvas, roof *building.RoofUnit, rp1 renderer.Polygon, c *controller.Controller) {
 	if roof.B.Plan.BuildingType == building.BuildingTypeWorkshop || roof.B.Plan.BuildingType == building.BuildingTypeFactory {
-		cv.SetFillStyle("texture/building/ornament_2.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/building/ornament_2.png"))
 		for i := uint8(0); i < 4; i++ {
 			if !roof.Connected[i] {
 				rfIdx1 := (2 - (-c.Perspective + i)) % 4

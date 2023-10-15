@@ -5,16 +5,17 @@ import (
 	"medvil/controller"
 	"medvil/model/navigation"
 	"medvil/renderer"
+	"path/filepath"
 )
 
 func RenderRoad(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, c *controller.Controller) {
 	if f.Construction || f.Road.Construction {
-		cv.SetFillStyle("texture/infra/construction.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/infra/construction.png"))
 	} else {
 		if f.Road.Broken {
-			cv.SetFillStyle("texture/infra/" + f.Road.T.Name + "_broken.png")
+			cv.SetFillStyle(filepath.FromSlash("texture/infra/" + f.Road.T.Name + "_broken.png"))
 		} else {
-			cv.SetFillStyle("texture/infra/" + f.Road.T.Name + ".png")
+			cv.SetFillStyle(filepath.FromSlash("texture/infra/" + f.Road.T.Name + ".png"))
 		}
 	}
 	cv.BeginPath()
@@ -48,7 +49,7 @@ func RenderRoad(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fiel
 	cv.ClosePath()
 	cv.Fill()
 	if !f.Construction && !f.Road.Construction && f.Road.T.Bridge {
-		cv.SetFillStyle("texture/infra/bridge_bars.png")
+		cv.SetFillStyle(filepath.FromSlash("texture/infra/bridge_bars.png"))
 		for i := uint8(0); i < 4; i++ {
 			idx1 := (3 - (-c.Perspective + i)) % 4
 			idx2 := (2 - (-c.Perspective + i)) % 4

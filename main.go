@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"medvil/view"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"time"
@@ -78,7 +79,7 @@ func main() {
 			}
 		} else {
 			c.ControlPanel.Render(cv, c)
-			cv.DrawImage("icon/gui/background.png", controller.ControlPanelSX, 0, float64(cv.Width())-controller.ControlPanelSX, float64(cv.Height()))
+			cv.DrawImage(filepath.FromSlash("icon/gui/background.png"), controller.ControlPanelSX, 0, float64(cv.Width())-controller.ControlPanelSX, float64(cv.Height()))
 		}
 		c.RenderTick()
 	})

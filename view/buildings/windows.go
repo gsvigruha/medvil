@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/renderer"
+	"path/filepath"
 )
 
 func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door, french bool) {
@@ -114,7 +115,7 @@ func RenderBalcony(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 		dy = (y1 - y2) / 3.0
 	}
 
-	cv.SetFillStyle("texture/building/gray_marble.png")
+	cv.SetFillStyle(filepath.FromSlash("texture/building/gray_marble.png"))
 	cv.BeginPath()
 	cv.LineTo(x1, y1-z-BuildingUnitHeight*DZ*1/3)
 	cv.LineTo(x1+dx, y1+dy-z-BuildingUnitHeight*DZ*1/3)
