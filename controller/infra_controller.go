@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
+	"medvil/model/artifacts"
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/navigation"
@@ -36,8 +37,10 @@ const InfraTypeAppleTree = 52
 const InfraPanelTop = 0.1
 
 type InfraController struct {
-	it InfraType
-	cp *ControlPanel
+	it        InfraType
+	cp        *ControlPanel
+	p         *gui.Panel
+	costPanel *gui.Panel
 }
 
 type InfraBuildButton struct {
@@ -163,9 +166,67 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 	return false
 }
 
+func (ic *InfraController) EstimateCost() []artifacts.Artifacts {
+	if ic.it == InfraTypeDirtRoad {
+		return building.DirtRoadType.Cost
+	} else if ic.it == InfraTypeCobbleRoad {
+		return building.CobbleRoadType.Cost
+	} else if ic.it == InfraTypeCanal {
+		return building.CanalType.Cost
+	} else if ic.it == InfraTypeBridge {
+		return building.BridgeRoadType.Cost
+	} else if ic.it == InfraTypeStoneWall1 {
+		return building.StoneWall1Type.ConstructionCost()
+	} else if ic.it == InfraTypeStoneWall2 {
+		return building.StoneWall2Type.ConstructionCost()
+	} else if ic.it == InfraTypeStoneTower1 {
+		return building.Tower1Type.ConstructionCost()
+	} else if ic.it == InfraTypeStoneTower2 {
+		return building.Tower2Type.ConstructionCost()
+	} else if ic.it == InfraTypeStoneWallRamp {
+		//c.Map.AddWallRampConstruction(activeTown, rf.F.X, rf.F.Y)
+	} else if ic.it == InfraTypeGateNS {
+		return building.SmallGate.ConstructionCost()
+	} else if ic.it == InfraTypeGateEW {
+		return building.SmallGate.ConstructionCost()
+	} else if ic.it == InfraTypeFountain {
+		return building.FountainType.Cost
+	} else if ic.it == InfraTypeObelisk {
+		return building.ObeliskType.Cost
+	}
+	return []artifacts.Artifacts{}
+}
+
+func (ic *InfraController) CaptureMove(x, y float64) {
+	ic.p.CaptureMove(x, y)
+}
+
+func (ic *InfraController) CaptureClick(x, y float64) {
+	ic.p.CaptureClick(x, y)
+}
+
+func (ic *InfraController) Render(cv *canvas.Canvas) {
+	ic.p.Render(cv)
+	ic.costPanel.Render(cv)
+}
+
+func (ic *InfraController) Clear() {}
+
+func (ic *InfraController) Refresh() {
+	ic.costPanel.Clear()
+	for i, a := range ic.EstimateCost() {
+		ArtifactsToControlPanel(ic.cp, ic.costPanel, i, a.A, a.Quantity, BuildingCostTop*ControlPanelSY)
+	}
+}
+
+func (ic *InfraController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}
+
 func InfraToControlPanel(cp *ControlPanel) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
-	ic := &InfraController{it: InfraTypeNone, cp: cp}
+	costPanel := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
+	ic := &InfraController{it: InfraTypeNone, cp: cp, p: p, costPanel: costPanel}
 
 	top := InfraPanelTop * ControlPanelSY
 
@@ -299,6 +360,6 @@ func InfraToControlPanel(cp *ControlPanel) {
 		})
 	}
 
-	cp.SetDynamicPanel(p)
+	cp.SetDynamicPanel(ic)
 	cp.C.ClickHandler = ic
 }

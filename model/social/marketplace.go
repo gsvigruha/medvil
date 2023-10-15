@@ -87,6 +87,9 @@ func (mp *Marketplace) IncPrice(a *artifacts.Artifact) {
 		delta = 1.0
 	}
 	mp.Prices[a] += uint32(delta)
+	if mp.Prices[a] > 999 {
+		mp.Prices[a] = 999
+	}
 }
 
 func (mp *Marketplace) DecPrice(a *artifacts.Artifact) {
