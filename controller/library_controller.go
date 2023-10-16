@@ -165,7 +165,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}})
 	p.AddTextLabel("Adjust icon sizes", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*5.5)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*6, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*6, SX: IconS, SY: IconS},
 		Highlight: func() bool { return false },
 		ClickImpl: func() {
 			if stats.MaxHistory == 0 {
