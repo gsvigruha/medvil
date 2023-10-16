@@ -153,7 +153,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddTextLabel("Show helper suggestions", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*4.5)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*5, SX: IconS, SY: IconS},
-		Highlight: func() bool { return false },
+		Highlight: func() bool { return cp.C.ViewSettings.Size == SizeAuto },
 		ClickImpl: func() {
 			cp.C.ViewSettings.Size = (cp.C.ViewSettings.Size + 1) % 4
 			cp.SetupDims()
