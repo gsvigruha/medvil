@@ -168,12 +168,12 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*6, SX: IconS, SY: IconS},
 		Highlight: func() bool { return false },
 		ClickImpl: func() {
-			if stats.MaxHistory == 0 {
+			if stats.MaxHistory == 120 {
 				stats.MaxHistory = 1200
 			} else if stats.MaxHistory == 1200 {
 				stats.MaxHistory = 2400
 			} else {
-				stats.MaxHistory = 0
+				stats.MaxHistory = 120
 			}
 			lc.historyLengthTextField.Text = "Chart history length: " + strconv.Itoa(stats.MaxHistory) + " months"
 		}})
