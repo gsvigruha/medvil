@@ -6,15 +6,18 @@ import (
 	"github.com/tfriedel6/canvas"
 	"io/ioutil"
 	"medvil/maps"
+	"medvil/model/stats"
 	"medvil/view/gui"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
 
 type LibraryController struct {
-	p             *gui.Panel
-	fileTextField *gui.TextLabel
+	p                      *gui.Panel
+	fileTextField          *gui.TextLabel
+	historyLengthTextField *gui.TextLabel
 }
 
 func (lc *LibraryController) CaptureKey(key glfw.Key) {
@@ -43,7 +46,8 @@ func (lc *LibraryController) Render(cv *canvas.Canvas) {
 
 func (lc *LibraryController) Clear() {}
 
-func (lc *LibraryController) Refresh() {}
+func (lc *LibraryController) Refresh() {
+}
 
 func (lc *LibraryController) GetHelperSuggestions() *gui.Suggestion {
 	return nil
@@ -160,6 +164,20 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			cp.C.ShowLibraryController()
 		}})
 	p.AddTextLabel("Adjust icon sizes", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*5.5)
+	p.AddButton(&gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*6, SX: IconS, SY: IconS},
+		Highlight: func() bool { return false },
+		ClickImpl: func() {
+			if stats.MaxHistory == 0 {
+				stats.MaxHistory = 1200
+			} else if stats.MaxHistory == 1200 {
+				stats.MaxHistory = 2400
+			} else {
+				stats.MaxHistory = 0
+			}
+			lc.historyLengthTextField.Text = "Chart history length: " + strconv.Itoa(stats.MaxHistory) + " months"
+		}})
+	lc.historyLengthTextField = p.AddTextLabel("Chart history length: "+strconv.Itoa(stats.MaxHistory)+" months", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*6.5)
 
 	cp.SetDynamicPanel(lc)
 	cp.C.KeyHandler = lc
