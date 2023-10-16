@@ -5,7 +5,7 @@ import (
 	"medvil/model/economy"
 )
 
-const MaxHistory = 2400
+var MaxHistory = 2400
 
 type HistoryElement struct {
 	Stats
