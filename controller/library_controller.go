@@ -152,14 +152,14 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		ClickImpl: func() { cp.C.ViewSettings.ShowSuggestions = !cp.C.ViewSettings.ShowSuggestions }})
 	p.AddTextLabel("Show helper suggestions", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*4.5)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*5, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*5, SX: IconS, SY: IconS},
 		Highlight: func() bool { return false },
 		ClickImpl: func() {
 			cp.C.ViewSettings.Size = (cp.C.ViewSettings.Size + 1) % 4
 			cp.SetupDims()
 			cp.C.ShowLibraryController()
 		}})
-	p.AddTextLabel("Show helper suggestions", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*5.5)
+	p.AddTextLabel("Adjust icon sizes", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*5.5)
 
 	cp.SetDynamicPanel(lc)
 	cp.C.KeyHandler = lc
