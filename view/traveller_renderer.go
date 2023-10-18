@@ -202,6 +202,8 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 		m = animation.PersonMotionBuild
 	case navigation.MotionMine:
 		m = animation.PersonMotionMine
+	case navigation.MotionCut:
+		m = animation.PersonMotionCut
 	}
 	p := t.DrawingPhase()
 	dirIdx := (c.Perspective - t.Direction) % 4

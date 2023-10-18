@@ -235,5 +235,18 @@ func (t *AgriculturalTask) Expired(Calendar *time.CalendarType) bool {
 }
 
 func (t *AgriculturalTask) Motion() uint8 {
-	return navigation.MotionFieldWork
+	switch t.T {
+	case AgriculturalTaskHarvesting:
+		if t.F.Plant.T.Tall {
+			return navigation.MotionCut
+		} else {
+			return navigation.MotionFieldWork
+		}
+	case AgriculturalTaskTreeCutting:
+		return navigation.MotionCut
+	case AgriculturalTaskReedCutting:
+		return navigation.MotionCut
+	default:
+		return navigation.MotionFieldWork
+	}
 }

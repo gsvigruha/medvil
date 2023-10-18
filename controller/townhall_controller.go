@@ -207,7 +207,7 @@ func RefreshSubPanels(tc *TownhallController) {
 		if storageQ, ok := th.Household.Resources.Artifacts[a]; ok {
 			q = storageQ
 		}
-		ArtifactStorageToControlPanel(sp, th.StorageTarget, aI, a, q, top+50)
+		ArtifactStorageToControlPanel(sp, th.StorageTarget, aI, a, q, ControlPanelSY*0.175)
 		aI++
 	}
 
