@@ -17,6 +17,8 @@ type LandUseButton struct {
 	luc     LandUseController
 	useType uint8
 	cnt     int
+	msg     string
+	cp      *ControlPanel
 }
 
 func (b *LandUseButton) SetHoover(h bool) {
@@ -25,6 +27,9 @@ func (b *LandUseButton) SetHoover(h bool) {
 
 func (b LandUseButton) Click() {
 	b.luc.SetUseType(b.useType)
+	if b.cp != nil && b.msg != "" {
+		b.cp.HelperMessage(b.msg)
+	}
 }
 
 func (b LandUseButton) Render(cv *canvas.Canvas) {

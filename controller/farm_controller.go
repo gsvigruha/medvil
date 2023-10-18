@@ -38,36 +38,50 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		b:       gui.ButtonGUI{Icon: "artifacts/grain", X: float64(24 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeWheat,
+		cp:      cp,
+		msg:     "Grow grain",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/vegetable", X: float64(24 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeVegetables,
+		cp:      cp,
+		msg:     "Grow vegetables",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/fruit", X: float64(24 + IconW*2), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeOrchard,
+		cp:      cp,
+		msg:     "Grow orchards to produce fruit",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/sheep", X: float64(24 + IconW*3), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypePasture,
+		cp:      cp,
+		msg:     "Raise sheep",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/log", X: float64(24 + IconW*0), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeForestry,
+		cp:      cp,
+		msg:     "Grow forests for log",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/reed", X: float64(24 + IconW*1), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeReed,
+		cp:      cp,
+		msg:     "Grow reed",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/herb", X: float64(24 + IconW*2), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeHerb,
+		cp:      cp,
+		msg:     "Grow herbs",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "clear_land", X: float64(24 + IconW*0), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
@@ -78,6 +92,8 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		b:       gui.ButtonGUI{Icon: "cancel", X: float64(24 + IconW*1), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: FarmFieldUseTypeDisallocate,
+		cp:      cp,
+		msg:     "Give back land",
 	})
 	fc.RefreshLandUseButtons()
 
