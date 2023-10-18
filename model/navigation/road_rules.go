@@ -147,7 +147,7 @@ func SetBuildingDeck(m IMap, f *Field, of *Field, d int) {
 		if i < 5 && j < 5 {
 			b.Plan.BaseShape[i][j] = &building.PlanUnits{Extension: &building.BuildingExtension{T: building.Deck}}
 			f.Building.BuildingComponents = b.ToBuildingUnits(uint8(i), uint8(j), false)
-			if unit, ok := of.Building.BuildingComponents[0].(*building.BuildingUnit); ok {
+			if unit, ok := of.Building.BuildingComponents[0].(*building.BuildingUnit); ok && unit.Walls != nil && len(unit.Walls) == 4 {
 				unit.Walls[(d+2)%4].Door = true
 			}
 		}
@@ -162,7 +162,7 @@ func SetBuildingDeckForNeighbors(m IMap, f *Field) {
 			SetBuildingDeck(m, f, of, i)
 		}
 		if of != nil && of.Terrain.T == terrain.Water && f != nil && f.Building.GetBuilding() != nil {
-			SetBuildingDeck(m, of, f, i)
+			SetBuildingDeck(m, of, f, (i+2)%4)
 		}
 	}
 }

@@ -134,38 +134,39 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	lc.fileTextField = p.AddEditableTextLabel(float64(24+IconW*2), lasTop+float64(IconH*1), IconS+gui.FontSize*12, IconS)
 
-	p.AddLargeTextLabel("Settings", 24, ControlPanelSY*0.7)
+	settingsTop := ControlPanelSY * 0.65
+	p.AddLargeTextLabel("Settings", 24, settingsTop)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24, Y: ControlPanelSY*0.7 + float64(IconH), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowHouseIcons },
 		ClickImpl: func() { cp.C.ViewSettings.ShowHouseIcons = !cp.C.ViewSettings.ShowHouseIcons }})
-	p.AddTextLabel("Show warning icons for houses", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*1.5)
+	p.AddTextLabel("Show warning icons for houses", 24+float64(IconW), settingsTop+float64(IconH)*1.5)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*2, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowAllocatedFields },
 		ClickImpl: func() { cp.C.ViewSettings.ShowAllocatedFields = !cp.C.ViewSettings.ShowAllocatedFields }})
-	p.AddTextLabel("Show flags for allocated land", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*2.5)
+	p.AddTextLabel("Show flags for allocated land", 24+float64(IconW), settingsTop+float64(IconH)*2.5)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "label", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*3, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "label", X: 24, Y: settingsTop + float64(IconH)*3, SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowLabels },
 		ClickImpl: func() { cp.C.ViewSettings.ShowLabels = !cp.C.ViewSettings.ShowLabels }})
-	p.AddTextLabel("Show town and expedition names", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*3.5)
+	p.AddTextLabel("Show town and expedition names", 24+float64(IconW), settingsTop+float64(IconH)*3.5)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*4, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24, Y: settingsTop + float64(IconH)*4, SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
 		ClickImpl: func() { cp.C.ViewSettings.ShowSuggestions = !cp.C.ViewSettings.ShowSuggestions }})
-	p.AddTextLabel("Show helper suggestions", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*4.5)
+	p.AddTextLabel("Show helper suggestions", 24+float64(IconW), settingsTop+float64(IconH)*4.5)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*5, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24, Y: settingsTop + float64(IconH)*5, SX: IconS, SY: IconS},
 		Highlight: func() bool { return cp.C.ViewSettings.Size == SizeAuto },
 		ClickImpl: func() {
 			cp.C.ViewSettings.Size = (cp.C.ViewSettings.Size + 1) % 4
-			cp.SetupDims()
+			cp.SetupDims(cp.C.W, cp.C.H)
 			cp.C.ShowLibraryController()
 		}})
-	p.AddTextLabel("Adjust icon sizes", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*5.5)
+	p.AddTextLabel("Adjust icon sizes", 24+float64(IconW), settingsTop+float64(IconH)*5.5)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24, Y: ControlPanelSY*0.7 + float64(IconH)*6, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24, Y: settingsTop + float64(IconH)*6, SX: IconS, SY: IconS},
 		Highlight: func() bool { return false },
 		ClickImpl: func() {
 			if stats.MaxHistory == 120 {
@@ -177,7 +178,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			}
 			lc.historyLengthTextField.Text = "Chart history length: " + strconv.Itoa(stats.MaxHistory) + " months"
 		}})
-	lc.historyLengthTextField = p.AddTextLabel("Chart history length: "+strconv.Itoa(stats.MaxHistory)+" months", 24+float64(IconW), ControlPanelSY*0.7+float64(IconH)*6.5)
+	lc.historyLengthTextField = p.AddTextLabel("Chart history length: "+strconv.Itoa(stats.MaxHistory)+" months", 24+float64(IconW), settingsTop+float64(IconH)*6.5)
 
 	cp.SetDynamicPanel(lc)
 	cp.C.KeyHandler = lc

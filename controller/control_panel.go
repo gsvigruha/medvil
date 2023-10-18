@@ -151,8 +151,10 @@ func (p *ControlPanel) SetDims(size uint8) {
 	}
 }
 
-func (p *ControlPanel) SetupDims() {
+func (p *ControlPanel) SetupDims(width, height int) {
 	c := p.C
+	c.H = height
+	c.W = width
 	if c.ViewSettings.Size == SizeAuto {
 		if c.H < 1000 {
 			p.SetDims(SizeSmall)
@@ -185,7 +187,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
 
-	p.SetupDims()
+	p.SetupDims(p.C.W, p.C.H)
 }
 
 func (p *ControlPanel) GenerateButtons() {

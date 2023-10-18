@@ -55,6 +55,7 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 	glfw.WindowHint(glfw.CocoaRetinaFramebuffer, 1)
 
 	// create window
+	//window, err := glfw.CreateWindow(w, h, title, glfw.GetPrimaryMonitor(), nil)
 	window, err := glfw.CreateWindow(w, h, title, nil, nil)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("Error creating window: %v", err)
@@ -83,6 +84,7 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("Error loading GoGL backend: %v", err)
 	}
+	fmt.Println("Frame buffer size: ", fbw, fbh)
 
 	cv := canvas.New(backend)
 	wnd := &Window{
@@ -97,7 +99,8 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 			fbw, fbh := window.GetFramebufferSize()
 			backend.SetBounds(0, 0, fbw, fbh)
 		}
-		wnd.c.ControlPanel.SetupDims()
+		fbw, fbh := window.GetFramebufferSize()
+		wnd.c.ControlPanel.SetupDims(fbw, fbh)
 	})
 	window.SetCloseCallback(func(w *glfw.Window) {
 		wnd.c.Save("latest_autosave.mdvl")
