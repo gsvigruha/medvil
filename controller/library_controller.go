@@ -161,7 +161,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		Highlight: func() bool { return cp.C.ViewSettings.Size == SizeAuto },
 		ClickImpl: func() {
 			cp.C.ViewSettings.Size = (cp.C.ViewSettings.Size + 1) % 4
-			cp.SetupDims()
+			cp.SetupDims(cp.C.W, cp.C.H)
 			cp.C.ShowLibraryController()
 		}})
 	p.AddTextLabel("Adjust icon sizes", 24+float64(IconW), settingsTop+float64(IconH)*5.5)
