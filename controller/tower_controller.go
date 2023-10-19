@@ -34,7 +34,7 @@ func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	tp.AddButton(&LandUseButton{
-		b:       gui.ButtonGUI{Texture: "cancel", X: float64(10), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "cancel", X: float64(10), Y: hcy, SX: IconS, SY: IconS},
 		luc:     tc,
 		useType: military.MilitaryLandUseTypeNone,
 		cp:      cp,
@@ -76,7 +76,15 @@ func (tc *TowerController) Refresh() {
 }
 
 func (tc *TowerController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
-	return tc.tower.GetFields()
+	fields := tc.tower.GetFields()
+	if !rf.F.Allocated && tc.UseType == military.MilitaryLandUseTypePatrol && tc.tower.FieldWithinDistance(rf.F) {
+		fields = append(fields, social.PatrolLand{
+			X: rf.F.X,
+			Y: rf.F.Y,
+			F: rf.F,
+		})
+	}
+	return fields
 }
 
 func (tc *TowerController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
