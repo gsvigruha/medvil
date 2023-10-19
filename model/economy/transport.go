@@ -68,16 +68,16 @@ func (t *TransportTask) Tags() Tags {
 
 func TransportTaskTag(dest navigation.Destination, a *artifacts.Artifact) Tag {
 	if f, ok := dest.(*navigation.Field); ok {
-		return SingleTag(a.Idx, f.X, f.Y)
+		return SingleTag(TagField, a.Idx, f.X, f.Y)
 	}
 	if l, ok := dest.(*navigation.Location); ok {
-		return SingleTag(a.Idx, l.X, l.Y, uint16(l.Z))
+		return SingleTag(TagLocation, a.Idx, l.X, l.Y, uint16(l.Z))
 	}
 	if _, ok := dest.(*navigation.TravellerDestination); ok {
-		return SingleTag(a.Idx)
+		return SingleTag(TagTraveller, a.Idx)
 	}
 	if b, ok := dest.(*navigation.BuildingDestination); ok {
-		return SingleTag(a.Idx, b.B.X, b.B.Y)
+		return SingleTag(TagBuilding, a.Idx, b.B.X, b.B.Y)
 	}
 	return SingleTag(a.Idx)
 }

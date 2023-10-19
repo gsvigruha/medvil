@@ -58,16 +58,16 @@ func (t *BuildingTask) Tags() Tags {
 
 func BuildingTaskTag(dest navigation.Destination) Tag {
 	if f, ok := dest.(*navigation.Field); ok {
-		return SingleTag(f.X, f.Y)
+		return SingleTag(TagField, f.X, f.Y)
 	}
 	if l, ok := dest.(*navigation.Location); ok {
-		return SingleTag(l.X, l.Y, uint16(l.Z))
+		return SingleTag(TagLocation, l.X, l.Y, uint16(l.Z))
 	}
 	if _, ok := dest.(*navigation.TravellerDestination); ok {
 		return EmptyTag
 	}
 	if b, ok := dest.(*navigation.BuildingDestination); ok {
-		return SingleTag(b.B.X, b.B.Y)
+		return SingleTag(TagBuilding, b.B.X, b.B.Y)
 	}
 	return EmptyTag
 }

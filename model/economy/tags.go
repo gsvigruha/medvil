@@ -59,3 +59,8 @@ const TagSellArtifacts uint16 = 21
 const TagStorageTarget uint16 = 31
 
 const TagMarket uint16 = 101
+
+const TagField uint16 = 201
+const TagLocation uint16 = 202
+const TagBuilding uint16 = 203
+const TagTraveller uint16 = 204
