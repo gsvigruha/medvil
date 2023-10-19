@@ -60,7 +60,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: economy.FarmFieldUseTypePasture,
 		cp:      cp,
-		msg:     "Raise sheep",
+		msg:     "Raise sheep for meat and wool",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/log", X: float64(24 + IconW*0), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
@@ -74,14 +74,14 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeReed,
 		cp:      cp,
-		msg:     "Grow reed",
+		msg:     "Grow reed for paper and thatching",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/herb", X: float64(24 + IconW*2), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeHerb,
 		cp:      cp,
-		msg:     "Grow herbs",
+		msg:     "Grow herbs for medicine",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "clear_land", X: float64(24 + IconW*0), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
