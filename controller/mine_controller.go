@@ -36,26 +36,36 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 		b:       gui.ButtonGUI{Icon: "cancel", X: float64(24), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeNone,
+		cp:      cp,
+		msg:     "Give land back",
 	})
 	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/stone", X: float64(24 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeStone,
+		cp:      cp,
+		msg:     "Mine stone for roads, walls and building",
 	})
 	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/clay", X: float64(24 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeClay,
+		cp:      cp,
+		msg:     "Mine clay for bricks and pottery",
 	})
 	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/iron_ore", X: float64(24 + IconW*2), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeIron,
+		cp:      cp,
+		msg:     "Mine iron ore for tools, weapons and vehicles",
 	})
 	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/gold_ore", X: float64(24 + IconW*3), Y: hcy, SX: IconS, SY: IconS},
 		luc:     mc,
 		useType: economy.MineFieldUseTypeGold,
+		cp:      cp,
+		msg:     "Mine gold ore to mint coins",
 	})
 	mc.RefreshLandUseButtons()
 
