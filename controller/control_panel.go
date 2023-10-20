@@ -222,6 +222,8 @@ func (p *ControlPanel) GenerateButtons() {
 					c.ShowBuildingControllerForType(building.BuildingTypeFactory)
 				} else if suggestion.Icon == "mine" {
 					c.ShowBuildingControllerForType(building.BuildingTypeMine)
+				} else if suggestion.Icon == "tower" {
+					c.ShowBuildingControllerForType(building.BuildingTypeTower)
 				} else if suggestion.Icon == "townhall" {
 					c.ShowBuildingControllerForType(building.BuildingTypeTownhall)
 				} else if suggestion.Icon == "market" {
@@ -377,7 +379,7 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 		} else if len(p.C.Map.Countries[0].Towns[0].Towers) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
 			return &gui.Suggestion{
 				Message: "Build towers and walls to protect your town from the outlaws.\nThey live in small villages with wooden buildings and\nsteal your crops if you build too close to them.",
-				Icon:    "infra/tower_2", X: float64(24 + LargeIconD*2), Y: IconS + 15 + LargeIconD/2.0,
+				Icon:    "tower", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
 			}
 		}
 	}

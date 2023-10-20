@@ -393,6 +393,9 @@ func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.Rende
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
 		return nil
 	}
+	if !bc.HasValidFloors() {
+		return nil
+	}
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
 }
 
@@ -420,6 +423,17 @@ func (bc *BuildingsController) Render(cv *canvas.Canvas) {
 	bc.p.Render(cv)
 }
 
+func (bc *BuildingsController) HasValidFloors() bool {
+	for i := 0; i < 5; i++ {
+		for j := 0; j < 5; j++ {
+			if bc.Plan.BaseShape[i][j] != nil && len(bc.Plan.BaseShape[i][j].Floors) >= building.MinNumFloors(bc.bt) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
 	if bc.activeSupplier() == nil {
 		return false
@@ -428,6 +442,9 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 		return false
 	}
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
+		return false
+	}
+	if !bc.HasValidFloors() {
 		return false
 	}
 	if bc.Plan.IsComplete() {
@@ -519,6 +536,8 @@ func (bc *BuildingsController) GenerateButtons() {
 	for i, a := range bc.Plan.ConstructionCost() {
 		ArtifactsToControlPanel(bc.cp, bc.p, i, a.A, a.Quantity, BuildingCostTop*ControlPanelSY)
 	}
+
+	bc.p.AddTextLabel("Needs "+strconv.Itoa(building.MinNumFloors(bc.bt))+" to "+strconv.Itoa(building.MaxNumFloors(bc.bt))+" floors", 24, BuildingCostTop*ControlPanelSY+float64(IconH*2))
 }
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *BuildingsController {
@@ -551,6 +570,10 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *Buil
 		helperMsg = "Build factories to build vehicles."
 	case building.BuildingTypeTownhall:
 		helperMsg = "Establish a new town."
+	case building.BuildingTypeMarket:
+		helperMsg = "Build a marketplace for your town."
+	case building.BuildingTypeTower:
+		helperMsg = "Build towers to protect your town."
 	}
 	cp.HelperMessage(helperMsg)
 
@@ -576,16 +599,20 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 			ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeFactory) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFactory) }})
+		bc.p.AddButton(&gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "tower", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeTower) },
+			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeTower) }})
 	}
 	if bc.cp.C.ActiveSupplier != nil {
 		bc.p.AddButton(&gui.SimpleButton{
-			ButtonGUI: gui.ButtonGUI{Icon: "townhall", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			ButtonGUI: gui.ButtonGUI{Icon: "townhall", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeTownhall) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeTownhall) }})
 	}
 	if bc.cp.C.ActiveSupplier != nil && bc.cp.C.ActiveSupplier.BuildMarketplaceEnabled() {
 		bc.p.AddButton(&gui.SimpleButton{
-			ButtonGUI: gui.ButtonGUI{Icon: "market", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			ButtonGUI: gui.ButtonGUI{Icon: "market", X: float64(24 + LargeIconD*6), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeMarket) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMarket) }})
 	}
