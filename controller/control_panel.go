@@ -222,6 +222,8 @@ func (p *ControlPanel) GenerateButtons() {
 					c.ShowBuildingControllerForType(building.BuildingTypeFactory)
 				} else if suggestion.Icon == "mine" {
 					c.ShowBuildingControllerForType(building.BuildingTypeMine)
+				} else if suggestion.Icon == "tower" {
+					c.ShowBuildingControllerForType(building.BuildingTypeTower)
 				} else if suggestion.Icon == "townhall" {
 					c.ShowBuildingControllerForType(building.BuildingTypeTownhall)
 				} else if suggestion.Icon == "market" {
