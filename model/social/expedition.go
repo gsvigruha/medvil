@@ -26,7 +26,7 @@ type Expedition struct {
 	Constructions    []*building.Construction
 }
 
-const MaxDistanceFromTown = 10
+const MaxDistanceFromTown = 15
 
 func (e *Expedition) DistanceToTown(town *Town) float64 {
 	return math.Abs(float64(town.Townhall.Household.Building.X)-float64(e.Vehicle.Traveller.FX)) +
@@ -40,7 +40,28 @@ func (e *Expedition) CloseToTown(town *Town, m navigation.IMap) bool {
 	return e.DistanceToTown(town) <= MaxDistanceFromTown
 }
 
+func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
+	for i := 0; i < 10; i++ {
+		f := m.RandomSpot(e.Town.Townhall.Household.Building.X, e.Town.Townhall.Household.Building.Y, MaxDistanceFromTown)
+		if f != nil && !((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
+			return f
+		}
+	}
+	for i := 0; i < 10; i++ {
+		f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, 5)
+		if f != nil && !((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
+			return f
+		}
+	}
+	return nil
+}
+
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+	currentF := m.GetField(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY)
+	if currentF != nil && !((e.Vehicle.T.Water && currentF.Sailable()) || (!e.Vehicle.T.Water && currentF.Drivable())) {
+		e.DestinationField = e.PickRandomNearBySpot(m)
+	}
+
 	if e.DestinationField != nil {
 		for i := 0; i < len(e.Tasks); i++ {
 			e.Tasks[i].Pause(true)
