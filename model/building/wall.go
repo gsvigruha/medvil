@@ -18,16 +18,6 @@ var Wall2 = &PlanUnits{
 	Roof:   WallRoof,
 }
 
-var Tower1 = &PlanUnits{
-	Floors: []Floor{WallFloor, WallFloor},
-	Roof:   TowerRoof,
-}
-
-var Tower2 = &PlanUnits{
-	Floors: []Floor{WallFloor, WallFloor, WallFloor},
-	Roof:   TowerRoof,
-}
-
 var StoneWall1Type = &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
@@ -48,28 +38,6 @@ var StoneWall2Type = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeWall,
-}
-
-var Tower1Type = &BuildingPlan{
-	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
-		{nil, nil, nil, nil, nil},
-		{nil, nil, nil, nil, nil},
-		{nil, nil, Tower1, nil, nil},
-		{nil, nil, nil, nil, nil},
-		{nil, nil, nil, nil, nil},
-	},
-	BuildingType: BuildingTypeTower,
-}
-
-var Tower2Type = &BuildingPlan{
-	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
-		{nil, nil, nil, nil, nil},
-		{nil, nil, nil, nil, nil},
-		{nil, nil, Tower2, nil, nil},
-		{nil, nil, nil, nil, nil},
-		{nil, nil, nil, nil, nil},
-	},
-	BuildingType: BuildingTypeTower,
 }
 
 func GetWallRampPlan(rampD uint8) *BuildingPlan {
