@@ -160,7 +160,6 @@ func (t *Townhall) CreateExpedition(v *vehicles.Vehicle, p economy.Person) {
 			t.Expeditions = append(t.Expeditions, expedition)
 			person.Home = expedition
 			person.SetHome()
-
 			return
 		}
 	}

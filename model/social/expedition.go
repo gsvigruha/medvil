@@ -41,13 +41,13 @@ func (e *Expedition) CloseToTown(town *Town, m navigation.IMap) bool {
 }
 
 func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		f := m.RandomSpot(e.Town.Townhall.Household.Building.X, e.Town.Townhall.Household.Building.Y, MaxDistanceFromTown)
 		if f != nil && !((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
 			return f
 		}
 	}
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, 5)
 		if f != nil && !((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
 			return f
