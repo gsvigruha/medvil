@@ -536,6 +536,8 @@ func (bc *BuildingsController) GenerateButtons() {
 	for i, a := range bc.Plan.ConstructionCost() {
 		ArtifactsToControlPanel(bc.cp, bc.p, i, a.A, a.Quantity, BuildingCostTop*ControlPanelSY)
 	}
+
+	bc.p.AddTextLabel("Needs "+strconv.Itoa(building.MinNumFloors(bc.bt))+" to "+strconv.Itoa(building.MaxNumFloors(bc.bt))+" floors", 24, BuildingCostTop*ControlPanelSY+float64(IconH*2))
 }
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *BuildingsController {
