@@ -209,9 +209,9 @@ func setClothesColor(cv *canvas.Canvas, color int, dark bool) {
 	}
 	switch color {
 	case ClothesMetal:
-		cv.SetFillStyle(filepath.FromSlash("texture/people/metal.png"))
+		cv.SetFillStyle(filepath.FromSlash("texture/people/metal" + sfx + ".png"))
 	case ClothesBrown:
-		cv.SetFillStyle("#952")
+		cv.SetFillStyle(filepath.FromSlash("texture/people/leather_top" + sfx + ".png"))
 	case ClothesYellow:
 		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_yellow" + sfx + ".png"))
 	case ClothesRed:
