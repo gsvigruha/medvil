@@ -6,8 +6,6 @@ import (
 
 const NumShapes = 15
 
-const ShapeAreaSize = 3
-
 func GetShape(t BuildingType, x, y uint16) uint8 {
 	if t == BuildingTypeWall {
 		return WallShape(x, y)
@@ -18,5 +16,5 @@ func GetShape(t BuildingType, x, y uint16) uint8 {
 }
 
 func WallShape(x, y uint16) uint8 {
-	return uint8((13*(x/ShapeAreaSize) + 7*(y/ShapeAreaSize)) % NumShapes)
+	return uint8(rand.Intn(NumShapes))
 }

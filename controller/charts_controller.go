@@ -67,7 +67,7 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.drawChart(cv, "#22B", 540, []string{"icon/gui/tasks/milling"}, stats.HistoryElement.GetManufactureTaskTime, true)
 		l.helperMsg = "Days spent on various tasks"
 	case 5:
-		l.drawCharts(cv, []string{"#DA6", "#96D", "#F11", "#BA6", "#58F"}, 135, []string{"icon/gui/coin"},
+		l.drawCharts(cv, []string{"#872", "#96D", "#F11", "#D72", "#58F"}, 135, []string{"icon/gui/coin"},
 			[]ElementLookup{
 				stats.HistoryElement.GetFarmMoney,
 				stats.HistoryElement.GetWorkshopMoney,
@@ -75,7 +75,7 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 				stats.HistoryElement.GetTraderMoney,
 				stats.HistoryElement.GetGovernmentMoney,
 			}, false)
-		l.drawCharts(cv, []string{"#DA6", "#96D", "#F11", "#BA6", "#58F"}, 270, []string{"icon/gui/person"},
+		l.drawCharts(cv, []string{"#872", "#96D", "#F11", "#D72", "#58F"}, 270, []string{"icon/gui/person"},
 			[]ElementLookup{
 				stats.HistoryElement.GetFarmPeople,
 				stats.HistoryElement.GetWorkshopPeople,
@@ -83,9 +83,29 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 				stats.HistoryElement.GetTraderPeople,
 				stats.HistoryElement.GetGovernmentPeople,
 			}, false)
+		cv.DrawImage(filepath.FromSlash("icon/gui/farm.png"), 8, 280+IconS*0, IconS, IconS)
+		l.drawLegend(cv, 280+IconS*0, "#872")
+		cv.DrawImage(filepath.FromSlash("icon/gui/workshop.png"), 8, 280+IconS*1, IconS, IconS)
+		l.drawLegend(cv, 280+IconS*1, "#96D")
+		cv.DrawImage(filepath.FromSlash("icon/gui/mine.png"), 8, 280+IconS*2, IconS, IconS)
+		l.drawLegend(cv, 280+IconS*2, "#F11")
+		cv.DrawImage(filepath.FromSlash("icon/gui/trader.png"), 8, 280+IconS*3, IconS, IconS)
+		l.drawLegend(cv, 280+IconS*3, "#D72")
+		cv.DrawImage(filepath.FromSlash("icon/gui/town.png"), 8, 280+IconS*4, IconS, IconS)
+		l.drawLegend(cv, 280+IconS*4, "#58F")
 		l.helperMsg = "Wealth and population of social classes"
 	}
 	l.CaptureClick(0, 0)
+}
+
+func (l *ChartsLabel) drawLegend(cv *canvas.Canvas, y float64, c string) {
+	cv.SetLineWidth(3.0)
+	cv.SetStrokeStyle(c)
+	cv.BeginPath()
+	cv.MoveTo(8+float64(IconW), y+float64(IconH)/2)
+	cv.LineTo(8+float64(IconW)+IconS, y+float64(IconH)/2)
+	cv.ClosePath()
+	cv.Stroke()
 }
 
 func (l *ChartsLabel) CaptureClick(x float64, y float64) {
@@ -186,7 +206,7 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 	}
 
 	for i, icon := range icons {
-		cv.DrawImage(filepath.FromSlash(icon+".png"), float64(i*32), float64(y-131), 32, 32)
+		cv.DrawImage(filepath.FromSlash(icon+".png"), float64(i*40)+8, float64(y-131), 40, 40)
 	}
 
 	cv.SetFillStyle("#22B")

@@ -17,6 +17,14 @@ import (
 const MaxPX = navigation.MaxPX
 const MaxPY = navigation.MaxPY
 
+const ClothesRed = 1
+const ClothesBlue = 2
+const ClothesPurple = 3
+const ClothesYellow = 4
+const ClothesMetal = 5
+const ClothesBrown = 6
+const ClothesOrange = 7
+
 func Move(v1, v2 [3]float64) [3]float64 {
 	var v3 [3]float64
 	for i, _ := range v1 {
@@ -71,9 +79,9 @@ func DrawLimb(cv *canvas.Canvas, pm animation.ProjectionMatrix, x, y, w1, w2 flo
 	cv.Fill()
 }
 
-func DrawLeftArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
+func DrawLeftArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8, color int) {
 	// Arm
-	cv.SetFillStyle(filepath.FromSlash("texture/people/textile_arm.png"))
+	setClothesColor(cv, color, true)
 	// LeftElbow
 	DrawLimb(cv, pm, x, y, 1, 2, m.LeftShoulder, m.LeftElbow[p])
 	// LeftHand
@@ -102,9 +110,9 @@ func DrawRightLeg(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.
 	DrawLimb(cv, pm, x, y, 1, 1, Move(m.RightFoot[p], [3]float64{-1.0, 0.0, 0.0}), Move(m.RightFoot[p], [3]float64{4.0, 0.0, 0.0}))
 }
 
-func DrawRightArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8) {
+func DrawRightArm(cv *canvas.Canvas, pm animation.ProjectionMatrix, m animation.PersonMotion, x, y float64, p uint8, color int) {
 	// Arm
-	cv.SetFillStyle(filepath.FromSlash("texture/people/textile_arm.png"))
+	setClothesColor(cv, color, true)
 	// RightElbow
 	DrawLimb(cv, pm, x, y, 1, 2, m.RightShoulder, m.RightElbow[p])
 	// LeftHand
@@ -177,18 +185,75 @@ func drawHair(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) 
 	if t.T == navigation.TravellerTypePedestrianM {
 		cv.Ellipse(x, y-32, 3, 4, 0, 0, math.Pi*2, false)
 	} else if t.T == navigation.TravellerTypePedestrianF {
-		cv.Ellipse(x, y-31, 4, 6, 0, 0, math.Pi*2, false)
+		cv.Ellipse(x, y-29, 4, 6, 0, 0, math.Pi*2, false)
 	}
 	cv.ClosePath()
 	cv.Fill()
 }
 
-func drawHead(cv *canvas.Canvas, x float64, y float64) {
+func drawHead(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) {
 	cv.SetFillStyle("#A64")
 	cv.BeginPath()
-	cv.Arc(x, y-30, 3, 0, math.Pi*2, false)
+	if t.T == navigation.TravellerTypePedestrianM {
+		cv.Arc(x, y-30, 3, 0, math.Pi*2, false)
+	} else if t.T == navigation.TravellerTypePedestrianF {
+		cv.Arc(x, y-28, 3, 0, math.Pi*2, false)
+	}
 	cv.ClosePath()
 	cv.Fill()
+}
+
+func setClothesColor(cv *canvas.Canvas, color int, dark bool) {
+	var sfx = ""
+	if dark {
+		sfx = "_dark"
+	}
+	switch color {
+	case ClothesMetal:
+		cv.SetFillStyle(filepath.FromSlash("texture/people/metal" + sfx + ".png"))
+	case ClothesBrown:
+		cv.SetFillStyle(filepath.FromSlash("texture/people/leather_top" + sfx + ".png"))
+	case ClothesYellow:
+		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_yellow" + sfx + ".png"))
+	case ClothesRed:
+		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_red" + sfx + ".png"))
+	case ClothesPurple:
+		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_purple" + sfx + ".png"))
+	case ClothesBlue:
+		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_blue" + sfx + ".png"))
+	case ClothesOrange:
+		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_orange" + sfx + ".png"))
+	}
+}
+
+func GetClothes(t *navigation.Traveller, c *controller.Controller) int {
+	person := c.ReverseReferences.TravellerToPerson[t]
+	trader := c.ReverseReferences.TravellerToTrader[t]
+	if person != nil {
+		if person.Home.GetTown().Country.T == social.CountryTypeOutlaw {
+			return ClothesBrown
+		} else if person.Equipment.Weapon {
+			return ClothesMetal
+		} else if person.Home.GetBuilding() != nil {
+			switch person.Home.GetBuilding().Plan.BuildingType {
+			case building.BuildingTypeFarm:
+				return ClothesYellow
+			case building.BuildingTypeMine:
+				return ClothesRed
+			case building.BuildingTypeWorkshop:
+				return ClothesPurple
+			case building.BuildingTypeFactory:
+				return ClothesPurple
+			case building.BuildingTypeTownhall:
+				return ClothesBlue
+			default:
+				return ClothesBlue
+			}
+		} else if trader != nil {
+			return ClothesOrange
+		}
+	}
+	return ClothesBlue
 }
 
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, drawLeg bool, c *controller.Controller) {
@@ -209,13 +274,15 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
 
+	color := GetClothes(t, c)
+
 	if dirIdx >= 2 {
-		DrawLeftArm(cv, pm, m, x, y, p)
+		DrawLeftArm(cv, pm, m, x, y, p, color)
 		if drawLeg {
 			DrawLeftLeg(cv, pm, m, x, y, p)
 		}
 	} else {
-		DrawRightArm(cv, pm, m, x, y, p)
+		DrawRightArm(cv, pm, m, x, y, p, color)
 		if drawLeg {
 			DrawRightLeg(cv, pm, m, x, y, p)
 		}
@@ -237,32 +304,11 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	if dirIdx == 0 || dirIdx == 3 {
 		drawHair(cv, t, x, y)
 	} else {
-		drawHead(cv, x, y)
+		drawHead(cv, t, x, y)
 	}
 
 	// Body
-	cv.SetFillStyle("#BA6")
-	person := c.ReverseReferences.TravellerToPerson[t]
-	if person != nil {
-		if person.Home.GetTown().Country.T == social.CountryTypeOutlaw {
-			cv.SetFillStyle("#952")
-		} else if person.Equipment.Weapon {
-			cv.SetFillStyle(filepath.FromSlash("texture/people/metal.png"))
-		} else if person.Home.GetBuilding() != nil {
-			switch person.Home.GetBuilding().Plan.BuildingType {
-			case building.BuildingTypeFarm:
-				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_yellow.png"))
-			case building.BuildingTypeMine:
-				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_red.png"))
-			case building.BuildingTypeWorkshop:
-				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_purple.png"))
-			case building.BuildingTypeFactory:
-				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_purple.png"))
-			case building.BuildingTypeTownhall:
-				cv.SetFillStyle(filepath.FromSlash("texture/people/textile_blue.png"))
-			}
-		}
-	}
+	setClothesColor(cv, color, false)
 	if t.T == navigation.TravellerTypePedestrianM {
 		cv.FillRect(x-2, y-28, 4, 3)
 		cv.FillRect(x-4, y-25, 8, 11)
@@ -270,8 +316,8 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 		cv.BeginPath()
 		cv.LineTo(x-2, y-28)
 		cv.LineTo(x-4, y-25)
-		cv.LineTo(x-5, y-8)
-		cv.LineTo(x+5, y-8)
+		cv.LineTo(x-5, y-9)
+		cv.LineTo(x+5, y-9)
 		cv.LineTo(x+4, y-25)
 		cv.LineTo(x+2, y-28)
 		cv.ClosePath()
@@ -279,15 +325,15 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	}
 
 	if dirIdx == 0 || dirIdx == 3 {
-		drawHead(cv, x, y)
+		drawHead(cv, t, x, y)
 	} else {
 		drawHair(cv, t, x, y)
 	}
 
 	if dirIdx >= 2 {
-		DrawRightArm(cv, pm, m, x, y, p)
+		DrawRightArm(cv, pm, m, x, y, p, color)
 	} else {
-		DrawLeftArm(cv, pm, m, x, y, p)
+		DrawLeftArm(cv, pm, m, x, y, p, color)
 	}
 	if dirIdx == 0 || dirIdx == 3 {
 		if m.Tool {

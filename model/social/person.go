@@ -10,7 +10,6 @@ import (
 	"medvil/model/terrain"
 	"medvil/model/time"
 	"os"
-	"strconv"
 )
 
 const VehicleBreakDownRate = 1.0 / (24 * 30 * 12 * 5)
@@ -244,15 +243,4 @@ func (p *Person) HasMedicine() bool {
 
 func (p *Person) HasBeer() bool {
 	return p.Home.HasBeer()
-}
-
-func (p *Person) CacheKey() string {
-	if p.Home.GetBuilding() != nil {
-		return strconv.Itoa(int(p.Home.GetBuilding().Plan.BuildingType)) + "#" +
-			strconv.Itoa(int(p.Home.GetTown().Country.T)) + "#" +
-			strconv.FormatBool(p.Equipment.Weapon)
-	} else {
-		return strconv.Itoa(int(p.Home.GetTown().Country.T)) + "#" +
-			strconv.FormatBool(p.Equipment.Weapon)
-	}
 }

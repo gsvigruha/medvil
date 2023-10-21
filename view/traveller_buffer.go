@@ -21,11 +21,7 @@ type TravellerImageCache struct {
 }
 
 func (tc *TravellerImageCache) RenderTravellerOnBuffer(t *navigation.Traveller, f *navigation.Field, w, h int, c *controller.Controller) *canvas.Canvas {
-	key := t.CacheKey(c.Perspective) + "#" + strconv.FormatBool(tallPlant(f))
-	person := t.Person
-	if person != nil {
-		key = key + "#" + person.CacheKey()
-	}
+	key := t.CacheKey(c.Perspective) + "#" + strconv.FormatBool(tallPlant(f)) + "#" + strconv.Itoa(GetClothes(t, c))
 	if ce, ok := tc.entries[key]; ok {
 		return ce.cv
 	} else {

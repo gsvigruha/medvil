@@ -37,11 +37,6 @@ func WallMaterialName(t building.BuildingType, m *materials.Material, shape uint
 	if t == building.BuildingTypeWall && m == materials.GetMaterial("stone") {
 		if broken {
 			return "stone_broken"
-		}
-		if shape == 0 {
-			return "stone_1"
-		} else if shape == 1 {
-			return "stone_2"
 		} else {
 			return "stone"
 		}
@@ -111,6 +106,9 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				RenderOrnaments(cv, unit, rf, rw)
 			}
 
+			if !unit.Construction {
+				RenderWallOrnaments(cv, unit, rf, rw)
+			}
 			/*
 				if !wall.Arch {
 					cv.SetFillStyle("texture/building/ornament" + suffix + ".png")
