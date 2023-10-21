@@ -41,25 +41,48 @@ func (e *Expedition) CloseToTown(town *Town, m navigation.IMap) bool {
 	return e.DistanceToTown(town) <= MaxDistanceFromTown
 }
 
-func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
-	for i := 0; i < 20; i++ {
-		f := m.RandomSpot(e.Town.Townhall.Household.Building.X, e.Town.Townhall.Household.Building.Y, MaxDistanceFromTown)
-		if f != nil && ((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
-			return f
+func (e *Expedition) ValidCampSpot(f *navigation.Field, m navigation.IMap) bool {
+	return ((e.Vehicle.T.Water && f.Sailable() && m.Shore(f.X, f.Y)) || (!e.Vehicle.T.Water && f.Drivable()))
+}
+
+func (e *Expedition) PickRandomSpotNearTownhall(m navigation.IMap) *navigation.Field {
+	for d := 5; d <= MaxDistanceFromTown; d++ {
+		for i := 0; i < 5; i++ {
+			f := m.RandomSpot(e.Town.Townhall.Household.Building.X, e.Town.Townhall.Household.Building.Y, d)
+			if f != nil && e.ValidCampSpot(f, m) {
+				return f
+			}
 		}
+	}
+	return nil
+}
+
+func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
+	f := e.PickRandomSpotNearTownhall(m)
+	if f != nil {
+		return f
 	}
 	for i := 0; i < 20; i++ {
 		f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, 5)
-		if f != nil && ((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
+		if f != nil && e.ValidCampSpot(f, m) {
 			return f
 		}
 	}
 	return nil
 }
 
+func (e *Expedition) NeedsFood() bool {
+	for _, a := range economy.Foods {
+		if NumFoodBatchesNeeded(e, uint16(len(e.People)), a) == 0 {
+			return false
+		}
+	}
+	return true
+}
+
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	currentF := m.GetField(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY)
-	if e.DestinationField == nil && currentF != nil && !((e.Vehicle.T.Water && currentF.Sailable()) || (!e.Vehicle.T.Water && currentF.Drivable())) {
+	if e.DestinationField == nil && currentF != nil && !e.Vehicle.T.Water && !currentF.Drivable() {
 		e.DestinationField = e.PickRandomNearBySpot(m)
 	}
 
@@ -132,6 +155,10 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 				e.Tasks[i].Pause(false)
 			}
 		}
+	}
+
+	if e.Autopilot && e.DestinationField == nil && e.NeedsFood() && !e.CloseToTown(e.Town, m) {
+		e.DestinationField = e.PickRandomSpotNearTownhall(m)
 	}
 
 	var constructions []*building.Construction

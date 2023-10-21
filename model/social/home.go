@@ -73,7 +73,7 @@ func FindWaterTask(h Home, numP uint16, deckOk bool, m navigation.IMap) {
 	}
 }
 
-func numFoodBatchesNeeded(h Home, numP uint16, a *artifacts.Artifact) int {
+func NumFoodBatchesNeeded(h Home, numP uint16, a *artifacts.Artifact) int {
 	tag := economy.SingleTag(economy.TagFoodShopping, a.Idx)
 	has := uint16(h.NumTasks("exchange", tag)*FoodTransportQuantity) + h.GetResources().Get(a)
 	needs := economy.BuyFoodOrDrinkPerPerson() * numP
@@ -89,7 +89,7 @@ func GetFoodTasks(h Home, numP uint16, mp *Marketplace) {
 	for _, a := range economy.Foods {
 		batch := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: FoodTransportQuantity}}
 		if int(mp.Price(batch)) < budget && mp.HasTraded(a) {
-			for i := 0; i < numFoodBatchesNeeded(h, numP, a); i++ {
+			for i := 0; i < NumFoodBatchesNeeded(h, numP, a); i++ {
 				foodBatches = append(foodBatches, a)
 			}
 		}
