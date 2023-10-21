@@ -43,13 +43,13 @@ func (e *Expedition) CloseToTown(town *Town, m navigation.IMap) bool {
 func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
 	for i := 0; i < 20; i++ {
 		f := m.RandomSpot(e.Town.Townhall.Household.Building.X, e.Town.Townhall.Household.Building.Y, MaxDistanceFromTown)
-		if f != nil && !((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
+		if f != nil && ((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
 			return f
 		}
 	}
 	for i := 0; i < 20; i++ {
 		f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, 5)
-		if f != nil && !((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
+		if f != nil && ((e.Vehicle.T.Water && f.Sailable()) || (!e.Vehicle.T.Water && f.Drivable())) {
 			return f
 		}
 	}
@@ -58,7 +58,7 @@ func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
 
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	currentF := m.GetField(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY)
-	if currentF != nil && !((e.Vehicle.T.Water && currentF.Sailable()) || (!e.Vehicle.T.Water && currentF.Drivable())) {
+	if e.DestinationField == nil && currentF != nil && !((e.Vehicle.T.Water && currentF.Sailable()) || (!e.Vehicle.T.Water && currentF.Drivable())) {
 		e.DestinationField = e.PickRandomNearBySpot(m)
 	}
 
