@@ -27,8 +27,10 @@ type Expedition struct {
 	Autopilot        bool
 }
 
+const MinDistance = 5
 const MaxDistanceFromTown = 15
 const StorageFullRatio = 0.8
+const NumTries = 5
 
 func (e *Expedition) DistanceToTown(town *Town) float64 {
 	return math.Abs(float64(town.Townhall.Household.Building.X)-float64(e.Vehicle.Traveller.FX)) +
@@ -47,8 +49,8 @@ func (e *Expedition) ValidCampSpot(f *navigation.Field, m navigation.IMap) bool 
 }
 
 func (e *Expedition) PickRandomSpotNearTownhall(town *Town, m navigation.IMap) *navigation.Field {
-	for d := 5; d <= MaxDistanceFromTown; d++ {
-		for i := 0; i < 5; i++ {
+	for d := MinDistance; d <= MaxDistanceFromTown; d++ {
+		for i := 0; i < NumTries; i++ {
 			f := m.RandomSpot(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y, d)
 			if f != nil && e.ValidCampSpot(f, m) {
 				return f
@@ -63,8 +65,8 @@ func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
 	if f != nil {
 		return f
 	}
-	for i := 0; i < 20; i++ {
-		f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, 5)
+	for i := 0; i < NumTries; i++ {
+		f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, MinDistance)
 		if f != nil && e.ValidCampSpot(f, m) {
 			return f
 		}
@@ -84,8 +86,7 @@ func (e *Expedition) NeedsFood() bool {
 func (e *Expedition) StorageFull() bool {
 	for a, targetQ := range e.StorageTarget {
 		if targetQ > 0 {
-			q := e.Resources.Get(a)
-			if float64(q)/float64(targetQ) < StorageFullRatio {
+			if float64(e.Resources.Get(a))/float64(targetQ) < StorageFullRatio {
 				return false
 			}
 		}
