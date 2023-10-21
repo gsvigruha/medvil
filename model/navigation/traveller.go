@@ -31,7 +31,6 @@ const PathTypeBoat PathType = 1
 const PathTypeCart PathType = 2
 
 type Person interface {
-	CacheKey() string
 }
 
 type PathComp struct {

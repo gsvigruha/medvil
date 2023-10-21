@@ -23,6 +23,7 @@ const ClothesPurple = 3
 const ClothesYellow = 4
 const ClothesMetal = 5
 const ClothesBrown = 6
+const ClothesOrange = 7
 
 func Move(v1, v2 [3]float64) [3]float64 {
 	var v3 [3]float64
@@ -220,7 +221,39 @@ func setClothesColor(cv *canvas.Canvas, color int, dark bool) {
 		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_purple" + sfx + ".png"))
 	case ClothesBlue:
 		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_blue" + sfx + ".png"))
+	case ClothesOrange:
+		cv.SetFillStyle(filepath.FromSlash("texture/people/textile_orange" + sfx + ".png"))
 	}
+}
+
+func GetClothes(t *navigation.Traveller, c *controller.Controller) int {
+	person := c.ReverseReferences.TravellerToPerson[t]
+	trader := c.ReverseReferences.TravellerToTrader[t]
+	if person != nil {
+		if person.Home.GetTown().Country.T == social.CountryTypeOutlaw {
+			return ClothesBrown
+		} else if person.Equipment.Weapon {
+			return ClothesMetal
+		} else if person.Home.GetBuilding() != nil {
+			switch person.Home.GetBuilding().Plan.BuildingType {
+			case building.BuildingTypeFarm:
+				return ClothesYellow
+			case building.BuildingTypeMine:
+				return ClothesRed
+			case building.BuildingTypeWorkshop:
+				return ClothesPurple
+			case building.BuildingTypeFactory:
+				return ClothesPurple
+			case building.BuildingTypeTownhall:
+				return ClothesBlue
+			default:
+				return ClothesBlue
+			}
+		} else if trader != nil {
+			return ClothesOrange
+		}
+	}
+	return ClothesBlue
 }
 
 func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, drawLeg bool, c *controller.Controller) {
@@ -241,28 +274,7 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	dirIdx := (c.Perspective - t.Direction) % 4
 	pm := animation.ProjectionMatrices[dirIdx]
 
-	var color int
-	person := c.ReverseReferences.TravellerToPerson[t]
-	if person != nil {
-		if person.Home.GetTown().Country.T == social.CountryTypeOutlaw {
-			color = ClothesBrown
-		} else if person.Equipment.Weapon {
-			color = ClothesMetal
-		} else if person.Home.GetBuilding() != nil {
-			switch person.Home.GetBuilding().Plan.BuildingType {
-			case building.BuildingTypeFarm:
-				color = ClothesYellow
-			case building.BuildingTypeMine:
-				color = ClothesRed
-			case building.BuildingTypeWorkshop:
-				color = ClothesPurple
-			case building.BuildingTypeFactory:
-				color = ClothesPurple
-			case building.BuildingTypeTownhall:
-				color = ClothesBlue
-			}
-		}
-	}
+	color := GetClothes(t, c)
 
 	if dirIdx >= 2 {
 		DrawLeftArm(cv, pm, m, x, y, p, color)
