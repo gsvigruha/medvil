@@ -41,6 +41,7 @@ var PlayerConf = CountryConf{
 		"log":       20,
 		"textile":   30,
 		"iron_bar":  6,
+		"paper":     6,
 	},
 	MarketplaceRes: map[string]uint16{
 		"vegetable": 50,

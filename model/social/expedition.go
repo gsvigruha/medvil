@@ -24,9 +24,13 @@ type Expedition struct {
 	Town             *Town
 	DestinationField *navigation.Field
 	Constructions    []*building.Construction
+	Autopilot        bool
 }
 
-const MaxDistanceFromTown = 10
+const MinDistance = 5
+const MaxDistanceFromTown = 15
+const StorageFullRatio = 0.8
+const NumTries = 5
 
 func (e *Expedition) DistanceToTown(town *Town) float64 {
 	return math.Abs(float64(town.Townhall.Household.Building.X)-float64(e.Vehicle.Traveller.FX)) +
@@ -40,7 +44,55 @@ func (e *Expedition) CloseToTown(town *Town, m navigation.IMap) bool {
 	return e.DistanceToTown(town) <= MaxDistanceFromTown
 }
 
+func (e *Expedition) ValidCampSpot(f *navigation.Field, m navigation.IMap) bool {
+	return ((e.Vehicle.T.Water && f.Sailable() && m.Shore(f.X, f.Y)) || (!e.Vehicle.T.Water && f.Drivable()))
+}
+
+func (e *Expedition) PickRandomSpotNearTownhall(town *Town, m navigation.IMap) *navigation.Field {
+	for d := MinDistance; d <= MaxDistanceFromTown; d++ {
+		for i := 0; i < NumTries; i++ {
+			f := m.RandomSpot(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y, d)
+			if f != nil && e.ValidCampSpot(f, m) {
+				return f
+			}
+		}
+	}
+	return nil
+}
+
+func (e *Expedition) NeedsFood() bool {
+	for _, a := range economy.Foods {
+		if NumFoodBatchesNeeded(e, uint16(len(e.People)), a) == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func (e *Expedition) StorageFull() bool {
+	for a, targetQ := range e.StorageTarget {
+		if targetQ > 0 {
+			if float64(e.Resources.Get(a))/float64(targetQ) < StorageFullRatio {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
+	currentF := m.GetField(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY)
+	if e.DestinationField == nil && currentF != nil && !e.Vehicle.T.Water && !currentF.Drivable() {
+		for i := 0; i < NumTries; i++ {
+			f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, MinDistance)
+			if f != nil && e.ValidCampSpot(f, m) {
+				e.DestinationField = f
+				break
+			}
+		}
+
+	}
+
 	if e.DestinationField != nil {
 		for i := 0; i < len(e.Tasks); i++ {
 			e.Tasks[i].Pause(true)
@@ -108,6 +160,20 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 		for i := 0; i < len(e.Tasks); i++ {
 			if e.Tasks[i].IsPaused() {
 				e.Tasks[i].Pause(false)
+			}
+		}
+	}
+
+	if Calendar.Hour == 0 && Calendar.Day == 1 && e.Autopilot {
+		if e.DestinationField == nil && e.NeedsFood() && !e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
+			e.DestinationField = e.PickRandomSpotNearTownhall(e.Town, m)
+		}
+		if e.DestinationField == nil && e.StorageFull() && e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
+			for _, town := range e.Town.Country.Towns {
+				if town.Supplier == e {
+					e.DestinationField = e.PickRandomSpotNearTownhall(town, m)
+					break
+				}
 			}
 		}
 	}
