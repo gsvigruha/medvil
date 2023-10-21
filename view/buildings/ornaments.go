@@ -53,6 +53,27 @@ func RenderOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer
 		cv.LineTo(rw.X[2]*0.8+rw.X[1]*0.2, rw.Y[2]*0.8+rw.Y[1]*0.2)
 		cv.ClosePath()
 		cv.Fill()
+	} else if unit.B.Plan.BuildingType == building.BuildingTypeWall {
+		cv.SetFillStyle(filepath.FromSlash("texture/building/ornament_wood_dark.png"))
+		cv.BeginPath()
+		cv.LineTo(rw.X[1], rw.Y[1])
+		cv.LineTo(rw.X[2], rw.Y[2])
+		cv.LineTo(rw.X[2], rw.Y[2]+5)
+		cv.LineTo(rw.X[1], rw.Y[1]+5)
+		cv.ClosePath()
+		cv.Fill()
+		cv.BeginPath()
+		cv.LineTo(rw.X[1], rw.Y[1])
+		cv.LineTo(rw.X[1], rw.Y[1]*0.75+rw.Y[0]*0.25)
+		cv.LineTo(rw.X[1]*0.8+rw.X[2]*0.2, rw.Y[1]*0.8+rw.Y[2]*0.2)
+		cv.ClosePath()
+		cv.Fill()
+		cv.BeginPath()
+		cv.LineTo(rw.X[2], rw.Y[2])
+		cv.LineTo(rw.X[2], rw.Y[2]*0.75+rw.Y[3]*0.25)
+		cv.LineTo(rw.X[2]*0.8+rw.X[1]*0.2, rw.Y[2]*0.8+rw.Y[1]*0.2)
+		cv.ClosePath()
+		cv.Fill()
 	}
 }
 
@@ -83,5 +104,24 @@ func RenderRoofFence(cv *canvas.Canvas, roof *building.RoofUnit, rp1 renderer.Po
 				cv.Fill()
 			}
 		}
+	}
+}
+
+func RenderWallOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer.RenderedField, rw renderer.RenderedWall) {
+	if unit.B.Plan.BuildingType == building.BuildingTypeWall {
+		if unit.B.Shape%5 == 1 {
+			cv.SetFillStyle(filepath.FromSlash("texture/building/wall_rose.png"))
+		} else if unit.B.Shape%5 == 2 {
+			cv.SetFillStyle(filepath.FromSlash("texture/building/wall_green.png"))
+		} else {
+			return
+		}
+		cv.BeginPath()
+		cv.LineTo(rw.X[0], rw.Y[0])
+		cv.LineTo(rw.X[1], rw.Y[1])
+		cv.LineTo(rw.X[2], rw.Y[2])
+		cv.LineTo(rw.X[3], rw.Y[3])
+		cv.ClosePath()
+		cv.Fill()
 	}
 }
