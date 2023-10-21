@@ -19,6 +19,8 @@ type ExpeditionController struct {
 
 const ExpeditionTaskGUIY = 0.8
 
+var paper = artifacts.GetArtifact("paper")
+
 func ExpeditionToControlPanel(cp *ControlPanel, expedition *social.Expedition) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	tc := &ExpeditionController{expeditionPanel: p, expedition: expedition, cp: cp}
@@ -68,6 +70,16 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 			p.AddImageLabel("tasks/goto", 24, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleDisabled)
 		}
 	}
+	p.AddButton(&gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "artifacts/paper", X: 24, Y: ExpeditionTaskGUIY*ControlPanelSY + float64(IconH*3), SX: IconS, SY: IconS},
+		Highlight: func() bool { return expedition.Autopilot },
+		ClickImpl: func() {
+			expedition.Autopilot = !expedition.Autopilot
+			if expedition.Autopilot && expedition.StorageTarget[paper] == 0 {
+				expedition.StorageTarget[paper] = 5
+			}
+		}})
+	p.AddTextLabel("Auto pilot", 24+float64(IconW), ExpeditionTaskGUIY*ControlPanelSY+float64(IconH)*3.5)
 }
 
 func (ec *ExpeditionController) CaptureMove(x, y float64) {

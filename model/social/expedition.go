@@ -24,6 +24,7 @@ type Expedition struct {
 	Town             *Town
 	DestinationField *navigation.Field
 	Constructions    []*building.Construction
+	Autopilot        bool
 }
 
 const MaxDistanceFromTown = 15
