@@ -60,20 +60,6 @@ func (e *Expedition) PickRandomSpotNearTownhall(town *Town, m navigation.IMap) *
 	return nil
 }
 
-func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
-	f := e.PickRandomSpotNearTownhall(e.Town, m)
-	if f != nil {
-		return f
-	}
-	for i := 0; i < NumTries; i++ {
-		f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, MinDistance)
-		if f != nil && e.ValidCampSpot(f, m) {
-			return f
-		}
-	}
-	return nil
-}
-
 func (e *Expedition) NeedsFood() bool {
 	for _, a := range economy.Foods {
 		if NumFoodBatchesNeeded(e, uint16(len(e.People)), a) == 0 {
@@ -97,7 +83,14 @@ func (e *Expedition) StorageFull() bool {
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	currentF := m.GetField(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY)
 	if e.DestinationField == nil && currentF != nil && !e.Vehicle.T.Water && !currentF.Drivable() {
-		e.DestinationField = e.PickRandomNearBySpot(m)
+		for i := 0; i < NumTries; i++ {
+			f := m.RandomSpot(e.Vehicle.Traveller.FX, e.Vehicle.Traveller.FY, MinDistance)
+			if f != nil && e.ValidCampSpot(f, m) {
+				e.DestinationField = f
+				break
+			}
+		}
+
 	}
 
 	if e.DestinationField != nil {

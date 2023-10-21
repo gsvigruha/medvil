@@ -76,7 +76,7 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		ClickImpl: func() {
 			expedition.Autopilot = !expedition.Autopilot
 			if expedition.Autopilot && expedition.StorageTarget[paper] == 0 {
-				expedition.StorageTarget[paper] = 5
+				expedition.StorageTarget[paper] = 6
 			}
 		}})
 	p.AddTextLabel("Auto pilot", 24+float64(IconW), ExpeditionTaskGUIY*ControlPanelSY+float64(IconH)*3.5)
