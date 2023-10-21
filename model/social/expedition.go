@@ -28,6 +28,7 @@ type Expedition struct {
 }
 
 const MaxDistanceFromTown = 15
+const StorageFullRatio = 0.8
 
 func (e *Expedition) DistanceToTown(town *Town) float64 {
 	return math.Abs(float64(town.Townhall.Household.Building.X)-float64(e.Vehicle.Traveller.FX)) +
@@ -45,10 +46,10 @@ func (e *Expedition) ValidCampSpot(f *navigation.Field, m navigation.IMap) bool 
 	return ((e.Vehicle.T.Water && f.Sailable() && m.Shore(f.X, f.Y)) || (!e.Vehicle.T.Water && f.Drivable()))
 }
 
-func (e *Expedition) PickRandomSpotNearTownhall(m navigation.IMap) *navigation.Field {
+func (e *Expedition) PickRandomSpotNearTownhall(town *Town, m navigation.IMap) *navigation.Field {
 	for d := 5; d <= MaxDistanceFromTown; d++ {
 		for i := 0; i < 5; i++ {
-			f := m.RandomSpot(e.Town.Townhall.Household.Building.X, e.Town.Townhall.Household.Building.Y, d)
+			f := m.RandomSpot(town.Townhall.Household.Building.X, town.Townhall.Household.Building.Y, d)
 			if f != nil && e.ValidCampSpot(f, m) {
 				return f
 			}
@@ -58,7 +59,7 @@ func (e *Expedition) PickRandomSpotNearTownhall(m navigation.IMap) *navigation.F
 }
 
 func (e *Expedition) PickRandomNearBySpot(m navigation.IMap) *navigation.Field {
-	f := e.PickRandomSpotNearTownhall(m)
+	f := e.PickRandomSpotNearTownhall(e.Town, m)
 	if f != nil {
 		return f
 	}
@@ -75,6 +76,18 @@ func (e *Expedition) NeedsFood() bool {
 	for _, a := range economy.Foods {
 		if NumFoodBatchesNeeded(e, uint16(len(e.People)), a) == 0 {
 			return false
+		}
+	}
+	return true
+}
+
+func (e *Expedition) StorageFull() bool {
+	for a, targetQ := range e.StorageTarget {
+		if targetQ > 0 {
+			q := e.Resources.Get(a)
+			if float64(q)/float64(targetQ) < StorageFullRatio {
+				return false
+			}
 		}
 	}
 	return true
@@ -157,8 +170,18 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 		}
 	}
 
-	if e.Autopilot && e.DestinationField == nil && e.NeedsFood() && !e.CloseToTown(e.Town, m) {
-		e.DestinationField = e.PickRandomSpotNearTownhall(m)
+	if Calendar.Hour == 0 && Calendar.Day == 1 && e.Autopilot {
+		if e.DestinationField == nil && e.NeedsFood() && !e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
+			e.DestinationField = e.PickRandomSpotNearTownhall(e.Town, m)
+		}
+		if e.DestinationField == nil && e.StorageFull() && e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
+			for _, town := range e.Town.Country.Towns {
+				if town.Supplier == e {
+					e.DestinationField = e.PickRandomSpotNearTownhall(town, m)
+					break
+				}
+			}
+		}
 	}
 
 	var constructions []*building.Construction
