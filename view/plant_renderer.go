@@ -33,11 +33,15 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 	i uint8, prevSeasonPhase uint8, c *controller.Controller, phase int) {
 
 	maturity := plant.Maturity(c.Map.Calendar)
-	ex := sx + math.Cos(angle)*length
-	ey := sy + math.Sin(angle)*length
+	ex := sx + math.Cos(angle)*length*1.2
+	ey := sy + math.Sin(angle)*length*1.2
+	bx := sx + math.Cos(angle)*length
+	by := sy + math.Sin(angle)*length
 
-	dx := math.Cos(angle+math.Pi/2) * width * math.Max(maturity, 0.2)
-	dy := math.Sin(angle+math.Pi/2) * width * math.Max(maturity, 0.2)
+	dx1 := math.Cos(angle+math.Pi/2) * width * math.Max(maturity, 0.2)
+	dy1 := math.Sin(angle+math.Pi/2) * width * math.Max(maturity, 0.2)
+	dx2 := math.Cos(angle+math.Pi/2) * width * math.Max(maturity, 0.2)
+	dy2 := math.Sin(angle+math.Pi/2) * width * math.Max(maturity, 0.2)
 
 	var seasonPhase = uint8(r.Intn(int(30 / plant.T.TreeT.BranchingIterations)))
 	if prevSeasonPhase >= seasonPhase {
@@ -45,10 +49,10 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 	}
 
 	if phase == PhaseBark {
-		cv.MoveTo(sx-dx, sy-dy)
-		cv.LineTo(ex-dx, ey-dy)
-		cv.LineTo(ex+dx, ey+dy)
-		cv.LineTo(sx+dx, sy+dy)
+		cv.MoveTo(sx-dx1, sy-dy1)
+		cv.LineTo(ex-dx2, ey-dy2)
+		cv.LineTo(ex+dx2, ey+dy2)
+		cv.LineTo(sx+dx1, sy+dy1)
 	} else {
 		if c.Map.Calendar.Season() != time.Winter {
 			if i > plant.T.TreeT.LeavesMinIterarion {
@@ -103,10 +107,10 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 			(c.Map.Calendar.Month == 2 && seasonPhase > c.Map.Calendar.Day) {
 			if angle < -math.Pi/2-math.Pi/4 || angle > -math.Pi/2+math.Pi/4 {
 				if PhaseSnowPatches == 1 {
-					cv.MoveTo(sx-dx, sy-dy)
-					cv.LineTo(ex-dx, ey-dy)
-					cv.LineTo(ex+dx, ey+dy)
-					cv.LineTo(sx+dx, sy+dy)
+					cv.MoveTo(sx-dx1, sy-dy1)
+					cv.LineTo(ex-dx2, ey-dy2)
+					cv.LineTo(ex+dx2, ey+dy2)
+					cv.LineTo(sx+dx1, sy+dy1)
 				}
 			}
 		}
@@ -127,7 +131,7 @@ func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
 		for branchI, _ := range plant.T.TreeT.BranchAngles {
 			nextWidth := width * plant.T.TreeT.BranchWidthD[branchI]
 			nextLength := length * plant.T.TreeT.BranchLengthD[branchI]
-			DrawBranch(cv, plant, r, ex, ey, nextWidth, nextLength, nextAngles[branchI], i+1, seasonPhase, c, phase)
+			DrawBranch(cv, plant, r, bx, by, nextWidth, nextLength, nextAngles[branchI], i+1, seasonPhase, c, phase)
 		}
 	}
 }
