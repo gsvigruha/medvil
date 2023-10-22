@@ -35,6 +35,14 @@ func Move(v1, v2 [3]float64) [3]float64 {
 
 func GetScreenY(t *navigation.Traveller, rf renderer.RenderedField, c *controller.Controller) float64 {
 	_, y := GetScreenXY(t, rf, c)
+	dirIdx := (c.Perspective - t.Direction) % 4
+	if t.T == navigation.TravellerTypeBoat || t.T == navigation.TravellerTypeTradingBoat {
+		y = y - 1
+	} else if t.T == navigation.TravellerTypeCart || t.T == navigation.TravellerTypeTradingCart {
+		if dirIdx == 1 || dirIdx == 2 {
+			y = y - 1
+		}
+	}
 	return y
 }
 
@@ -160,7 +168,7 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 		if t.T == navigation.TravellerTypePedestrianM || t.T == navigation.TravellerTypePedestrianF {
 			inBoat := t.Vehicle != nil && t.Vehicle.Water()
 			if inBoat {
-				y += 5
+				y += 10
 			}
 			DrawPerson(cv, t, x, y, !inBoat && !tallPlant(f), c)
 		} else if t.T == navigation.TravellerTypeBoat {
@@ -269,6 +277,8 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 		m = animation.PersonMotionMine
 	case navigation.MotionCut:
 		m = animation.PersonMotionCut
+	case navigation.MotionPaddle:
+		m = animation.PersonMotionPaddle
 	}
 	p := t.DrawingPhase()
 	dirIdx := (c.Perspective - t.Direction) % 4
@@ -313,11 +323,15 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 		cv.FillRect(x-2, y-28, 4, 3)
 		cv.FillRect(x-4, y-25, 8, 11)
 	} else if t.T == navigation.TravellerTypePedestrianF {
+		var h = 9.0
+		if !drawLeg {
+			h = 13.0
+		}
 		cv.BeginPath()
 		cv.LineTo(x-2, y-28)
 		cv.LineTo(x-4, y-25)
-		cv.LineTo(x-5, y-9)
-		cv.LineTo(x+5, y-9)
+		cv.LineTo(x-5, y-h)
+		cv.LineTo(x+5, y-h)
 		cv.LineTo(x+4, y-25)
 		cv.LineTo(x+2, y-28)
 		cv.ClosePath()

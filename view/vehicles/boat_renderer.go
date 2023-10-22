@@ -117,16 +117,20 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 	cv.Fill()
 
 	// Paddles
+	r1 := -r * 0.25
+	r2 := r
+	p0 := c.s - 2
+	h0 := c.h2 + 2
 	cv.SetStrokeStyle("#321")
 	cv.SetLineWidth(2)
 	cv.BeginPath()
-	cv.MoveTo(x+0*pm.XX-c.h2*pm.XY+c.s*pm.XZ, y+0*pm.YX-c.h2*pm.YY+c.s*pm.YZ)
-	cv.LineTo(x+r*pm.XX-0*pm.XY+c.p*pm.XZ, y+r*pm.YX-0*pm.YY+c.p*pm.YZ)
+	cv.MoveTo(x+r1*pm.XX-h0*pm.XY+p0*pm.XZ, y+r1*pm.YX-h0*pm.YY+p0*pm.YZ)
+	cv.LineTo(x+r2*pm.XX-0*pm.XY+c.p*pm.XZ, y+r2*pm.YX-0*pm.YY+c.p*pm.YZ)
 	cv.ClosePath()
 	cv.Stroke()
 	cv.BeginPath()
-	cv.MoveTo(x+0*pm.XX-c.h2*pm.XY-c.s*pm.XZ, y+0*pm.YX-c.h2*pm.YY-c.s*pm.YZ)
-	cv.LineTo(x+r*pm.XX-0*pm.XY-c.p*pm.XZ, y+r*pm.YX-0*pm.YY-c.p*pm.YZ)
+	cv.MoveTo(x+r1*pm.XX-h0*pm.XY-p0*pm.XZ, y+r1*pm.YX-h0*pm.YY-p0*pm.YZ)
+	cv.LineTo(x+r2*pm.XX-0*pm.XY-c.p*pm.XZ, y+r2*pm.YX-0*pm.YY-c.p*pm.YZ)
 	cv.ClosePath()
 	cv.Stroke()
 }

@@ -206,6 +206,9 @@ func (t *Traveller) MoveToCenter(m IMap) {
 
 func (t *Traveller) Move(m IMap) {
 	t.Motion = MotionWalk
+	if t.Vehicle != nil && t.Vehicle.Water() {
+		t.Motion = MotionPaddle
+	}
 	var steps = 1
 	{
 		f := m.GetField(t.FX, t.FY)

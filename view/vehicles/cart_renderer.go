@@ -93,6 +93,8 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	cv.Fill()
 	cv.Stroke()
 
+	cv.SetStrokeStyle("#432")
+	cv.SetLineWidth(2)
 	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_bottom.png"))
 	cv.BeginPath()
 	cv.LineTo(x+f1*pm.XX-h1*pm.XY-z*pm.XZ, y+f1*pm.YX-h1*pm.YY-z*pm.YZ)
@@ -101,9 +103,8 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	cv.LineTo(x+f2*pm.XX-h1*pm.XY-z*pm.XZ, y+f2*pm.YX-h1*pm.YY-z*pm.YZ)
 	cv.ClosePath()
 	cv.Fill()
+	cv.Stroke()
 
-	cv.SetStrokeStyle("#432")
-	cv.SetLineWidth(2)
 	cv.BeginPath()
 	cv.LineTo(x+f1*pm.XX-h2*pm.XY-z*pm.XZ, y+f1*pm.YX-h2*pm.YY-z*pm.YZ)
 	cv.LineTo(x+f1*pm.XX-h2*pm.XY+z*pm.XZ, y+f1*pm.YX-h2*pm.YY+z*pm.YZ)
