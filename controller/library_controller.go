@@ -184,7 +184,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		ClickImpl: func() {
 			cp.C.ViewSettings.Resolution = (cp.C.ViewSettings.Resolution + 1) % 3
 			cp.C.SaveSettings()
-			cp.HelperMessage("Adjust resolution")
+			cp.HelperMessage("Resolution: " + ResolutionStr(cp.C.ViewSettings.Resolution) + " (after restart)")
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "screen", X: 24 + float64(IconW)*2, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS},
@@ -192,7 +192,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		ClickImpl: func() {
 			cp.C.ViewSettings.FullScreen = !cp.C.ViewSettings.FullScreen
 			cp.C.SaveSettings()
-			cp.HelperMessage("Full screen")
+			cp.HelperMessage("Full screen (after restart)")
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24, Y: settingsTop + float64(IconH)*3, SX: IconS, SY: IconS},
@@ -207,6 +207,13 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			}
 			cp.C.SaveSettings()
 			cp.HelperMessage("Chart history length: " + strconv.Itoa(stats.MaxHistory) + " months")
+		}})
+
+	p.AddLargeTextLabel("Quit", 24, ControlPanelSY*0.85)
+	p.AddButton(&gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "quit", X: 24, Y: ControlPanelSY*0.85 + float64(IconS), SX: IconS, SY: IconS},
+		ClickImpl: func() {
+			cp.C.Window.Close()
 		}})
 
 	cp.SetDynamicPanel(lc)

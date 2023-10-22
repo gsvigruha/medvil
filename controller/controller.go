@@ -48,6 +48,17 @@ const ResolutionHD uint8 = 0
 const ResolutionFHD uint8 = 1
 const ResolutionQHD uint8 = 2
 
+func ResolutionStr(r uint8) string {
+	if r == ResolutionHD {
+		return "HD"
+	} else if r == ResolutionFHD {
+		return "FHD"
+	} else if r == ResolutionQHD {
+		return "QHD"
+	}
+	return ""
+}
+
 type ViewSettings struct {
 	ShowHouseIcons      bool
 	ShowAllocatedFields bool
