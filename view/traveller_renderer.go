@@ -191,9 +191,9 @@ func drawHair(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) 
 	cv.SetFillStyle(filepath.FromSlash("texture/people/hair.png"))
 	cv.BeginPath()
 	if t.T == navigation.TravellerTypePedestrianM {
-		cv.Ellipse(x, y-33, 3, 5, 0, 0, math.Pi*2, false)
+		cv.Ellipse(x, y-32, 3, 5, 0, 0, math.Pi*2, false)
 	} else if t.T == navigation.TravellerTypePedestrianF {
-		cv.Ellipse(x, y-30, 4, 6, 0, 0, math.Pi*2, false)
+		cv.Ellipse(x, y-29, 4, 6, 0, 0, math.Pi*2, false)
 	}
 	cv.ClosePath()
 	cv.Fill()
@@ -210,9 +210,9 @@ func drawHead(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 		dx = -1
 	}
 	if t.T == navigation.TravellerTypePedestrianM {
-		cv.DrawImage(texture, x-3+dx, y-36)
+		cv.DrawImage(texture, x-3+dx, y-35)
 	} else if t.T == navigation.TravellerTypePedestrianF {
-		cv.DrawImage(texture, x-3+dx, y-34)
+		cv.DrawImage(texture, x-3+dx, y-33)
 	}
 }
 
