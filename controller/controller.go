@@ -1,14 +1,18 @@
 package controller
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
+	"io/ioutil"
 	"medvil/maps"
 	"medvil/model"
 	"medvil/model/building"
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
+	"os"
 	"path/filepath"
 	"sync"
 )
@@ -40,20 +44,29 @@ const SizeSmall uint8 = 1
 const SizeMedium uint8 = 2
 const SizeLarge uint8 = 3
 
+const ResolutionHD uint8 = 0
+const ResolutionFHD uint8 = 1
+const ResolutionQHD uint8 = 2
+
+func ResolutionStr(r uint8) string {
+	if r == ResolutionHD {
+		return "HD"
+	} else if r == ResolutionFHD {
+		return "FHD"
+	} else if r == ResolutionQHD {
+		return "QHD"
+	}
+	return ""
+}
+
 type ViewSettings struct {
 	ShowHouseIcons      bool
 	ShowAllocatedFields bool
 	ShowLabels          bool
 	ShowSuggestions     bool
 	Size                uint8
-}
-
-var DefaultViewSettings = ViewSettings{
-	ShowHouseIcons:      true,
-	ShowAllocatedFields: false,
-	ShowLabels:          true,
-	ShowSuggestions:     true,
-	Size:                SizeAuto,
+	Resolution          uint8
+	FullScreen          bool
 }
 
 type Controller struct {
@@ -375,7 +388,7 @@ func Link(window Window, ctx *goglbackend.GLContext) *Controller {
 	wnd := window.GetGLFWWindow()
 	W, H := wnd.GetFramebufferSize()
 	controlPanel := &ControlPanel{}
-	c := &Controller{H: H, W: W, Window: window, ControlPanel: controlPanel, TimeSpeed: 1, ViewSettings: DefaultViewSettings}
+	c := &Controller{H: H, W: W, Window: window, ControlPanel: controlPanel, TimeSpeed: 1}
 	controlPanel.Setup(c, ctx)
 	wnd.SetKeyCallback(c.KeyboardCallback)
 	wnd.SetMouseButtonCallback(c.MouseButtonCallback)
@@ -444,4 +457,27 @@ func (c *Controller) LinkMap() {
 	c.ActiveSupplier = town
 	c.ControlPanel.GenerateButtons()
 	c.Refresh()
+}
+
+func LoadSettings() *ViewSettings {
+	jsonFile, err := os.Open(filepath.FromSlash("settings.json"))
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	viewSettings := &ViewSettings{}
+	json.Unmarshal(byteValue, viewSettings)
+	return viewSettings
+}
+
+func (c *Controller) SaveSettings() {
+	content, err := json.Marshal(c.ViewSettings)
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = ioutil.WriteFile(filepath.FromSlash("settings.json"), content, 0644)
+	if err != nil {
+		fmt.Println(err)
+	}
 }

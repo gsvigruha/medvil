@@ -39,33 +39,46 @@ type Window struct {
 }
 
 // CreateWindow creates a window using SDL and initializes the OpenGL context
-func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend.GLContext, error) {
+func CreateWindow(title string) (*Window, *canvas.Canvas, *goglbackend.GLContext, *controller.ViewSettings, error) {
 	runtime.LockOSThread()
 
 	// init GLFW
 	err := glfw.Init()
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("Error initializing GLFW: %v", err)
+		return nil, nil, nil, nil, fmt.Errorf("Error initializing GLFW: %v", err)
+	}
+
+	viewSettings := controller.LoadSettings()
+	var w, h int
+	if viewSettings.Resolution == controller.ResolutionHD {
+		w, h = 1280, 720
+	} else if viewSettings.Resolution == controller.ResolutionFHD {
+		w, h = 1920, 1080
+	} else if viewSettings.Resolution == controller.ResolutionQHD {
+		w, h = 2560, 1440
 	}
 
 	// the stencil size setting is required for the canvas to work
 	glfw.WindowHint(glfw.StencilBits, 8)
 	glfw.WindowHint(glfw.DepthBits, 0)
-	glfw.WindowHint(glfw.Samples, 2)
+	glfw.WindowHint(glfw.Samples, 4)
 	glfw.WindowHint(glfw.CocoaRetinaFramebuffer, 1)
 
 	// create window
-	//window, err := glfw.CreateWindow(w, h, title, glfw.GetPrimaryMonitor(), nil)
-	window, err := glfw.CreateWindow(w, h, title, nil, nil)
+	var monitor *glfw.Monitor
+	if viewSettings.FullScreen {
+		monitor = glfw.GetPrimaryMonitor()
+	}
+	window, err := glfw.CreateWindow(w, h, title, monitor, nil)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("Error creating window: %v", err)
+		return nil, nil, nil, nil, fmt.Errorf("Error creating window: %v", err)
 	}
 	window.MakeContextCurrent()
 
 	// init GL
 	err = gl.Init()
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("Error initializing GL: %v", err)
+		return nil, nil, nil, nil, fmt.Errorf("Error initializing GL: %v", err)
 	}
 
 	// set vsync on, enable multisample (if available)
@@ -75,14 +88,14 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 	// context
 	ctx, err := goglbackend.NewGLContext()
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("Error initializing GLContext: %v", err)
+		return nil, nil, nil, nil, fmt.Errorf("Error initializing GLContext: %v", err)
 	}
 
 	// load canvas GL backend
 	fbw, fbh := window.GetFramebufferSize()
 	backend, err := goglbackend.New(0, 0, fbw, fbh, ctx)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("Error loading GoGL backend: %v", err)
+		return nil, nil, nil, nil, fmt.Errorf("Error loading GoGL backend: %v", err)
 	}
 	fmt.Println("Frame buffer size: ", fbw, fbh)
 
@@ -109,15 +122,15 @@ func CreateWindow(w, h int, title string) (*Window, *canvas.Canvas, *goglbackend
 
 	icon, err := os.Open(filepath.FromSlash("icon/gui/house.png"))
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("Error loading icon: %v", err)
+		return nil, nil, nil, nil, fmt.Errorf("Error loading icon: %v", err)
 	}
 	iconImage, _, err := image.Decode(icon)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("Error loading icon: %v", err)
+		return nil, nil, nil, nil, fmt.Errorf("Error loading icon: %v", err)
 	}
 	window.SetIcon([]image.Image{iconImage})
 
-	return wnd, cv, ctx, nil
+	return wnd, cv, ctx, viewSettings, nil
 }
 
 func (wnd *Window) SetController(c *controller.Controller) {

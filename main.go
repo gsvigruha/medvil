@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"github.com/pkg/profile"
 	"log"
-	"medvil/controller"
-	//"medvil/maps"
 	"math/rand"
+	"medvil/controller"
 	"medvil/view"
 	"os"
 	"path/filepath"
@@ -31,23 +30,20 @@ func init() {
 }
 
 func main() {
-	path, err := os.Getwd()
-	if err == nil {
-		fmt.Println("CWD: " + path)
-	}
 	if os.Getenv("MEDVIL_PROFILE") == "1" {
 		// This crashes the Mac app bundle for some reason
 		defer profile.Start(profile.ProfilePath(".")).Stop()
 	}
 
 	rand.Seed(time.Now().UnixNano())
-	wnd, cv, ctx, err := view.CreateWindow(1920, 1080, "Medvil")
+	wnd, cv, ctx, viewSettings, err := view.CreateWindow("Medville")
 	if err != nil {
 		panic(err)
 	}
 	ic := view.NewImageCache(ctx)
 
 	c := controller.Link(wnd, ctx)
+	c.ViewSettings = *viewSettings
 	controller.LibraryToControlPanel(c.ControlPanel)
 
 	fmt.Println("Init done")

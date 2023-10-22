@@ -13,3 +13,4 @@ cp -r texture Medville.app/Contents/Resources
 cp -r samples Medville.app/Contents/Resources
 mkdir -p Medville.app/Contents/Resources/saved
 cp saved/example* Medville.app/Contents/Resources/saved
+cp settings.json.default Medville.app/Contents/Resources/settings.json
