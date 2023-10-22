@@ -59,6 +59,19 @@ func ResolutionStr(r uint8) string {
 	return ""
 }
 
+func IconSizeStr(s uint8) string {
+	if s == SizeAuto {
+		return "A"
+	} else if s == SizeSmall {
+		return "S"
+	} else if s == SizeMedium {
+		return "M"
+	} else if s == SizeLarge {
+		return "L"
+	}
+	return ""
+}
+
 type ViewSettings struct {
 	ShowHouseIcons      bool
 	ShowAllocatedFields bool
