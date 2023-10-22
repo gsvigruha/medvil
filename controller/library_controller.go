@@ -69,11 +69,11 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*5), w, gui.FontSize, 3, 10, 1, "Resources %v", true, &config.Resources).P)
 
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: 24, Y: nTop + float64(IconS*7), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: 24, Y: nTop + float64(IconS*6.5), SX: IconS, SY: IconS},
 		ClickImpl: func() {
 			go cp.C.NewMap(*config)
 		}})
-	p.AddTextLabel("Start a new game", 24+float64(LargeIconD), nTop+float64(IconS*7.66))
+	p.AddTextLabel("Start a new game", 24+float64(LargeIconD), nTop+float64(IconS*7.16))
 
 	p.AddLargeTextLabel("Load and save", 24, ControlPanelSY*0.45)
 
@@ -195,7 +195,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			cp.HelperMessage("Full screen (after restart)")
 		}})
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24, Y: settingsTop + float64(IconH)*3, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS},
 		Highlight: func() bool { return false },
 		ClickImpl: func() {
 			if stats.MaxHistory == 120 {
@@ -209,9 +209,9 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			cp.HelperMessage("Chart history length: " + strconv.Itoa(stats.MaxHistory) + " months")
 		}})
 
-	p.AddLargeTextLabel("Quit", 24, ControlPanelSY*0.85)
+	p.AddLargeTextLabel("Quit", 24, ControlPanelSY*0.8)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "quit", X: 24, Y: ControlPanelSY*0.85 + float64(IconS), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "quit", X: 24, Y: ControlPanelSY*0.8 + float64(IconH), SX: IconS, SY: IconS},
 		ClickImpl: func() {
 			cp.C.Window.Close()
 		}})
