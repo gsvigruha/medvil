@@ -120,6 +120,23 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 				cv.SetFillStyle(filepath.FromSlash("texture/building/" + RoofMaterialName(roof) + "_flat.png"))
 				util.RenderPolygon(cv, rp1, false)
 				RenderRoofFence(cv, roof, rp1, c)
+
+				if roof.B.Plan.BuildingType == building.BuildingTypeWorkshop || roof.B.Plan.BuildingType == building.BuildingTypeFactory {
+					dirIdx0 := (c.Perspective + 0) % 4
+					dirIdx1 := (c.Perspective + 1) % 4
+					dirIdx2 := (c.Perspective + 2) % 4
+					dirIdx3 := (c.Perspective + 3) % 4
+
+					if roof.B.Shape%3 == 0 {
+						px := (rf.X[dirIdx0]*3.0 + rf.X[dirIdx2]*1.0) / 4.0
+						py := ((rf.Y[dirIdx0]-rf.Z[dirIdx0]-z)*3.0 + (rf.Y[dirIdx2]-rf.Z[dirIdx2]-z)*1.0) / 4.0
+						cv.DrawImage(filepath.FromSlash("texture/building/plant_1.png"), px-16, py-32)
+					} else if roof.B.Shape%3 == 1 {
+						px := (rf.X[dirIdx3]*3.0 + rf.X[dirIdx1]*1.0) / 4.0
+						py := ((rf.Y[dirIdx3]-rf.Z[dirIdx3]-z)*3.0 + (rf.Y[dirIdx1]-rf.Z[dirIdx1]-z)*1.0) / 4.0
+						cv.DrawImage(filepath.FromSlash("texture/building/plant_2.png"), px-16, py-32)
+					}
+				}
 			}
 		}
 	} else if roof.Roof.RoofType == building.RoofTypeRamp {
