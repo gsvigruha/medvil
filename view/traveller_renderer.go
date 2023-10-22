@@ -188,10 +188,10 @@ func DrawTraveller(cv *canvas.Canvas, t *navigation.Traveller, x float64, y floa
 }
 
 func drawHair(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) {
-	cv.SetFillStyle("#630")
+	cv.SetFillStyle(filepath.FromSlash("texture/people/hair.png"))
 	cv.BeginPath()
 	if t.T == navigation.TravellerTypePedestrianM {
-		cv.Ellipse(x, y-32, 3, 4, 0, 0, math.Pi*2, false)
+		cv.Ellipse(x, y-32, 3, 5, 0, 0, math.Pi*2, false)
 	} else if t.T == navigation.TravellerTypePedestrianF {
 		cv.Ellipse(x, y-29, 4, 6, 0, 0, math.Pi*2, false)
 	}
@@ -199,16 +199,21 @@ func drawHair(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) 
 	cv.Fill()
 }
 
-func drawHead(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) {
-	cv.SetFillStyle("#A64")
-	cv.BeginPath()
-	if t.T == navigation.TravellerTypePedestrianM {
-		cv.Arc(x, y-30, 3, 0, math.Pi*2, false)
-	} else if t.T == navigation.TravellerTypePedestrianF {
-		cv.Arc(x, y-28, 3, 0, math.Pi*2, false)
+func drawHead(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, c *controller.Controller) {
+	dirIdx := (c.Perspective - t.Direction) % 4
+	var texture string
+	var dx = 0.0
+	if dirIdx <= 1 {
+		texture = filepath.FromSlash("texture/people/face_right.png")
+	} else {
+		texture = filepath.FromSlash("texture/people/face_left.png")
+		dx = -1
 	}
-	cv.ClosePath()
-	cv.Fill()
+	if t.T == navigation.TravellerTypePedestrianM {
+		cv.DrawImage(texture, x-3+dx, y-35)
+	} else if t.T == navigation.TravellerTypePedestrianF {
+		cv.DrawImage(texture, x-3+dx, y-33)
+	}
 }
 
 func setClothesColor(cv *canvas.Canvas, color int, dark bool) {
@@ -314,7 +319,7 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	if dirIdx == 0 || dirIdx == 3 {
 		drawHair(cv, t, x, y)
 	} else {
-		drawHead(cv, t, x, y)
+		drawHead(cv, t, x, y, c)
 	}
 
 	// Body
@@ -328,18 +333,18 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 			h = 13.0
 		}
 		cv.BeginPath()
-		cv.LineTo(x-2, y-28)
-		cv.LineTo(x-4, y-25)
+		cv.LineTo(x-2, y-26)
+		cv.LineTo(x-4, y-24)
 		cv.LineTo(x-5, y-h)
 		cv.LineTo(x+5, y-h)
-		cv.LineTo(x+4, y-25)
-		cv.LineTo(x+2, y-28)
+		cv.LineTo(x+4, y-24)
+		cv.LineTo(x+2, y-26)
 		cv.ClosePath()
 		cv.Fill()
 	}
 
 	if dirIdx == 0 || dirIdx == 3 {
-		drawHead(cv, t, x, y)
+		drawHead(cv, t, x, y, c)
 	} else {
 		drawHair(cv, t, x, y)
 	}
