@@ -89,6 +89,7 @@ func RenderRoofFence(cv *canvas.Canvas, roof *building.RoofUnit, rp1 renderer.Po
 				for j := float64(0); j <= 5; j++ {
 					cv.BeginPath()
 					cv.LineTo(rp1.Points[rfIdx1].X+dx*j-3, rp1.Points[rfIdx1].Y+dy*j)
+					cv.LineTo(rp1.Points[rfIdx1].X+dx*j, rp1.Points[rfIdx1].Y+dy*j+2)
 					cv.LineTo(rp1.Points[rfIdx1].X+dx*j+3, rp1.Points[rfIdx1].Y+dy*j)
 					cv.LineTo(rp1.Points[rfIdx1].X+dx*j+3, rp1.Points[rfIdx1].Y+dy*j-15)
 					cv.LineTo(rp1.Points[rfIdx1].X+dx*j-3, rp1.Points[rfIdx1].Y+dy*j-15)

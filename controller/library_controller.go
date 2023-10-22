@@ -69,7 +69,9 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddPanel(gui.CreateNumberPaneFromVal(24, nTop+float64(IconS*5), w, gui.FontSize, 3, 10, 1, "Resources %v", true, &config.Resources).P)
 
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: 24, Y: nTop + float64(IconS*6.5), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: 24, Y: nTop + float64(IconS*6.5), SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Start a new game")
+		}},
 		ClickImpl: func() {
 			go cp.C.NewMap(*config)
 		}})
@@ -107,14 +109,18 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddDropDown(filesDropdown)
 
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "load", X: float64(24 + IconW*0), Y: lasTop, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "load", X: float64(24 + IconW*0), Y: lasTop, SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Load game")
+		}},
 		ClickImpl: func() {
 			go cp.C.Load(filesDropdown.GetSelectedValue())
 			CPActionCancel(cp.C)
 		}})
 
 	saveButton := &gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "save", X: float64(24 + IconW*1), Y: lasTop, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "save", X: float64(24 + IconW*1), Y: lasTop, SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Save game")
+		}},
 		ClickImpl: func() {
 			go cp.C.Save(filesDropdown.GetSelectedValue())
 		}}
@@ -124,7 +130,9 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddButton(saveButton)
 
 	plusButton := &gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "plus_save", X: float64(24 + IconW*1), Y: lasTop + float64(IconH*1), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "plus_save", X: float64(24 + IconW*1), Y: lasTop + float64(IconH*1), SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Save game to a new file")
+		}},
 		ClickImpl: func() {
 			go cp.C.Save(lc.fileTextField.Text + ".mdvl")
 			CPActionCancel(cp.C)
@@ -137,81 +145,107 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	settingsTop := ControlPanelSY * 0.65
 	p.AddLargeTextLabel("Settings", 24, settingsTop)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24 + float64(IconW)*0, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24 + float64(IconW)*0, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Show warning icons for households")
+		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowHouseIcons },
 		ClickImpl: func() {
 			cp.C.ViewSettings.ShowHouseIcons = !cp.C.ViewSettings.ShowHouseIcons
 			cp.C.SaveSettings()
-			cp.HelperMessage("Show warning icons for houses")
 		}})
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24 + float64(IconW)*1, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24 + float64(IconW)*1, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Show flags for allocated land")
+		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowAllocatedFields },
 		ClickImpl: func() {
 			cp.C.ViewSettings.ShowAllocatedFields = !cp.C.ViewSettings.ShowAllocatedFields
 			cp.C.SaveSettings()
-			cp.HelperMessage("Show flags for allocated land")
 		}})
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "label", X: 24 + float64(IconW)*2, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "label", X: 24 + float64(IconW)*2, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Show town and expedition labels")
+		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowLabels },
 		ClickImpl: func() {
 			cp.C.ViewSettings.ShowLabels = !cp.C.ViewSettings.ShowLabels
 			cp.C.SaveSettings()
-			cp.HelperMessage("Show town and expedition names")
 		}})
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Show suggestions")
+		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
 		ClickImpl: func() {
 			cp.C.ViewSettings.ShowSuggestions = !cp.C.ViewSettings.ShowSuggestions
 			cp.C.SaveSettings()
-			cp.HelperMessage("Show helper suggestions")
 		}})
+
+	if cp.C.Map == nil {
+		p.AddButton(&gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "icon_size", X: 24, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
+				cp.HelperMessage("Adjust icon sizes")
+			}},
+			Highlight: func() bool { return cp.C.ViewSettings.Size == SizeAuto },
+			ClickImpl: func() {
+				cp.C.ViewSettings.Size = (cp.C.ViewSettings.Size + 1) % 4
+				cp.C.SaveSettings()
+				cp.SetupDims(cp.C.W, cp.C.H)
+				cp.C.ShowLibraryController()
+			}})
+		p.AddDynamicTextLabel(func() string { return IconSizeStr(cp.C.ViewSettings.Size) }, 24+float64(IconW)/3, settingsTop+float64(IconH)*3)
+		p.AddButton(&gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24 + float64(IconW), Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
+				cp.HelperMessage("Resolution: " + ResolutionStr(cp.C.ViewSettings.Resolution) + " (applied after restart)")
+			}},
+			Highlight: func() bool { return false },
+			ClickImpl: func() {
+				cp.C.ViewSettings.Resolution = (cp.C.ViewSettings.Resolution + 1) % 3
+				cp.C.SaveSettings()
+			}})
+		p.AddDynamicTextLabel(func() string { return ResolutionStr(cp.C.ViewSettings.Resolution) }, 24+float64(IconW), settingsTop+float64(IconH)*3)
+		p.AddButton(&gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "screen", X: 24 + float64(IconW)*2, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
+				cp.HelperMessage("Full screen (applied after restart)")
+			}},
+			Highlight: func() bool { return cp.C.ViewSettings.FullScreen },
+			ClickImpl: func() {
+				cp.C.ViewSettings.FullScreen = !cp.C.ViewSettings.FullScreen
+				cp.C.SaveSettings()
+			}})
+		p.AddButton(&gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
+				cp.HelperMessage("Chart history length")
+			}},
+			Highlight: func() bool { return false },
+			ClickImpl: func() {
+				if stats.MaxHistory == 120 {
+					stats.MaxHistory = 1200
+				} else if stats.MaxHistory == 1200 {
+					stats.MaxHistory = 2400
+				} else {
+					stats.MaxHistory = 120
+				}
+				cp.C.SaveSettings()
+			}})
+		p.AddDynamicTextLabel(func() string { return strconv.Itoa(stats.MaxHistory/12) + "Y" }, 24+float64(IconW)*3, settingsTop+float64(IconH)*3)
+	}
+
+	p.AddLargeTextLabel("Quit", 24, ControlPanelSY*0.85)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "icon_size", X: 24, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS},
-		Highlight: func() bool { return cp.C.ViewSettings.Size == SizeAuto },
+		ButtonGUI: gui.ButtonGUI{Icon: "cancel_gold", X: 24, Y: ControlPanelSY*0.85 + float64(IconH)/2, SX: IconS, SY: IconS,
+			OnHoover: func() {
+				cp.HelperMessage("Stop game in progress")
+			},
+			Disabled: func() bool { return cp.C.Map == nil }},
 		ClickImpl: func() {
-			cp.C.ViewSettings.Size = (cp.C.ViewSettings.Size + 1) % 4
-			cp.C.SaveSettings()
-			cp.HelperMessage("Adjust icon sizes")
-			cp.SetupDims(cp.C.W, cp.C.H)
+			cp.C.Map = nil
 			cp.C.ShowLibraryController()
 		}})
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24 + float64(IconW), Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS},
-		Highlight: func() bool { return false },
-		ClickImpl: func() {
-			cp.C.ViewSettings.Resolution = (cp.C.ViewSettings.Resolution + 1) % 3
-			cp.C.SaveSettings()
-			cp.HelperMessage("Resolution: " + ResolutionStr(cp.C.ViewSettings.Resolution) + " (after restart)")
-		}})
-	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "screen", X: 24 + float64(IconW)*2, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS},
-		Highlight: func() bool { return cp.C.ViewSettings.FullScreen },
-		ClickImpl: func() {
-			cp.C.ViewSettings.FullScreen = !cp.C.ViewSettings.FullScreen
-			cp.C.SaveSettings()
-			cp.HelperMessage("Full screen (after restart)")
-		}})
-	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS},
-		Highlight: func() bool { return false },
-		ClickImpl: func() {
-			if stats.MaxHistory == 120 {
-				stats.MaxHistory = 1200
-			} else if stats.MaxHistory == 1200 {
-				stats.MaxHistory = 2400
-			} else {
-				stats.MaxHistory = 120
-			}
-			cp.C.SaveSettings()
-			cp.HelperMessage("Chart history length: " + strconv.Itoa(stats.MaxHistory) + " months")
-		}})
-
-	p.AddLargeTextLabel("Quit", 24, ControlPanelSY*0.8)
-	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "quit", X: 24, Y: ControlPanelSY*0.8 + float64(IconH), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "quit", X: 24 + float64(IconW), Y: ControlPanelSY*0.85 + float64(IconH)/2, SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Quit Medville")
+		}},
 		ClickImpl: func() {
 			cp.C.Window.Close()
 		}})

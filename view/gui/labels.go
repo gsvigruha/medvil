@@ -44,6 +44,27 @@ func (l *TextLabel) Render(cv *canvas.Canvas) {
 
 func (l *TextLabel) CaptureClick(x float64, y float64) {}
 
+type DynamicTextLabel struct {
+	X     float64
+	Y     float64
+	SX    float64
+	SY    float64
+	Text  func() string
+	Large bool
+}
+
+func (l *DynamicTextLabel) Render(cv *canvas.Canvas) {
+	cv.SetFillStyle("#FED")
+	if l.Large {
+		cv.SetFont(Font, FontSize*1.5)
+	} else {
+		cv.SetFont(Font, FontSize)
+	}
+	cv.FillText(l.Text(), l.X+8, l.Y+(l.SY+FontSize)/2)
+}
+
+func (l *DynamicTextLabel) CaptureClick(x float64, y float64) {}
+
 const ImageLabelStyleRegular = 0
 const ImageLabelStyleHighlight = 1
 const ImageLabelStyleDisabled = 2

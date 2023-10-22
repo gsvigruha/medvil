@@ -111,6 +111,12 @@ func (p *Panel) AddLargeTextLabel(text string, x float64, y float64) *TextLabel 
 	return l
 }
 
+func (p *Panel) AddDynamicTextLabel(text func() string, x float64, y float64) *DynamicTextLabel {
+	l := &DynamicTextLabel{Text: text, X: x, Y: y}
+	p.Labels = append(p.Labels, l)
+	return l
+}
+
 func (p *Panel) AddImageLabel(icon string, x, y, sx, sy float64, style uint8) *ImageLabel {
 	l := &ImageLabel{Icon: icon, X: x, Y: y, SX: sx, SY: sy, Style: style}
 	p.Labels = append(p.Labels, l)

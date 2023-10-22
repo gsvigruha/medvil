@@ -6,3 +6,4 @@ const MotionFieldWork = 2
 const MotionBuild = 3
 const MotionMine = 4
 const MotionCut = 5
+const MotionPaddle = 6

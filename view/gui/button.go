@@ -25,10 +25,14 @@ type ButtonGUI struct {
 	Texture  string
 	Hoover   bool
 	Disabled func() bool
+	OnHoover func()
 }
 
 func (b *ButtonGUI) SetHoover(h bool) {
 	b.Hoover = h
+	if b.OnHoover != nil && h {
+		b.OnHoover()
+	}
 }
 
 func (b ButtonGUI) Render(cv *canvas.Canvas) {
