@@ -191,9 +191,9 @@ func drawHair(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) 
 	cv.SetFillStyle(filepath.FromSlash("texture/people/hair.png"))
 	cv.BeginPath()
 	if t.T == navigation.TravellerTypePedestrianM {
-		cv.Ellipse(x, y-32, 3, 5, 0, 0, math.Pi*2, false)
+		cv.Ellipse(x, y-33, 3, 5, 0, 0, math.Pi*2, false)
 	} else if t.T == navigation.TravellerTypePedestrianF {
-		cv.Ellipse(x, y-29, 4, 6, 0, 0, math.Pi*2, false)
+		cv.Ellipse(x, y-30, 4, 6, 0, 0, math.Pi*2, false)
 	}
 	cv.ClosePath()
 	cv.Fill()
@@ -210,9 +210,9 @@ func drawHead(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 		dx = -1
 	}
 	if t.T == navigation.TravellerTypePedestrianM {
-		cv.DrawImage(texture, x-3+dx, y-35)
+		cv.DrawImage(texture, x-3+dx, y-36)
 	} else if t.T == navigation.TravellerTypePedestrianF {
-		cv.DrawImage(texture, x-3+dx, y-33)
+		cv.DrawImage(texture, x-3+dx, y-34)
 	}
 }
 
@@ -325,20 +325,27 @@ func DrawPerson(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64
 	// Body
 	setClothesColor(cv, color, false)
 	if t.T == navigation.TravellerTypePedestrianM {
-		cv.FillRect(x-2, y-28, 4, 3)
-		cv.FillRect(x-4, y-25, 8, 11)
+		cv.BeginPath()
+		cv.LineTo(x-1, y-28)
+		cv.LineTo(x-4, y-25)
+		cv.LineTo(x-4, y-14)
+		cv.LineTo(x+4, y-14)
+		cv.LineTo(x+4, y-25)
+		cv.LineTo(x+1, y-28)
+		cv.ClosePath()
+		cv.Fill()
 	} else if t.T == navigation.TravellerTypePedestrianF {
 		var h = 9.0
 		if !drawLeg {
 			h = 13.0
 		}
 		cv.BeginPath()
-		cv.LineTo(x-2, y-26)
+		cv.LineTo(x-1, y-26)
 		cv.LineTo(x-4, y-24)
 		cv.LineTo(x-5, y-h)
 		cv.LineTo(x+5, y-h)
 		cv.LineTo(x+4, y-24)
-		cv.LineTo(x+2, y-26)
+		cv.LineTo(x+1, y-26)
 		cv.ClosePath()
 		cv.Fill()
 	}
