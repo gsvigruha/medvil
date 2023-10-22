@@ -121,7 +121,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 				util.RenderPolygon(cv, rp1, false)
 				RenderRoofFence(cv, roof, rp1, c)
 
-				if roof.B.Plan.BuildingType == building.BuildingTypeWorkshop {
+				if roof.B.Plan.BuildingType == building.BuildingTypeWorkshop || roof.B.Plan.BuildingType == building.BuildingTypeFactory {
 					dirIdx0 := (c.Perspective + 0) % 4
 					dirIdx1 := (c.Perspective + 1) % 4
 					dirIdx2 := (c.Perspective + 2) % 4
