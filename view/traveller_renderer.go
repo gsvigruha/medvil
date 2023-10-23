@@ -191,7 +191,7 @@ func drawHair(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64) 
 	cv.SetFillStyle(filepath.FromSlash("texture/people/hair.png"))
 	cv.BeginPath()
 	if t.T == navigation.TravellerTypePedestrianM {
-		cv.Ellipse(x, y-32, 3, 5, 0, 0, math.Pi*2, false)
+		cv.Ellipse(x, y-32, 4, 5, 0, 0, math.Pi*2, false)
 	} else if t.T == navigation.TravellerTypePedestrianF {
 		cv.Ellipse(x, y-29, 4, 6, 0, 0, math.Pi*2, false)
 	}

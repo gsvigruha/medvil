@@ -3,6 +3,7 @@ package vehicles
 import (
 	//"fmt"
 	"github.com/tfriedel6/canvas"
+	"image/color"
 	"math"
 	"medvil/controller"
 	"medvil/model/navigation"
@@ -79,6 +80,8 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 		r = -r
 	}
 
+	cv.SetStrokeStyle(color.RGBA{R: 100, G: 80, B: 70, A: 160})
+	cv.SetLineWidth(1)
 	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_bottom.png"))
 	cv.BeginPath()
 	cv.LineTo(x-c.f1*pm.XX+0*pm.XY+0*pm.XZ, y-c.f1*pm.YX+0*pm.YY+0*pm.YZ)
@@ -88,6 +91,7 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 	cv.LineTo(x+c.f2*pm.XX+0*pm.XY+c.z*pm.XZ, y+c.f2*pm.YX+0*pm.YY+c.z*pm.YZ)
 	cv.LineTo(x-c.f2*pm.XX+0*pm.XY+c.z*pm.XZ, y-c.f2*pm.YX+0*pm.YY+c.z*pm.YZ)
 	cv.ClosePath()
+	cv.Stroke()
 	cv.Fill()
 
 	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_side.png"))
@@ -101,6 +105,9 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 	cv.LineTo(x-c.f2*pm.XX-c.h2*pm.XY-c.s*pm.XZ, y-c.f2*pm.YX-c.h2*pm.YY-c.s*pm.YZ)
 	cv.LineTo(x-c.f1*pm.XX-c.h1*pm.XY+0*pm.XZ, y-c.f1*pm.YX-c.h1*pm.YY+0*pm.YZ)
 	cv.ClosePath()
+	if dirIdx >= 2 {
+		cv.Stroke()
+	}
 	cv.Fill()
 
 	cv.SetFillStyle(filepath.FromSlash("texture/vehicle/boat_side.png"))
@@ -114,6 +121,9 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 	cv.LineTo(x-c.f2*pm.XX-c.h2*pm.XY+c.s*pm.XZ, y-c.f2*pm.YX-c.h2*pm.YY+c.s*pm.YZ)
 	cv.LineTo(x-c.f1*pm.XX-c.h1*pm.XY+0*pm.XZ, y-c.f1*pm.YX-c.h1*pm.YY+0*pm.YZ)
 	cv.ClosePath()
+	if dirIdx < 2 {
+		cv.Stroke()
+	}
 	cv.Fill()
 
 	// Paddles
@@ -121,8 +131,15 @@ func drawBoatBody(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float
 	r2 := r
 	p0 := c.s - 2
 	h0 := c.h2 + 2
+	cv.SetStrokeStyle(color.RGBA{R: 100, G: 80, B: 70, A: 160})
+	cv.SetLineWidth(3)
+	drawPaddles(cv, x, y, r1, r2, h0, p0, c, pm)
 	cv.SetStrokeStyle("#321")
 	cv.SetLineWidth(2)
+	drawPaddles(cv, x, y, r1, r2, h0, p0, c, pm)
+}
+
+func drawPaddles(cv *canvas.Canvas, x, y, r1, r2, h0, p0 float64, c BoatConfig, pm animation.ProjectionMatrix) {
 	cv.BeginPath()
 	cv.MoveTo(x+r1*pm.XX-h0*pm.XY+p0*pm.XZ, y+r1*pm.YX-h0*pm.YY+p0*pm.YZ)
 	cv.LineTo(x+r2*pm.XX-0*pm.XY+c.p*pm.XZ, y+r2*pm.YX-0*pm.YY+c.p*pm.YZ)
