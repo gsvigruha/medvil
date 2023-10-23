@@ -220,7 +220,7 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 	cv.SetFillStyle("#22B")
 	cv.SetFont(gui.Font, gui.FontSize)
 	text := strconv.Itoa(int(max))
-	cv.FillText(text, ControlPanelSX-60-float64(len(text))*gui.FontSize*0.5, float64(y)-lh)
+	cv.FillText(text, ControlPanelSX-60-float64(len(text))*gui.FontSize*0.5, float64(y)-lh-gui.FontSize*0.25)
 }
 
 func DrawStats(cp *ControlPanel, p *gui.Panel) {
