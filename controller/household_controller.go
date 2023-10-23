@@ -101,10 +101,14 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	}
 	s := IconS / 2
 	p.AddButton(&HouseholdControllerButton{
-		b: &gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 24 - s, Y: PersonGUIY * ControlPanelSY, SX: s, SY: s},
+		b: &gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 24 - s, Y: PersonGUIY * ControlPanelSY, SX: s, SY: s, OnHoover: func() {
+			cp.HelperMessage("Add people to this household")
+		}},
 		h: h, action: IncreaseHouseholdTargetNumPeople})
 	p.AddButton(&HouseholdControllerButton{
-		b: &gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 24 - s, Y: PersonGUIY*ControlPanelSY + s, SX: s, SY: s},
+		b: &gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 24 - s, Y: PersonGUIY*ControlPanelSY + s, SX: s, SY: s, OnHoover: func() {
+			cp.HelperMessage("Remove people from this household")
+		}},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
 	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(h.GetHeating())/100, false)
 	p.AddScaleLabel("barrel", 24+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false)
