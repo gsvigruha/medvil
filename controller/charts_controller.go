@@ -39,6 +39,9 @@ func (l *ChartsLabel) Render(cv *canvas.Canvas) {
 type ElementLookup func(stats.HistoryElement) uint32
 
 func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
+	ch := int(ControlPanelSY*0.3) / 4
+	chf := float64(ControlPanelSY*0.3) / 4
+
 	cv.ClearRect(0, 0, float64(l.img.Width()), float64(l.img.Height()))
 	cv.SetFillStyle(filepath.FromSlash("texture/parchment.png"))
 	cv.FillRect(0, 0, float64(l.img.Width()), float64(l.img.Height()))
@@ -46,28 +49,28 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 	cv.SetLineWidth(2)
 	switch l.state {
 	case 1:
-		l.drawChart(cv, "#22B", 135, []string{"icon/gui/person"}, stats.HistoryElement.GetPeople, false)
-		l.drawChart(cv, "#22B", 270, []string{"icon/gui/death"}, stats.HistoryElement.GetDeaths, true)
-		l.drawChart(cv, "#22B", 405, []string{"icon/gui/emigration"}, stats.HistoryElement.GetDepartures, true)
+		l.drawChart(cv, "#22B", ch*1, []string{"icon/gui/person"}, stats.HistoryElement.GetPeople, false)
+		l.drawChart(cv, "#22B", ch*2, []string{"icon/gui/death"}, stats.HistoryElement.GetDeaths, true)
+		l.drawChart(cv, "#22B", ch*3, []string{"icon/gui/emigration"}, stats.HistoryElement.GetDepartures, true)
 		l.helperMsg = "Population size, deaths and emigration"
 	case 2:
-		l.drawChart(cv, "#22B", 135, []string{"icon/gui/barrel"}, stats.HistoryElement.GetArtifacts, false)
-		l.drawChart(cv, "#22B", 270, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedQuantity, true)
-		l.drawChart(cv, "#22B", 405, []string{"icon/gui/market", "icon/gui/coin"}, stats.HistoryElement.GetExchangedPrice, true)
+		l.drawChart(cv, "#22B", ch*1, []string{"icon/gui/barrel"}, stats.HistoryElement.GetArtifacts, false)
+		l.drawChart(cv, "#22B", ch*2, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedQuantity, true)
+		l.drawChart(cv, "#22B", ch*3, []string{"icon/gui/market", "icon/gui/coin"}, stats.HistoryElement.GetExchangedPrice, true)
 		l.helperMsg = "Products and market transactions"
 	case 3:
-		l.drawChart(cv, "#22B", 135, icons(economy.FoodArtifacts), stats.HistoryElement.GetFoodPrice, false)
-		l.drawChart(cv, "#22B", 270, icons(economy.HouseholdItems), stats.HistoryElement.GetHouseholdItemPrices, false)
-		l.drawChart(cv, "#22B", 405, icons(economy.BuildingMaterials), stats.HistoryElement.GetBuildingMaterialsPrice, false)
+		l.drawChart(cv, "#22B", ch*1, icons(economy.FoodArtifacts), stats.HistoryElement.GetFoodPrice, false)
+		l.drawChart(cv, "#22B", ch*2, icons(economy.HouseholdItems), stats.HistoryElement.GetHouseholdItemPrices, false)
+		l.drawChart(cv, "#22B", ch*3, icons(economy.BuildingMaterials), stats.HistoryElement.GetBuildingMaterialsPrice, false)
 		l.helperMsg = "Average price of food, building materials"
 	case 4:
-		l.drawChart(cv, "#22B", 135, []string{"icon/gui/tasks/transport"}, stats.HistoryElement.GetTransportTaskTime, true)
-		l.drawChart(cv, "#22B", 270, []string{"icon/gui/tasks/exchange"}, stats.HistoryElement.GetExchangeTaskTime, true)
-		l.drawChart(cv, "#22B", 405, []string{"icon/gui/tasks/ploughing"}, stats.HistoryElement.GetAgricultureTaskTime, true)
-		l.drawChart(cv, "#22B", 540, []string{"icon/gui/tasks/milling"}, stats.HistoryElement.GetManufactureTaskTime, true)
+		l.drawChart(cv, "#22B", ch*1, []string{"icon/gui/tasks/transport"}, stats.HistoryElement.GetTransportTaskTime, true)
+		l.drawChart(cv, "#22B", ch*2, []string{"icon/gui/tasks/exchange"}, stats.HistoryElement.GetExchangeTaskTime, true)
+		l.drawChart(cv, "#22B", ch*3, []string{"icon/gui/tasks/ploughing"}, stats.HistoryElement.GetAgricultureTaskTime, true)
+		l.drawChart(cv, "#22B", ch*4, []string{"icon/gui/tasks/milling"}, stats.HistoryElement.GetManufactureTaskTime, true)
 		l.helperMsg = "Days spent on various tasks"
 	case 5:
-		l.drawCharts(cv, []string{"#872", "#96D", "#F11", "#D72", "#58F"}, 135, []string{"icon/gui/coin"},
+		l.drawCharts(cv, []string{"#872", "#96D", "#F11", "#D72", "#58F"}, ch*1, []string{"icon/gui/coin"},
 			[]ElementLookup{
 				stats.HistoryElement.GetFarmMoney,
 				stats.HistoryElement.GetWorkshopMoney,
@@ -75,7 +78,7 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 				stats.HistoryElement.GetTraderMoney,
 				stats.HistoryElement.GetGovernmentMoney,
 			}, false)
-		l.drawCharts(cv, []string{"#872", "#96D", "#F11", "#D72", "#58F"}, 270, []string{"icon/gui/person"},
+		l.drawCharts(cv, []string{"#872", "#96D", "#F11", "#D72", "#58F"}, ch*2, []string{"icon/gui/person"},
 			[]ElementLookup{
 				stats.HistoryElement.GetFarmPeople,
 				stats.HistoryElement.GetWorkshopPeople,
@@ -83,16 +86,17 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 				stats.HistoryElement.GetTraderPeople,
 				stats.HistoryElement.GetGovernmentPeople,
 			}, false)
-		cv.DrawImage(filepath.FromSlash("icon/gui/farm.png"), 8, 280+IconS*0, IconS, IconS)
-		l.drawLegend(cv, 280+IconS*0, "#872")
-		cv.DrawImage(filepath.FromSlash("icon/gui/workshop.png"), 8, 280+IconS*1, IconS, IconS)
-		l.drawLegend(cv, 280+IconS*1, "#96D")
-		cv.DrawImage(filepath.FromSlash("icon/gui/mine.png"), 8, 280+IconS*2, IconS, IconS)
-		l.drawLegend(cv, 280+IconS*2, "#F11")
-		cv.DrawImage(filepath.FromSlash("icon/gui/trader.png"), 8, 280+IconS*3, IconS, IconS)
-		l.drawLegend(cv, 280+IconS*3, "#D72")
-		cv.DrawImage(filepath.FromSlash("icon/gui/town.png"), 8, 280+IconS*4, IconS, IconS)
-		l.drawLegend(cv, 280+IconS*4, "#58F")
+
+		cv.DrawImage(filepath.FromSlash("icon/gui/farm.png"), 8, chf*2+IconS*0, IconS, IconS)
+		l.drawLegend(cv, chf*2+IconS*0, "#872")
+		cv.DrawImage(filepath.FromSlash("icon/gui/workshop.png"), 8, chf*2+IconS*1, IconS, IconS)
+		l.drawLegend(cv, chf*2+IconS*1, "#96D")
+		cv.DrawImage(filepath.FromSlash("icon/gui/mine.png"), 8, chf*2+IconS*2, IconS, IconS)
+		l.drawLegend(cv, chf*2+IconS*2, "#F11")
+		cv.DrawImage(filepath.FromSlash("icon/gui/trader.png"), 8, chf*2+IconS*3, IconS, IconS)
+		l.drawLegend(cv, chf*2+IconS*3, "#D72")
+		cv.DrawImage(filepath.FromSlash("icon/gui/town.png"), 8, chf*2+IconS*4, IconS, IconS)
+		l.drawLegend(cv, chf*2+IconS*4, "#58F")
 		l.helperMsg = "Wealth and population of social classes"
 	}
 	l.CaptureClick(0, 0)
@@ -161,19 +165,23 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 		}
 	}
 
+	uh := float64(ControlPanelSY*0.3) / 4 * 0.25
+	lh := float64(ControlPanelSY*0.3) / 4 * 0.75
+
 	cv.SetStrokeStyle(color.RGBA{R: 128, G: 64, B: 255, A: 64})
 	for i := 0; i < int(float64(maxPoints)*dPoint/20)+1; i++ {
 		cv.BeginPath()
 		cv.MoveTo(float64(i*20), float64(y))
-		cv.LineTo(float64(i*20), float64(y-100))
+		cv.LineTo(float64(i*20), float64(y)-lh)
 		cv.ClosePath()
 		cv.Stroke()
 	}
 
 	for i := 0; i <= 5; i++ {
+		dh := lh / 5
 		cv.BeginPath()
-		cv.MoveTo(float64(0), float64(y-i*20))
-		cv.LineTo(float64(int(ControlPanelSX)), float64(y-i*20))
+		cv.MoveTo(float64(0), float64(y)-float64(i)*dh)
+		cv.LineTo(float64(int(ControlPanelSX)), float64(y)-float64(i)*dh)
 		cv.ClosePath()
 		cv.Stroke()
 	}
@@ -197,7 +205,7 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 				}
 				scaleCntr = 0
 				scaleAggr = 0
-				cv.LineTo(float64(i-startIdx)*dPoint/float64(l.timeScale), float64(y-int(val*100/max)))
+				cv.LineTo(float64(i-startIdx)*dPoint/float64(l.timeScale), float64(y)-float64(val)*lh/float64(max))
 			}
 		}
 		cv.MoveTo(0, 0)
@@ -206,18 +214,19 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 	}
 
 	for i, icon := range icons {
-		cv.DrawImage(filepath.FromSlash(icon+".png"), float64(i*40)+8, float64(y-131), 40, 40)
+		cv.DrawImage(filepath.FromSlash(icon+".png"), float64(i)*IconS+8, float64(y)-lh-uh, IconS, IconS)
 	}
 
 	cv.SetFillStyle("#22B")
 	cv.SetFont(gui.Font, gui.FontSize)
 	text := strconv.Itoa(int(max))
-	cv.FillText(text, ControlPanelSX-60-float64(len(text))*gui.FontSize*0.5, float64(y-112))
+	cv.FillText(text, ControlPanelSX-60-float64(len(text))*gui.FontSize*0.5, float64(y)-lh)
 }
 
 func DrawStats(cp *ControlPanel, p *gui.Panel) {
 	if cp.C.Map != nil && cp.C.Map.Countries[0] != nil && cp.C.Map.Countries[0].History != nil {
-		offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX)-48, 540, true, cp.C.ctx)
+		ch := int(ControlPanelSY * 0.3)
+		offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX)-48, ch, true, cp.C.ctx)
 		cv := canvas.New(offscreen)
 		cl := &ChartsLabel{cp: cp, img: cv, timeScale: 1}
 		cl.Draw(cv)
