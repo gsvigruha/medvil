@@ -262,6 +262,17 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 					cl.timeScale = 1
 				}
 			}})
+		p.AddDynamicTextLabel(func() string {
+			switch cl.timeScale {
+			case 1:
+				return "M"
+			case 3:
+				return "Q"
+			case 12:
+				return "Y"
+			}
+			return ""
+		}, float64(24+LargeIconD*6.5), ControlPanelSY*0.5+LargeIconD*0.7)
 
 		var names []string = []string{"Country"}
 		var icons []string = []string{"town"}
