@@ -113,6 +113,7 @@ func DrawCart(cv *canvas.Canvas, t *navigation.Traveller, x float64, y float64, 
 	cv.ClosePath()
 	cv.Stroke()
 
+	cv.SetStrokeStyle("#432")
 	for i := 0.0; i <= 4.0; i++ {
 		f := (f1*i + f2*(4.0-i)) / 4.0
 		cv.BeginPath()
