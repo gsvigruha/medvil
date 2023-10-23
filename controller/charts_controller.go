@@ -87,27 +87,29 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 				stats.HistoryElement.GetGovernmentPeople,
 			}, false)
 
-		cv.DrawImage(filepath.FromSlash("icon/gui/farm.png"), 8, chf*2+IconS*0, IconS, IconS)
-		l.drawLegend(cv, chf*2+IconS*0, "#872")
-		cv.DrawImage(filepath.FromSlash("icon/gui/workshop.png"), 8, chf*2+IconS*1, IconS, IconS)
-		l.drawLegend(cv, chf*2+IconS*1, "#96D")
-		cv.DrawImage(filepath.FromSlash("icon/gui/mine.png"), 8, chf*2+IconS*2, IconS, IconS)
-		l.drawLegend(cv, chf*2+IconS*2, "#F11")
-		cv.DrawImage(filepath.FromSlash("icon/gui/trader.png"), 8, chf*2+IconS*3, IconS, IconS)
-		l.drawLegend(cv, chf*2+IconS*3, "#D72")
-		cv.DrawImage(filepath.FromSlash("icon/gui/town.png"), 8, chf*2+IconS*4, IconS, IconS)
-		l.drawLegend(cv, chf*2+IconS*4, "#58F")
+		iconTop := chf*2 + 8
+		w2 := ControlPanelSX / 2
+		cv.DrawImage(filepath.FromSlash("icon/gui/farm.png"), 8, iconTop+IconS*0, IconS, IconS)
+		l.drawLegend(cv, 8, iconTop+IconS*0, "#872")
+		cv.DrawImage(filepath.FromSlash("icon/gui/workshop.png"), 8, iconTop+IconS*1, IconS, IconS)
+		l.drawLegend(cv, 8, iconTop+IconS*1, "#96D")
+		cv.DrawImage(filepath.FromSlash("icon/gui/mine.png"), 8, iconTop+IconS*2, IconS, IconS)
+		l.drawLegend(cv, 8, iconTop+IconS*2, "#F11")
+		cv.DrawImage(filepath.FromSlash("icon/gui/trader.png"), w2, iconTop+IconS*0, IconS, IconS)
+		l.drawLegend(cv, w2, iconTop+IconS*0, "#D72")
+		cv.DrawImage(filepath.FromSlash("icon/gui/town.png"), w2, iconTop+IconS*1, IconS, IconS)
+		l.drawLegend(cv, w2, iconTop+IconS*1, "#58F")
 		l.helperMsg = "Wealth and population of social classes"
 	}
 	l.CaptureClick(0, 0)
 }
 
-func (l *ChartsLabel) drawLegend(cv *canvas.Canvas, y float64, c string) {
+func (l *ChartsLabel) drawLegend(cv *canvas.Canvas, x, y float64, c string) {
 	cv.SetLineWidth(3.0)
 	cv.SetStrokeStyle(c)
 	cv.BeginPath()
-	cv.MoveTo(8+float64(IconW), y+float64(IconH)/2)
-	cv.LineTo(8+float64(IconW)+IconS, y+float64(IconH)/2)
+	cv.MoveTo(x+float64(IconW), y+float64(IconH)/2)
+	cv.LineTo(x+float64(IconW)+IconS, y+float64(IconH)/2)
 	cv.ClosePath()
 	cv.Stroke()
 }
