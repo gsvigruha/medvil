@@ -99,7 +99,17 @@ func (bpe *BuildingPathElement) GetSpeed() float64 {
 	return 1.0
 }
 
-func (bpe *BuildingPathElement) Crowded() bool {
+func (bpe *BuildingPathElement) Crowded(m IMap) bool {
+	field := m.GetField(bpe.L.X, bpe.L.Y)
+	if field != nil {
+		var result = 0
+		for _, t := range field.Travellers {
+			if t.FZ == bpe.L.Z {
+				result++
+			}
+		}
+		return result >= 8
+	}
 	return false
 }
 

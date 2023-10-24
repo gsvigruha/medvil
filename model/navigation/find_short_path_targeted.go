@@ -83,7 +83,7 @@ func FindShortPathTargeted(m IMap, start Location, dest Destination, pathType Pa
 			continue
 		}
 
-		if e.d > ShortPathMaxLength || (e != se && !CheckField(e.PE, pathType)) {
+		if e.d > ShortPathMaxLength || (e != se && !CheckField(e.PE, pathType, m)) {
 			visited[e.PE.GetLocation()] = nil
 			continue
 		}

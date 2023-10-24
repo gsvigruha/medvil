@@ -8,7 +8,7 @@ type PathElement interface {
 	Sailable() bool
 	Drivable() bool
 	TravellerVisible() bool
-	Crowded() bool
+	Crowded(m IMap) bool
 	LocationXY() (uint16, uint16)
 }
 

@@ -42,12 +42,14 @@ func (b MoneyControllerButton) Enabled() bool {
 	return b.b.Enabled()
 }
 
-func MoneyToControlPanel(p *gui.Panel, srcWallet economy.Wallet, targetWallet economy.Wallet, amount uint32, x, y float64) {
+func MoneyToControlPanel(cp *ControlPanel, p *gui.Panel, srcWallet economy.Wallet, targetWallet economy.Wallet, amount uint32, x, y float64) {
 	p.AddImageLabel("coin", x, y-gui.FontSize*0.8, gui.FontSize, gui.FontSize, gui.ImageLabelStyleRegular)
 	p.AddTextLabel(strconv.Itoa(int(targetWallet.GetMoney())), x+gui.FontSize+4, y)
 	if srcWallet != nil {
 		p.AddButton(&MoneyControllerButton{
-			b:            gui.ButtonGUI{Icon: "plus", X: x + gui.FontSize*4, Y: y - gui.FontSize*0.8, SX: gui.FontSize, SY: gui.FontSize},
+			b: gui.ButtonGUI{Icon: "plus", X: x + gui.FontSize*4, Y: y - gui.FontSize*0.8, SX: gui.FontSize, SY: gui.FontSize, OnHoover: func() {
+				cp.HelperMessage("Send money from the townhall")
+			}},
 			sourceWallet: srcWallet,
 			targetWallet: targetWallet,
 			amount:       amount,

@@ -145,8 +145,8 @@ func (f Field) Empty() bool {
 	return true
 }
 
-func (f Field) Crowded() bool {
-	return len(f.Travellers) > 8
+func (f Field) Crowded(m IMap) bool {
+	return len(f.Travellers) >= 8
 }
 
 func (f Field) LocationXY() (uint16, uint16) {
@@ -310,7 +310,7 @@ func (f Field) Arable() bool {
 	return f.Terrain.T.Arable
 }
 
-func (f Field) Plantable() bool {
+func (f Field) Plantable(roadOk bool) bool {
 	if !f.Building.Empty() {
 		return false
 	}
@@ -321,6 +321,9 @@ func (f Field) Plantable() bool {
 		return false
 	}
 	if f.Statue != nil {
+		return false
+	}
+	if !roadOk && f.Road != nil {
 		return false
 	}
 	return f.Terrain.T.Arable
@@ -366,8 +369,24 @@ func min(x, y uint8) uint8 {
 	}
 }
 
+func max(x, y uint8) uint8 {
+	if x > y {
+		return x
+	} else {
+		return y
+	}
+}
+
+func (f *Field) MaxSlope() uint8 {
+	return f.Top() - f.Base()
+}
+
 func (f *Field) Base() uint8 {
 	return min(f.SW, min(f.NW, min(f.NE, f.SE)))
+}
+
+func (f *Field) Top() uint8 {
+	return max(f.SW, max(f.NW, max(f.NE, f.SE)))
 }
 
 func (f *Field) CacheKey() string {

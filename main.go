@@ -19,12 +19,12 @@ const (
 	sy uint16 = 25
 )
 
-var PlantFrameRenderTimeNs int64 = 25000000
+var FrameRenderTimeNs int64 = 25000000
 
 func init() {
 	if val, exists := os.LookupEnv("MEDVIL_FRAME_RENDER_TIME_MS"); exists {
 		if time, err := strconv.Atoi(val); err == nil {
-			PlantFrameRenderTimeNs = int64(time) * 1000 * 1000
+			FrameRenderTimeNs = int64(time) * 1000 * 1000
 		}
 	}
 }
@@ -57,8 +57,8 @@ func main() {
 			c.MapLock.Unlock()
 			elapsed := time.Since(start)
 
-			if elapsed.Nanoseconds() < PlantFrameRenderTimeNs {
-				time.Sleep(time.Duration(PlantFrameRenderTimeNs-elapsed.Nanoseconds()) * time.Nanosecond)
+			if elapsed.Nanoseconds() < FrameRenderTimeNs {
+				time.Sleep(time.Duration(FrameRenderTimeNs-elapsed.Nanoseconds()) * time.Nanosecond)
 			}
 
 			c.Refresh()
