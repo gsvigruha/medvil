@@ -134,7 +134,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
 					var flowers = -1
 					if unit.B.Plan.BuildingType == building.BuildingTypeFactory || unit.B.Plan.BuildingType == building.BuildingTypeWorkshop || unit.B.Plan.BuildingType == building.BuildingTypeFarm {
-						flowers = (int(unit.B.Shape)*5 + k + int(i)) % 8
+						flowers = (int(unit.B.Shape) + k*6 + int(i)*8) % 12
 					}
 					RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench, flowers)
 					if wall.Windows == building.WindowTypeBalcony {
