@@ -102,7 +102,7 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 	} else if ic.it == InfraTypeFountain || ic.it == InfraTypeObelisk {
 		return rf.F.StatueCompatible()
 	} else if ic.it == InfraTypeOakTree || ic.it == InfraTypeAppleTree {
-		return rf.F.Plantable()
+		return rf.F.Plantable(true)
 	}
 	return false
 }

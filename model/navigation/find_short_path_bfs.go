@@ -24,9 +24,9 @@ func AddNextField(pe PathElement, prevE *BFSElement, toVisit *[]*BFSElement, inQ
 	}
 }
 
-func CheckField(pe PathElement, pathType PathType) bool {
+func CheckField(pe PathElement, pathType PathType, m IMap) bool {
 	if pathType == PathTypePedestrian {
-		return pe.Walkable() && !pe.Crowded()
+		return pe.Walkable() && !pe.Crowded(m)
 	} else if pathType == PathTypeCart {
 		return pe.Drivable()
 	} else if pathType == PathTypeBoat {
@@ -64,7 +64,7 @@ func FindShortPathBFS(m IMap, start Location, dest Destination, pathType PathTyp
 			continue
 		}
 
-		if e.d > ShortPathMaxLength || (e != se && !CheckField(e.PE, pathType)) {
+		if e.d > ShortPathMaxLength || (e != se && !CheckField(e.PE, pathType, m)) {
 			visited[e.PE.GetLocation()] = nil
 			continue
 		}
