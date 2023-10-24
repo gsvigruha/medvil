@@ -132,7 +132,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				} else {
 					cv.SetFillStyle(filepath.FromSlash("texture/building/glass_2.png"))
 					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
-					RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench)
+					RenderWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door, wall.Windows == building.WindowTypeFrench, unit.B.Shape, k)
 					if wall.Windows == building.WindowTypeBalcony {
 						RenderBalcony(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
 					}

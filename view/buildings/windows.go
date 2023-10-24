@@ -5,9 +5,10 @@ import (
 	"image/color"
 	"medvil/renderer"
 	"path/filepath"
+	"strconv"
 )
 
-func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door, french bool) {
+func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door, french bool, shape uint8, k int) {
 	cv.BeginPath()
 	cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
 	cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
@@ -99,6 +100,20 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 	cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z-BuildingUnitHeight*DZ*1/3+2)
 	cv.ClosePath()
 	cv.Stroke()
+
+	if k > 0 {
+		v := (int(shape) + k*3 + int(rfIdx1)*7) % 8
+		if v <= 2 {
+			shapeStr := strconv.Itoa(v)
+			if rfIdx1 == 3 {
+				cv.DrawImage(filepath.FromSlash("texture/building/flower_"+shapeStr+".png"), (6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7-11, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3-4)
+				cv.DrawImage(filepath.FromSlash("texture/building/flower_"+shapeStr+".png"), (2*rf.X[rfIdx1]+5*rf.X[rfIdx2])/7-11, (2*rf.Y[rfIdx1]+5*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3-4)
+			} else if rfIdx1 == 2 {
+				cv.DrawImage(filepath.FromSlash("texture/building/flower_"+shapeStr+"_flipped.png"), (5*rf.X[rfIdx1]+2*rf.X[rfIdx2])/7-5, (5*rf.Y[rfIdx1]+2*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3-4)
+				cv.DrawImage(filepath.FromSlash("texture/building/flower_"+shapeStr+"_flipped.png"), (1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7-5, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3-4)
+			}
+		}
+	}
 }
 
 func RenderBalcony(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door bool) {
