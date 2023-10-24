@@ -65,11 +65,12 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 	wc.UpdateSubPanel()
 
 	wp.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24, Y: hcy + LargeIconD*2.0, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24 + IconS + gui.FontSize*10 + LargeIconD, Y: hcy - gui.FontSize/2.0, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			cp.HelperMessage("Optimize tasks based on profitability. Needs paper.")
+		}},
 		Highlight: func() bool { return workshop.AutoSwitch },
 		ClickImpl: func() {
 			workshop.AutoSwitch = !workshop.AutoSwitch
-			cp.HelperMessage("Auto switch to the most profitable task. Needs paper.")
 		}})
 
 	cp.SetDynamicPanel(wc)
