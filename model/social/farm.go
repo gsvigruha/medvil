@@ -11,6 +11,7 @@ import (
 
 const FarmMaxDistance = 6
 const FarmMaxDistanceClearing = 12
+const PastureMaxSlope = 2
 
 type FarmLand struct {
 	X       uint16
@@ -168,7 +169,7 @@ func (f *Farm) FieldUsableFor(m navigation.IMap, field *navigation.Field, useTyp
 		return field.Plantable(false)
 	}
 	if useType == economy.FarmFieldUseTypePasture {
-		return field.Plantable(false) && field.MaxSlope() <= 2
+		return field.Plantable(false) && field.MaxSlope() <= PastureMaxSlope
 	}
 	return field.Arable()
 }
