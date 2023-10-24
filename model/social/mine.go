@@ -36,8 +36,9 @@ func (l MineLand) Context() string {
 }
 
 type Mine struct {
-	Household *Household
-	Land      []MineLand
+	Household  *Household
+	Land       []MineLand
+	AutoSwitch bool
 }
 
 func (m *Mine) UnmarshalJSON(data []byte) error {

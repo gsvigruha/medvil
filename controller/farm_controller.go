@@ -97,6 +97,15 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 	})
 	fc.RefreshLandUseButtons()
 
+	fp.AddButton(&gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24 + IconS + gui.FontSize*10 + LargeIconD, Y: hcy - gui.FontSize/2.0, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			cp.HelperMessage("Optimize land based on profitability. Needs paper.")
+		}},
+		Highlight: func() bool { return farm.AutoSwitch },
+		ClickImpl: func() {
+			farm.AutoSwitch = !farm.AutoSwitch
+		}})
+
 	cp.SetDynamicPanel(fc)
 	cp.C.ClickHandler = fc
 }

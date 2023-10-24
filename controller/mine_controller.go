@@ -69,6 +69,15 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 	})
 	mc.RefreshLandUseButtons()
 
+	mp.AddButton(&gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24 + IconS + gui.FontSize*10 + LargeIconD, Y: hcy - gui.FontSize/2.0, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			cp.HelperMessage("Optimize tasks based on profitability. Needs paper.")
+		}},
+		Highlight: func() bool { return mine.AutoSwitch },
+		ClickImpl: func() {
+			mine.AutoSwitch = !mine.AutoSwitch
+		}})
+
 	cp.SetDynamicPanel(mc)
 	cp.C.ClickHandler = mc
 }

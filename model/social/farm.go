@@ -45,8 +45,9 @@ func (l FarmLand) Context() string {
 }
 
 type Farm struct {
-	Household *Household
-	Land      []FarmLand
+	Household  *Household
+	Land       []FarmLand
+	AutoSwitch bool
 }
 
 func (f *Farm) UnmarshalJSON(data []byte) error {
