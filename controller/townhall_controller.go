@@ -223,7 +223,7 @@ func RefreshSubPanels(tc *TownhallController) {
 			tc.traderPanel.AddButton(SelectTraderButton(float64(24+i*IconW), traderTop, tc, t))
 		}
 		if tc.activeTrader != nil {
-			MoneyToControlPanel(tc.traderPanel, th.Household, tc.activeTrader, 24, 10, traderTop+float64(IconH)+IconS)
+			MoneyToControlPanel(tc.cp, tc.traderPanel, th.Household, tc.activeTrader, 24, 10, traderTop+float64(IconH)+IconS)
 			for i, task := range tc.activeTrader.Tasks {
 				TaskToControlPanel(tc.cp, tc.traderPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
 			}
@@ -248,7 +248,7 @@ func RefreshSubPanels(tc *TownhallController) {
 			tc.expeditionPanel.AddButton(SelectExpeditionButton(float64(24+i*IconW), traderTop, tc, e))
 		}
 		if tc.activeExpedition != nil {
-			MoneyToControlPanel(tc.expeditionPanel, th.Household, tc.activeExpedition, 24, 10, traderTop+float64(IconH)+IconS)
+			MoneyToControlPanel(tc.cp, tc.expeditionPanel, th.Household, tc.activeExpedition, 24, 10, traderTop+float64(IconH)+IconS)
 			for i, task := range tc.activeExpedition.Tasks {
 				TaskToControlPanel(tc.cp, tc.expeditionPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
 			}

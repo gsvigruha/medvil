@@ -239,6 +239,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			},
 			Disabled: func() bool { return cp.C.Map == nil }},
 		ClickImpl: func() {
+			cp.C.Save("latest_autosave.mdvl")
 			cp.C.Map = nil
 			cp.C.ShowLibraryController()
 		}})

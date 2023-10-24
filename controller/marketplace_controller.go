@@ -21,12 +21,12 @@ type MarketplaceController struct {
 func MarketplaceToControlPanel(cp *ControlPanel, m *social.Marketplace) {
 	mp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	mc := &MarketplaceController{mp: mp, marketplace: m, cp: cp}
-	MarketplaceToMarketPanel(mp, m)
+	MarketplaceToMarketPanel(cp, mp, m)
 	cp.SetDynamicPanel(mc)
 }
 
-func MarketplaceToMarketPanel(mp *gui.Panel, m *social.Marketplace) {
-	MoneyToControlPanel(mp, m.Town.Townhall.Household, m, 100, 24, LargeIconD*2+float64(IconH)+24)
+func MarketplaceToMarketPanel(cp *ControlPanel, mp *gui.Panel, m *social.Marketplace) {
+	MoneyToControlPanel(cp, mp, m.Town.Townhall.Household, m, 100, 24, LargeIconD*2+float64(IconH)+24)
 	mp.AddTextLabel("marketplace / "+m.Town.Name, 200, LargeIconD*2+float64(IconH)+24)
 	var aI = 0
 	for _, a := range artifacts.All {
@@ -71,7 +71,7 @@ func (mc *MarketplaceController) Clear() {}
 
 func (mc *MarketplaceController) Refresh() {
 	mc.mp.Clear()
-	MarketplaceToMarketPanel(mc.mp, mc.marketplace)
+	MarketplaceToMarketPanel(mc.cp, mc.mp, mc.marketplace)
 	mc.CaptureMove(mc.cp.C.X, mc.cp.C.Y)
 }
 

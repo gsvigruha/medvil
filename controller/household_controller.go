@@ -86,9 +86,9 @@ func taskIconW(h *social.Household) (int, int) {
 
 func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household, name string) {
 	if h.Town.Townhall.Household == h && h.Town.Supplier != nil {
-		MoneyToControlPanel(p, h.Town.Supplier.GetHome(), h, 100, 24, LargeIconD*2+float64(IconH)+24)
+		MoneyToControlPanel(cp, p, h.Town.Supplier.GetHome(), h, 100, 24, LargeIconD*2+float64(IconH)+24)
 	} else {
-		MoneyToControlPanel(p, h.Town.Townhall.Household, h, 100, 24, LargeIconD*2+float64(IconH)+24)
+		MoneyToControlPanel(cp, p, h.Town.Townhall.Household, h, 100, 24, LargeIconD*2+float64(IconH)+24)
 	}
 	p.AddTextLabel(name+" / "+h.Town.Name, 200, LargeIconD*2+float64(IconH)+24)
 
