@@ -7,11 +7,17 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/terrain"
 	"medvil/model/time"
+	"medvil/util"
 )
 
 const FarmMaxDistance = 6
 const FarmMaxDistanceClearing = 12
 const PastureMaxSlope = 2
+
+var fruit = artifacts.GetArtifact("fruit")
+var vegetable = artifacts.GetArtifact("vegetable")
+var grain = artifacts.GetArtifact("grain")
+var herb = artifacts.GetArtifact("herb")
 
 type FarmLand struct {
 	X       uint16
@@ -92,6 +98,7 @@ func (f *Farm) AddTransportTask(l FarmLand, m navigation.IMap) {
 
 func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	f.Household.ElapseTime(Calendar, m)
+
 	if economy.ArgicultureCycleStartTime.Matches(Calendar) {
 		for i := range f.Land {
 			l := f.Land[i]
@@ -139,16 +146,35 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		f.ReleaseClearedLand()
 	}
 
-	if f.Household.Town.Marketplace != nil {
+	mp := f.Household.Town.Marketplace
+	if mp != nil {
+		f.Household.MaybeBuyPaper(f.AutoSwitch)
 		f.Household.MaybeBuyBoat(Calendar, m)
 		f.Household.MaybeBuyCart(Calendar, m)
 
 		f.Household.SellArtifacts(NotInputOrProduct, f.IsOutput)
+
+		if f.AutoSwitch && Calendar.Day == 30 && Calendar.Hour == 0 && Calendar.Month == 12 && f.Household.Resources.Remove(Paper, 1) > 0 {
+			profits := []float64{
+				float64(mp.Prices[vegetable]),
+				float64(mp.Prices[grain]),
+				float64(mp.Prices[herb]),
+			}
+			for i, land := range f.Land {
+				if land.UseType == economy.FarmFieldUseTypeVegetables || land.UseType == economy.FarmFieldUseTypeWheat || land.UseType == economy.FarmFieldUseTypeHerb {
+					switch util.RandomIndexWeighted(profits) {
+					case 0:
+						f.Land[i].UseType = economy.FarmFieldUseTypeVegetables
+					case 1:
+						f.Land[i].UseType = economy.FarmFieldUseTypeWheat
+					case 2:
+						f.Land[i].UseType = economy.FarmFieldUseTypeHerb
+					}
+				}
+			}
+		}
 	}
 }
-
-var fruit = artifacts.GetArtifact("fruit")
-var vegetable = artifacts.GetArtifact("vegetable")
 
 func (f *Farm) IsOutput(a *artifacts.Artifact) bool {
 	return a == fruit || a == vegetable

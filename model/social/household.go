@@ -28,6 +28,7 @@ var Textile = artifacts.GetArtifact("textile")
 var Leather = artifacts.GetArtifact("leather")
 var Clothes = artifacts.GetArtifact("clothes")
 var IronBar = artifacts.GetArtifact("iron_bar")
+var Paper = artifacts.GetArtifact("paper")
 
 const LogToFirewood = 5
 const MinLog = 1
@@ -200,6 +201,23 @@ func (h *Household) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	}
 	if rand.Float64() < BuildingBrokenRate {
 		h.Building.Broken = true
+	}
+}
+
+func (h *Household) MaybeBuyPaper(autoSwitch bool) {
+	mp := h.Town.Marketplace
+	paperTag := economy.SingleTag(economy.TagPaperPurchase)
+	if autoSwitch && h.Resources.Get(Paper) < ProductTransportQuantity(Paper) && h.NumTasks("exchange", paperTag) == 0 {
+		needs := []artifacts.Artifacts{artifacts.Artifacts{A: Paper, Quantity: ProductTransportQuantity(Paper)}}
+		if h.Money >= mp.Price(needs) && mp.HasTraded(Paper) {
+			h.AddTask(&economy.BuyTask{
+				Exchange:        mp,
+				HouseholdWallet: h,
+				Goods:           needs,
+				MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+				TaskTag:         paperTag,
+			})
+		}
 	}
 }
 
