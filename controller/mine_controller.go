@@ -171,3 +171,7 @@ func (mc *MineController) GetHelperSuggestions() *gui.Suggestion {
 	}
 	return nil
 }
+
+func MineUseTypeIcon(useType uint8) string {
+	return "artifacts/" + social.MineUseTypeArtifact(useType).Name
+}

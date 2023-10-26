@@ -42,6 +42,8 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 		p.AddImageLabel("vehicles/"+v.Order.Name(), 10+float64(IconW), y, IconS, IconS, style)
 	case *economy.TradeTask:
 		ArtifactsToHelperPanel(p, v.Goods, 0, y)
+	case *economy.MiningTask:
+		p.AddImageLabel(MineUseTypeIcon(v.UseType), 10+float64(IconW), y, IconS, IconS, style)
 	}
 }
 

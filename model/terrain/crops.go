@@ -10,3 +10,8 @@ var AllCropTypes = [...]*PlantType{
 	&PlantType{Name: "reed", MaturityAgeYears: 3, Yield: artifacts.Artifacts{A: artifacts.GetArtifact("reed"), Quantity: 1}, Tall: true, Habitat: Shore},
 	&PlantType{Name: "herb", MaturityAgeYears: 1, Yield: artifacts.Artifacts{A: artifacts.GetArtifact("herb"), Quantity: 1}, Tall: false, Habitat: Land},
 }
+
+var Grain = AllCropTypes[0]
+var Vegetables = AllCropTypes[1]
+var Reed = AllCropTypes[2]
+var Herb = AllCropTypes[3]

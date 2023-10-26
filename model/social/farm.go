@@ -156,9 +156,9 @@ func (f *Farm) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 		if f.AutoSwitch && Calendar.Day == 30 && Calendar.Hour == 0 && Calendar.Month == 12 && f.Household.Resources.Remove(Paper, 1) > 0 {
 			profits := []float64{
-				float64(mp.Prices[vegetable]),
-				float64(mp.Prices[grain]),
-				float64(mp.Prices[herb]),
+				float64(mp.Prices[vegetable]) * float64(terrain.Vegetables.Yield.Quantity),
+				float64(mp.Prices[grain]) * float64(terrain.Grain.Yield.Quantity),
+				float64(mp.Prices[herb]) * float64(terrain.Herb.Yield.Quantity),
 			}
 			for i, land := range f.Land {
 				if land.UseType == economy.FarmFieldUseTypeVegetables || land.UseType == economy.FarmFieldUseTypeWheat || land.UseType == economy.FarmFieldUseTypeHerb {
