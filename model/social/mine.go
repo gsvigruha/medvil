@@ -2,13 +2,21 @@ package social
 
 import (
 	"encoding/json"
+	"math/rand"
+	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/terrain"
 	"medvil/model/time"
+	"medvil/util"
 )
 
 const MineMaxDistance = 10
+
+var GoldOre = artifacts.GetArtifact("gold_ore")
+var IronOre = artifacts.GetArtifact("iron_ore")
+var Clay = artifacts.GetArtifact("clay")
+var Stone = artifacts.GetArtifact("stone")
 
 type MineLand struct {
 	X       uint16
@@ -36,8 +44,10 @@ func (l MineLand) Context() string {
 }
 
 type Mine struct {
-	Household *Household
-	Land      []MineLand
+	Household  *Household
+	Land       []MineLand
+	AutoSwitch bool
+	Optimize   bool
 }
 
 func (m *Mine) UnmarshalJSON(data []byte) error {
@@ -101,21 +111,34 @@ func CheckMineUseType(useType uint8, f *navigation.Field) bool {
 
 func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 	m.Household.ElapseTime(Calendar, imap)
+
+	if Calendar.Day == 30 && Calendar.Hour == 0 && Calendar.Month == 12 {
+		m.Optimize = m.AutoSwitch && m.Household.Resources.Remove(Paper, 1) > 0
+	}
+
 	if Calendar.Hour == 0 {
-		numP := len(m.Household.People)
 		for _, land := range m.Land {
 			m.AddTransportTask(land, imap)
-			tag := economy.MiningTaskTag(land.F, land.UseType)
-			if m.Household.NumTasks("mining", tag) < numP {
-				if CheckMineUseType(land.UseType, land.F) {
-					m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
+		}
+		numP := len(m.Household.People)
+		if m.Household.NumTasks("mining", economy.EmptyTag) < numP {
+			if m.Optimize && m.Household.Town.Marketplace != nil {
+				var profits []float64
+				for _, land := range m.Land {
+					profits = append(profits, float64(m.Household.Town.Marketplace.Prices[MineUseTypeArtifact(land.UseType)]))
 				}
+				land := m.Land[util.RandomIndexWeighted(profits)]
+				m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
+			} else {
+				land := m.Land[rand.Intn(len(m.Land))]
+				m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
 			}
 		}
 	}
 
 	if m.Household.Town.Marketplace != nil {
 		m.Household.SellArtifacts(NotInputOrProduct, NotInputOrProduct)
+		m.Household.MaybeBuyPaper(m.AutoSwitch)
 		m.Household.MaybeBuyBoat(Calendar, imap)
 		m.Household.MaybeBuyCart(Calendar, imap)
 	}
@@ -147,4 +170,18 @@ func (m *Mine) GetLandDistribution() map[uint8]int {
 		}
 	}
 	return result
+}
+
+func MineUseTypeArtifact(useType uint8) *artifacts.Artifact {
+	switch useType {
+	case economy.MineFieldUseTypeClay:
+		return Clay
+	case economy.MineFieldUseTypeGold:
+		return GoldOre
+	case economy.MineFieldUseTypeIron:
+		return IronOre
+	case economy.MineFieldUseTypeStone:
+		return Stone
+	}
+	return nil
 }

@@ -6,6 +6,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/time"
+	"medvil/util"
 )
 
 type Workshop struct {
@@ -15,8 +16,6 @@ type Workshop struct {
 }
 
 const ProfitCostRatio = 2.0
-
-var Paper = artifacts.GetArtifact("paper")
 
 func (w *Workshop) IsManufactureProfitable() bool {
 	mp := w.Household.Town.Marketplace
@@ -34,15 +33,17 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 
 	if mp != nil {
 		if w.AutoSwitch && Calendar.Day == 30 && Calendar.Hour == 0 && Calendar.Month%3 == 0 && w.Household.Resources.Remove(Paper, 1) > 0 {
-			var maxProfit = 0.0
-			for _, mName := range economy.GetManufactureNames(w.Household.Building.Plan.GetExtensions()) {
+			var profits []float64
+			mNames := economy.GetManufactureNames(w.Household.Building.Plan.GetExtensions())
+			for _, mName := range mNames {
 				manufacture := economy.GetManufacture(mName)
-				profit := float64(mp.Price(manufacture.Outputs)) / float64(mp.Price(artifacts.Purchasable(manufacture.Inputs)))
-				if profit > maxProfit && (w.Household.Town.Settings.Coinage || manufacture.Name != "goldsmith") {
-					maxProfit = profit
-					w.Manufacture = manufacture
+				var profit = (float64(mp.Price(manufacture.Outputs)) - float64(mp.Price(artifacts.Purchasable(manufacture.Inputs)))) / float64(manufacture.Time/24)
+				if (!w.Household.Town.Settings.Coinage && manufacture.Name == "goldsmith") || profit < 0.0 {
+					profit = 0.0
 				}
+				profits = append(profits, profit)
 			}
+			w.Manufacture = economy.GetManufacture(mNames[util.RandomIndexWeighted(profits)])
 		}
 		if w.Manufacture != nil && (w.Household.Town.Settings.Coinage || w.Manufacture.Name != "goldsmith") {
 			purchasableInputs := artifacts.Purchasable(w.Manufacture.Inputs)
@@ -106,6 +107,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 
+		w.Household.MaybeBuyPaper(w.AutoSwitch)
 		w.Household.MaybeBuyBoat(Calendar, m)
 		w.Household.MaybeBuyCart(Calendar, m)
 	}

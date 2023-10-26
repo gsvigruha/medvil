@@ -69,6 +69,15 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 	})
 	mc.RefreshLandUseButtons()
 
+	mp.AddButton(&gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24 + IconS + gui.FontSize*10 + LargeIconD, Y: hcy - gui.FontSize/2.0, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			cp.HelperMessage("Optimize tasks based on profitability. Needs paper.")
+		}},
+		Highlight: func() bool { return mine.AutoSwitch },
+		ClickImpl: func() {
+			mine.AutoSwitch = !mine.AutoSwitch
+		}})
+
 	cp.SetDynamicPanel(mc)
 	cp.C.ClickHandler = mc
 }
@@ -161,4 +170,8 @@ func (mc *MineController) GetHelperSuggestions() *gui.Suggestion {
 		return &gui.Suggestion{Message: "Allocate land to grow vegetables, grain,\ntrees and sheep.", Icon: "farm_mixed", X: float64(24 + IconW*4), Y: hcy + float64(IconH)/2.0}
 	}
 	return nil
+}
+
+func MineUseTypeIcon(useType uint8) string {
+	return "artifacts/" + social.MineUseTypeArtifact(useType).Name
 }
