@@ -37,8 +37,8 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			mNames := economy.GetManufactureNames(w.Household.Building.Plan.GetExtensions())
 			for _, mName := range mNames {
 				manufacture := economy.GetManufacture(mName)
-				var profit = float64(mp.Price(manufacture.Outputs)) / float64(mp.Price(artifacts.Purchasable(manufacture.Inputs)))
-				if !w.Household.Town.Settings.Coinage && manufacture.Name == "goldsmith" {
+				var profit = (float64(mp.Price(manufacture.Outputs)) - float64(mp.Price(artifacts.Purchasable(manufacture.Inputs)))) / float64(manufacture.Time/24)
+				if (!w.Household.Town.Settings.Coinage && manufacture.Name == "goldsmith") || profit < 0.0 {
 					profit = 0.0
 				}
 				profits = append(profits, profit)
