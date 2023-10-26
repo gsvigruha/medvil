@@ -180,6 +180,8 @@ func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task e
 	var style uint8 = gui.ImageLabelStyleHighlight
 	if task.Blocked() {
 		style = gui.ImageLabelStyleDisabled
+	} else if task.IsPaused() {
+		style = gui.ImageLabelStyleRegular
 	}
 	p.AddButton(&gui.ImageButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "tasks/" + economy.IconName(task), X: float64(24 + i*w), Y: y, SX: IconS, SY: IconS},
