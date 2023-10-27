@@ -108,6 +108,12 @@ func (town *Town) Init(historyLength int) {
 	}
 }
 
+func RegisterProverty(h Home, s *stats.Stats, t TransferCategories) {
+	if h.GetMoney() < uint32(t.Threshold) {
+		s.Poverty += uint32(len(h.GetPeople()))
+	}
+}
+
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	s := town.Stats
 	s.Reset()
@@ -135,6 +141,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	for _, trader := range town.Townhall.Traders {
 		s.Global.Add(trader.Stats())
 		s.Trader.Add(trader.Stats())
+		RegisterProverty(trader, s, town.Transfers.Trader)
 	}
 	for _, expedition := range town.Townhall.Expeditions {
 		s.Global.Add(expedition.Stats())
@@ -150,6 +157,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		farm.Household.Filter(Calendar, m)
 		s.Global.Add(farm.Household.Stats())
 		s.Farm.Add(farm.Household.Stats())
+		RegisterProverty(farm.Household, s, town.Transfers.Farm)
 	}
 	for k := range town.Workshops {
 		workshop := town.Workshops[k]
@@ -161,6 +169,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		workshop.Household.Filter(Calendar, m)
 		s.Global.Add(workshop.Household.Stats())
 		s.Workshop.Add(workshop.Household.Stats())
+		RegisterProverty(workshop.Household, s, town.Transfers.Workshop)
 	}
 	for k := range town.Mines {
 		mine := town.Mines[k]
@@ -172,6 +181,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		mine.Household.Filter(Calendar, m)
 		s.Global.Add(mine.Household.Stats())
 		s.Mine.Add(mine.Household.Stats())
+		RegisterProverty(mine.Household, s, town.Transfers.Mine)
 	}
 	for k := range town.Factories {
 		factory := town.Factories[k]
@@ -183,6 +193,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		factory.Household.Filter(Calendar, m)
 		s.Global.Add(factory.Household.Stats())
 		s.Workshop.Add(factory.Household.Stats())
+		RegisterProverty(factory.Household, s, town.Transfers.Factory)
 	}
 	for k := range town.Towers {
 		tower := town.Towers[k]
@@ -193,6 +204,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 		tower.ElapseTime(Calendar, m)
 		tower.Household.Filter(Calendar, m)
 		s.Global.Add(tower.Household.Stats())
+		RegisterProverty(tower.Household, s, town.Transfers.Tower)
 	}
 	if eoYear {
 		CollectTax(town.Farms, town, town.Transfers.Farm)

@@ -24,6 +24,7 @@ type Stats struct {
 
 	Deaths     uint32
 	Departures uint32
+	Poverty    uint32
 	TradeM     map[*artifacts.Artifact]uint32
 	TradeQ     map[*artifacts.Artifact]uint32
 	PendingT   map[economy.Task]uint32
@@ -48,6 +49,7 @@ func (s *Stats) Reset() {
 	s.Mine.Reset()
 	s.Gov.Reset()
 	s.Trader.Reset()
+	s.Poverty = 0
 }
 
 func (s *HouseholdStats) Reset() {
@@ -74,6 +76,7 @@ func (s *Stats) Add(os *Stats) {
 
 	s.Deaths += os.Deaths
 	s.Departures += os.Departures
+	s.Poverty += os.Poverty
 
 	for a, q := range os.TradeM {
 		s.TradeM[a] = s.TradeM[a] + q
