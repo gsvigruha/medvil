@@ -18,7 +18,7 @@ type Manufacture struct {
 var AllManufacture = [...]*Manufacture{
 	&Manufacture{
 		Name:                  "sawing",
-		Time:                  30 * 24,
+		Time:                  50 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.Workshop,
 		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
@@ -32,11 +32,18 @@ var AllManufacture = [...]*Manufacture{
 		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "stonecutting",
-		Time:                  10 * 24,
+		Time:                  50 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.Workshop,
 		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 2}},
 		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
+	&Manufacture{
+		Name:                  "stonemill",
+		Time:                  10 * 24,
+		Power:                 1000,
+		BuildingExtensionType: building.WaterMillWheel,
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 2}},
+		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "tiling",
 		Time:                  10 * 24,
@@ -45,7 +52,7 @@ var AllManufacture = [...]*Manufacture{
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 3},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("tile"), Quantity: 2}}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("tile"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "brickmaking",
 		Time:                  10 * 24,
@@ -54,7 +61,7 @@ var AllManufacture = [...]*Manufacture{
 		Inputs: []artifacts.Artifacts{
 			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 4},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
-		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("brick"), Quantity: 2}}},
+		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("brick"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "pottery",
 		Time:                  10 * 24,
@@ -73,7 +80,7 @@ var AllManufacture = [...]*Manufacture{
 		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("thatch"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "iron_smelting",
-		Time:                  10 * 24,
+		Time:                  60 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.Forge,
 		Inputs: []artifacts.Artifacts{
@@ -82,7 +89,7 @@ var AllManufacture = [...]*Manufacture{
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("iron_bar"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "goldsmith",
-		Time:                  10 * 24,
+		Time:                  60 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.Forge,
 		Inputs: []artifacts.Artifacts{
@@ -91,7 +98,7 @@ var AllManufacture = [...]*Manufacture{
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("gold_coin"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "milling",
-		Time:                  10 * 24,
+		Time:                  20 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.WaterMillWheel,
 		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("grain"), Quantity: 1}},
@@ -148,7 +155,7 @@ var AllManufacture = [...]*Manufacture{
 		Time:                  30 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.Workshop,
-		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 2}},
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 3}},
 		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "medicine",
@@ -161,7 +168,7 @@ var AllManufacture = [...]*Manufacture{
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("medicine"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "swordsmith",
-		Time:                  30 * 24,
+		Time:                  60 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.Forge,
 		Inputs: []artifacts.Artifacts{

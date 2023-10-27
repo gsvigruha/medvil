@@ -52,7 +52,8 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.drawChart(cv, "#22B", ch*1, []string{"icon/gui/person"}, stats.HistoryElement.GetPeople, false)
 		l.drawChart(cv, "#22B", ch*2, []string{"icon/gui/death"}, stats.HistoryElement.GetDeaths, true)
 		l.drawChart(cv, "#22B", ch*3, []string{"icon/gui/emigration"}, stats.HistoryElement.GetDepartures, true)
-		l.helperMsg = "Population size, deaths and emigration"
+		l.drawChart(cv, "#22B", ch*4, []string{"icon/gui/coin"}, stats.HistoryElement.GetPoverty, false)
+		l.helperMsg = "Population size, deaths, emigration and poverty"
 	case 2:
 		l.drawChart(cv, "#22B", ch*1, []string{"icon/gui/barrel"}, stats.HistoryElement.GetArtifacts, false)
 		l.drawChart(cv, "#22B", ch*2, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedQuantity, true)

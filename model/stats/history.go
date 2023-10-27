@@ -19,6 +19,10 @@ func (he HistoryElement) GetDepartures() uint32 {
 	return he.Departures
 }
 
+func (he HistoryElement) GetPoverty() uint32 {
+	return he.Poverty
+}
+
 func (he HistoryElement) GetPeople() uint32 {
 	return he.Global.People
 }

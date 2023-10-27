@@ -12,13 +12,13 @@ const MineFieldUseTypeClay uint8 = 2
 const MineFieldUseTypeIron uint8 = 3
 const MineFieldUseTypeGold uint8 = 4
 
-const MineTaskDurationStone = 24 * 60
+const MineTaskDurationStone = 24 * 90
 const MineTaskQuantityStone = 2
-const MineTaskDurationClay = 24 * 60
+const MineTaskDurationClay = 24 * 90
 const MineTaskQuantityClay = 2
-const MineTaskDurationIron = 24 * 60
+const MineTaskDurationIron = 24 * 90
 const MineTaskQuantityIron = 2
-const MineTaskDurationGold = 24 * 60
+const MineTaskDurationGold = 24 * 90
 const MineTaskQuantityGold = 2
 
 var stone = artifacts.GetArtifact("stone")
