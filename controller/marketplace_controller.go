@@ -11,11 +11,18 @@ import (
 const IconRowMaxButtons = 7
 
 var MarketplaceGUIY = 0.175
+var MarketplaceDocGUIY = 0.6
 
 type MarketplaceController struct {
 	mp          *gui.Panel
 	marketplace *social.Marketplace
 	cp          *ControlPanel
+}
+
+func AddLines(p *gui.Panel, lines []string, x, y float64) {
+	for i, line := range lines {
+		p.AddTextLabel(line, x, y+gui.FontSize*float64(i)*1.2)
+	}
 }
 
 func MarketplaceToControlPanel(cp *ControlPanel, m *social.Marketplace) {
@@ -34,6 +41,16 @@ func MarketplaceToMarketPanel(cp *ControlPanel, mp *gui.Panel, m *social.Marketp
 			ArtifactsToMarketPanel(mp, aI, a, q, m)
 			aI++
 		}
+	}
+
+	if cp.C.ViewSettings.ShowSuggestions {
+		AddLines(mp, []string{
+			"Villagers commute to the marketplace to buy",
+			"and sell goods. The price keeps changing",
+			"based on supply and demand. Markets must be",
+			"well funded by the townhall in order for",
+			"the economy to work.",
+		}, 24, MarketplaceDocGUIY*ControlPanelSY)
 	}
 }
 

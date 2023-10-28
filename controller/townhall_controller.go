@@ -14,6 +14,7 @@ import (
 )
 
 var TownhallControllerGUIBottomY = 0.75
+var TownhallDocGUIY = 0.75
 
 type TownhallControllerButton struct {
 	tc        *TownhallController
@@ -201,6 +202,16 @@ func RefreshSubPanels(tc *TownhallController) {
 		tp.AddTextLabel("No supplier", 24+LargeIconD*2, top+LargeIconD*10+LargeIconD/2)
 	}
 
+	if tc.cp.C.ViewSettings.ShowSuggestions {
+		AddLines(tp, []string{
+			"Set taxes and subsidies for different social",
+			"classes. Taxes are used to fund the townhall",
+			"market, as well as paying for subsidies.",
+			"",
+			"If taxes are high, citizens become less happy.",
+		}, 24, TownhallDocGUIY*ControlPanelSY)
+	}
+
 	var aI = 0
 	for _, a := range artifacts.All {
 		var q uint16 = 0
@@ -237,6 +248,15 @@ func RefreshSubPanels(tc *TownhallController) {
 			}
 		}
 	}
+	if tc.cp.C.ViewSettings.ShowSuggestions {
+		AddLines(tc.traderPanel, []string{
+			"Create traders to move goods between cities.",
+			"Each trader has to be assigned a destination",
+			"market to trade with. Traders select the most",
+			"profitable goods and can reduce shortages.",
+		}, 24, TownhallDocGUIY*ControlPanelSY)
+	}
+
 	{
 		for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Expedition }) {
 			tc.expeditionPanel.AddPanel(CreateExpeditionButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
@@ -253,6 +273,17 @@ func RefreshSubPanels(tc *TownhallController) {
 				TaskToControlPanel(tc.cp, tc.expeditionPanel, i, traderTop+float64(IconH*3)+IconS, task, IconW)
 			}
 		}
+	}
+	if tc.cp.C.ViewSettings.ShowSuggestions {
+		AddLines(tc.expeditionPanel, []string{
+			"Create expedition to fund faraway cities.",
+			"Expeditions can store large amounts of good",
+			"and travel to far distances that way.",
+			"",
+			"It is recommended to load them with food and",
+			"building materials that are needed to establish",
+			"brand new cities.",
+		}, 24, TownhallDocGUIY*ControlPanelSY)
 	}
 }
 
