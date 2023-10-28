@@ -155,7 +155,7 @@ var AllManufacture = [...]*Manufacture{
 		Time:                  30 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.Workshop,
-		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 3}},
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("wool"), Quantity: 4}},
 		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("textile"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "medicine",

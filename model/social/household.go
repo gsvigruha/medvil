@@ -15,7 +15,7 @@ import (
 )
 
 const ReproductionRate = 1.0 / (24 * 30 * 12)
-const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 4)
+const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 3)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)

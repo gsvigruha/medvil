@@ -22,6 +22,7 @@ var heatingI = filepath.FromSlash("icon/gui/heating.png")
 var repairI = filepath.FromSlash("icon/gui/tasks/repair.png")
 var personI = filepath.FromSlash("icon/gui/person.png")
 var woodI = filepath.FromSlash("texture/wood.png")
+var warnI = filepath.FromSlash("icon/gui/warning_slim.png")
 
 func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string) {
 	if int(h.Money) < moneyThreshold {
@@ -102,9 +103,12 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 		}
 	}
 
-	s := controller.IconS * 0.6
-	for i, icon := range icons {
-		cv.DrawImage(icon, midX-float64(len(icons))*s/2+float64(i)*s, midY-z, s, s)
+	if len(icons) > 0 {
+		s := controller.IconS * 0.6
+		cv.DrawImage(warnI, midX-float64(len(icons))*s/2-s*0.15, midY-z, s, s)
+		for i, icon := range icons {
+			cv.DrawImage(icon, midX-float64(len(icons)+1)*s/2+float64(i+1)*s, midY-z, s, s)
+		}
 	}
 }
 
