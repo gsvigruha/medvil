@@ -243,13 +243,13 @@ func (p *ControlPanel) GenerateButtons() {
 		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },
 		ClickImpl: func() { c.ShowDemolishController() }})
 	p.topPanel.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "library", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
-		Highlight: func() bool { return p.IsDynamicPanelType("LibraryController") },
-		ClickImpl: func() { c.ShowLibraryController() }})
-	p.topPanel.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "map", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "map", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		Highlight: func() bool { return p.IsDynamicPanelType("MapController") },
 		ClickImpl: func() { c.ShowMapController() }})
+	p.topPanel.AddButton(&gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "library", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+		Highlight: func() bool { return p.IsDynamicPanelType("LibraryController") },
+		ClickImpl: func() { c.ShowLibraryController() }})
 	p.topPanel.AddButton(&ControlPanelButton{
 		b: gui.ButtonGUI{Icon: "cancel", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
 		c: c, action: CPActionCancel})

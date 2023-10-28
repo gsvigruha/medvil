@@ -37,8 +37,34 @@ func (l MapLabel) CaptureClick(x float64, y float64) {
 	}
 }
 
+type MapController struct {
+	p *gui.Panel
+}
+
+func (mc *MapController) CaptureMove(x, y float64) {
+	mc.p.CaptureMove(x, y)
+}
+
+func (mc *MapController) CaptureClick(x, y float64) {
+	mc.p.CaptureClick(x, y)
+}
+
+func (mc *MapController) Render(cv *canvas.Canvas) {
+	mc.p.Render(cv)
+}
+
+func (mc *MapController) Clear() {}
+
+func (mc *MapController) Refresh() {
+}
+
+func (mc *MapController) GetHelperSuggestions() *gui.Suggestion {
+	return nil
+}
+
 func MapToControlPanel(cp *ControlPanel) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
+	mc := &MapController{p: p}
 	sx := ControlPanelSX - 48
 	d := sx / float64(cp.C.Map.SX)
 	offscreen, _ := goglbackend.NewOffscreen(int(sx), int(sx)*int(cp.C.Map.SY)/int(cp.C.Map.SX), true, cp.C.ctx)
@@ -90,5 +116,5 @@ func MapToControlPanel(cp *ControlPanel) {
 
 	DrawStats(cp, p)
 
-	cp.SetDynamicPanel(p)
+	cp.SetDynamicPanel(mc)
 }
