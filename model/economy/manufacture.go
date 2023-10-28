@@ -50,7 +50,7 @@ var AllManufacture = [...]*Manufacture{
 		Power:                 1000,
 		BuildingExtensionType: building.Kiln,
 		Inputs: []artifacts.Artifacts{
-			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 3},
+			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 2},
 			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("tile"), Quantity: 1}}},
 	&Manufacture{
@@ -59,8 +59,8 @@ var AllManufacture = [...]*Manufacture{
 		Power:                 1000,
 		BuildingExtensionType: building.Kiln,
 		Inputs: []artifacts.Artifacts{
-			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 4},
-			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 1}},
+			artifacts.Artifacts{A: artifacts.GetArtifact("clay"), Quantity: 3},
+			artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 2}},
 		Outputs: []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("brick"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "pottery",

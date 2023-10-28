@@ -145,7 +145,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	settingsTop := ControlPanelSY * 0.65
 	p.AddLargeTextLabel("Settings", 24, settingsTop)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "warning", X: 24 + float64(IconW)*0, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
+		ButtonGUI: gui.ButtonGUI{Icon: "warning_slim", X: 24 + float64(IconW)*0, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
 			cp.HelperMessage("Show warning icons for households")
 		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowHouseIcons },
@@ -173,7 +173,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Show suggestions")
+			cp.HelperMessage("Show suggestions and doc")
 		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
 		ClickImpl: func() {

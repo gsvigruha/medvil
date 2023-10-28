@@ -116,6 +116,7 @@ func RegisterProverty(h Home, s *stats.Stats, t TransferCategories) {
 
 func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	s := town.Stats
+	prevMoney := s.Global.Money
 	s.Reset()
 	if town.Name == "" {
 		town.Name = town.Country.PickTownName()
@@ -138,6 +139,9 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	town.Townhall.Filter(Calendar, m)
 	s.Global.Add(town.Townhall.Household.Stats())
 	s.Gov.Add(town.Townhall.Household.Stats())
+	if town.Townhall.Household.GetMoney() < prevMoney/10 {
+		s.Poverty += uint32(len(town.Townhall.Household.GetPeople()))
+	}
 	for _, trader := range town.Townhall.Traders {
 		s.Global.Add(trader.Stats())
 		s.Trader.Add(trader.Stats())

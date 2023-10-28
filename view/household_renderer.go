@@ -105,9 +105,12 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 
 	if len(icons) > 0 {
 		s := controller.IconS * 0.6
-		cv.DrawImage(warnI, midX-float64(len(icons))*s/2-s*0.15, midY-z, s, s)
+		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 192})
+		left := midX - float64(len(icons))*s/2
+		cv.FillRect(left-s*0.15, midY-z, float64(len(icons)+1)*s, s)
+		cv.DrawImage(warnI, left-s*0.15, midY-z, s, s)
 		for i, icon := range icons {
-			cv.DrawImage(icon, midX-float64(len(icons)+1)*s/2+float64(i+1)*s, midY-z, s, s)
+			cv.DrawImage(icon, left+float64(i)*s+s/2, midY-z, s, s)
 		}
 	}
 }

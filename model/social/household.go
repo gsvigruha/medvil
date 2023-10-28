@@ -18,6 +18,7 @@ const ReproductionRate = 1.0 / (24 * 30 * 12)
 const ClothesConsumptionRate = 1.0 / (24 * 30 * 12 * 3)
 const StoragePerArea = 100
 const ExtrasBudgetRatio = 0.25
+const PaperBudgetRatio = 0.15
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
 const FleeingRate = 1.0 / (24 * 30 * 12 * 3)
 
@@ -214,7 +215,7 @@ func (h *Household) MaybeBuyPaper(autoSwitch bool) {
 				Exchange:        mp,
 				HouseholdWallet: h,
 				Goods:           needs,
-				MaxPrice:        uint32(float64(h.Money) * ExtrasBudgetRatio),
+				MaxPrice:        uint32(float64(h.Money) * PaperBudgetRatio),
 				TaskTag:         paperTag,
 			})
 		}
