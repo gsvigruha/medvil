@@ -189,6 +189,7 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 		cv.Stroke()
 	}
 
+	var val uint32
 	for i, fn := range fns {
 		c := cs[i]
 		cv.SetStrokeStyle(c)
@@ -200,7 +201,6 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 			scaleAggr += fn(he)
 			scaleCntr++
 			if scaleCntr == uint32(l.timeScale) {
-				var val uint32
 				if sum {
 					val = scaleAggr
 				} else {
@@ -222,7 +222,7 @@ func (l *ChartsLabel) drawCharts(cv *canvas.Canvas, cs []string, y int, icons []
 
 	cv.SetFillStyle("#22B")
 	cv.SetFont(gui.Font, gui.FontSize)
-	text := strconv.Itoa(int(max))
+	text := strconv.Itoa(int(val)) + "/" + strconv.Itoa(int(max))
 	cv.FillText(text, ControlPanelSX-60-float64(len(text))*gui.FontSize*0.5, float64(y)-lh-gui.FontSize*0.25)
 }
 
