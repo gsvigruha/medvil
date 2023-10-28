@@ -193,7 +193,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 				cp.SetupDims(cp.C.W, cp.C.H)
 				cp.C.ShowLibraryController()
 			}})
-		p.AddDynamicTextLabel(func() string { return IconSizeStr(cp.C.ViewSettings.Size) }, 24+float64(IconW)/3, settingsTop+float64(IconH)*3)
+		p.AddDynamicTextLabel(func() string { return IconSizeStr(cp.C.ViewSettings.Size) }, 24, settingsTop+float64(IconH)*3)
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24 + float64(IconW), Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
 				cp.HelperMessage("Resolution: " + ResolutionStr(cp.C.ViewSettings.Resolution) + " (applied after restart)")
