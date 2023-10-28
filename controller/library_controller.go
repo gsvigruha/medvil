@@ -203,7 +203,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 				cp.C.ViewSettings.Resolution = (cp.C.ViewSettings.Resolution + 1) % 3
 				cp.C.SaveSettings()
 			}})
-		p.AddDynamicTextLabel(func() string { return ResolutionStr(cp.C.ViewSettings.Resolution) }, 24+float64(IconW), settingsTop+float64(IconH)*3)
+		p.AddDynamicTextLabel(func() string { return ResolutionStr(cp.C.ViewSettings.Resolution) }, 24+float64(IconW)-gui.FontSize*0.4, settingsTop+float64(IconH)*3)
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "screen", X: 24 + float64(IconW)*2, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
 				cp.HelperMessage("Full screen (applied after restart)")
@@ -228,7 +228,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 				}
 				cp.C.SaveSettings()
 			}})
-		p.AddDynamicTextLabel(func() string { return strconv.Itoa(stats.MaxHistory/12) + "Y" }, 24+float64(IconW)*3, settingsTop+float64(IconH)*3)
+		p.AddDynamicTextLabel(func() string { return strconv.Itoa(stats.MaxHistory/12) + "Y" }, 24+float64(IconW)*3-gui.FontSize/2, settingsTop+float64(IconH)*3)
 	}
 
 	p.AddLargeTextLabel("Quit", 24, ControlPanelSY*0.85)
