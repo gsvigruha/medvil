@@ -8,13 +8,17 @@ import (
 	"path/filepath"
 )
 
-func RenderActiveFields(cv *canvas.Canvas, c *controller.Controller) {
+func RenderActiveFields(cv *canvas.Canvas, transparent bool, c *controller.Controller) {
 	fields := c.GetActiveFields()
 	if fields != nil {
 		for _, f := range fields {
 			for _, rf := range c.RenderedFields {
 				if rf.F.X == f.Field().X && rf.F.Y == f.Field().Y {
-					cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
+					if transparent {
+						cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 160})
+					} else {
+						cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
+					}
 					cv.SetLineWidth(2)
 					rf.Draw(cv)
 					cv.Stroke()

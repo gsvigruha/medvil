@@ -22,9 +22,10 @@ const RenderPhaseObjects = 1
 
 func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {
 	RenderPhase(RenderPhaseField, ic, cv, m, c)
+	RenderActiveFields(cv, false, c)
 	RenderPhase(RenderPhaseObjects, ic, cv, m, c)
 	c.SwapRenderedObjects()
-	RenderActiveFields(cv, c)
+	RenderActiveFields(cv, true, c)
 	c.ControlPanel.Render(cv, c)
 }
 
