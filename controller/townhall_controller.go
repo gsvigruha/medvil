@@ -143,58 +143,64 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp.AddLargeTextLabel("Activities", 24, top+LargeIconD*4+s)
 	tp.AddImageLabel("infra/cobble_road", 24, top+LargeIconD*5, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*5, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			tc.cp.HelperMessage("Start or stop repairing roads")
+		}},
 		Highlight: func() bool { return town.Settings.RoadRepairs },
 		ClickImpl: func() {
 			town.Settings.RoadRepairs = !town.Settings.RoadRepairs
-			tc.cp.HelperMessage("Start or stop repairing roads")
 		}})
 	tp.AddTextLabel("Repair "+strconv.Itoa(len(town.Roads))+" roads", 24+LargeIconD*2, top+LargeIconD*5+LargeIconD/2)
 
 	tp.AddImageLabel("infra/wall_small", 24, top+LargeIconD*6, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*6, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*6, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			tc.cp.HelperMessage("Start or stop repairing walls")
+		}},
 		Highlight: func() bool { return town.Settings.WallRepairs },
 		ClickImpl: func() {
 			town.Settings.WallRepairs = !town.Settings.WallRepairs
-			tc.cp.HelperMessage("Start or stop repairing walls")
 		}})
 	tp.AddTextLabel("Repair "+strconv.Itoa(len(town.Walls))+" walls", 24+LargeIconD*2, top+LargeIconD*6+LargeIconD/2)
 
 	tp.AddImageLabel("building/market", 24, top+LargeIconD*7, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: 24 + LargeIconD, Y: top + LargeIconD*7, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: 24 + LargeIconD, Y: top + LargeIconD*7, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			tc.cp.HelperMessage("Enable or disable trading with this city")
+		}},
 		Highlight: func() bool { return town.Settings.Trading },
 		ClickImpl: func() {
 			town.Settings.Trading = !town.Settings.Trading
-			tc.cp.HelperMessage("Enable or disable trading with this city")
 		}})
 	tp.AddTextLabel("This city has "+strconv.Itoa(len(town.Townhall.Traders))+" traders", 24+LargeIconD*2, top+LargeIconD*7+LargeIconD/2)
 
 	tp.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "barrel", X: 24 + LargeIconD, Y: top + LargeIconD*8, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "barrel", X: 24 + LargeIconD, Y: top + LargeIconD*8, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items")
+		}},
 		Highlight: func() bool { return town.Settings.ArtifactCollection },
 		ClickImpl: func() {
 			town.Settings.ArtifactCollection = !town.Settings.ArtifactCollection
-			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items")
 		}})
 	tp.AddTextLabel("Storage is "+strconv.Itoa(int(th.Household.Resources.UsedVolumeCapacity()*100.0))+"% full", 24+LargeIconD*2, top+LargeIconD*8+LargeIconD/2)
 
 	tp.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: 24 + LargeIconD, Y: top + LargeIconD*9, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: 24 + LargeIconD, Y: top + LargeIconD*9, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			tc.cp.HelperMessage("Start or stop minting gold coins")
+		}},
 		Highlight: func() bool { return town.Settings.Coinage },
 		ClickImpl: func() {
 			town.Settings.Coinage = !town.Settings.Coinage
-			tc.cp.HelperMessage("Start or stop minting gold coins")
 		}})
 	tp.AddTextLabel(""+strconv.Itoa(int(town.Stats.Global.Money))+" coins in circulation", 24+LargeIconD*2, top+LargeIconD*9+LargeIconD/2)
 
 	tp.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "town", X: 24 + LargeIconD, Y: top + LargeIconD*10, SX: LargeIconS, SY: LargeIconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "town", X: 24 + LargeIconD, Y: top + LargeIconD*10, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+			tc.cp.HelperMessage("Start or stop relying on supplies")
+		}},
 		Highlight: func() bool { return town.Settings.UseSupplier },
 		ClickImpl: func() {
 			town.Settings.UseSupplier = !town.Settings.UseSupplier
-			tc.cp.HelperMessage("Start or stop relying on supplies from the hometown")
 		}})
 	if town.Supplier != nil {
 		tp.AddTextLabel(town.Supplier.GetName()+" supplies "+town.GetName(), 24+LargeIconD*2, top+LargeIconD*10+LargeIconD/2)
@@ -225,7 +231,7 @@ func RefreshSubPanels(tc *TownhallController) {
 	traderTop := top + ControlPanelSY*0.20
 	{
 		for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Trader }) {
-			tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
+			tc.traderPanel.AddPanel(CreateTraderButtonForTownhall(24, float64(i)*LargeIconD+top, tc, vc, tc.cp.C.Map))
 		}
 		for i := 0; i < th.Household.NumTasks("create_trader", economy.EmptyTag); i++ {
 			tc.traderPanel.AddImageLabel("tasks/factory_pickup", float64(24+i*IconW), top+ControlPanelSY*0.15, IconS, IconS, gui.ImageLabelStyleRegular)
@@ -259,7 +265,7 @@ func RefreshSubPanels(tc *TownhallController) {
 
 	{
 		for i, vc := range social.GetVehicleConstructions(th.Household.Town.Factories, func(vc *economy.VehicleConstruction) bool { return vc.Output.Expedition }) {
-			tc.expeditionPanel.AddPanel(CreateExpeditionButtonForTownhall(24, float64(i)*LargeIconD+top, th, vc, tc.cp.C.Map))
+			tc.expeditionPanel.AddPanel(CreateExpeditionButtonForTownhall(24, float64(i)*LargeIconD+top, tc, vc, tc.cp.C.Map))
 		}
 		for i := 0; i < th.Household.NumTasks("create_expedition", economy.EmptyTag); i++ {
 			tc.expeditionPanel.AddImageLabel("tasks/factory_pickup", float64(24+i*IconW), top+ControlPanelSY*0.15, IconS, IconS, gui.ImageLabelStyleRegular)
@@ -384,19 +390,21 @@ func (tc *TownhallController) GetHelperSuggestions() *gui.Suggestion {
 	return nil
 }
 
-func CreateTraderButtonForTownhall(x, y float64, th *social.Townhall, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
+func CreateTraderButtonForTownhall(x, y float64, tc *TownhallController, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
 	p.AddImageLabel("vehicles/"+vc.Name, 24, y, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + 240, Y: y + float64(IconH/4), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + 240, Y: y + float64(IconH/4), SX: IconS, SY: IconS, OnHoover: func() {
+			tc.cp.HelperMessage("Create a new trader")
+		}},
 		ClickImpl: func() {
-			h := th.Household
-			factory := social.PickFactory(h.Town.Factories, vc.BuildingExtensionType, th.Household.Town.Marketplace.Building, m)
+			h := tc.th.Household
+			factory := social.PickFactory(h.Town.Factories, vc.BuildingExtensionType, tc.th.Household.Town.Marketplace.Building, m)
 			if factory != nil {
 				order := factory.CreateOrder(vc, h)
 				if order != nil {
 					h.AddTask(&economy.CreateTraderTask{
-						Townhall: th,
+						Townhall: tc.th,
 						PickupD:  factory.Household.Destination(building.NonExtension),
 						Order:    order,
 					})
@@ -404,15 +412,17 @@ func CreateTraderButtonForTownhall(x, y float64, th *social.Townhall, vc *econom
 			}
 		},
 	})
-	if th.Household.Town.Marketplace != nil {
-		p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(th.Household.Town.Marketplace, vc)), 24+x+float64(IconW)*2, y+float64(LargeIconD)/2)
+	if tc.th.Household.Town.Marketplace != nil {
+		p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(tc.th.Household.Town.Marketplace, vc)), 24+x+float64(IconW)*2, y+float64(LargeIconD)/2)
 	}
 	return p
 }
 
 func SelectTraderButton(x, y float64, th *TownhallController, t *social.Trader) gui.Button {
 	return &gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: x, Y: y, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: x, Y: y, SX: IconS, SY: IconS, OnHoover: func() {
+			th.cp.HelperMessage("Select trader")
+		}},
 		ClickImpl: func() {
 			th.activeTrader = t
 		},
@@ -422,13 +432,15 @@ func SelectTraderButton(x, y float64, th *TownhallController, t *social.Trader) 
 	}
 }
 
-func CreateExpeditionButtonForTownhall(x, y float64, th *social.Townhall, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
+func CreateExpeditionButtonForTownhall(x, y float64, tc *TownhallController, vc *economy.VehicleConstruction, m navigation.IMap) *gui.Panel {
 	p := &gui.Panel{}
 	p.AddImageLabel("vehicles/"+vc.Name, 24, y, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + 240, Y: y + float64(IconH/4), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + 240, Y: y + float64(IconH/4), SX: IconS, SY: IconS, OnHoover: func() {
+			tc.cp.HelperMessage("Create a new expedition")
+		}},
 		ClickImpl: func() {
-			h := th.Household
+			h := tc.th.Household
 			factory := social.PickFactory(h.Town.Factories, vc.BuildingExtensionType, nil, m)
 			if factory != nil {
 				order := factory.CreateOrder(vc, h)
@@ -436,26 +448,28 @@ func CreateExpeditionButtonForTownhall(x, y float64, th *social.Townhall, vc *ec
 					h.AddTask(&economy.CreateExpeditionTask{
 						PickupD:  factory.Household.Destination(building.NonExtension),
 						Order:    order,
-						Townhall: th,
+						Townhall: tc.th,
 					})
 				}
 			}
 		},
 	})
-	if th.Household.Town.Marketplace != nil {
-		p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(th.Household.Town.Marketplace, vc)), 24+x+float64(IconW)*2, y+float64(LargeIconD)/2)
+	if tc.th.Household.Town.Marketplace != nil {
+		p.AddTextLabel(fmt.Sprintf("$%v", social.VehiclePrice(tc.th.Household.Town.Marketplace, vc)), 24+x+float64(IconW)*2, y+float64(LargeIconD)/2)
 	}
 	return p
 }
 
-func SelectExpeditionButton(x, y float64, th *TownhallController, e *social.Expedition) gui.Button {
+func SelectExpeditionButton(x, y float64, tc *TownhallController, e *social.Expedition) gui.Button {
 	return &gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/" + e.Vehicle.T.Name, X: x, Y: y, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/" + e.Vehicle.T.Name, X: x, Y: y, SX: IconS, SY: IconS, OnHoover: func() {
+			tc.cp.HelperMessage("Select expedition")
+		}},
 		ClickImpl: func() {
-			th.activeExpedition = e
+			tc.activeExpedition = e
 		},
 		Highlight: func() bool {
-			return e == th.activeExpedition
+			return e == tc.activeExpedition
 		},
 	}
 }
