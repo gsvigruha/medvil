@@ -28,17 +28,17 @@ func AddPeople(TravellerToPerson map[*navigation.Traveller]*social.Person, h *so
 }
 
 func BuildReverseReferences(m *Map) ReverseReferences {
-	BuildingToFarm := make(map[*building.Building]*social.Farm)
-	BuildingToMine := make(map[*building.Building]*social.Mine)
-	BuildingToWorkshop := make(map[*building.Building]*social.Workshop)
-	BuildingToFactory := make(map[*building.Building]*social.Factory)
-	BuildingToTower := make(map[*building.Building]*social.Tower)
-	BuildingToTownhall := make(map[*building.Building]*social.Townhall)
-	BuildingToMarketplace := make(map[*building.Building]*social.Marketplace)
-	BuildingToConstruction := make(map[*building.Building]*building.Construction)
-	TravellerToPerson := make(map[*navigation.Traveller]*social.Person)
-	TravellerToTrader := make(map[*navigation.Traveller]*social.Trader)
-	TravellerToExpedition := make(map[*navigation.Traveller]*social.Expedition)
+	BuildingToFarm := make(map[*building.Building]*social.Farm, 128)
+	BuildingToMine := make(map[*building.Building]*social.Mine, 128)
+	BuildingToWorkshop := make(map[*building.Building]*social.Workshop, 128)
+	BuildingToFactory := make(map[*building.Building]*social.Factory, 128)
+	BuildingToTower := make(map[*building.Building]*social.Tower, 128)
+	BuildingToTownhall := make(map[*building.Building]*social.Townhall, 16)
+	BuildingToMarketplace := make(map[*building.Building]*social.Marketplace, 16)
+	BuildingToConstruction := make(map[*building.Building]*building.Construction, 128)
+	TravellerToPerson := make(map[*navigation.Traveller]*social.Person, 512)
+	TravellerToTrader := make(map[*navigation.Traveller]*social.Trader, 64)
+	TravellerToExpedition := make(map[*navigation.Traveller]*social.Expedition, 64)
 
 	for i := range m.Countries {
 		country := m.Countries[i]
