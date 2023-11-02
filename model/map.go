@@ -51,8 +51,8 @@ func (m *Map) ElapseTime() {
 		for j := uint16(0); j < m.SY; j++ {
 			f := m.Fields[i][j]
 			if f.Plant != nil {
-				f.Plant.ElapseTime(m.Calendar)
 				if m.Calendar.Hour == 0 {
+					f.Plant.ElapseTime(m.Calendar)
 					if f.Plant.IsMature(m.Calendar) {
 						m.SpreadPlant(i-1, j, f.Plant, m.Calendar, r)
 						m.SpreadPlant(i, j-1, f.Plant, m.Calendar, r)
