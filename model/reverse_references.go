@@ -24,6 +24,9 @@ func AddPeople(TravellerToPerson map[*navigation.Traveller]*social.Person, h *so
 	for l := range h.People {
 		p := h.People[l]
 		TravellerToPerson[p.Traveller] = p
+		if p.Traveller.Vehicle != nil {
+			TravellerToPerson[p.Traveller.Vehicle.GetTraveller()] = p
+		}
 	}
 }
 
@@ -49,6 +52,9 @@ func BuildReverseReferences(m *Map) ReverseReferences {
 			for k := range town.Townhall.Traders {
 				t := town.Townhall.Traders[k]
 				TravellerToTrader[t.Person.Traveller] = t
+				if t.Person.Traveller.Vehicle != nil {
+					TravellerToTrader[t.Person.Traveller.Vehicle.GetTraveller()] = t
+				}
 			}
 			for k := range town.Townhall.Expeditions {
 				e := town.Townhall.Expeditions[k]
