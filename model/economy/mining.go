@@ -12,9 +12,9 @@ const MineFieldUseTypeClay uint8 = 2
 const MineFieldUseTypeIron uint8 = 3
 const MineFieldUseTypeGold uint8 = 4
 
-const MineTaskDurationStone = 24 * 90
+const MineTaskDurationStone = 24 * 60
 const MineTaskQuantityStone = 2
-const MineTaskDurationClay = 24 * 90
+const MineTaskDurationClay = 24 * 60
 const MineTaskQuantityClay = 2
 const MineTaskDurationIron = 24 * 90
 const MineTaskQuantityIron = 2
