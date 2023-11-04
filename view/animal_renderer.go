@@ -16,5 +16,6 @@ func RenderAnimal(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Fi
 	}
 	maturity := float64(f.Animal.AgeYears(c.Map.Calendar)) / float64(f.Animal.T.MaturityAgeYears)
 	s := 32 + maturity*32
-	cv.DrawImage(filepath.FromSlash("texture/terrain/"+f.Animal.T.Name+"_"+strconv.Itoa(phase)+".png"), rf.X[0]-s/2, rf.Y[2]-64, s, s)
+	midX, midY := rf.MidScreenPoint()
+	cv.DrawImage(filepath.FromSlash("texture/terrain/"+f.Animal.T.Name+"_"+strconv.Itoa(phase)+".png"), midX-s/2, midY-s/2, s, s)
 }
