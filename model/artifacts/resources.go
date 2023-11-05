@@ -19,7 +19,7 @@ func (a Artifacts) Multiply(n uint16) Artifacts {
 }
 
 func Filter(as []Artifacts) []Artifacts {
-	var result []Artifacts
+	var result []Artifacts = make([]Artifacts, 0, len(as))
 	for _, a := range as {
 		if a.Quantity > 0 {
 			result = append(result, a)

@@ -30,6 +30,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	mp := t.Household.Town.Marketplace
 
 	if mp != nil {
+		resourcesFull := t.Household.Resources.Full()
 		for _, a := range artifacts.All {
 			tag := economy.SingleTag(economy.TagStorageTarget, a.Idx)
 			transportQuantity := ProductTransportQuantity(a)
@@ -41,7 +42,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if t.Household.NumTasks("exchange", tag) == 0 {
 				targetQ := uint16(t.StorageTarget[a])
 				if q > targetQ {
-					qToSell := t.Household.ArtifactToSell(a, q, false, false)
+					qToSell := t.Household.ArtifactToSell(a, q, false, false, resourcesFull)
 					if qToSell > 0 {
 						t.Household.AddTask(&economy.SellTask{
 							Exchange: mp,
