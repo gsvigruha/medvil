@@ -5,21 +5,22 @@ import (
 )
 
 type RoadType struct {
-	Name   string
-	Speed  float64
-	Bridge bool
-	Cost   []artifacts.Artifacts
+	Name        string
+	DisplayName string
+	Speed       float64
+	Bridge      bool
+	Cost        []artifacts.Artifacts
 }
 
 var DirtRoadType = &RoadType{
-	Name: "dirt_road", Speed: 1.5, Bridge: false, Cost: []artifacts.Artifacts{},
+	Name: "dirt_road", DisplayName: "Dirt road", Speed: 1.5, Bridge: false, Cost: []artifacts.Artifacts{},
 }
 var CobbleRoadType = &RoadType{
-	Name: "cobble_road", Speed: 2.0, Bridge: false,
+	Name: "cobble_road", DisplayName: "Cobble stone road", Speed: 2.0, Bridge: false,
 	Cost: []artifacts.Artifacts{artifacts.Artifacts{artifacts.GetArtifact("cube"), 1}},
 }
 var BridgeRoadType = &RoadType{
-	Name: "bridge", Speed: 1.5, Bridge: true,
+	Name: "bridge", DisplayName: "Bridge", Speed: 1.5, Bridge: true,
 	Cost: []artifacts.Artifacts{artifacts.Artifacts{artifacts.GetArtifact("board"), 3}, artifacts.Artifacts{artifacts.GetArtifact("paper"), 2}},
 }
 
