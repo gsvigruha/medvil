@@ -1,9 +1,5 @@
 package artifacts
 
-import (
-	"encoding/json"
-)
-
 const InfiniteQuantity = 65535
 const StorageFullThreshold = 0.9
 
@@ -73,38 +69,15 @@ func (a Artifacts) Wrap() []Artifacts {
 
 type Resources struct {
 	Artifacts      map[*Artifact]uint16
-	VolumeCapacity uint16
+	VolumeCapacity uint32
 	Deleted        bool
+	Volume         uint32
 }
 
-func (r *Resources) Init(volumeCapacity uint16) {
+func (r *Resources) Init(volumeCapacity uint32) {
 	r.Artifacts = make(map[*Artifact]uint16)
 	r.VolumeCapacity = volumeCapacity
-}
-
-func (r *Resources) UnmarshalJSON(data []byte) error {
-	r.Artifacts = make(map[*Artifact]uint16)
-	var j map[string]json.RawMessage
-	if err := json.Unmarshal(data, &j); err != nil {
-		return err
-	}
-	for k, v := range j {
-		var quantity uint16
-		e := json.Unmarshal(v, &quantity)
-		if e != nil {
-			panic("Error unmarshalling json")
-		}
-		r.Artifacts[GetArtifact(k)] = quantity
-	}
-	return nil
-}
-
-func (r *Resources) MarshalJSON() ([]byte, error) {
-	var content map[string]interface{} = make(map[string]interface{})
-	for a, q := range r.Artifacts {
-		content[a.Name] = q
-	}
-	return json.Marshal(content)
+	r.Volume = 0
 }
 
 func (r *Resources) AddAll(as []Artifacts) {
@@ -128,6 +101,7 @@ func (r *Resources) Add(a *Artifact, q uint16) {
 	} else {
 		r.Artifacts[a] = q
 	}
+	r.Volume += uint32(a.V * q)
 }
 
 func (r *Resources) IsRealArtifact(a *Artifact) bool {
@@ -175,9 +149,11 @@ func (r *Resources) Remove(a *Artifact, q uint16) uint16 {
 			if e < InfiniteQuantity {
 				r.Artifacts[a] = e - q
 			}
+			r.Volume -= uint32(a.V * q)
 			return q
 		} else {
 			r.Artifacts[a] = 0
+			r.Volume -= uint32(a.V * e)
 			return e
 		}
 	}
@@ -203,14 +179,9 @@ func (r *Resources) Needs(as []Artifacts) []Artifacts {
 func (r *Resources) GetAsManyAsPossible(as []Artifacts) []Artifacts {
 	var result []Artifacts = nil
 	for _, a := range as {
-		if v, ok := r.Artifacts[a.A]; ok {
-			if v <= a.Quantity {
-				result = append(result, Artifacts{A: a.A, Quantity: v})
-				r.Artifacts[a.A] = 0
-			} else {
-				result = append(result, Artifacts{A: a.A, Quantity: a.Quantity})
-				r.Artifacts[a.A] = v - a.Quantity
-			}
+		if _, ok := r.Artifacts[a.A]; ok {
+			e := r.Remove(a.A, a.Quantity)
+			result = append(result, Artifacts{A: a.A, Quantity: e})
 		}
 	}
 	return result
@@ -266,17 +237,6 @@ func (r *Resources) IsEmpty() bool {
 	return true
 }
 
-func (r *Resources) Volume() uint16 {
-	if r.Artifacts == nil {
-		r.Artifacts = make(map[*Artifact]uint16)
-	}
-	var v uint16 = 0
-	for a, q := range r.Artifacts {
-		v += a.V * q
-	}
-	return v
-}
-
 func (r *Resources) GetArtifacts() []*Artifact {
 	var as []*Artifact
 	for a, q := range r.Artifacts {
@@ -288,7 +248,7 @@ func (r *Resources) GetArtifacts() []*Artifact {
 }
 
 func (r *Resources) UsedVolumeCapacity() float64 {
-	return float64(r.Volume()) / float64(r.VolumeCapacity)
+	return float64(r.Volume) / float64(r.VolumeCapacity)
 }
 
 func (r *Resources) Full() bool {

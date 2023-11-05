@@ -91,7 +91,7 @@ func addFarm(conf CountryConf, town *social.Town, villageSize int, m *model.Map)
 	AddBuilding(farmB, m)
 	farm := &social.Farm{Household: &social.Household{Building: farmB, Town: town, Resources: &artifacts.Resources{}, BoatEnabled: true}}
 	farm.Household.TargetNumPeople = 4
-	farm.Household.Resources.VolumeCapacity = farm.Household.Building.Plan.Area() * social.StoragePerArea
+	farm.Household.Resources.VolumeCapacity = uint32(farm.Household.Building.Plan.Area()) * social.StoragePerArea
 	addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 0, m)
 	addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, 1, m)
 	addFarmLand(farm, economy.FarmFieldUseTypePasture, -1, -1, m)
@@ -184,7 +184,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 	town.Marketplace = &social.Marketplace{Building: marketplace, Town: town}
 	town.Townhall.Household.People = make([]*social.Person, conf.People)
 	town.Townhall.Household.TargetNumPeople = conf.People
-	town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
+	town.Townhall.Household.Resources.VolumeCapacity = uint32(town.Townhall.Household.Building.Plan.Area()) * social.StoragePerArea
 	town.Townhall.Household.Money = conf.Money
 	town.Marketplace.Money = conf.Money
 	for i := range town.Townhall.Household.People {
@@ -219,7 +219,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 			AddBuilding(workshopB, m)
 			workshop := &social.Workshop{Household: &social.Household{Building: workshopB, Town: town, Resources: &artifacts.Resources{}, BoatEnabled: true}}
 			workshop.Household.TargetNumPeople = 2
-			workshop.Household.Resources.VolumeCapacity = workshop.Household.Building.Plan.Area() * social.StoragePerArea
+			workshop.Household.Resources.VolumeCapacity = uint32(workshop.Household.Building.Plan.Area()) * social.StoragePerArea
 			workshop.Manufacture = economy.GetManufacture("butchering")
 			town.Workshops = append(town.Workshops, workshop)
 		}
@@ -235,7 +235,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 			AddBuilding(workshopB, m)
 			workshop := &social.Workshop{Household: &social.Household{Building: workshopB, Town: town, Resources: &artifacts.Resources{}, BoatEnabled: true}}
 			workshop.Household.TargetNumPeople = 2
-			workshop.Household.Resources.VolumeCapacity = workshop.Household.Building.Plan.Area() * social.StoragePerArea
+			workshop.Household.Resources.VolumeCapacity = uint32(workshop.Household.Building.Plan.Area()) * social.StoragePerArea
 			workshop.Manufacture = economy.GetManufacture("sewing")
 			town.Workshops = append(town.Workshops, workshop)
 		}

@@ -143,7 +143,7 @@ func (t *Townhall) CreateExpedition(v *vehicles.Vehicle, p economy.Person) {
 		person := p.(*Person)
 		if pI == person {
 			var r artifacts.Resources
-			r.Init(v.T.MaxVolume)
+			r.Init(uint32(v.T.MaxVolume))
 			expedition := &Expedition{
 				Name:            ExpeditionNames[rand.Intn(len(ExpeditionNames))],
 				Money:           0,
@@ -170,7 +170,7 @@ func (t *Townhall) CreateTrader(v *vehicles.Vehicle, p economy.Person) {
 		person := p.(*Person)
 		if pI == person {
 			var r artifacts.Resources
-			r.Init(v.T.MaxVolume)
+			r.Init(uint32(v.T.MaxVolume))
 			trader := &Trader{
 				Money:          0,
 				Person:         person,
