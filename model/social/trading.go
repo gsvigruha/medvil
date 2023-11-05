@@ -55,6 +55,16 @@ func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			}
 		}
 	}
+
+	var newTasks = make([]economy.Task, 0, len(t.Tasks))
+	for _, task := range t.Tasks {
+		if !task.Expired(Calendar) {
+			newTasks = append(newTasks, task)
+		} else {
+			t.Town.Stats.DeleteTask(task)
+		}
+	}
+	t.Tasks = newTasks
 }
 
 func (t *Trader) GetArtifactToTrade(pickupMP, dropoffMP *Marketplace) *artifacts.Artifact {

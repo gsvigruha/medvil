@@ -10,7 +10,11 @@ import (
 
 func RenderOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer.RenderedField, rw renderer.RenderedWall) {
 	if unit.B.Plan.BuildingType == building.BuildingTypeWorkshop || unit.B.Plan.BuildingType == building.BuildingTypeTownhall {
-		cv.SetFillStyle(filepath.FromSlash("texture/building/ornament.png"))
+		if unit.B.Shape%2 == 0 {
+			cv.SetFillStyle(filepath.FromSlash("texture/building/ornament.png"))
+		} else {
+			cv.SetFillStyle(filepath.FromSlash("texture/building/ornament_dark.png"))
+		}
 		cv.BeginPath()
 		cv.LineTo(rw.X[1], rw.Y[1])
 		cv.LineTo(rw.X[2], rw.Y[2])

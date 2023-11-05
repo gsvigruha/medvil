@@ -14,6 +14,7 @@ type VehicleType struct {
 	Expedition            bool
 	MaxVolume             uint16
 	MaxPeople             uint16
+	Breaks                bool
 	BuildingCheckFn       func(navigation.Field) bool
 	BuildingExtensionType *building.BuildingExtensionType
 }
@@ -27,6 +28,7 @@ var Boat = &VehicleType{
 	Expedition:            false,
 	MaxVolume:             75,
 	MaxPeople:             1,
+	Breaks:                true,
 	BuildingCheckFn:       navigation.Field.Sailable,
 	BuildingExtensionType: building.Deck,
 }
@@ -39,6 +41,7 @@ var Cart = &VehicleType{
 	Expedition:            false,
 	MaxVolume:             50,
 	MaxPeople:             1,
+	Breaks:                true,
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
 }
@@ -51,6 +54,7 @@ var TradingBoat = &VehicleType{
 	Expedition:            false,
 	MaxVolume:             75,
 	MaxPeople:             1,
+	Breaks:                false,
 	BuildingCheckFn:       navigation.Field.Sailable,
 	BuildingExtensionType: building.Deck,
 }
@@ -63,6 +67,7 @@ var TradingCart = &VehicleType{
 	Expedition:            false,
 	MaxVolume:             50,
 	MaxPeople:             1,
+	Breaks:                false,
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
 }
@@ -75,6 +80,7 @@ var ExpeditionBoat = &VehicleType{
 	Expedition:            true,
 	MaxVolume:             400,
 	MaxPeople:             8,
+	Breaks:                false,
 	BuildingCheckFn:       navigation.Field.Sailable,
 	BuildingExtensionType: building.Deck,
 }
@@ -87,6 +93,7 @@ var ExpeditionCart = &VehicleType{
 	Expedition:            true,
 	MaxVolume:             250,
 	MaxPeople:             5,
+	Breaks:                false,
 	BuildingCheckFn:       navigation.Field.BuildingNonExtension,
 	BuildingExtensionType: building.NonExtension,
 }
@@ -149,7 +156,9 @@ func (v *Vehicle) Water() bool {
 }
 
 func (v *Vehicle) Break() {
-	v.Broken = true
+	if v.T.Breaks {
+		v.Broken = true
+	}
 }
 
 func (v *Vehicle) SetParking(f *navigation.Field) {

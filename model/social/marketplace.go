@@ -10,6 +10,7 @@ import (
 )
 
 const StorageToSoldRatio = 12
+const MarketStoragePerArea = 5000
 
 type Marketplace struct {
 	Town      *Town `json:"-"`
@@ -49,6 +50,7 @@ func (mp *Marketplace) Init() {
 			}
 		}
 	}
+	mp.Storage.VolumeCapacity = uint32(mp.Building.Plan.Area()) * MarketStoragePerArea
 }
 
 func (mp *Marketplace) Reset(a *artifacts.Artifact) {
@@ -104,6 +106,7 @@ func (mp *Marketplace) DecPrice(a *artifacts.Artifact) {
 
 func (mp *Marketplace) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	if Calendar.Hour == 0 && Calendar.Day == 1 {
+		mp.Storage.VolumeCapacity = uint32(mp.Building.Plan.Area()) * MarketStoragePerArea // Backward comp
 		allGold := []artifacts.Artifacts{artifacts.Artifacts{A: GoldCoin, Quantity: mp.Storage.Get(GoldCoin)}}
 		price := mp.Price(allGold)
 		wallet := &mp.Town.Townhall.Household.Money
@@ -206,7 +209,7 @@ func (mp *Marketplace) CanBuy(as []artifacts.Artifacts) bool {
 }
 
 func (mp *Marketplace) CanSell(as []artifacts.Artifacts) bool {
-	return mp.Price(as) <= mp.Money
+	return mp.Price(as) <= mp.Money && mp.Storage.HasRoom(as) && !mp.Storage.Full()
 }
 
 func (mp *Marketplace) HasAny(as []artifacts.Artifacts) bool {

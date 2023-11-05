@@ -38,7 +38,10 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			for _, mName := range mNames {
 				manufacture := economy.GetManufacture(mName)
 				var profit = (float64(mp.Price(manufacture.Outputs)) - float64(mp.Price(artifacts.Purchasable(manufacture.Inputs)))) / float64(manufacture.Time/24)
-				if (!w.Household.Town.Settings.Coinage && manufacture.Name == "goldsmith") || profit < 0.0 || !mp.Storage.HasAll(artifacts.Purchasable(manufacture.Inputs)) {
+				if (!w.Household.Town.Settings.Coinage && manufacture.Name == "goldsmith") ||
+					profit < 0.0 ||
+					!mp.Storage.HasAll(artifacts.Purchasable(manufacture.Inputs)) ||
+					!mp.CanSell(manufacture.Outputs) {
 					profit = 0.0
 				}
 				profits = append(profits, profit)
@@ -52,12 +55,13 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				transportQ := MinProductTransportQuantity(purchasableInputs)
 				batch := artifacts.Multiply(purchasableInputs, transportQ)
 				tag := economy.SingleTag(economy.TagManufactureInput)
-				if w.Household.Resources.Needs(batch) != nil && w.Household.NumTasks("exchange", tag) < int(numP)/2 && len(w.Household.Tasks) < int(numP)*5 {
+				needs := w.Household.Resources.Needs(batch)
+				if needs != nil && w.Household.NumTasks("exchange", tag) < int(numP)/2 && len(w.Household.Tasks) < int(numP)*5 {
 					if w.Household.Money >= mp.Price(batch) {
 						w.Household.AddTask(&economy.BuyTask{
 							Exchange:        mp,
 							HouseholdWallet: w.Household,
-							Goods:           batch,
+							Goods:           needs,
 							MaxPrice:        uint32(maxUnitCost * float64(transportQ)),
 							TaskTag:         tag,
 						})
