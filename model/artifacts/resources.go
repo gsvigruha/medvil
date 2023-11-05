@@ -225,6 +225,20 @@ func (r *Resources) HasAny(as []Artifacts) bool {
 	return false
 }
 
+func (r *Resources) HasRoom(as []Artifacts) bool {
+	if len(as) == 0 {
+		return true
+	}
+	for _, a := range as {
+		if v, ok := r.Artifacts[a.A]; ok {
+			if v >= 900 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 func (r *Resources) IsEmpty() bool {
 	if r.Artifacts == nil {
 		r.Artifacts = make(map[*Artifact]uint16)

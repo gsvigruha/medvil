@@ -10,10 +10,11 @@ import (
 	"medvil/model/time"
 )
 
-const PlantSpreadRate = 0.0001
+const PlantSpreadRateNorth = 0.000075
+const PlantSpreadRateSouth = 0.000125
 const TreeDeathRateNorth = 0.0001
 const TreeDeathRateSouth = 0.0002
-const PlantDeathRateNorth = 0.003
+const PlantDeathRateNorth = 0.0030
 const PlantDeathRateSouth = 0.0005
 const AnimalDeathRate = 0.0003
 const GrassGrowRate = 0.0001
@@ -38,10 +39,15 @@ func (m *Map) PlantDeathRate(f *navigation.Field) float64 {
 	return (float64(f.Y)*PlantDeathRateSouth + float64(m.SY-f.Y)*PlantDeathRateNorth) / float64(m.SY)
 }
 
+func (m *Map) PlantSpreadRate(f *navigation.Field) float64 {
+	return (float64(f.Y)*PlantSpreadRateSouth + float64(m.SY-f.Y)*PlantSpreadRateNorth) / float64(m.SY)
+}
+
 func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.CalendarType, r *rand.Rand) {
-	if r.Float64() < PlantSpreadRate && i >= 0 && j >= 0 && i < m.SX && j < m.SY && m.Fields[i][j].Empty() && !m.Fields[i][j].Allocated {
-		if (p.T.Habitat == terrain.Shore && m.Shore(i, j)) || (p.T.Habitat == terrain.Land && m.Fields[i][j].Plantable(false)) {
-			m.Fields[i][j].Plant = &terrain.Plant{
+	f := m.GetField(i, j)
+	if f != nil && r.Float64() < m.PlantSpreadRate(f) && i >= 0 && j >= 0 && i < m.SX && j < m.SY && f.Empty() && !f.Allocated {
+		if (p.T.Habitat == terrain.Shore && m.Shore(i, j)) || (p.T.Habitat == terrain.Land && f.Plantable(false)) {
+			f.Plant = &terrain.Plant{
 				T:             p.T,
 				X:             uint16(i),
 				Y:             uint16(j),

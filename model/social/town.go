@@ -275,7 +275,6 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				town.Country.CreateNewTown(b, town)
 			case building.BuildingTypeMarket:
 				town.Marketplace = &Marketplace{Town: town, Building: b}
-				town.Marketplace.Storage.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
 				town.Marketplace.Init()
 			case building.BuildingTypeRoad:
 				construction.Road.Construction = false
