@@ -29,3 +29,11 @@ type Construction struct {
 func (c *Construction) IsComplete() bool {
 	return c.Progress >= c.MaxProgress
 }
+
+func (c *Construction) IsDeleted() bool {
+	return c.Storage.Deleted
+}
+
+func (c *Construction) Delete() {
+	c.Storage.Deleted = true
+}

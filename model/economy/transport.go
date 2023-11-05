@@ -28,7 +28,7 @@ func (t *TransportTask) Destination() navigation.Destination {
 	}
 }
 
-func (t *TransportTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *TransportTask) Complete(m navigation.IMap, tool bool) bool {
 	if t.Dropoff {
 		t.DropoffR.Add(t.A, t.ActualQuantity)
 		if t.TargetQuantity == 0 || !t.CompleteQuantity {

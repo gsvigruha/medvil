@@ -21,7 +21,7 @@ func (t *BuildingTask) Destination() navigation.Destination {
 	return t.D
 }
 
-func (t *BuildingTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *BuildingTask) Complete(m navigation.IMap, tool bool) bool {
 	if !t.Started && !t.Blocked() {
 		if len(t.C.Cost) > 0 {
 			a := t.C.Storage.GetArtifacts()[0]
@@ -73,7 +73,7 @@ func BuildingTaskTag(dest navigation.Destination) Tag {
 }
 
 func (t *BuildingTask) Expired(Calendar *time.CalendarType) bool {
-	return false
+	return t.C.IsDeleted()
 }
 
 func (t *BuildingTask) Motion() uint8 {

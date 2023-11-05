@@ -18,7 +18,7 @@ func (t *ManufactureTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *ManufactureTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *ManufactureTask) Complete(m navigation.IMap, tool bool) bool {
 	if t.Progress < t.M.Time {
 		t.Progress++
 		if tool {

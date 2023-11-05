@@ -67,7 +67,7 @@ func (t *EatTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *EatTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *EatTask) Complete(m navigation.IMap, tool bool) bool {
 	t.P.Eat()
 	return true
 }
@@ -96,7 +96,7 @@ func (t *DrinkTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *DrinkTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *DrinkTask) Complete(m navigation.IMap, tool bool) bool {
 	t.P.Drink()
 	return true
 }
@@ -125,7 +125,7 @@ func (t *HealTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *HealTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *HealTask) Complete(m navigation.IMap, tool bool) bool {
 	t.P.Heal()
 	return true
 }
@@ -154,7 +154,7 @@ func (t *RelaxTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *RelaxTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *RelaxTask) Complete(m navigation.IMap, tool bool) bool {
 	t.P.DrinkBeer()
 	return true
 }
@@ -183,7 +183,7 @@ func (t *GoHomeTask) Destination() navigation.Destination {
 	return t.D
 }
 
-func (t *GoHomeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *GoHomeTask) Complete(m navigation.IMap, tool bool) bool {
 	t.P.SetHome()
 	return true
 }
@@ -212,7 +212,7 @@ func (t *GoToTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *GoToTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *GoToTask) Complete(m navigation.IMap, tool bool) bool {
 	return true
 }
 

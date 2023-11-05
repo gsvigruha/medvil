@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"medvil/model/building"
+	"medvil/model/time"
 )
 
 type IMap interface {
@@ -13,4 +14,5 @@ type IMap interface {
 	Shore(x, y uint16) bool
 	RandomSpot(x, y uint16, r int) *Field
 	Size() (uint16, uint16)
+	GetCalendar() *time.CalendarType
 }

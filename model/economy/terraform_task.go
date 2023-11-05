@@ -22,7 +22,7 @@ func (t *TerraformTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *TerraformTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *TerraformTask) Complete(m navigation.IMap, tool bool) bool {
 	if t.Progress < TerraformTaskMaxProgress {
 		t.Progress++
 		return false

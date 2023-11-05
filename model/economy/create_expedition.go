@@ -16,7 +16,7 @@ func (t *CreateExpeditionTask) Destination() navigation.Destination {
 	return t.PickupD
 }
 
-func (t *CreateExpeditionTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *CreateExpeditionTask) Complete(m navigation.IMap, tool bool) bool {
 	v := t.Order.PickupVehicle()
 	t.Townhall.CreateExpedition(v, t.Person)
 	return true

@@ -296,6 +296,24 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 					navigation.SetWallConnections(m, bf)
 				}
 			}
+		} else if construction.IsDeleted() {
+			if construction.Building != nil {
+				for _, coords := range construction.Building.GetBuildingXYs(true) {
+					field := m.GetField(coords[0], coords[1])
+					field.Building = navigation.FieldBuildingObjects{}
+					field.Allocated = false
+				}
+			}
+			if construction.Road != nil {
+				field := m.GetField(construction.X, construction.Y)
+				field.Road = nil
+				field.Allocated = false
+			}
+			if construction.Statue != nil {
+				field := m.GetField(construction.X, construction.Y)
+				field.Statue = nil
+				field.Allocated = false
+			}
 		} else {
 			constructions = append(constructions, construction)
 		}
@@ -436,7 +454,6 @@ func (town *Town) CreateDemolishTask(b *building.Building, r *building.Road, f *
 			Road:     r,
 			F:        f,
 			Town:     town,
-			M:        m,
 		})
 	}
 }

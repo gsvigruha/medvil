@@ -11,7 +11,11 @@ import (
 )
 
 const PlantSpreadRate = 0.0001
-const PlantDeathRate = 0.0002
+const TreeDeathRateNorth = 0.0001
+const TreeDeathRateSouth = 0.0002
+const PlantDeathRateNorth = 0.003
+const PlantDeathRateSouth = 0.001
+const AnimalDeathRate = 0.0003
 const GrassGrowRate = 0.0001
 
 type Map struct {
@@ -20,6 +24,14 @@ type Map struct {
 	Fields    [][]*navigation.Field
 	Countries []*social.Country
 	Calendar  *time.CalendarType
+}
+
+func (m *Map) TreeDeathRate(j uint16) float64 {
+	return (float64(j)*TreeDeathRateSouth + float64(m.SY-j)*TreeDeathRateNorth) / float64(m.SY)
+}
+
+func (m *Map) PlantDeathRate(j uint16) float64 {
+	return (float64(j)*PlantDeathRateSouth + float64(m.SY-j)*PlantDeathRateNorth) / float64(m.SY)
 }
 
 func (m *Map) SpreadPlant(i, j uint16, p *terrain.Plant, Calendar *time.CalendarType, r *rand.Rand) {
@@ -60,11 +72,11 @@ func (m *Map) ElapseTime() {
 						m.SpreadPlant(i, j+1, f.Plant, m.Calendar, r)
 					}
 					if f.Plant.T.IsAnnual() {
-						if m.Calendar.Season() == time.Winter {
+						if m.Calendar.Season() == time.Winter || rand.Float64() < m.PlantDeathRate(j) {
 							f.Plant = nil
 						}
 					} else {
-						if f.Plant.IsMature(m.Calendar) && rand.Float64() < PlantDeathRate {
+						if rand.Float64() < m.TreeDeathRate(j) {
 							f.Plant = nil
 						}
 					}
@@ -74,8 +86,9 @@ func (m *Map) ElapseTime() {
 				f.Animal.ElapseTime(m.Calendar)
 				if m.Calendar.Season() == time.Winter && !f.Animal.Corralled {
 					f.Animal = nil
-				}
-				if m.Calendar.Season() == time.Summer && f.Animal.Corralled {
+				} else if m.Calendar.Season() == time.Summer && f.Animal.Corralled {
+					f.Animal = nil
+				} else if m.Calendar.Hour == 0 && !f.Animal.Corralled && rand.Float64() < AnimalDeathRate {
 					f.Animal = nil
 				}
 			}
@@ -339,4 +352,8 @@ func (m *Map) GetNearbyGuard(t *navigation.Traveller) *social.Person {
 
 func (m *Map) Size() (uint16, uint16) {
 	return m.SX, m.SY
+}
+
+func (m *Map) GetCalendar() *time.CalendarType {
+	return m.Calendar
 }

@@ -55,7 +55,7 @@ func (p *Person) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 				p.Traveller.Motion = p.Task.Motion()
 				p.Traveller.IncPhase()
 			}
-			if p.Task.Complete(Calendar, p.Equipment.Tool) {
+			if p.Task.Complete(m, p.Equipment.Tool) {
 				p.Home.GetTown().Stats.FinishTask(p.Task, Calendar)
 				p.releaseTask()
 			}

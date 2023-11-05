@@ -30,7 +30,7 @@ func (t *VehicleConstructionTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *VehicleConstructionTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *VehicleConstructionTask) Complete(m navigation.IMap, tool bool) bool {
 	if t.Progress < t.T.Time {
 		t.Progress++
 		if tool {

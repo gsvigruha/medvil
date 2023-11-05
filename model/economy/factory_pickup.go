@@ -28,7 +28,7 @@ func (t *FactoryPickupTask) Destination() navigation.Destination {
 	}
 }
 
-func (t *FactoryPickupTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *FactoryPickupTask) Complete(m navigation.IMap, tool bool) bool {
 	if t.Dropoff {
 		t.Traveller.ExitVehicle()
 		return true

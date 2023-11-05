@@ -42,7 +42,7 @@ func (t *TradeTask) Destination() navigation.Destination {
 	return nil
 }
 
-func (t *TradeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *TradeTask) Complete(m navigation.IMap, tool bool) bool {
 	switch t.State {
 	case TradeTaskStatePickupAtSource:
 		t.Goods = []artifacts.Artifacts{}

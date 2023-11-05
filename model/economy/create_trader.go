@@ -22,7 +22,7 @@ func (t *CreateTraderTask) Destination() navigation.Destination {
 	return t.PickupD
 }
 
-func (t *CreateTraderTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *CreateTraderTask) Complete(m navigation.IMap, tool bool) bool {
 	v := t.Order.PickupVehicle()
 	t.Traveller.UseVehicle(v)
 	t.Townhall.CreateTrader(v, t.Person)
