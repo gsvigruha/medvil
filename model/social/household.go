@@ -21,6 +21,7 @@ const ExtrasBudgetRatio = 0.25
 const PaperBudgetRatio = 0.15
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
 const FleeingRate = 1.0 / (24 * 30 * 12 * 3)
+const MinIncomeRatio = 0.1
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")
@@ -328,7 +329,7 @@ func (h *Household) SellArtifacts(isInput func(*artifacts.Artifact) bool, isProd
 	resourcesFull := h.Resources.Full()
 	for a, q := range h.Resources.Artifacts {
 		qToSell := h.ArtifactToSell(a, q, isInput(a), isProduct(a), resourcesFull)
-		if qToSell > 0 && (resourcesFull || uint32(ProductTransportQuantity(a))*h.Town.Marketplace.Prices[a] >= h.GetMoney()/10) {
+		if qToSell > 0 && (resourcesFull || float64(ProductTransportQuantity(a))*h.Town.Marketplace.Prices[a] >= float64(h.GetMoney())*MinIncomeRatio) {
 			tag := economy.SingleTag(economy.TagSellArtifacts, a.Idx)
 			if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > h.NumTasks("exchange", tag) {
 				goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantityWithLimit(a, qToSell)}}
