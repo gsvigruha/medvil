@@ -329,7 +329,7 @@ func (h *Household) SellArtifacts(isInput func(*artifacts.Artifact) bool, isProd
 	resourcesFull := h.Resources.Full()
 	for a, q := range h.Resources.Artifacts {
 		qToSell := h.ArtifactToSell(a, q, isInput(a), isProduct(a), resourcesFull)
-		if qToSell > 0 && (resourcesFull || float64(ProductTransportQuantity(a))*h.Town.Marketplace.Prices[a] >= float64(h.GetMoney())*MinIncomeRatio) {
+		if qToSell > 0 && (resourcesFull || float64(ProductTransportQuantity(a))*float64(h.Town.Marketplace.Prices[a]) >= float64(h.GetMoney())*MinIncomeRatio) {
 			tag := economy.SingleTag(economy.TagSellArtifacts, a.Idx)
 			if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > h.NumTasks("exchange", tag) {
 				goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantityWithLimit(a, qToSell)}}
