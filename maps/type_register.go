@@ -18,11 +18,11 @@ import (
 func GetClassType(m json.RawMessage) reflect.Type {
 	var mData map[string]json.RawMessage
 	if err := json.Unmarshal(m, &mData); err != nil {
-		fmt.Println("Error when loading struct: ", err, m)
+		fmt.Println("Error when loading struct: ", err)
 	}
 	var typeName string
 	if err := json.Unmarshal(mData["$type"], &typeName); err != nil {
-		fmt.Println("Error when loading struct: ", err, m)
+		fmt.Println("Error when loading struct: ", err)
 	}
 	switch typeName {
 	case "Household":
