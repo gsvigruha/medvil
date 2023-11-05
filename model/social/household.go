@@ -21,7 +21,7 @@ const ExtrasBudgetRatio = 0.25
 const PaperBudgetRatio = 0.15
 const BuildingBrokenRate = 1.0 / (24 * 30 * 12 * 15)
 const FleeingRate = 1.0 / (24 * 30 * 12 * 3)
-const MinIncomeRatio = 0.1
+const MinIncomeRatio = 0.05
 
 var Log = artifacts.GetArtifact("log")
 var Firewood = artifacts.GetArtifact("firewood")

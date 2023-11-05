@@ -11,7 +11,7 @@ import (
 )
 
 const PlantSpreadRateNorth = 0.000075
-const PlantSpreadRateSouth = 0.000125
+const PlantSpreadRateSouth = 0.000150
 const TreeDeathRateNorth = 0.0001
 const TreeDeathRateSouth = 0.0002
 const PlantDeathRateNorth = 0.0030
@@ -41,7 +41,7 @@ func (m *Map) PlantDeathRate(f *navigation.Field) float64 {
 
 func (m *Map) PlantSpreadRate(f *navigation.Field) float64 {
 	if !f.Flat() {
-		return (PlantSpreadRateSouth + PlantSpreadRateNorth) / 2.0
+		return (PlantSpreadRateSouth + PlantSpreadRateNorth) / 3.0
 	}
 	return (float64(f.Y)*PlantSpreadRateSouth + float64(m.SY-f.Y)*PlantSpreadRateNorth) / float64(m.SY)
 }
