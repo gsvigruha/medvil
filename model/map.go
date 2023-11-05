@@ -28,9 +28,9 @@ type Map struct {
 }
 
 func (m *Map) TreeDeathRate(f *navigation.Field) float64 {
-	var rate = (float64(f.Y)*TreeDeathRateSouth + float64(m.SY-f.Y)*TreeDeathRateNorth) / float64(m.SY)
+	rate := (float64(f.Y)*TreeDeathRateSouth + float64(m.SY-f.Y)*TreeDeathRateNorth) / float64(m.SY)
 	if !f.Flat() {
-		rate = rate / 2.0
+		return rate / 2.0
 	}
 	return rate
 }
@@ -40,6 +40,9 @@ func (m *Map) PlantDeathRate(f *navigation.Field) float64 {
 }
 
 func (m *Map) PlantSpreadRate(f *navigation.Field) float64 {
+	if !f.Flat() {
+		return (PlantSpreadRateSouth + PlantSpreadRateNorth) / 2.0
+	}
 	return (float64(f.Y)*PlantSpreadRateSouth + float64(m.SY-f.Y)*PlantSpreadRateNorth) / float64(m.SY)
 }
 
