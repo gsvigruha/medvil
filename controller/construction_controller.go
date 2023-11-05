@@ -22,6 +22,13 @@ func ConstructionToControlPanel(cp *ControlPanel, c *building.Construction) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	top := ConstructionControllerTop * ControlPanelSY
 	p.AddScaleLabel("tasks/building", 24, top, IconS, IconS, 4, float64(c.Progress)/float64(c.MaxProgress), false)
+	p.AddButton(&gui.SimpleButton{
+		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + IconW*7), Y: top, SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Demolish construction")
+		}},
+		ClickImpl: func() {
+			c.Delete()
+		}})
 	var i = 1
 	p.AddImageLabel("coin", 24, top+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
 	for _, a := range c.Cost {

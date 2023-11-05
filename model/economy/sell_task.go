@@ -17,7 +17,7 @@ func (t *SellTask) Destination() navigation.Destination {
 	return nil
 }
 
-func (t *SellTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *SellTask) Complete(m navigation.IMap, tool bool) bool {
 	return false
 }
 

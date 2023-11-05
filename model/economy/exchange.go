@@ -62,7 +62,7 @@ func (t *ExchangeTask) Destination() navigation.Destination {
 	return nil
 }
 
-func (t *ExchangeTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *ExchangeTask) Complete(m navigation.IMap, tool bool) bool {
 	switch t.State {
 	case ExchangeTaskStatePickupAtHome:
 		t.Goods = t.HouseholdR.GetAsManyAsPossible(t.GoodsToSell)

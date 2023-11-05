@@ -19,7 +19,7 @@ func (t *BuyTask) Destination() navigation.Destination {
 	return nil
 }
 
-func (t *BuyTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *BuyTask) Complete(m navigation.IMap, tool bool) bool {
 	return false
 }
 

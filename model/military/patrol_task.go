@@ -17,7 +17,7 @@ func (t *PatrolTask) Destination() navigation.Destination {
 	return t.Destinations[t.State]
 }
 
-func (t *PatrolTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *PatrolTask) Complete(m navigation.IMap, tool bool) bool {
 	if t.State < len(t.Destinations)-1 {
 		t.State++
 		return false

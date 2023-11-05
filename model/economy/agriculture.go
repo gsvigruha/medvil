@@ -52,7 +52,8 @@ func (t *AgriculturalTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *AgriculturalTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *AgriculturalTask) Complete(m navigation.IMap, tool bool) bool {
+	Calendar := m.GetCalendar()
 	t.Progress++
 	if tool {
 		t.Progress++

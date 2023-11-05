@@ -340,3 +340,7 @@ func (m *Map) GetNearbyGuard(t *navigation.Traveller) *social.Person {
 func (m *Map) Size() (uint16, uint16) {
 	return m.SX, m.SY
 }
+
+func (m *Map) GetCalendar() *time.CalendarType {
+	return m.Calendar
+}

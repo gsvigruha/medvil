@@ -53,7 +53,7 @@ func (t *MiningTask) mine(a *artifacts.Artifact, q uint16) {
 	}
 }
 
-func (t *MiningTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *MiningTask) Complete(m navigation.IMap, tool bool) bool {
 	t.Progress++
 	switch t.UseType {
 	case MineFieldUseTypeStone:

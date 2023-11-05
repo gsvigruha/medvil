@@ -14,7 +14,6 @@ type DemolishTask struct {
 	Road     *building.Road
 	F        *navigation.Field
 	Town     ITown
-	M        navigation.IMap
 	Progress uint16
 }
 
@@ -22,15 +21,15 @@ func (t *DemolishTask) Destination() navigation.Destination {
 	return t.F
 }
 
-func (t *DemolishTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *DemolishTask) Complete(m navigation.IMap, tool bool) bool {
 	if t.Progress < DemolishTaskMaxProgress {
 		t.Progress++
 	} else {
 		if t.Building != nil {
-			t.Town.DestroyBuilding(t.Building, t.M)
+			t.Town.DestroyBuilding(t.Building, m)
 		}
 		if t.Road != nil {
-			t.Town.DestroyRoad(t.Road, t.M)
+			t.Town.DestroyRoad(t.Road, m)
 		}
 		t.F.Allocated = false
 		return true

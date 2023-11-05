@@ -6,7 +6,7 @@ import (
 )
 
 type Task interface {
-	Complete(Calendar *time.CalendarType, tool bool) bool
+	Complete(m navigation.IMap, tool bool) bool
 	Destination() navigation.Destination
 	Blocked() bool
 	Name() string

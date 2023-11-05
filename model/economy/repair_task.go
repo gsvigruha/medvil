@@ -26,7 +26,7 @@ func (t *RepairTask) Destination() navigation.Destination {
 	return t.Field
 }
 
-func (t *RepairTask) Complete(Calendar *time.CalendarType, tool bool) bool {
+func (t *RepairTask) Complete(m navigation.IMap, tool bool) bool {
 	if t.Progress == 0 && !t.Blocked() {
 		t.Resources.RemoveAll(t.Repairable.RepairCost())
 		t.Progress = 1
