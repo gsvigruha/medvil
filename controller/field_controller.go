@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/tfriedel6/canvas"
+	"math"
 	"medvil/model/navigation"
 	"medvil/view/gui"
 	"path/filepath"
@@ -11,12 +12,27 @@ import (
 
 var FieldGUIY = 0.15
 
+func plantDeathRateStr(rate float64) string {
+	return strconv.Itoa(int(math.Pow(1.0-rate, 30*9) * 100))
+}
+
+func treeDeathRateStr(rate float64) string {
+	return strconv.Itoa(int(math.Pow(1.0-rate, 30*12*10) * 100))
+}
+
 func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
 	p.AddTextureLabel("terrain/"+f.Terrain.T.Name, 24, FieldGUIY*ControlPanelSY, LargeIconS, LargeIconS)
 	if f.Deposit != nil {
 		p.AddImageLabel("terrain/"+f.Deposit.T.Name, 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 		p.AddTextLabel(ArtifactQStr(f.Deposit.Q), 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)
+	} else {
+		if f.Plantable(false) {
+			p.AddTextLabel("Tree soil quality: "+treeDeathRateStr(cp.C.Map.TreeDeathRate(f))+"%", 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconS*0.8)
+		}
+		if f.Arable() {
+			p.AddTextLabel("Plant soil quality: "+plantDeathRateStr(cp.C.Map.PlantDeathRate(f))+"%", 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconS*0.4)
+		}
 	}
 	if f.Plant != nil {
 		if f.Plant.T.TreeT != nil {
@@ -44,6 +60,7 @@ func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 		} else {
 			p.AddTextureLabel("infra/"+f.Road.T.Name, 24, FieldGUIY*ControlPanelSY+LargeIconD*2, LargeIconS, LargeIconS)
 		}
+		p.AddTextLabel(f.Road.T.DisplayName+", Speed: "+strconv.FormatFloat(f.GetSpeed(), 'f', -1, 64), 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconD*2+LargeIconS/2)
 	}
 	var aI = 0
 	for a, q := range f.Terrain.Resources.Artifacts {
