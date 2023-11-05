@@ -86,9 +86,11 @@ func (t *AgriculturalTask) Complete(m navigation.IMap, tool bool) bool {
 	case AgriculturalTaskHarvesting:
 		if t.Progress >= AgriculturalTaskDurationHarvesting {
 			if t.F.Plant != nil {
-				t.F.Terrain.Resources.Add(t.F.Plant.T.Yield.A, t.F.Plant.T.Yield.Quantity)
 				if t.F.Plant.T.IsAnnual() {
+					t.F.Terrain.Resources.Add(t.F.Plant.T.Yield.A, t.F.Plant.T.Yield.Quantity)
 					t.F.Plant = nil
+				} else {
+					t.F.Terrain.Resources.Add(t.F.Plant.T.Yield.A, uint16(float64(t.F.Plant.T.Yield.Quantity)*t.F.Plant.Maturity(Calendar)))
 				}
 			}
 			return true

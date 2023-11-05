@@ -11,7 +11,7 @@ import (
 )
 
 const PlantSpreadRate = 0.0001
-const TreeDeathRateNorth = 0.00005
+const TreeDeathRateNorth = 0.0001
 const TreeDeathRateSouth = 0.0002
 const PlantDeathRateNorth = 0.003
 const PlantDeathRateSouth = 0.001
