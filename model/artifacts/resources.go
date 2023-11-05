@@ -1,9 +1,5 @@
 package artifacts
 
-import (
-	"encoding/json"
-)
-
 const InfiniteQuantity = 65535
 const StorageFullThreshold = 0.9
 
@@ -23,7 +19,7 @@ func (a Artifacts) Multiply(n uint16) Artifacts {
 }
 
 func Filter(as []Artifacts) []Artifacts {
-	var result []Artifacts
+	var result []Artifacts = make([]Artifacts, 0, len(as))
 	for _, a := range as {
 		if a.Quantity > 0 {
 			result = append(result, a)
@@ -73,38 +69,13 @@ func (a Artifacts) Wrap() []Artifacts {
 
 type Resources struct {
 	Artifacts      map[*Artifact]uint16
-	VolumeCapacity uint16
+	VolumeCapacity uint32
 	Deleted        bool
 }
 
-func (r *Resources) Init(volumeCapacity uint16) {
-	r.Artifacts = make(map[*Artifact]uint16)
+func (r *Resources) Init(volumeCapacity uint32) {
+	r.Artifacts = make(map[*Artifact]uint16, 8)
 	r.VolumeCapacity = volumeCapacity
-}
-
-func (r *Resources) UnmarshalJSON(data []byte) error {
-	r.Artifacts = make(map[*Artifact]uint16)
-	var j map[string]json.RawMessage
-	if err := json.Unmarshal(data, &j); err != nil {
-		return err
-	}
-	for k, v := range j {
-		var quantity uint16
-		e := json.Unmarshal(v, &quantity)
-		if e != nil {
-			panic("Error unmarshalling json")
-		}
-		r.Artifacts[GetArtifact(k)] = quantity
-	}
-	return nil
-}
-
-func (r *Resources) MarshalJSON() ([]byte, error) {
-	var content map[string]interface{} = make(map[string]interface{})
-	for a, q := range r.Artifacts {
-		content[a.Name] = q
-	}
-	return json.Marshal(content)
 }
 
 func (r *Resources) AddAll(as []Artifacts) {
@@ -266,13 +237,13 @@ func (r *Resources) IsEmpty() bool {
 	return true
 }
 
-func (r *Resources) Volume() uint16 {
+func (r *Resources) Volume() uint32 {
 	if r.Artifacts == nil {
 		r.Artifacts = make(map[*Artifact]uint16)
 	}
-	var v uint16 = 0
+	var v uint32 = 0
 	for a, q := range r.Artifacts {
-		v += a.V * q
+		v += uint32(a.V) * uint32(q)
 	}
 	return v
 }

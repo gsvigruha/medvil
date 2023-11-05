@@ -158,7 +158,7 @@ func LoadSociety(dir string, m *model.Map) {
 			town.Townhall.Household.People = make([]*social.Person, 5)
 			town.Townhall.Household.TargetNumPeople = 5
 			town.Townhall.Household.Town = town
-			town.Townhall.Household.Resources.VolumeCapacity = town.Townhall.Household.Building.Plan.Area() * social.StoragePerArea
+			town.Townhall.Household.Resources.VolumeCapacity = uint32(town.Townhall.Household.Building.Plan.Area()) * social.StoragePerArea
 			town.Townhall.Household.Building.Plan.BuildingType = building.BuildingTypeTownhall
 			for i := range town.Townhall.Household.People {
 				town.Townhall.Household.People[i] = town.Townhall.Household.NewPerson(m)
@@ -172,7 +172,7 @@ func LoadSociety(dir string, m *model.Map) {
 			for k := range town.Farms {
 				farm := town.Farms[k]
 				farm.Household.Town = town
-				farm.Household.Resources.VolumeCapacity = farm.Household.Building.Plan.Area() * social.StoragePerArea
+				farm.Household.Resources.VolumeCapacity = uint32(farm.Household.Building.Plan.Area()) * social.StoragePerArea
 				AddBuilding(farm.Household.Building, m)
 				for l := range farm.Land {
 					land := farm.Land[l]

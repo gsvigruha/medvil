@@ -30,6 +30,7 @@ var Leather = artifacts.GetArtifact("leather")
 var Clothes = artifacts.GetArtifact("clothes")
 var IronBar = artifacts.GetArtifact("iron_bar")
 var Paper = artifacts.GetArtifact("paper")
+var Water = artifacts.GetArtifact("water")
 
 const LogToFirewood = 5
 const MinLog = 1
@@ -324,8 +325,9 @@ func NotInputOrProduct(*artifacts.Artifact) bool {
 }
 
 func (h *Household) SellArtifacts(isInput func(*artifacts.Artifact) bool, isProduct func(*artifacts.Artifact) bool) {
+	resourcesFull := h.Resources.Full()
 	for a, q := range h.Resources.Artifacts {
-		qToSell := h.ArtifactToSell(a, q, isInput(a), isProduct(a))
+		qToSell := h.ArtifactToSell(a, q, isInput(a), isProduct(a), resourcesFull)
 		if qToSell > 0 {
 			tag := economy.SingleTag(economy.TagSellArtifacts, a.Idx)
 			if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > h.NumTasks("exchange", tag) {
@@ -340,17 +342,17 @@ func (h *Household) SellArtifacts(isInput func(*artifacts.Artifact) bool, isProd
 	}
 }
 
-func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool, isProduct bool) uint16 {
+func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput, isProduct, resourcesFull bool) uint16 {
 	if isInput {
 		return 0
 	}
-	p := uint16(len(h.People))
-	if a.Name == "water" || a == Firewood || a == Clothes {
+	if a == Water || a == Firewood || a == Clothes {
 		return 0
 	}
 	if a == Tools && !isProduct {
 		return 0
 	}
+	p := uint16(len(h.People))
 	var result uint16
 	if economy.IsFoodOrDrink(a) {
 		var threshold = economy.MaxFoodOrDrinkPerPerson
@@ -409,7 +411,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput bool
 			return 0
 		}
 	}
-	if result >= ProductTransportQuantity(a) || h.Resources.Full() {
+	if result >= ProductTransportQuantity(a) || resourcesFull {
 		return result
 	}
 	return 0

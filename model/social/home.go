@@ -131,7 +131,7 @@ func PendingCosts(tasks []economy.Task) uint32 {
 func CreateBuildingConstruction(supplier Supplier, b *building.Building, m navigation.IMap) {
 	bt := b.Plan.BuildingType
 	c := &building.Construction{X: b.X, Y: b.Y, Building: b, Cost: b.Plan.ConstructionCost(), T: bt, Storage: &artifacts.Resources{}}
-	c.Storage.Init((b.Plan.Area() + b.Plan.RoofArea()) * StoragePerArea)
+	c.Storage.Init(uint32(b.Plan.Area()+b.Plan.RoofArea()) * StoragePerArea)
 	supplier.AddConstruction(c)
 
 	buildingF := m.GetField(b.X, b.Y)

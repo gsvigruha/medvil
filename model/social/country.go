@@ -55,7 +55,7 @@ func (c *Country) CreateNewTown(b *building.Building, supplier Supplier) {
 	name := c.PickTownName()
 	newTown := &Town{Country: c, Supplier: supplier, Settings: DefaultTownSettings, Name: name}
 	newTown.Townhall = &Townhall{Household: &Household{Building: b, Town: newTown, Resources: &artifacts.Resources{}, BoatEnabled: true}}
-	newTown.Townhall.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+	newTown.Townhall.Household.Resources.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
 	newTown.Init(len(c.History.Elements))
 	newTown.Townhall.Household.TargetNumPeople = newTown.Townhall.Household.Building.Plan.Area()
 	for a, q := range DefaultStorageTarget {

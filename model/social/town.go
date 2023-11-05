@@ -250,23 +250,23 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 			switch construction.T {
 			case building.BuildingTypeMine:
 				mine := &Mine{Household: household}
-				mine.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				mine.Household.Resources.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
 				town.Mines = append(town.Mines, mine)
 			case building.BuildingTypeWorkshop:
 				w := &Workshop{Household: household}
-				w.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				w.Household.Resources.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
 				town.Workshops = append(town.Workshops, w)
 			case building.BuildingTypeFarm:
 				f := &Farm{Household: household}
-				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				f.Household.Resources.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
 				town.Farms = append(town.Farms, f)
 			case building.BuildingTypeFactory:
 				f := &Factory{Household: household}
-				f.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				f.Household.Resources.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
 				town.Factories = append(town.Factories, f)
 			case building.BuildingTypeTower:
 				t := &Tower{Household: household}
-				t.Household.Resources.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				t.Household.Resources.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
 				town.Towers = append(town.Towers, t)
 			case building.BuildingTypeWall, building.BuildingTypeGate:
 				w := &Wall{Building: b, Town: town, F: field}
@@ -275,7 +275,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				town.Country.CreateNewTown(b, town)
 			case building.BuildingTypeMarket:
 				town.Marketplace = &Marketplace{Town: town, Building: b}
-				town.Marketplace.Storage.VolumeCapacity = b.Plan.Area() * StoragePerArea
+				town.Marketplace.Storage.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
 				town.Marketplace.Init()
 			case building.BuildingTypeRoad:
 				construction.Road.Construction = false
@@ -418,7 +418,7 @@ func (town *Town) CreateBuildingConstruction(b *building.Building, m navigation.
 func (town *Town) CreateIncrementalBuildingConstruction(b *building.Building, cost []artifacts.Artifacts, m navigation.IMap) {
 	bt := b.Plan.BuildingType
 	c := &building.Construction{X: b.X, Y: b.Y, Building: b, Cost: cost, T: bt, Storage: &artifacts.Resources{}}
-	c.Storage.Init((b.Plan.Area() + b.Plan.RoofArea()) * StoragePerArea)
+	c.Storage.Init(uint32(b.Plan.Area()+b.Plan.RoofArea()) * StoragePerArea)
 	town.Constructions = append(town.Constructions, c)
 
 	buildingF := m.GetField(b.X, b.Y)

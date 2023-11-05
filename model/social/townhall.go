@@ -30,6 +30,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	mp := t.Household.Town.Marketplace
 
 	if mp != nil {
+		resourcesFull := t.Household.Resources.Full()
 		for _, a := range artifacts.All {
 			tag := economy.SingleTag(economy.TagStorageTarget, a.Idx)
 			transportQuantity := ProductTransportQuantity(a)
@@ -41,7 +42,7 @@ func (t *Townhall) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 			if t.Household.NumTasks("exchange", tag) == 0 {
 				targetQ := uint16(t.StorageTarget[a])
 				if q > targetQ {
-					qToSell := t.Household.ArtifactToSell(a, q, false, false)
+					qToSell := t.Household.ArtifactToSell(a, q, false, false, resourcesFull)
 					if qToSell > 0 {
 						t.Household.AddTask(&economy.SellTask{
 							Exchange: mp,
@@ -143,7 +144,7 @@ func (t *Townhall) CreateExpedition(v *vehicles.Vehicle, p economy.Person) {
 		person := p.(*Person)
 		if pI == person {
 			var r artifacts.Resources
-			r.Init(v.T.MaxVolume)
+			r.Init(uint32(v.T.MaxVolume))
 			expedition := &Expedition{
 				Name:            ExpeditionNames[rand.Intn(len(ExpeditionNames))],
 				Money:           0,
@@ -170,7 +171,7 @@ func (t *Townhall) CreateTrader(v *vehicles.Vehicle, p economy.Person) {
 		person := p.(*Person)
 		if pI == person {
 			var r artifacts.Resources
-			r.Init(v.T.MaxVolume)
+			r.Init(uint32(v.T.MaxVolume))
 			trader := &Trader{
 				Money:          0,
 				Person:         person,
