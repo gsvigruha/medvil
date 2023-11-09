@@ -8,7 +8,7 @@ import (
 	"medvil/controller"
 	"medvil/view"
 	"os"
-//	"path/filepath"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"time"
@@ -53,7 +53,6 @@ func main() {
 		start := time.Now()
 		if c.Map != nil {
 			c.MapLock.Lock()
-			cv.ClearRect(0, 0, 2000, 2000)
 			view.Render(ic, cv, *c.Map, c)
 			c.MapLock.Unlock()
 			elapsed := time.Since(start)
@@ -76,7 +75,7 @@ func main() {
 			}
 		} else {
 			c.ControlPanel.Render(cv, c)
-			//cv.DrawImage(filepath.FromSlash("icon/gui/background.png"), controller.ControlPanelSX, 0, float64(cv.Width())-controller.ControlPanelSX, float64(cv.Height()))
+			cv.DrawImage(filepath.FromSlash("icon/gui/background.png"), controller.ControlPanelSX, 0, float64(cv.Width())-controller.ControlPanelSX, float64(cv.Height()))
 		}
 		c.RenderTick()
 	})
