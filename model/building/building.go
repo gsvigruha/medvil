@@ -34,6 +34,13 @@ func (b *Building) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func bToI(v bool) int {
+	if v {
+		return 1
+	}
+	return 0
+}
+
 func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 	p := b.Plan
 	if p.BaseShape[x][y] == nil || p.BaseShape[x][y].Roof == nil {
@@ -42,12 +49,21 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 	z := uint8(len(p.BaseShape[x][y].Floors))
 	roof := p.BaseShape[x][y].Roof
 	var connected [4]bool
+
+	liftedRoofBT := b.Plan.BuildingType == BuildingTypeFarm || b.Plan.BuildingType == BuildingTypeMine
+	n := y > 0 && p.HasUnitOrRoof(x, y-1, z)
+	w := x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z)
+	s := y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z)
+	e := x > 0 && p.HasUnitOrRoof(x-1, y, z)
+	island := !n && !w && !s && !e
+	nc := bToI(n) + bToI(w) + bToI(s) + bToI(e)
+
 	if roof.RoofType == RoofTypeSplit {
 		connected = [4]bool{
-			y > 0 && p.HasUnitOrRoof(x, y-1, z),
-			x < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x+1, y, z),
-			y < BuildingBaseMaxSize-1 && p.HasUnitOrRoof(x, y+1, z),
-			x > 0 && p.HasUnitOrRoof(x-1, y, z)}
+			n || (s && nc < 2 && liftedRoofBT) || (island && liftedRoofBT && b.Shape%2 == 0),
+			w || (e && nc < 2 && liftedRoofBT) || (island && liftedRoofBT && b.Shape%2 == 1),
+			s || (n && nc < 2 && liftedRoofBT) || (island && liftedRoofBT && b.Shape%2 == 0),
+			e || (w && nc < 2 && liftedRoofBT) || (island && liftedRoofBT && b.Shape%2 == 1)}
 	} else if roof.RoofType == RoofTypeFlat {
 		connected = [4]bool{
 			y > 0 && p.HasUnit(x, y-1, z-1),
@@ -68,6 +84,7 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 	return &RoofUnit{
 		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
 		Roof:                  *roof,
+		WallM:                 p.BaseShape[x][y].Floors[len(p.BaseShape[x][y].Floors)-1].M,
 		Connected:             connected}
 }
 
