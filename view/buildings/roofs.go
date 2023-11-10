@@ -79,7 +79,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 				roofPolygons = append(roofPolygons, rp1, rp2, sp)
 
 				if cv != nil {
-					if !roof.Construction {
+					if !roof.Construction && roof.WallM != nil {
 						cv.SetFillStyle(filepath.FromSlash("texture/building/" + WallMaterialName(roof.B.Plan.BuildingType, roof.WallM, roof.B.Shape, roof.B.Broken) + suffix + ".png"))
 						util.RenderPolygon(cv, sp, true)
 					}
