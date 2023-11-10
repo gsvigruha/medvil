@@ -31,6 +31,9 @@ func RoofMaterialName(r *building.RoofUnit) string {
 	if m == materials.GetMaterial("brick") {
 		return BrickMaterialName(shape)
 	}
+	if r.B.Plan.BuildingType == building.BuildingTypeMine && m == materials.GetMaterial("reed") {
+		return "reed_old"
+	}
 	return m.Name
 }
 
@@ -213,7 +216,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
-	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_dark.png"))
+	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_terra.png"))
 	util.RenderPolygon(cv, rp1, true)
 
 	rp2 := renderer.Polygon{Points: []renderer.Point{
@@ -222,7 +225,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
-	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_dark_flipped.png"))
+	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_terra_flipped.png"))
 	util.RenderPolygon(cv, rp2, true)
 
 	rp3 := renderer.Polygon{Points: []renderer.Point{
@@ -231,8 +234,6 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ - h - 12},
 	}}
-	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_flat.png"))
-	util.RenderPolygon(cv, rp3, true)
 	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 224})
 	util.RenderPolygon(cv, rp3, true)
 
