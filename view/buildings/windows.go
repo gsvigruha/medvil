@@ -8,25 +8,40 @@ import (
 	"strconv"
 )
 
-func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door, french bool, flowers int) {
+func RenderWindow(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, accents bool, r0, mr float64) {
+	r1 := mr - r0
+	r2 := r0 + 1
+	r3 := mr - r2
+
+	cv.SetLineWidth(2)
+	cv.SetFillStyle(filepath.FromSlash("texture/building/glass_2.png"))
+	cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
 	cv.BeginPath()
-	cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
-	cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
-	cv.LineTo((5*rf.X[rfIdx1]+2*rf.X[rfIdx2])/7, (5*rf.Y[rfIdx1]+2*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
-	cv.LineTo((5*rf.X[rfIdx1]+2*rf.X[rfIdx2])/7, (5*rf.Y[rfIdx1]+2*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo((r2*rf.X[rfIdx1]+r3*rf.X[rfIdx2])/mr, (r2*rf.Y[rfIdx1]+r3*rf.Y[rfIdx2])/mr-z-BuildingUnitHeight*DZ*1/3)
+	cv.LineTo((r2*rf.X[rfIdx1]+r3*rf.X[rfIdx2])/mr, (r2*rf.Y[rfIdx1]+r3*rf.Y[rfIdx2])/mr-z-BuildingUnitHeight*DZ*2/3)
+	cv.LineTo((r0*rf.X[rfIdx1]+r1*rf.X[rfIdx2])/mr, (r0*rf.Y[rfIdx1]+r1*rf.Y[rfIdx2])/mr-z-BuildingUnitHeight*DZ*2/3)
+	cv.LineTo((r0*rf.X[rfIdx1]+r1*rf.X[rfIdx2])/mr, (r0*rf.Y[rfIdx1]+r1*rf.Y[rfIdx2])/mr-z-BuildingUnitHeight*DZ*1/3)
 	cv.ClosePath()
 	cv.Fill()
 	cv.Stroke()
 
-	if !door {
+	if accents {
+		cv.SetLineWidth(2)
+		cv.SetStrokeStyle("#CCC")
 		cv.BeginPath()
-		cv.LineTo((2*rf.X[rfIdx1]+5*rf.X[rfIdx2])/7, (2*rf.Y[rfIdx1]+5*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
-		cv.LineTo((2*rf.X[rfIdx1]+5*rf.X[rfIdx2])/7, (2*rf.Y[rfIdx1]+5*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
-		cv.LineTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
-		cv.LineTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
+		cv.MoveTo((r2*rf.X[rfIdx1]+r3*rf.X[rfIdx2])/mr, (r2*rf.Y[rfIdx1]+r3*rf.Y[rfIdx2])/mr-z-BuildingUnitHeight*DZ*2/3-2)
+		cv.LineTo((r0*rf.X[rfIdx1]+r1*rf.X[rfIdx2])/mr, (r0*rf.Y[rfIdx1]+r1*rf.Y[rfIdx2])/mr-z-BuildingUnitHeight*DZ*2/3-2)
 		cv.ClosePath()
-		cv.Fill()
 		cv.Stroke()
+	}
+}
+
+func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 uint8, z float64, door, french, accents bool, flowers int) {
+
+	RenderWindow(cv, rf, rfIdx1, rfIdx2, z, accents, 5, 7)
+
+	if !door {
+		RenderWindow(cv, rf, rfIdx1, rfIdx2, z, accents, 1, 7)
 	}
 
 	if french {
@@ -47,6 +62,8 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 			dy2 = -dy1
 		}
 
+		cv.SetLineWidth(2)
+		cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 64})
 		cv.BeginPath()
 		cv.LineTo(x1-dx2, y1-dy2-z-BuildingUnitHeight*DZ*1/3)
 		cv.LineTo(x1-dx2, y1-dy2-z-BuildingUnitHeight*DZ*2/3)
@@ -83,14 +100,7 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 		cv.ClosePath()
 		cv.Fill()
 	} else {
-		cv.BeginPath()
-		cv.LineTo((4*rf.X[rfIdx1]+3*rf.X[rfIdx2])/7, (4*rf.Y[rfIdx1]+3*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
-		cv.LineTo((4*rf.X[rfIdx1]+3*rf.X[rfIdx2])/7, (4*rf.Y[rfIdx1]+3*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
-		cv.LineTo((3*rf.X[rfIdx1]+4*rf.X[rfIdx2])/7, (3*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*2/3)
-		cv.LineTo((3*rf.X[rfIdx1]+4*rf.X[rfIdx2])/7, (3*rf.Y[rfIdx1]+4*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3)
-		cv.ClosePath()
-		cv.Fill()
-		cv.Stroke()
+		RenderWindow(cv, rf, rfIdx1, rfIdx2, z, accents, 3, 7)
 	}
 
 	cv.SetStrokeStyle(color.RGBA{R: 128, G: 64, B: 32, A: 32})
@@ -100,6 +110,24 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 	cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z-BuildingUnitHeight*DZ*1/3+2)
 	cv.ClosePath()
 	cv.Stroke()
+
+	if accents && !door && !french {
+		cv.SetLineWidth(2)
+		cv.SetStrokeStyle("#CCC")
+		cv.BeginPath()
+		cv.MoveTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3+2)
+		cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3+2)
+		cv.ClosePath()
+		cv.Stroke()
+
+		cv.SetLineWidth(1)
+		cv.SetStrokeStyle("#888")
+		cv.BeginPath()
+		cv.MoveTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3+3)
+		cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3+3)
+		cv.ClosePath()
+		cv.Stroke()
+	}
 
 	if flowers > 0 && flowers <= 2 {
 		shapeStr := strconv.Itoa(flowers)

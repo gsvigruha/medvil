@@ -11,7 +11,8 @@ import (
 	"time"
 )
 
-var BuildingBufferW = DX * 2
+var Buffer = 12.0
+var BuildingBufferW = DX*2 + Buffer*2
 var BuildingBufferH = DY*3 + buildings.DZ*buildings.BuildingUnitHeight
 var BuildingExtensionBufferH = 200.0
 
@@ -32,10 +33,10 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 	key := roof.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + rf.F.CacheKey()
 	z := float64((numUnits+1)*buildings.BuildingUnitHeight) * buildings.DZ
 	xMin, yMin, _, _ := rf.BoundingBox()
-	bufferedRF := rf.Move(-xMin, -yMin+z)
+	bufferedRF := rf.Move(-xMin+Buffer, -yMin+z)
 
 	if ce, ok := ic.roofEntries[key]; ok {
-		return ce.cv, buildings.RenderBuildingRoof(nil, roof, bufferedRF, numUnits, c).Move(xMin, yMin-z), xMin, yMin - z
+		return ce.cv, buildings.RenderBuildingRoof(nil, roof, bufferedRF, numUnits, c).Move(xMin-Buffer, yMin-z), xMin - Buffer, yMin - z
 	} else {
 		offscreen, _ := goglbackend.NewOffscreen(int(BuildingBufferW), int(BuildingBufferH), true, ic.ctx)
 		cv := canvas.New(offscreen)
@@ -46,7 +47,7 @@ func (ic *BuildingImageCache) RenderBuildingRoofOnBuffer(
 			cv:          cv,
 			createdTime: t,
 		}
-		return cv, rbr.Move(xMin, yMin-z), xMin, yMin - z
+		return cv, rbr.Move(xMin-Buffer, yMin-z), xMin - Buffer, yMin - z
 	}
 }
 
