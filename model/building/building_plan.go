@@ -297,7 +297,7 @@ func (b BuildingPlan) HasUnitOrRoof(x, y, z uint8) bool {
 	if b.BaseShape[x][y] == nil {
 		return false
 	}
-	if b.BaseShape[x][y].Extension != nil {
+	if b.BaseShape[x][y].Extension != nil && !b.BaseShape[x][y].Extension.T.InUnit {
 		return z == 0
 	}
 	var oz = len(b.BaseShape[x][y].Floors)

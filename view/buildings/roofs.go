@@ -13,6 +13,8 @@ import (
 	"strconv"
 )
 
+const RoofOverflow = 0.1
+
 func RoofMaterialName(r *building.RoofUnit) string {
 	m := r.Roof.M
 	shape := r.B.Shape
@@ -30,6 +32,9 @@ func RoofMaterialName(r *building.RoofUnit) string {
 	}
 	if m == materials.GetMaterial("brick") {
 		return BrickMaterialName(shape)
+	}
+	if r.B.Plan.BuildingType == building.BuildingTypeMine && m == materials.GetMaterial("reed") {
+		return "reed_old"
 	}
 	return m.Name
 }
@@ -66,17 +71,45 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					renderer.Point{X: sideMidX, Y: sideMidY - z - BuildingUnitHeight*util.DZ},
 					renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*util.DZ},
 				}}
-				roofPolygons = append(roofPolygons, rp1, rp2)
+				sp := renderer.Polygon{Points: []renderer.Point{
+					renderer.Point{X: rf.X[rfIdx1], Y: rf.Y[rfIdx1] - z},
+					renderer.Point{X: sideMidX, Y: sideMidY - z - BuildingUnitHeight*util.DZ},
+					renderer.Point{X: rf.X[rfIdx2], Y: rf.Y[rfIdx2] - z},
+				}}
+				roofPolygons = append(roofPolygons, rp1, rp2, sp)
 
 				if cv != nil {
+					if !roof.Construction && roof.WallM != nil {
+						cv.SetFillStyle(filepath.FromSlash("texture/building/" + WallMaterialName(roof.B.Plan.BuildingType, roof.WallM, roof.B.Shape, roof.B.Broken) + suffix + ".png"))
+						util.RenderPolygon(cv, sp, true)
+					}
+
+					if !roof.Construction && (roof.B.Plan.BuildingType == building.BuildingTypeFarm || roof.B.Plan.BuildingType == building.BuildingTypeMine) {
+						cv.SetFillStyle(filepath.FromSlash("texture/building/ornament_wood.png"))
+						cv.BeginPath()
+						cv.LineTo(rp1.Points[0].X, rp1.Points[0].Y)
+						cv.LineTo(rp1.Points[1].X, rp1.Points[1].Y)
+						cv.LineTo(rp1.Points[1].X, rp1.Points[1].Y+5)
+						cv.LineTo(rp1.Points[0].X, rp1.Points[0].Y+5)
+						cv.ClosePath()
+						cv.Fill()
+						cv.BeginPath()
+						cv.LineTo(rp2.Points[0].X, rp2.Points[0].Y)
+						cv.LineTo(rp2.Points[1].X, rp2.Points[1].Y)
+						cv.LineTo(rp2.Points[1].X, rp2.Points[1].Y+5)
+						cv.LineTo(rp2.Points[0].X, rp2.Points[0].Y+5)
+						cv.ClosePath()
+						cv.Fill()
+					}
+
+					cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
+					cv.SetLineWidth(3)
+
 					if !roof.Construction {
 						cv.SetFillStyle(filepath.FromSlash("texture/building/" + RoofMaterialName(roof) + suffix + ".png"))
 					} else {
 						cv.SetFillStyle(filepath.FromSlash("texture/building/construction" + suffix + ".png"))
 					}
-
-					cv.SetStrokeStyle(color.RGBA{R: 192, G: 128, B: 64, A: 32})
-					cv.SetLineWidth(3)
 
 					util.RenderPolygon(cv, rp1, true)
 					util.RenderPolygon(cv, rp2, true)
@@ -87,10 +120,17 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					suffix = "_flipped"
 				}
 
+				var overflow = 0.0
+				if roof.B.Plan.BuildingType == building.BuildingTypeFarm || roof.B.Plan.BuildingType == building.BuildingTypeMine {
+					overflow = RoofOverflow
+				}
+				mx := midX
+				my := midY - z - BuildingUnitHeight*util.DZ
+
 				rp1 := renderer.Polygon{Points: []renderer.Point{
-					renderer.Point{X: rf.X[rfIdx1], Y: rf.Y[rfIdx1] - z},
-					renderer.Point{X: rf.X[rfIdx2], Y: rf.Y[rfIdx2] - z},
-					renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*util.DZ},
+					renderer.Point{X: rf.X[rfIdx1] + (rf.X[rfIdx1]-mx)*overflow, Y: rf.Y[rfIdx1] - z + (rf.Y[rfIdx1]-z-my)*overflow},
+					renderer.Point{X: rf.X[rfIdx2] + (rf.X[rfIdx2]-mx)*overflow, Y: rf.Y[rfIdx2] - z + (rf.Y[rfIdx2]-z-my)*overflow},
+					renderer.Point{X: mx, Y: my},
 				}}
 				roofPolygons = append(roofPolygons, rp1)
 
@@ -100,9 +140,19 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 					} else {
 						cv.SetFillStyle(filepath.FromSlash("texture/building/construction" + suffix + ".png"))
 					}
-					cv.SetStrokeStyle(color.RGBA{R: 64, G: 32, B: 0, A: 32})
-					cv.SetLineWidth(3)
-					util.RenderPolygon(cv, rp1, true)
+
+					util.RenderPolygon(cv, rp1, false)
+
+					if !roof.Construction && (roof.B.Plan.BuildingType == building.BuildingTypeFarm || roof.B.Plan.BuildingType == building.BuildingTypeMine) {
+						cv.SetFillStyle(filepath.FromSlash("texture/building/ornament_wood.png"))
+						cv.BeginPath()
+						cv.LineTo(rp1.Points[0].X, rp1.Points[0].Y)
+						cv.LineTo(rp1.Points[1].X, rp1.Points[1].Y)
+						cv.LineTo(rp1.Points[1].X, rp1.Points[1].Y+5)
+						cv.LineTo(rp1.Points[0].X, rp1.Points[0].Y+5)
+						cv.ClosePath()
+						cv.Fill()
+					}
 				}
 			}
 		}
@@ -213,7 +263,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
-	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_dark.png"))
+	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_terra.png"))
 	util.RenderPolygon(cv, rp1, true)
 
 	rp2 := renderer.Polygon{Points: []renderer.Point{
@@ -222,7 +272,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
-	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_dark_flipped.png"))
+	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_terra_flipped.png"))
 	util.RenderPolygon(cv, rp2, true)
 
 	rp3 := renderer.Polygon{Points: []renderer.Point{
@@ -231,8 +281,6 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
 		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ - h - 12},
 	}}
-	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_flat.png"))
-	util.RenderPolygon(cv, rp3, true)
 	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 224})
 	util.RenderPolygon(cv, rp3, true)
 

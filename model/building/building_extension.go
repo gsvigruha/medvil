@@ -88,10 +88,11 @@ func ForgeBuildingUnit(b *Building, m *materials.Material, construction bool) *B
 	}
 }
 
-func ForgeBuildingRoof(b *Building, m *materials.Material, construction bool) *RoofUnit {
+func ForgeBuildingRoof(b *Building, rm *materials.Material, wm *materials.Material, construction bool) *RoofUnit {
 	return &RoofUnit{
 		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
-		Roof:                  Roof{M: m, RoofType: RoofTypeSplit},
+		Roof:                  Roof{M: rm, RoofType: RoofTypeSplit},
+		WallM:                 wm,
 		Connected:             [4]bool{false, false, false, false},
 	}
 }

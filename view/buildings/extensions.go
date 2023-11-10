@@ -134,9 +134,9 @@ func RenderBuildingExtension(cv *canvas.Canvas, extension *building.ExtensionUni
 			RenderFactoryWindows(cv, rf, 2, 3, 0, false)
 		}
 		if extension.T == building.Forge {
-			RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("shingle"), extension.Construction), rf, 1, c)
+			RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("shingle"), materials.GetMaterial("stone"), extension.Construction), rf, 1, c)
 		} else {
-			RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile"), extension.Construction), rf, 1, c)
+			RenderBuildingRoof(cv, building.ForgeBuildingRoof(extension.B, materials.GetMaterial("tile"), materials.GetMaterial("brick"), extension.Construction), rf, 1, c)
 		}
 		if !extension.Construction {
 			RenderChimney(cv, rf, 1, false, phase)
