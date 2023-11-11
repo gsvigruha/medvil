@@ -27,7 +27,7 @@ func RenderWindow(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 u
 
 	if accents {
 		cv.SetLineWidth(2)
-		cv.SetStrokeStyle("#CCC")
+		cv.SetStrokeStyle("#888")
 		cv.BeginPath()
 		cv.MoveTo((r2*rf.X[rfIdx1]+r3*rf.X[rfIdx2])/mr, (r2*rf.Y[rfIdx1]+r3*rf.Y[rfIdx2])/mr-z-BuildingUnitHeight*DZ*2/3-2)
 		cv.LineTo((r0*rf.X[rfIdx1]+r1*rf.X[rfIdx2])/mr, (r0*rf.Y[rfIdx1]+r1*rf.Y[rfIdx2])/mr-z-BuildingUnitHeight*DZ*2/3-2)
@@ -113,7 +113,7 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 
 	if accents && !door && !french {
 		cv.SetLineWidth(2)
-		cv.SetStrokeStyle("#CCC")
+		cv.SetStrokeStyle("#888")
 		cv.BeginPath()
 		cv.MoveTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3+2)
 		cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3+2)
@@ -121,7 +121,7 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 		cv.Stroke()
 
 		cv.SetLineWidth(1)
-		cv.SetStrokeStyle("#888")
+		cv.SetStrokeStyle("#444")
 		cv.BeginPath()
 		cv.MoveTo((1*rf.X[rfIdx1]+6*rf.X[rfIdx2])/7, (1*rf.Y[rfIdx1]+6*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3+3)
 		cv.LineTo((6*rf.X[rfIdx1]+1*rf.X[rfIdx2])/7, (6*rf.Y[rfIdx1]+1*rf.Y[rfIdx2])/7-z-BuildingUnitHeight*DZ*1/3+3)
