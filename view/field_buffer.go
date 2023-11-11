@@ -104,7 +104,7 @@ func phase(d, h, s uint8, ts int) int {
 	return 0
 }
 
-func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
+func computeSeason(f *navigation.Field, c *controller.Controller) uint8 {
 	var season = c.Map.Calendar.Season()
 	if c.Map.Calendar.Month == 3 && c.Map.Calendar.Day <= 3 && (c.Map.Calendar.Hour+(c.Map.Calendar.Day-1)*24) < f.Terrain.Season {
 		season = (season - 1) % 4
@@ -118,6 +118,11 @@ func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.
 	if c.Map.Calendar.Month == 12 && c.Map.Calendar.Day <= 3 && 72-(c.Map.Calendar.Hour+(c.Map.Calendar.Day-1)*24) > f.Terrain.Season {
 		season = (season - 1) % 4
 	}
+	return season
+}
+
+func (ic *FieldImageCache) RenderFieldOnBuffer(f *navigation.Field, rf renderer.RenderedField, c *controller.Controller) *canvas.Canvas {
+	season := computeSeason(f, c)
 	phase := phase(c.Map.Calendar.Day, c.Map.Calendar.Hour, f.Terrain.Shape, c.TimeSpeed)
 	key := f.CacheKey() + "#" + strconv.Itoa(int(c.Perspective)) + "#" + strconv.Itoa(int(season))
 	if f.Terrain.T == terrain.Water {
