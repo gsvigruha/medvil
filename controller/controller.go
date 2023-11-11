@@ -444,6 +444,7 @@ func (c *Controller) Save(fileName string) {
 
 func (c *Controller) Load(fileName string) {
 	m := maps.Deserialize(filepath.FromSlash("saved/" + fileName)).(*model.Map)
+	maps.SetSeasonIndex(m)
 	c.MapLock.Lock()
 	c.Map = m
 	c.LinkMap()
