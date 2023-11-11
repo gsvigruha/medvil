@@ -240,6 +240,49 @@ func findStartingLocation(m *model.Map, conf CountryConf) (int, int) {
 	return x, y
 }
 
+func checkSeason(f *navigation.Field, iter int) bool {
+	if f != nil && f.Terrain.Season != 0 && int(f.Terrain.Season) < iter {
+		return true
+	}
+	return false
+}
+
+func SetSeasonIndex(m *model.Map) {
+	for i := range m.Fields {
+		for j := range m.Fields[i] {
+			m.Fields[i][j].Terrain.Season = 0
+		}
+	}
+	var hasUnset = true
+	var iter = 1
+	for hasUnset && iter <= 255 {
+		hasUnset = false
+		for i := range m.Fields {
+			for j := range m.Fields[i] {
+				f := m.Fields[i][j]
+				if f.Terrain.Season == 0 {
+					hasUnset = true
+					if f.Terrain.T == terrain.Water {
+						f.Terrain.Season = 1
+					} else if iter == 255 {
+						f.Terrain.Season = uint8(iter)
+					} else if f.Top() == 0 {
+						if checkSeason(m.GetField(uint16(i), uint16(j-1)), iter) ||
+							checkSeason(m.GetField(uint16(i), uint16(j+1)), iter) ||
+							checkSeason(m.GetField(uint16(i-1), uint16(j)), iter) ||
+							checkSeason(m.GetField(uint16(i+1), uint16(j)), iter) {
+							f.Terrain.Season = uint8(iter)
+						}
+					} else if iter >= 30 && f.Top() < uint8(iter-30) {
+						f.Terrain.Season = uint8(iter)
+					}
+				}
+			}
+		}
+		iter++
+	}
+}
+
 func NewMap(config MapConfig) *model.Map {
 	for {
 		fields := make([][]*navigation.Field, config.Size)
@@ -266,6 +309,7 @@ func NewMap(config MapConfig) *model.Map {
 			continue
 		}
 
+		SetSeasonIndex(m)
 		return m
 	}
 }
