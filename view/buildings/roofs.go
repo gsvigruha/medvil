@@ -121,7 +121,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 				}
 
 				var overflow = 0.0
-				if roof.B.Plan.BuildingType == building.BuildingTypeFarm || roof.B.Plan.BuildingType == building.BuildingTypeMine {
+				if roof.B.Plan.BuildingType == building.BuildingTypeFarm || roof.B.Plan.BuildingType == building.BuildingTypeMine || roof.B.Plan.BuildingType == building.BuildingTypeTower {
 					overflow = RoofOverflow
 				}
 				mx := midX
