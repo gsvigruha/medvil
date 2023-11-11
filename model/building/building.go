@@ -3,6 +3,7 @@ package building
 import (
 	"encoding/json"
 	"medvil/model/artifacts"
+	"medvil/model/materials"
 )
 
 type Building struct {
@@ -81,10 +82,14 @@ func (b *Building) getRoof(x uint8, y uint8, construction bool) *RoofUnit {
 			connected = [4]bool{false, false, false, true}
 		}
 	}
+	var wallM *materials.Material
+	if len(p.BaseShape[x][y].Floors) > 0 {
+		wallM = p.BaseShape[x][y].Floors[len(p.BaseShape[x][y].Floors)-1].M
+	}
 	return &RoofUnit{
 		BuildingComponentBase: BuildingComponentBase{B: b, Construction: construction},
 		Roof:                  *roof,
-		WallM:                 p.BaseShape[x][y].Floors[len(p.BaseShape[x][y].Floors)-1].M,
+		WallM:                 wallM,
 		Connected:             connected}
 }
 
