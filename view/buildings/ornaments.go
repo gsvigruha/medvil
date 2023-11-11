@@ -6,6 +6,7 @@ import (
 	"medvil/model/building"
 	"medvil/renderer"
 	"path/filepath"
+	"strconv"
 )
 
 func RenderOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer.RenderedField, rw renderer.RenderedWall) {
@@ -116,10 +117,11 @@ func RenderRoofFence(cv *canvas.Canvas, roof *building.RoofUnit, rp1 renderer.Po
 
 func RenderWallOrnaments(cv *canvas.Canvas, unit *building.BuildingUnit, rf renderer.RenderedField, rw renderer.RenderedWall) {
 	if unit.B.Plan.BuildingType == building.BuildingTypeWall {
-		if unit.B.Shape%5 == 1 {
-			cv.SetFillStyle(filepath.FromSlash("texture/building/wall_rose.png"))
-		} else if unit.B.Shape%5 == 2 {
-			cv.SetFillStyle(filepath.FromSlash("texture/building/wall_green.png"))
+		sfx := int(unit.B.Shape) % 3
+		if unit.B.Shape%4 == 1 {
+			cv.SetFillStyle(filepath.FromSlash("texture/building/wall_rose_" + strconv.Itoa(sfx) + ".png"))
+		} else if unit.B.Shape%4 == 2 {
+			cv.SetFillStyle(filepath.FromSlash("texture/building/wall_green_" + strconv.Itoa(sfx) + ".png"))
 		} else {
 			return
 		}

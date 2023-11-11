@@ -121,7 +121,7 @@ func RenderBuildingRoof(cv *canvas.Canvas, roof *building.RoofUnit, rf renderer.
 				}
 
 				var overflow = 0.0
-				if roof.B.Plan.BuildingType == building.BuildingTypeFarm || roof.B.Plan.BuildingType == building.BuildingTypeMine {
+				if roof.B.Plan.BuildingType == building.BuildingTypeFarm || roof.B.Plan.BuildingType == building.BuildingTypeMine || roof.B.Plan.BuildingType == building.BuildingTypeTower {
 					overflow = RoofOverflow
 				}
 				mx := midX
@@ -264,7 +264,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX - 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
 	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_terra.png"))
-	util.RenderPolygon(cv, rp1, true)
+	util.RenderPolygon(cv, rp1, false)
 
 	rp2 := renderer.Polygon{Points: []renderer.Point{
 		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ + 12},
@@ -273,7 +273,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ + 6},
 	}}
 	cv.SetFillStyle(filepath.FromSlash("texture/building/stone_terra_flipped.png"))
-	util.RenderPolygon(cv, rp2, true)
+	util.RenderPolygon(cv, rp2, false)
 
 	rp3 := renderer.Polygon{Points: []renderer.Point{
 		renderer.Point{X: midX + 9, Y: midY - z - BuildingUnitHeight*DZ - h - 6},
@@ -282,7 +282,7 @@ func RenderChimney(cv *canvas.Canvas, rf renderer.RenderedField, k int, flatRoof
 		renderer.Point{X: midX, Y: midY - z - BuildingUnitHeight*DZ - h - 12},
 	}}
 	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 224})
-	util.RenderPolygon(cv, rp3, true)
+	util.RenderPolygon(cv, rp3, false)
 
 	if phase != 255 {
 		cv.DrawImage(filepath.FromSlash("texture/building/smoke_"+strconv.Itoa(int(phase/3))+".png"), midX-16, midY-z-BuildingUnitHeight*DZ-h-52, 32, 48)
