@@ -25,6 +25,8 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 			cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 		} else if season == 2 {
 			cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
+		} else if season == 0 {
+			cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_spring_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 		} else {
 			cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 		}
@@ -53,6 +55,8 @@ func renderField(cv *canvas.Canvas, c *controller.Controller, f *navigation.Fiel
 				cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_winter_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 			} else if season == 2 {
 				cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_fall_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
+			} else if season == 0 {
+				cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_spring_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 			} else {
 				cv.SetFillStyle(filepath.FromSlash("texture/terrain/grass_" + strconv.Itoa(int(f.Terrain.Shape)) + ".png"))
 			}

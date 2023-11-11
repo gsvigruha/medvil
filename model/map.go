@@ -118,7 +118,8 @@ func (m *Map) ElapseTime() {
 			}
 			if (m.Calendar.Season() == time.Autumn && 50-(m.Calendar.Hour+(m.Calendar.Day-1)*24) <= f.Base()) ||
 				(m.Calendar.Season() == time.Spring && (m.Calendar.Hour+(m.Calendar.Day-1)*24) >= f.Base()) ||
-				(m.Calendar.Season() == time.Winter && 50-(m.Calendar.Hour+(m.Calendar.Day-1)*24) <= f.Base()) {
+				(m.Calendar.Season() == time.Winter && 50-(m.Calendar.Hour+(m.Calendar.Day-1)*24) <= f.Base()) ||
+				(m.Calendar.Season() == time.Summer && (m.Calendar.Hour+(m.Calendar.Day-1)*24) >= f.Base()) {
 				f.Terrain.Season = m.Calendar.Season()
 			}
 		}
