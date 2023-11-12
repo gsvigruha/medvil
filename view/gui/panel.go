@@ -81,6 +81,10 @@ func (p *Panel) Clear() {
 
 func (p *Panel) Refresh() {}
 
+func (p *Panel) IsEmpty() bool {
+	return len(p.Labels) == 0 && len(p.Buttons) == 0 && len(p.DropDowns) == 0 && len(p.Panels) == 0
+}
+
 func (p *Panel) GetHelperSuggestions() *Suggestion {
 	return nil
 }
