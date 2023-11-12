@@ -109,6 +109,15 @@ func ExtensionTypes(bt BuildingType) []*BuildingExtensionType {
 	return nil
 }
 
+func NeedsRoof(bt BuildingType) bool {
+	switch bt {
+	case BuildingTypeTower, BuildingTypeMarket:
+		return true
+	default:
+		return false
+	}
+}
+
 func MinNumFloors(bt BuildingType) int {
 	switch bt {
 	case BuildingTypeFactory, BuildingTypeTower:

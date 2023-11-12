@@ -253,14 +253,14 @@ func InfraToControlPanel(cp *ControlPanel) {
 		p.AddButton(&InfraBuildButton{
 			b:   &gui.ButtonGUI{Icon: "infra/wall_small", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
 			it:  InfraTypeStoneWall1,
-			msg: "Build a small wall.",
+			msg: "Build short city walls.",
 			ic:  ic,
 		})
 
 		p.AddButton(&InfraBuildButton{
 			b:   &gui.ButtonGUI{Icon: "infra/wall_large", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*1), SX: LargeIconS, SY: LargeIconS},
 			it:  InfraTypeStoneWall2,
-			msg: "Build a large wall.",
+			msg: "Build tall city walls.",
 			ic:  ic,
 		})
 

@@ -393,7 +393,7 @@ func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.Rende
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
 		return nil
 	}
-	if !bc.HasValidFloors() {
+	if !bc.HasValidFloorsAndRoof() {
 		return nil
 	}
 	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
@@ -423,7 +423,28 @@ func (bc *BuildingsController) Render(cv *canvas.Canvas) {
 	bc.p.Render(cv)
 }
 
-func (bc *BuildingsController) HasValidFloors() bool {
+func (bc *BuildingsController) ValidRoofMaterial(m *materials.Material) bool {
+	for _, mI := range building.RoofMaterials(bc.bt) {
+		if mI == m {
+			return true
+		}
+	}
+	return false
+}
+
+func (bc *BuildingsController) HasValidFloorsAndRoof() bool {
+	if building.NeedsRoof(bc.bt) {
+		for i := 0; i < 5; i++ {
+			for j := 0; j < 5; j++ {
+				if bc.Plan.BaseShape[i][j] != nil &&
+					len(bc.Plan.BaseShape[i][j].Floors) > 0 &&
+					bc.Plan.BaseShape[i][j].Roof != nil &&
+					!bc.ValidRoofMaterial(bc.Plan.BaseShape[i][j].Roof.M) {
+					return false
+				}
+			}
+		}
+	}
 	for i := 0; i < 5; i++ {
 		for j := 0; j < 5; j++ {
 			if bc.Plan.BaseShape[i][j] != nil && len(bc.Plan.BaseShape[i][j].Floors) >= building.MinNumFloors(bc.bt) {
@@ -444,7 +465,7 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 	if bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {
 		return false
 	}
-	if !bc.HasValidFloors() {
+	if !bc.HasValidFloorsAndRoof() {
 		return false
 	}
 	if bc.Plan.IsComplete() {
@@ -537,7 +558,11 @@ func (bc *BuildingsController) GenerateButtons() {
 		ArtifactsToControlPanel(bc.cp, bc.p, i, a.A, a.Quantity, BuildingCostTop*ControlPanelSY)
 	}
 
-	bc.p.AddTextLabel("Needs "+strconv.Itoa(building.MinNumFloors(bc.bt))+" to "+strconv.Itoa(building.MaxNumFloors(bc.bt))+" floors", 24, BuildingCostTop*ControlPanelSY+float64(IconH*2))
+	var needsStr = "Needs " + strconv.Itoa(building.MinNumFloors(bc.bt)) + " to " + strconv.Itoa(building.MaxNumFloors(bc.bt)) + " floors"
+	if building.NeedsRoof(bc.bt) {
+		needsStr = needsStr + ", roof"
+	}
+	bc.p.AddTextLabel(needsStr, 24, BuildingCostTop*ControlPanelSY+float64(IconH*2))
 }
 
 func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *BuildingsController {
@@ -565,7 +590,7 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *Buil
 	case building.BuildingTypeWorkshop:
 		helperMsg = "Build workshops to transform materials to products."
 	case building.BuildingTypeMine:
-		helperMsg = "Build mines to extract minerals, stone and clay."
+		helperMsg = "Build mines to extract metals, stone and clay."
 	case building.BuildingTypeFactory:
 		helperMsg = "Build factories to build vehicles."
 	case building.BuildingTypeTownhall:

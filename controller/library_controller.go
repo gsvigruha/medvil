@@ -119,7 +119,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	saveButton := &gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "save", X: float64(24 + IconW*1), Y: lasTop, SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Save game")
+			cp.HelperMessage("Save game to an existing file")
 		}},
 		ClickImpl: func() {
 			go cp.C.Save(filesDropdown.GetSelectedValue())
@@ -173,7 +173,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Show suggestions and doc")
+			cp.HelperMessage("Show suggestions and descriptions")
 		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
 		ClickImpl: func() {
