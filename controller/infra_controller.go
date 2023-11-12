@@ -223,34 +223,28 @@ func InfraToControlPanel(cp *ControlPanel) {
 	if cp.C.ActiveSupplier != nil && cp.C.ActiveSupplier.BuildHousesEnabled() {
 
 		p.AddButton(&InfraBuildButton{
-			b:  &gui.ButtonGUI{Texture: "terrain/grass", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS},
-			it: InfraTypeNone,
-			ic: ic,
-		})
-
-		p.AddButton(&InfraBuildButton{
-			b:   &gui.ButtonGUI{Icon: "infra/dirt_road", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS},
+			b:   &gui.ButtonGUI{Icon: "infra/dirt_road", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS},
 			it:  InfraTypeDirtRoad,
 			msg: "Build dirt road. Speeds up commute with 50%.",
 			ic:  ic,
 		})
 
 		p.AddButton(&InfraBuildButton{
-			b:   &gui.ButtonGUI{Icon: "infra/cobble_road", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS},
+			b:   &gui.ButtonGUI{Icon: "infra/cobble_road", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS},
 			it:  InfraTypeCobbleRoad,
 			msg: "Build cobble road. Speeds up commute with 100%.",
 			ic:  ic,
 		})
 
 		p.AddButton(&InfraBuildButton{
-			b:   &gui.ButtonGUI{Icon: "infra/canal", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
+			b:   &gui.ButtonGUI{Icon: "infra/canal", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS},
 			it:  InfraTypeCanal,
 			msg: "Extend water with canals for drinking and transport.",
 			ic:  ic,
 		})
 
 		p.AddButton(&InfraBuildButton{
-			b:   &gui.ButtonGUI{Icon: "infra/bridge", X: float64(24 + LargeIconD*4), Y: top, SX: LargeIconS, SY: LargeIconS},
+			b:   &gui.ButtonGUI{Icon: "infra/bridge", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
 			it:  InfraTypeBridge,
 			msg: "Build bridges. People can cross small rivers.",
 			ic:  ic,
