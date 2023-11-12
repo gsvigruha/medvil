@@ -50,28 +50,29 @@ func main() {
 	fmt.Println("CPUs: " + strconv.Itoa(runtime.NumCPU()))
 
 	wnd.MainLoop(func() {
-		start := time.Now()
 		if c.Map != nil {
+			start := time.Now()
 			c.MapLock.Lock()
 			view.Render(ic, cv, *c.Map, c)
 			c.MapLock.Unlock()
-			elapsed := time.Since(start)
-
-			if elapsed.Nanoseconds() < FrameRenderTimeNs {
-				time.Sleep(time.Duration(FrameRenderTimeNs-elapsed.Nanoseconds()) * time.Nanosecond)
-			}
 
 			c.Refresh()
 			ic.Clean()
-			if os.Getenv("MEDVIL_VERBOSE") == "2" {
-				log.Printf("Rendering took %s (fps %s)", elapsed, wnd.FPS())
-				log.Printf("%s", c.Map.Calendar)
-			}
+
 			for i := 0; i < c.TimeSpeed; i++ {
 				c.MapLock.Lock()
 				c.Map.Calendar.Tick()
 				c.Map.ElapseTime()
 				c.MapLock.Unlock()
+			}
+
+			elapsed := time.Since(start)
+			if os.Getenv("MEDVIL_VERBOSE") == "2" {
+				log.Printf("Cycle took %s (fps %s)", elapsed, wnd.FPS())
+				log.Printf("%s", c.Map.Calendar)
+			}
+			if elapsed.Nanoseconds() < FrameRenderTimeNs {
+				time.Sleep(time.Duration(FrameRenderTimeNs-elapsed.Nanoseconds()) * time.Nanosecond)
 			}
 		} else {
 			c.ControlPanel.Render(cv, c)
