@@ -285,7 +285,9 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 		if p.dynamicPanel != nil {
 			p.dynamicPanel.Render(p.buffer)
 		}
-		p.helperPanel.Render(p.buffer)
+		if !p.helperPanel.IsEmpty() {
+			p.helperPanel.Render(p.buffer)
+		}
 		p.GetSuggestion()
 	}
 	cv.DrawImage(p.buffer, 0, 0, ControlPanelSX, ControlPanelSY)

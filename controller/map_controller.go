@@ -65,7 +65,10 @@ func (mc *MapController) GetHelperSuggestions() *gui.Suggestion {
 func MapToControlPanel(cp *ControlPanel) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	mc := &MapController{p: p}
-	sx := ControlPanelSX - 48
+	var sx = ControlPanelSX - 48
+	if sx > ControlPanelSY*0.3 {
+		sx = ControlPanelSY * 0.3
+	}
 	d := sx / float64(cp.C.Map.SX)
 	offscreen, _ := goglbackend.NewOffscreen(int(sx), int(sx)*int(cp.C.Map.SY)/int(cp.C.Map.SX), true, cp.C.ctx)
 	cv := canvas.New(offscreen)

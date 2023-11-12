@@ -14,7 +14,7 @@ import (
 )
 
 var TownhallControllerGUIBottomY = 0.75
-var TownhallDocGUIY = 0.75
+var TownhallDocGUIY = 0.85
 
 type TownhallControllerButton struct {
 	tc        *TownhallController
@@ -25,7 +25,9 @@ type TownhallControllerButton struct {
 
 func (b *TownhallControllerButton) Click() {
 	b.tc.subPanel = b.subPanel
-	b.tc.cp.HelperMessage(b.helperMsg)
+	if !b.tc.cp.C.ViewSettings.ShowSuggestions {
+		b.tc.cp.HelperMessage(b.helperMsg)
+	}
 }
 
 func (b *TownhallControllerButton) Render(cv *canvas.Canvas) {
