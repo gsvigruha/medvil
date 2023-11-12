@@ -427,7 +427,7 @@ func (bc *BuildingsController) HasValidFloorsAndRoof() bool {
 	if building.NeedsRoof(bc.bt) {
 		for i := 0; i < 5; i++ {
 			for j := 0; j < 5; j++ {
-				if bc.Plan.BaseShape[i][j] != nil && len(bc.Plan.BaseShape[i][j].Floors) > 10 && (bc.Plan.BaseShape[i][j].Roof == nil || bc.Plan.BaseShape[i][j].Roof.Flat()) {
+				if bc.Plan.BaseShape[i][j] != nil && len(bc.Plan.BaseShape[i][j].Floors) > 0 && (bc.Plan.BaseShape[i][j].Roof == nil || bc.Plan.BaseShape[i][j].Roof.Flat()) {
 					return false
 				}
 			}
