@@ -100,7 +100,7 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.drawLegend(cv, w2, iconTop+IconS*0, "#D72")
 		cv.DrawImage(filepath.FromSlash("icon/gui/town.png"), w2, iconTop+IconS*1, IconS, IconS)
 		l.drawLegend(cv, w2, iconTop+IconS*1, "#58F")
-		l.helperMsg = "Wealth and population of social classes"
+		l.helperMsg = "Wealth and population size of social classes"
 	}
 	l.CaptureClick(0, 0)
 }

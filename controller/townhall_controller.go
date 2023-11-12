@@ -163,7 +163,7 @@ func RefreshSubPanels(tc *TownhallController) {
 		}})
 	tp.AddTextLabel("Repair "+strconv.Itoa(len(town.Walls))+" walls", 24+LargeIconD*2, top+LargeIconD*6+LargeIconD/2)
 
-	tp.AddImageLabel("building/market", 24, top+LargeIconD*7, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
+	tp.AddImageLabel("market", 24, top+LargeIconD*7, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: 24 + LargeIconD, Y: top + LargeIconD*7, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
 			tc.cp.HelperMessage("Enable or disable trading with this city")
