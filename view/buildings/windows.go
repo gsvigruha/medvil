@@ -103,13 +103,15 @@ func RenderWindows(cv *canvas.Canvas, rf renderer.RenderedField, rfIdx1, rfIdx2 
 		RenderWindow(cv, rf, rfIdx1, rfIdx2, z, accents, 3, 7)
 	}
 
-	cv.SetStrokeStyle(color.RGBA{R: 128, G: 64, B: 32, A: 32})
-	cv.SetLineWidth(3)
-	cv.BeginPath()
-	cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z-BuildingUnitHeight*DZ*1/3+2)
-	cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z-BuildingUnitHeight*DZ*1/3+2)
-	cv.ClosePath()
-	cv.Stroke()
+	/*
+		cv.SetStrokeStyle(color.RGBA{R: 128, G: 64, B: 32, A: 32})
+		cv.SetLineWidth(3)
+		cv.BeginPath()
+		cv.LineTo(rf.X[rfIdx1], rf.Y[rfIdx1]-z-BuildingUnitHeight*DZ*1/3+2)
+		cv.LineTo(rf.X[rfIdx2], rf.Y[rfIdx2]-z-BuildingUnitHeight*DZ*1/3+2)
+		cv.ClosePath()
+		cv.Stroke()
+	*/
 
 	if accents && !door && !french {
 		cv.SetLineWidth(2)

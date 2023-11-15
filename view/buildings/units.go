@@ -130,7 +130,7 @@ func RenderBuildingUnit(cv *canvas.Canvas, unit *building.BuildingUnit, rf rende
 				cv.SetLineWidth(2)
 				if wall.Windows == building.WindowTypeFactory {
 					cv.SetFillStyle(filepath.FromSlash("texture/building/glass_3.png"))
-					cv.SetStrokeStyle(color.RGBA{R: 32, G: 32, B: 0, A: 192})
+					cv.SetStrokeStyle(color.RGBA{R: 48, G: 48, B: 24, A: 255})
 					RenderFactoryWindows(cv, rf, rfIdx1, rfIdx2, z, wall.Door)
 				} else {
 					var flowers = -1
