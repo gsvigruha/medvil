@@ -116,7 +116,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 		m.Optimize = m.AutoSwitch && m.Household.Resources.Remove(Paper, 1) > 0
 	}
 
-	if Calendar.Hour == 0 {
+	if Calendar.Hour == 0 && len(m.Land) > 0 {
 		for _, land := range m.Land {
 			m.AddTransportTask(land, imap)
 		}
