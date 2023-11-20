@@ -11,7 +11,7 @@ import (
 	"medvil/util"
 )
 
-const MineMaxDistance = 10
+const MineMaxDistance = 15
 
 var GoldOre = artifacts.GetArtifact("gold_ore")
 var IronOre = artifacts.GetArtifact("iron_ore")

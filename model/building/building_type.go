@@ -111,7 +111,7 @@ func ExtensionTypes(bt BuildingType) []*BuildingExtensionType {
 
 func NeedsRoof(bt BuildingType) bool {
 	switch bt {
-	case BuildingTypeTower, BuildingTypeMarket:
+	case BuildingTypeTower, BuildingTypeMarket, BuildingTypeMine, BuildingTypeFarm:
 		return true
 	default:
 		return false
