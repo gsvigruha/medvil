@@ -42,8 +42,8 @@ var AllManufacture = [...]*Manufacture{
 		Time:                  10 * 24,
 		Power:                 1000,
 		BuildingExtensionType: building.WaterMillWheel,
-		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("log"), Quantity: 2}},
-		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("board"), Quantity: 1}}},
+		Inputs:                []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("stone"), Quantity: 2}},
+		Outputs:               []artifacts.Artifacts{artifacts.Artifacts{A: artifacts.GetArtifact("cube"), Quantity: 1}}},
 	&Manufacture{
 		Name:                  "tiling",
 		Time:                  10 * 24,

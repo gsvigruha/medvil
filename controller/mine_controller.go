@@ -167,7 +167,7 @@ func (mc *MineController) GetHelperSuggestions() *gui.Suggestion {
 	}
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	if len(mc.mine.Land) == 0 {
-		return &gui.Suggestion{Message: "Allocate land to grow vegetables, grain,\ntrees and sheep.", Icon: "farm_mixed", X: float64(24 + IconW*4), Y: hcy + float64(IconH)/2.0}
+		return &gui.Suggestion{Message: "Allocate land to mine.", Icon: "mine_mixed", X: float64(24 + IconW*4), Y: hcy + float64(IconH)/2.0}
 	}
 	return nil
 }

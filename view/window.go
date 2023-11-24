@@ -84,6 +84,7 @@ func CreateWindow(title string) (*Window, *canvas.Canvas, *goglbackend.GLContext
 	// set vsync on, enable multisample (if available)
 	glfw.SwapInterval(1)
 	gl.Enable(gl.MULTISAMPLE)
+	//gl.Enable(gl.SAMPLE_ALPHA_TO_COVERAGE)
 
 	// context
 	ctx, err := goglbackend.NewGLContext()

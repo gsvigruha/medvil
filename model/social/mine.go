@@ -11,7 +11,7 @@ import (
 	"medvil/util"
 )
 
-const MineMaxDistance = 10
+const MineMaxDistance = 15
 
 var GoldOre = artifacts.GetArtifact("gold_ore")
 var IronOre = artifacts.GetArtifact("iron_ore")
@@ -116,7 +116,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 		m.Optimize = m.AutoSwitch && m.Household.Resources.Remove(Paper, 1) > 0
 	}
 
-	if Calendar.Hour == 0 {
+	if Calendar.Hour == 0 && len(m.Land) > 0 {
 		for _, land := range m.Land {
 			m.AddTransportTask(land, imap)
 		}
