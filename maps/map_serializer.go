@@ -73,7 +73,7 @@ func SerializeObject(o interface{}, writer *bytes.Buffer) {
 		writer.WriteString("{")
 		var first bool = true
 		for _, key := range v.MapKeys() {
-			if t.Kind() != reflect.Ptr || !key.IsNil() {
+			if t.Kind() != reflect.Ptr || (!key.IsNil() && key.Interface() != nil) {
 				if !first {
 					writer.WriteString(", ")
 				}
