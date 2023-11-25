@@ -71,7 +71,7 @@ func (e *Expedition) NeedsFood() bool {
 
 func (e *Expedition) StorageFull() bool {
 	for a, targetQ := range e.StorageTarget {
-		if targetQ != 0 {
+		if targetQ > 0 {
 			if float64(e.Resources.Get(a))/math.Abs(float64(targetQ)) < StorageFullRatio {
 				return false
 			}
