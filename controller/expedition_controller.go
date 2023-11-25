@@ -53,7 +53,7 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		if storageQ, ok := expedition.Resources.Artifacts[a]; ok {
 			q = storageQ
 		}
-		ArtifactStorageToControlPanel(p, expedition.StorageTarget, aI, a, q, ArtifactsGUIY*ControlPanelSY)
+		ArtifactStorageToControlPanel(p, expedition.StorageTarget, aI, a, q, ArtifactsGUIY*ControlPanelSY, true)
 		aI++
 	}
 

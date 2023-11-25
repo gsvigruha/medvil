@@ -226,7 +226,7 @@ func RefreshSubPanels(tc *TownhallController) {
 		if storageQ, ok := th.Household.Resources.Artifacts[a]; ok {
 			q = storageQ
 		}
-		ArtifactStorageToControlPanel(sp, th.StorageTarget, aI, a, q, ControlPanelSY*0.175)
+		ArtifactStorageToControlPanel(sp, th.StorageTarget, aI, a, q, ControlPanelSY*0.175, false)
 		aI++
 	}
 
@@ -295,16 +295,51 @@ func RefreshSubPanels(tc *TownhallController) {
 	}
 }
 
-func ArtifactStorageToControlPanel(p *gui.Panel, st map[*artifacts.Artifact]int, i int, a *artifacts.Artifact, q uint16, top float64) {
+func abs(val int) int {
+	if val < 0 {
+		return -val
+	}
+	return val
+}
+
+func ArtifactStorageToControlPanel(p *gui.Panel, st map[*artifacts.Artifact]int, i int, a *artifacts.Artifact, q uint16, top float64, offload bool) {
 	rowH := int(IconS * 2)
 	xI := i % IconRowMaxButtons
 	yI := i / IconRowMaxButtons
 	w := int(float64(IconW) * float64(IconRowMax) / float64(IconRowMaxButtons))
 	p.AddImageLabel("artifacts/"+a.Name, float64(24+xI*w), top+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
 	p.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*w), top+float64(yI*rowH+IconH+4))
+	var offloadButton *gui.SimpleButton
+	if offload {
+		var icon = "arrow_small_up"
+		if st[a] < 0 {
+			icon = "arrow_small_down"
+		}
+		offloadButton = &gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: icon, X: float64(24+xI*w) + IconS, Y: top + float64(yI*rowH), SX: IconS / 2.0, SY: IconS,
+				Disabled: func() bool { return st[a] == 0 },
+			},
+			ClickImpl: func() {
+				if st[a] < 0 {
+					st[a] = -st[a]
+					offloadButton.Icon = "arrow_small_up"
+				} else if st[a] > 0 {
+					st[a] = -st[a]
+					offloadButton.Icon = "arrow_small_down"
+				}
+			},
+		}
+		p.AddButton(offloadButton)
+	}
 	p.AddPanel(gui.CreateNumberPanel(float64(24+xI*w), top+float64(yI*rowH+IconH+4), float64(IconW+8), gui.FontSize*1.5, 0, 250, 6, "%v", false,
-		func() int { return st[a] },
-		func(v int) { st[a] = v }).P)
+		func() int { return abs(st[a]) },
+		func(v int) {
+			if st[a] < 0 {
+				st[a] = -v
+			} else {
+				st[a] = v
+			}
+		}).P)
 }
 
 func (tc *TownhallController) CaptureMove(x, y float64) {
