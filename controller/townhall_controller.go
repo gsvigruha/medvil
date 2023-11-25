@@ -226,7 +226,7 @@ func RefreshSubPanels(tc *TownhallController) {
 		if storageQ, ok := th.Household.Resources.Artifacts[a]; ok {
 			q = storageQ
 		}
-		ArtifactStorageToControlPanel(sp, th.StorageTarget, aI, a, q, ControlPanelSY*0.175, false)
+		ArtifactStorageToControlPanel(sp, tc.cp, th.StorageTarget, aI, a, q, ControlPanelSY*0.175, false)
 		aI++
 	}
 
@@ -302,7 +302,7 @@ func abs(val int) int {
 	return val
 }
 
-func ArtifactStorageToControlPanel(p *gui.Panel, st map[*artifacts.Artifact]int, i int, a *artifacts.Artifact, q uint16, top float64, offload bool) {
+func ArtifactStorageToControlPanel(p *gui.Panel, cp *ControlPanel, st map[*artifacts.Artifact]int, i int, a *artifacts.Artifact, q uint16, top float64, offload bool) {
 	rowH := int(IconS * 2)
 	xI := i % IconRowMaxButtons
 	yI := i / IconRowMaxButtons
@@ -323,9 +323,11 @@ func ArtifactStorageToControlPanel(p *gui.Panel, st map[*artifacts.Artifact]int,
 				if st[a] < 0 {
 					st[a] = -st[a]
 					offloadButton.Icon = "arrow_small_up"
+					cp.HelperMessage("Transport goods to the destination town")
 				} else if st[a] > 0 {
 					st[a] = -st[a]
 					offloadButton.Icon = "arrow_small_down"
+					cp.HelperMessage("Transport goods back")
 				}
 			},
 		}
