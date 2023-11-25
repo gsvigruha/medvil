@@ -71,13 +71,22 @@ func (e *Expedition) NeedsFood() bool {
 
 func (e *Expedition) StorageFull() bool {
 	for a, targetQ := range e.StorageTarget {
-		if targetQ > 0 {
-			if float64(e.Resources.Get(a))/float64(targetQ) < StorageFullRatio {
+		if targetQ != 0 {
+			if float64(e.Resources.Get(a))/math.Abs(float64(targetQ)) < StorageFullRatio {
 				return false
 			}
 		}
 	}
 	return true
+}
+
+func (e *Expedition) SuppliedTown() *Town {
+	for _, town := range e.Town.Country.Towns {
+		if town.Supplier == e {
+			return town
+		}
+	}
+	return nil
 }
 
 func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
@@ -138,19 +147,63 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 			if storageQ, ok := e.Resources.Artifacts[a]; ok {
 				q = storageQ
 			}
-			pickupD := m.GetField(srcH.Building.X, srcH.Building.Y)
-			targetQ := uint16(e.StorageTarget[a])
-			if q < targetQ {
-				tasksNeeded := (targetQ - q) / ProductTransportQuantity(a)
-				if e.NumTasks("transport", economy.TransportTaskTag(pickupD, a)) < int(tasksNeeded) {
-					e.AddTask(&economy.TransportTask{
-						PickupD:        pickupD,
-						DropoffD:       &navigation.TravellerDestination{T: e.Vehicle.Traveller},
-						PickupR:        srcH.Resources,
-						DropoffR:       e.Resources,
-						A:              a,
-						TargetQuantity: ProductTransportQuantity(a),
-					})
+			thD := m.GetField(srcH.Building.X, srcH.Building.Y)
+			if e.StorageTarget[a] > 0 {
+				targetQ := uint16(e.StorageTarget[a])
+				if q < targetQ {
+					tasksNeeded := (targetQ - q) / ProductTransportQuantity(a)
+					if e.NumTasks("transport", economy.TransportTaskTag(thD, a)) < int(tasksNeeded) {
+						e.AddTask(&economy.TransportTask{
+							PickupD:        thD,
+							DropoffD:       &navigation.TravellerDestination{T: e.Vehicle.Traveller},
+							PickupR:        srcH.Resources,
+							DropoffR:       e.Resources,
+							A:              a,
+							TargetQuantity: ProductTransportQuantity(a),
+						})
+					}
+				}
+			} else if e.StorageTarget[a] < 0 {
+				if q > 0 {
+					expD := &navigation.TravellerDestination{T: e.Vehicle.Traveller}
+					tasksNeeded := q / ProductTransportQuantity(a)
+					if e.NumTasks("transport", economy.TransportTaskTag(expD, a)) < int(tasksNeeded) {
+						e.AddTask(&economy.TransportTask{
+							PickupD:        expD,
+							DropoffD:       thD,
+							PickupR:        e.Resources,
+							DropoffR:       srcH.Resources,
+							A:              a,
+							TargetQuantity: ProductTransportQuantity(a),
+						})
+					}
+				}
+			}
+		}
+	}
+
+	suppliedTown := e.SuppliedTown()
+	if suppliedTown != nil && e.CloseToTown(suppliedTown, m) {
+		for _, a := range artifacts.All {
+			var q uint16 = 0
+			if storageQ, ok := e.Resources.Artifacts[a]; ok {
+				q = storageQ
+			}
+			thD := m.GetField(suppliedTown.Townhall.Household.Building.X, suppliedTown.Townhall.Household.Building.Y)
+			if e.StorageTarget[a] < 0 {
+				targetQ := uint16(-e.StorageTarget[a])
+				if q < targetQ {
+					tasksNeeded := (targetQ - q) / ProductTransportQuantity(a)
+					if e.NumTasks("transport", economy.TransportTaskTag(thD, a)) < int(tasksNeeded) {
+						e.AddTask(&economy.TransportTask{
+							PickupD:        thD,
+							DropoffD:       &navigation.TravellerDestination{T: e.Vehicle.Traveller},
+							PickupR:        suppliedTown.Townhall.Household.Resources,
+							DropoffR:       e.Resources,
+							A:              a,
+							TargetQuantity: ProductTransportQuantity(a),
+						})
+					}
 				}
 			}
 		}
@@ -169,11 +222,8 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 			e.DestinationField = e.PickRandomSpotNearTownhall(e.Town, m)
 		}
 		if e.DestinationField == nil && e.StorageFull() && e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
-			for _, town := range e.Town.Country.Towns {
-				if town.Supplier == e {
-					e.DestinationField = e.PickRandomSpotNearTownhall(town, m)
-					break
-				}
+			if suppliedTown != nil {
+				e.DestinationField = e.PickRandomSpotNearTownhall(suppliedTown, m)
 			}
 		}
 	}
