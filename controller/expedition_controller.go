@@ -53,7 +53,7 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		if storageQ, ok := expedition.Resources.Artifacts[a]; ok {
 			q = storageQ
 		}
-		ArtifactStorageToControlPanel(p, expedition.StorageTarget, aI, a, q, ArtifactsGUIY*ControlPanelSY)
+		ArtifactStorageToControlPanel(p, cp, expedition.StorageTarget, aI, a, q, ArtifactsGUIY*ControlPanelSY, true)
 		aI++
 	}
 
@@ -71,7 +71,7 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		}
 	}
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "artifacts/paper", X: 24, Y: ExpeditionTaskGUIY*ControlPanelSY + float64(IconH*3), SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "artifacts/paper", X: 24 + float64(IconW), Y: ExpeditionTaskGUIY*ControlPanelSY + float64(IconH)*2, SX: IconS, SY: IconS},
 		Highlight: func() bool { return expedition.Autopilot },
 		ClickImpl: func() {
 			expedition.Autopilot = !expedition.Autopilot
@@ -79,7 +79,7 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 				expedition.StorageTarget[paper] = 6
 			}
 		}})
-	p.AddTextLabel("Auto pilot", 24+float64(IconW), ExpeditionTaskGUIY*ControlPanelSY+float64(IconH)*3.5)
+	p.AddTextLabel("Auto pilot", 24+float64(IconW)*2.0, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH)*2.5)
 }
 
 func (ec *ExpeditionController) CaptureMove(x, y float64) {
