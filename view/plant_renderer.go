@@ -12,6 +12,7 @@ import (
 	"medvil/model/time"
 	"medvil/renderer"
 	"path/filepath"
+	"strconv"
 )
 
 const PhaseBark = 0
@@ -25,7 +26,6 @@ var bark = filepath.FromSlash("texture/terrain/tree_bark.png")
 var snow = filepath.FromSlash("texture/terrain/snow_patches.png")
 var leaves = filepath.FromSlash("texture/terrain/leaves_v2.png")
 var leavesBlooming = filepath.FromSlash("texture/terrain/leaves_blooming.png")
-var leavesColored = filepath.FromSlash("texture/terrain/leaves_colored.png")
 var fruit = filepath.FromSlash("texture/terrain/fruit.png")
 
 func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
@@ -157,7 +157,7 @@ func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedFie
 		DrawBranchPhase(cv, plant, PhaseBlooming, leavesBlooming, c)
 	}
 	if c.Map.Calendar.Season() == time.Autumn {
-		DrawBranchPhase(cv, plant, PhaseColored, leavesColored, c)
+		DrawBranchPhase(cv, plant, PhaseColored, filepath.FromSlash("texture/terrain/leaves_colored_"+strconv.Itoa(int(plant.Shape%4))+".png"), c)
 	}
 	if c.Map.Calendar.Season() == time.Summer {
 		DrawBranchPhase(cv, plant, PhaseFruit, fruit, c)
