@@ -74,12 +74,10 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		p.AddImageLabel("food_mixed", 24+float64(IconW)*1, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
 	}
 	if expedition.StorageFull(false) {
-		p.AddImageLabel("barrel", 24+float64(IconW)*2, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
-		p.AddImageLabel("arrow_small_up", 24+float64(IconW)*2.5, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS/2, IconS, gui.ImageLabelStyleRegular)
+		p.AddImageLabel("transport_to", 24+float64(IconW)*2, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
 	}
 	if expedition.StorageFull(true) {
-		p.AddImageLabel("barrel", 24+float64(IconW)*3, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
-		p.AddImageLabel("arrow_small_down", 24+float64(IconW)*3.5, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS/2, IconS, gui.ImageLabelStyleRegular)
+		p.AddImageLabel("transport_from", 24+float64(IconW)*3, ExpeditionTaskGUIY*ControlPanelSY+float64(IconH*2), IconS, IconS, gui.ImageLabelStyleRegular)
 	}
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "artifacts/paper", X: 24 + float64(IconW)*4, Y: ExpeditionTaskGUIY*ControlPanelSY + float64(IconH)*2, SX: IconS, SY: IconS},
