@@ -69,9 +69,17 @@ func (e *Expedition) NeedsFood() bool {
 	return true
 }
 
-func (e *Expedition) StorageFull() bool {
+func (e *Expedition) StorageFull(reverse bool) bool {
 	for a, targetQ := range e.StorageTarget {
-		if targetQ > 0 {
+		if a == Paper {
+			continue
+		}
+		if !reverse && targetQ > 0 {
+			if float64(e.Resources.Get(a))/math.Abs(float64(targetQ)) < StorageFullRatio {
+				return false
+			}
+		}
+		if reverse && targetQ < 0 {
 			if float64(e.Resources.Get(a))/math.Abs(float64(targetQ)) < StorageFullRatio {
 				return false
 			}
@@ -218,10 +226,10 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 	}
 
 	if Calendar.Hour == 0 && Calendar.Day == 1 && e.Autopilot {
-		if e.DestinationField == nil && e.NeedsFood() && !e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
+		if e.DestinationField == nil && (e.NeedsFood() || e.StorageFull(true)) && !e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
 			e.DestinationField = e.PickRandomSpotNearTownhall(e.Town, m)
 		}
-		if e.DestinationField == nil && e.StorageFull() && e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
+		if e.DestinationField == nil && e.StorageFull(false) && e.CloseToTown(e.Town, m) && e.Resources.Remove(Paper, 1) > 0 {
 			if suppliedTown != nil {
 				e.DestinationField = e.PickRandomSpotNearTownhall(suppliedTown, m)
 			}
