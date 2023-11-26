@@ -480,6 +480,9 @@ func (h *Household) NewPerson(m navigation.IMap) *Person {
 }
 
 func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
+	if Calendar.Hour%6 != 0 {
+		return
+	}
 	var newPeople = make([]*Person, 0, len(h.People))
 	for _, p := range h.People {
 		if p.Health == 0 {
