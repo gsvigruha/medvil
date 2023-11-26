@@ -24,8 +24,6 @@ const PhaseFruit = 5
 
 var bark = filepath.FromSlash("texture/terrain/tree_bark.png")
 var snow = filepath.FromSlash("texture/terrain/snow_patches.png")
-var leaves = filepath.FromSlash("texture/terrain/leaves_v2.png")
-var leavesBlooming = filepath.FromSlash("texture/terrain/leaves_blooming.png")
 var fruit = filepath.FromSlash("texture/terrain/fruit.png")
 
 func DrawBranch(cv *canvas.Canvas, plant *terrain.Plant, r *rand.Rand,
@@ -148,16 +146,17 @@ func DrawBranchPhase(cv *canvas.Canvas, plant *terrain.Plant, phase int, fill st
 
 func RenderTree(cv *canvas.Canvas, plant *terrain.Plant, rf renderer.RenderedField, c *controller.Controller) {
 	DrawBranchPhase(cv, plant, PhaseBark, bark, c)
+	phase := strconv.Itoa(int(plant.Shape % 4))
 	if c.Map.Calendar.Season() == time.Winter {
 		DrawBranchPhase(cv, plant, PhaseSnowPatches, snow, c)
 	} else {
-		DrawBranchPhase(cv, plant, PhaseLeaves, leaves, c)
+		DrawBranchPhase(cv, plant, PhaseLeaves, filepath.FromSlash("texture/terrain/leaves_"+phase+".png"), c)
 	}
 	if c.Map.Calendar.Season() == time.Spring {
-		DrawBranchPhase(cv, plant, PhaseBlooming, leavesBlooming, c)
+		DrawBranchPhase(cv, plant, PhaseBlooming, filepath.FromSlash("texture/terrain/leaves_blooming_"+phase+".png"), c)
 	}
 	if c.Map.Calendar.Season() == time.Autumn {
-		DrawBranchPhase(cv, plant, PhaseColored, filepath.FromSlash("texture/terrain/leaves_colored_"+strconv.Itoa(int(plant.Shape%4))+".png"), c)
+		DrawBranchPhase(cv, plant, PhaseColored, filepath.FromSlash("texture/terrain/leaves_colored_"+phase+".png"), c)
 	}
 	if c.Map.Calendar.Season() == time.Summer {
 		DrawBranchPhase(cv, plant, PhaseFruit, fruit, c)
