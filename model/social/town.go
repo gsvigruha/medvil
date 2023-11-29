@@ -564,11 +564,11 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 	}
 }
 
-func (town *Town) ArchiveHistory() {
+func (town *Town) ArchiveHistory(Calendar *time.CalendarType) {
 	var pt = make(map[economy.Task]uint32)
 	if town.Stats != nil {
-		town.History.Archive(town.Stats)
 		pt = town.Stats.PendingT
+		town.History.Archive(town.Stats)
 	}
 	town.Stats = &stats.Stats{}
 	town.Stats.Init(pt)

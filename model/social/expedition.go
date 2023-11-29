@@ -448,6 +448,8 @@ func (e *Expedition) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 	for _, t := range e.Tasks {
 		if !t.Expired(Calendar) {
 			newTasks = append(newTasks, t)
+		} else {
+			e.Town.Stats.DeleteTask(t)
 		}
 	}
 	e.Tasks = newTasks
