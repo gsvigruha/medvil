@@ -6,6 +6,7 @@ import (
 	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/stats"
+	"medvil/model/time"
 )
 
 const CountryTypePlayer uint8 = 0
@@ -36,10 +37,10 @@ func (c *Country) AddTownIfDoesNotExist(town *Town) {
 	c.Towns = append(c.Towns, town)
 }
 
-func (c *Country) ArchiveHistory() {
+func (c *Country) ArchiveHistory(Calendar *time.CalendarType) {
 	c.History.Archive(c.Stats())
 	for _, town := range c.Towns {
-		town.ArchiveHistory()
+		town.ArchiveHistory(Calendar)
 	}
 }
 
@@ -51,12 +52,12 @@ func (c *Country) PickTownName() string {
 	}
 }
 
-func (c *Country) CreateNewTown(b *building.Building, supplier Supplier) {
+func (c *Country) CreateNewTown(Calendar *time.CalendarType, b *building.Building, supplier Supplier) {
 	name := c.PickTownName()
 	newTown := &Town{Country: c, Supplier: supplier, Settings: DefaultTownSettings, Name: name}
 	newTown.Townhall = &Townhall{Household: &Household{Building: b, Town: newTown, Resources: &artifacts.Resources{}, BoatEnabled: true}}
 	newTown.Townhall.Household.Resources.VolumeCapacity = uint32(b.Plan.Area()) * StoragePerArea
-	newTown.Init(len(c.History.Elements))
+	newTown.Init(Calendar, len(c.History.Elements))
 	newTown.Townhall.Household.TargetNumPeople = newTown.Townhall.Household.Building.Plan.Area()
 	for a, q := range DefaultStorageTarget {
 		newTown.Townhall.StorageTarget[artifacts.GetArtifact(a)] = q

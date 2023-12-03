@@ -77,7 +77,7 @@ type Town struct {
 	Name          string
 }
 
-func (town *Town) Init(historyLength int) {
+func (town *Town) Init(Calendar *time.CalendarType, historyLength int) {
 	defaultTransfers := TransferCategories{
 		Rate:      30,
 		Threshold: 200,
@@ -96,7 +96,7 @@ func (town *Town) Init(historyLength int) {
 		MarketFundingRate: 70,
 	}
 	town.History = &stats.History{Elements: make([]stats.HistoryElement, historyLength)}
-	town.ArchiveHistory()
+	town.ArchiveHistory(Calendar)
 
 	town.Townhall.StorageTarget = make(map[*artifacts.Artifact]int)
 	for _, a := range artifacts.All {
@@ -272,7 +272,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				w := &Wall{Building: b, Town: town, F: field}
 				town.Walls = append(town.Walls, w)
 			case building.BuildingTypeTownhall:
-				town.Country.CreateNewTown(b, town)
+				town.Country.CreateNewTown(Calendar, b, town)
 			case building.BuildingTypeMarket:
 				town.Marketplace = &Marketplace{Town: town, Building: b}
 				town.Marketplace.Init()
@@ -564,10 +564,15 @@ func (town *Town) DestroyBuilding(b *building.Building, m navigation.IMap) {
 	}
 }
 
-func (town *Town) ArchiveHistory() {
+func (town *Town) ArchiveHistory(Calendar *time.CalendarType) {
 	var pt = make(map[economy.Task]uint32)
 	if town.Stats != nil {
 		pt = town.Stats.PendingT
+		for t := range pt {
+			if t.Expired(Calendar) {
+				delete(pt, t)
+			}
+		}
 		town.History.Archive(town.Stats)
 	}
 	town.Stats = &stats.Stats{}

@@ -243,7 +243,7 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 			b := construction.Building
 			switch construction.T {
 			case building.BuildingTypeTownhall:
-				e.Town.Country.CreateNewTown(b, e)
+				e.Town.Country.CreateNewTown(Calendar, b, e)
 			}
 			if b != nil {
 				m.SetBuildingUnits(b, false)

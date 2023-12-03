@@ -195,7 +195,7 @@ func GenerateCountry(t uint8, m *model.Map) bool {
 		for a, q := range conf.TownhallRes {
 			res.Add(artifacts.GetArtifact(a), q)
 		}
-		town.Init(0)
+		town.Init(m.Calendar, 0)
 	}
 	{
 		town.Marketplace.Init()
