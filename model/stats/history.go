@@ -93,6 +93,7 @@ type History struct {
 }
 
 func (h *History) Archive(stats *Stats) {
+	stats.PendingT = nil
 	h.Elements = append(h.Elements, HistoryElement{*stats})
 	if len(h.Elements) > MaxHistory { // buffer
 		h.Elements = h.Elements[len(h.Elements)-MaxHistory:]

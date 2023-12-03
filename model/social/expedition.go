@@ -243,7 +243,7 @@ func (e *Expedition) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) 
 			b := construction.Building
 			switch construction.T {
 			case building.BuildingTypeTownhall:
-				e.Town.Country.CreateNewTown(b, e)
+				e.Town.Country.CreateNewTown(Calendar, b, e)
 			}
 			if b != nil {
 				m.SetBuildingUnits(b, false)
@@ -436,6 +436,7 @@ func (e *Expedition) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 			newPeople = append(newPeople, p)
 		} else {
 			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
+				p.Task.Reset()
 				e.AddTask(p.Task)
 			}
 			f.UnregisterTraveller(p.Traveller)
@@ -448,6 +449,9 @@ func (e *Expedition) Filter(Calendar *time.CalendarType, m navigation.IMap) {
 	for _, t := range e.Tasks {
 		if !t.Expired(Calendar) {
 			newTasks = append(newTasks, t)
+			t.Reset()
+		} else {
+			e.Town.Stats.DeleteTask(t)
 		}
 	}
 	e.Tasks = newTasks

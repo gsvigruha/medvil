@@ -489,6 +489,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 			f := m.GetField(p.Traveller.FX, p.Traveller.FY)
 			f.UnregisterTraveller(p.Traveller)
 			if p.Task != nil && !economy.IsPersonalTask(p.Task.Name()) {
+				p.Task.Reset()
 				h.AddTask(p.Task)
 			}
 			if p.Traveller.Vehicle != nil {
@@ -538,6 +539,7 @@ func (h *Household) Filter(Calendar *time.CalendarType, m IMap) {
 	for _, t := range h.Tasks {
 		if !t.Expired(Calendar) {
 			newTasks = append(newTasks, t)
+			t.Reset()
 		} else {
 			h.Town.Stats.DeleteTask(t)
 		}

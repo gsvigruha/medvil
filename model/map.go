@@ -69,7 +69,7 @@ func (m *Map) ElapseTime() {
 			country.Towns[j].ElapseTime(m.Calendar, m)
 		}
 		if m.Calendar.Hour == 0 && m.Calendar.Day == 30 {
-			country.ArchiveHistory()
+			country.ArchiveHistory(m.Calendar)
 		}
 	}
 	for i := uint16(0); i < m.SX; i++ {

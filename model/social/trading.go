@@ -45,6 +45,7 @@ func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if tt, ok := t.Person.Task.(*economy.TradeTask); ok {
 			tt.Pause(true)
 			t.AddPriorityTask(tt)
+			tt.Reset()
 			t.Person.Task = nil
 		}
 	}
@@ -60,6 +61,7 @@ func (t *Trader) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 	for _, task := range t.Tasks {
 		if !task.Expired(Calendar) {
 			newTasks = append(newTasks, task)
+			task.Reset()
 		} else {
 			t.Town.Stats.DeleteTask(task)
 		}
