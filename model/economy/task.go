@@ -16,6 +16,7 @@ type Task interface {
 	Pause(bool)
 	IsPaused() bool
 	SetUp(traveller *navigation.Traveller, household Household, person Person)
+	Reset()
 	Motion() uint8
 	IsFieldCenter() bool
 	Equipped(*EquipmentType) bool
@@ -31,6 +32,7 @@ type TaskBase struct {
 
 func (t *TaskBase) Pause(paused bool) {
 	t.Paused = paused
+	t.Reset()
 }
 
 func (t *TaskBase) IsPaused() bool {
@@ -41,6 +43,12 @@ func (t *TaskBase) SetUp(traveller *navigation.Traveller, household Household, p
 	t.Traveller = traveller
 	t.Household = household
 	t.Person = person
+}
+
+func (t *TaskBase) Reset() {
+	t.Traveller = nil
+	t.Household = nil
+	t.Person = nil
 }
 
 func (t *TaskBase) IsFieldCenter() bool {

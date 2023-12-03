@@ -28,6 +28,17 @@ func Deserialize(file string) interface{} {
 	var objects map[string]reflect.Value = make(map[string]reflect.Value)
 	log.Printf("Objects to load %d", len(jsonData))
 	result := DeserializeObject(jsonData["0"], reflect.TypeOf(model.Map{}), jsonData, objects, nil)
+	/*
+		dist := make(map[string]int)
+		for _, o := range objects {
+			if cnt, ok := dist[o.Type().String()]; ok {
+				dist[o.Type().String()] = cnt + 1
+			} else {
+				dist[o.Type().String()] = 1
+			}
+		}
+		fmt.Println(dist)
+	*/
 	return result.Addr().Interface()
 }
 
@@ -121,6 +132,7 @@ func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]js
 				fmt.Println(t.Field(i).Name)
 			}
 			if sf.CanInterface() {
+				//fmt.Println(t.Field(i).Name)
 				fv := DeserializeObject(mData[t.Field(i).Name], t.Field(i).Type, jsonData, objects, nil)
 				sf.Set(fv)
 			} else {

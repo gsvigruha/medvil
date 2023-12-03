@@ -437,7 +437,6 @@ func (c *Controller) Save(fileName string) {
 	if c.Map == nil {
 		return
 	}
-	c.MapLock.Lock()
 	maps.Serialize(c.Map, filepath.FromSlash("saved/"+fileName))
 	c.MapLock.Unlock()
 }
