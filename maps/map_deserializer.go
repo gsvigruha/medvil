@@ -132,7 +132,6 @@ func DeserializeObject(m json.RawMessage, t reflect.Type, jsonData map[string]js
 				fmt.Println(t.Field(i).Name)
 			}
 			if sf.CanInterface() {
-				//fmt.Println(t.Field(i).Name)
 				fv := DeserializeObject(mData[t.Field(i).Name], t.Field(i).Type, jsonData, objects, nil)
 				sf.Set(fv)
 			} else {
