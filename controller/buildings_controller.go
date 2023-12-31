@@ -617,21 +617,29 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeMine) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMine) }})
 		bc.p.AddButton(&gui.SimpleButton{
-			ButtonGUI: gui.ButtonGUI{Icon: "workshop", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			ButtonGUI: gui.ButtonGUI{Icon: "workshop", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS, Disabled: func() bool {
+				return !bc.cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeFarm)
+			}},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeWorkshop) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeWorkshop) }})
 		bc.p.AddButton(&gui.SimpleButton{
-			ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS, Disabled: func() bool {
+				return !bc.cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeWorkshop)
+			}},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeFactory) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFactory) }})
 		bc.p.AddButton(&gui.SimpleButton{
-			ButtonGUI: gui.ButtonGUI{Icon: "tower", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			ButtonGUI: gui.ButtonGUI{Icon: "tower", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS, Disabled: func() bool {
+				return !bc.cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeWorkshop)
+			}},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeTower) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeTower) }})
 	}
 	if bc.cp.C.ActiveSupplier != nil {
 		bc.p.AddButton(&gui.SimpleButton{
-			ButtonGUI: gui.ButtonGUI{Icon: "townhall", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS},
+			ButtonGUI: gui.ButtonGUI{Icon: "townhall", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS, Disabled: func() bool {
+				return !bc.cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeWorkshop)
+			}},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeTownhall) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeTownhall) }})
 	}

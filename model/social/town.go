@@ -610,3 +610,16 @@ func (town *Town) GetName() string {
 func (town *Town) CloseToTown(t *Town, m navigation.IMap) bool {
 	return true
 }
+
+func (town *Town) HasHousehold(bt building.BuildingType) bool {
+	if bt == building.BuildingTypeFarm {
+		return len(town.Farms) > 0
+	} else if bt == building.BuildingTypeWorkshop {
+		return len(town.Workshops) > 0
+	} else if bt == building.BuildingTypeMine {
+		return len(town.Mines) > 0
+	} else if bt == building.BuildingTypeFactory {
+		return len(town.Factories) > 0
+	}
+	return false
+}
