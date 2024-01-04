@@ -519,3 +519,7 @@ func (e *Expedition) CheckDestinationField(f *navigation.Field) bool {
 func (e *Expedition) GetName() string {
 	return e.Name
 }
+
+func (e *Expedition) HasHousehold(bt building.BuildingType) bool {
+	return false
+}
