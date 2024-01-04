@@ -94,6 +94,8 @@ var Mine2Plan = &BuildingPlan{
 	BuildingType: BuildingTypeMine,
 }
 
+// Workshops
+
 // Factories
 
 var Factory1 = &PlanUnits{

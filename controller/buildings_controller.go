@@ -510,10 +510,11 @@ func (bc *BuildingsController) GenerateButtons() {
 	defaultPlanTop := BuildingButtonPanelTop * ControlPanelSY
 	for i, plan := range building.DefaultPlans(bc.bt) {
 		bc.p.AddButton(&DefaultPlanButton{
-			b:  &gui.ButtonGUI{Icon: strconv.Itoa(i + 1), X: float64(i)*LargeIconD + 24, Y: defaultPlanTop, SX: LargeIconS, SY: LargeIconS},
+			b:  &gui.ButtonGUI{Icon: "blueprint", X: float64(i)*LargeIconD + 24, Y: defaultPlanTop, SX: LargeIconS, SY: LargeIconS},
 			p:  plan,
 			bc: bc,
 		})
+		bc.p.AddImageLabel(strconv.Itoa(i+1), float64(i)*LargeIconD+24, defaultPlanTop, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	}
 
 	roofPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)
