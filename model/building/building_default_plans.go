@@ -96,6 +96,90 @@ var Mine2Plan = &BuildingPlan{
 
 // Workshops
 
+var WorkshopUnit = &PlanUnits{
+	Floors:    []Floor{BrickFloor, BrickFloor},
+	Roof:      TileRoof,
+	Extension: &BuildingExtension{T: Workshop},
+}
+
+var Workshop1Plan = &BuildingPlan{
+	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, WorkshopUnit, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+	},
+	BuildingType: BuildingTypeWorkshop,
+}
+
+var WorkshopCookerUnit = &PlanUnits{
+	Floors:    []Floor{BrickFloor, BrickFloor},
+	Roof:      TileRoof,
+	Extension: &BuildingExtension{T: Cooker},
+}
+
+var Workshop2Plan = &BuildingPlan{
+	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, WorkshopCookerUnit, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+	},
+	BuildingType: BuildingTypeWorkshop,
+}
+
+var WorkshopUnits = &PlanUnits{
+	Floors: []Floor{BrickFloor, BrickFloor},
+	Roof:   TileRoof,
+}
+
+var WaterWheelUnit = &PlanUnits{
+	Extension: &BuildingExtension{T: WaterMillWheel},
+}
+
+var Workshop3Plan = &BuildingPlan{
+	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, WorkshopUnits, WaterWheelUnit, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+	},
+	BuildingType: BuildingTypeWorkshop,
+}
+
+var KilnUnit = &PlanUnits{
+	Extension: &BuildingExtension{T: Kiln},
+}
+
+var Workshop4Plan = &BuildingPlan{
+	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, WorkshopUnits, KilnUnit, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+	},
+	BuildingType: BuildingTypeWorkshop,
+}
+
+var ForgeUnit = &PlanUnits{
+	Extension: &BuildingExtension{T: Forge},
+}
+
+var Workshop5Plan = &BuildingPlan{
+	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, WorkshopUnits, ForgeUnit, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+	},
+	BuildingType: BuildingTypeWorkshop,
+}
+
 // Factories
 
 var Factory1 = &PlanUnits{
@@ -170,6 +254,8 @@ func DefaultPlans(bt BuildingType) []*BuildingPlan {
 		return []*BuildingPlan{Farm1Plan, Farm2Plan, Farm3Plan}
 	case BuildingTypeMine:
 		return []*BuildingPlan{Mine1Plan, Mine2Plan}
+	case BuildingTypeWorkshop:
+		return []*BuildingPlan{Workshop1Plan, Workshop2Plan, Workshop3Plan, Workshop4Plan, Workshop5Plan}
 	case BuildingTypeFactory:
 		return []*BuildingPlan{Factory1Plan, Factory2Plan}
 	case BuildingTypeTower:
