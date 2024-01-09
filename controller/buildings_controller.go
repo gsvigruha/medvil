@@ -360,9 +360,11 @@ func (b RotationButton) Enabled() bool {
 
 func (bc *BuildingsController) GetHelperSuggestions() *gui.Suggestion {
 	if !bc.Plan.IsComplete() && bc.RoofM == nil && bc.UnitM == nil {
+		name := building.BuildingTypeName(bc.Plan.BuildingType)
 		return &gui.Suggestion{
-			Message: "Design your house. First pick wall material\nand click to build units. Afterwards pick\na roof material and add a roof.",
-			Icon:    "house", X: LargeIconD*2 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2,
+			Message: ("Design your " + name + ". First pick wall material\nand click to build units. Afterwards pick\n" +
+				"a roof material and add a roof. Alternatively,\nuse some of the default plans."),
+			Icon: name, X: LargeIconD*2 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2,
 		}
 	}
 	if bc.Plan.IsComplete() && bc.Plan.BuildingType == building.BuildingTypeWorkshop && len(bc.Plan.GetExtensions()) == 0 {

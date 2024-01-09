@@ -139,3 +139,23 @@ func MaxNumFloors(bt BuildingType) int {
 		return 2
 	}
 }
+
+func BuildingTypeName(bt BuildingType) string {
+	switch bt {
+	case BuildingTypeFarm:
+		return "farm"
+	case BuildingTypeWorkshop:
+		return "workshop"
+	case BuildingTypeMine:
+		return "mine"
+	case BuildingTypeFactory:
+		return "factory"
+	case BuildingTypeTower:
+		return "tower"
+	case BuildingTypeTownhall:
+		return "townhall"
+	case BuildingTypeMarket:
+		return "market"
+	}
+	return ""
+}
