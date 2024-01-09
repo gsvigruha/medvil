@@ -519,13 +519,13 @@ func (bc *BuildingsController) GenerateButtons() {
 
 	roofPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)
 	bc.p.AddButton(&RoofButton{
-		b:   &gui.ButtonGUI{Icon: "cancel", X: float64(LargeIconD)*4 + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS},
+		b:   &gui.ButtonGUI{Icon: "demolish", X: float64(LargeIconD)*4 + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS},
 		del: true,
 		bc:  bc,
 	})
 	for i, m := range building.RoofMaterials(bc.bt) {
 		bc.p.AddButton(&RoofButton{
-			b:  &gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i)*LargeIconD + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS},
+			b:  &gui.ButtonGUI{Icon: "building/" + m.Name, X: float64(i)*LargeIconD + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS},
 			m:  m,
 			bc: bc,
 		})
@@ -534,7 +534,7 @@ func (bc *BuildingsController) GenerateButtons() {
 	floorsPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD*2)
 	for i, m := range building.FloorMaterials(bc.bt) {
 		bc.p.AddButton(&FloorButton{
-			b:  &gui.ButtonGUI{Texture: "building/" + m.Name, X: float64(i)*LargeIconD + 24, Y: floorsPanelTop, SX: LargeIconS, SY: LargeIconS},
+			b:  &gui.ButtonGUI{Icon: "building/" + m.Name, X: float64(i)*LargeIconD + 24, Y: floorsPanelTop, SX: LargeIconS, SY: LargeIconS},
 			m:  m,
 			bc: bc,
 		})

@@ -99,11 +99,11 @@ func ExtensionTypes(bt BuildingType) []*BuildingExtensionType {
 	switch bt {
 	case BuildingTypeWorkshop:
 		return []*BuildingExtensionType{
-			WaterMillWheel,
-			Forge,
-			Kiln,
-			Cooker,
 			Workshop,
+			Cooker,
+			WaterMillWheel,
+			Kiln,
+			Forge,
 		}
 	}
 	return nil

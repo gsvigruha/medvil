@@ -20,12 +20,12 @@ var Deck = &BuildingExtensionType{Name: "deck", OnWater: true, InUnit: false}
 var NonExtension *BuildingExtensionType = nil
 
 var BuildingExtensionTypes = [...]*BuildingExtensionType{
-	WaterMillWheel,
-	Forge,
-	Kiln,
-	Deck,
-	Cooker,
 	Workshop,
+	Cooker,
+	WaterMillWheel,
+	Kiln,
+	Forge,
+	Deck,
 }
 
 func GetBuildingExtensionType(name string) *BuildingExtensionType {
