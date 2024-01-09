@@ -35,18 +35,18 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	fp.AddButton(&LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/grain", X: float64(24 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
-		luc:     fc,
-		useType: economy.FarmFieldUseTypeWheat,
-		cp:      cp,
-		msg:     "Grow grain",
-	})
-	fp.AddButton(&LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/vegetable", X: float64(24 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/vegetable", X: float64(24 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeVegetables,
 		cp:      cp,
 		msg:     "Grow vegetables",
+	})
+	fp.AddButton(&LandUseButton{
+		b:       gui.ButtonGUI{Icon: "artifacts/log", X: float64(24 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
+		luc:     fc,
+		useType: economy.FarmFieldUseTypeForestry,
+		cp:      cp,
+		msg:     "Grow forests for log",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/fruit", X: float64(24 + IconW*2), Y: hcy, SX: IconS, SY: IconS},
@@ -62,12 +62,13 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		cp:      cp,
 		msg:     "Raise sheep for meat and wool",
 	})
+
 	fp.AddButton(&LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/log", X: float64(24 + IconW*0), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/grain", X: float64(24 + IconW*0), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     fc,
-		useType: economy.FarmFieldUseTypeForestry,
+		useType: economy.FarmFieldUseTypeWheat,
 		cp:      cp,
-		msg:     "Grow forests for log",
+		msg:     "Grow grain",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/reed", X: float64(24 + IconW*1), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
@@ -267,13 +268,13 @@ func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
 	if fc.UseType == economy.FarmFieldUseTypePasture {
 		return &gui.Suggestion{
 			Message: "Raise sheep for food and textile.",
-			Icon:    "artifacts/fruit", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			Icon:    "artifacts/sheep", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
 	if fc.UseType == economy.FarmFieldUseTypeBarren {
 		return &gui.Suggestion{
 			Message: ("Clear land in order to build houses on them."),
-			Icon:    "artifacts/herb", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			Icon:    "clear_land", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
 	return nil
