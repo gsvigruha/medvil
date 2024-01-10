@@ -68,7 +68,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeWheat,
 		cp:      cp,
-		msg:     "Grow grain",
+		msg:     "Grow grain to make flour",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/reed", X: float64(24 + IconW*1), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
@@ -82,12 +82,14 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeHerb,
 		cp:      cp,
-		msg:     "Grow herbs for medicine",
+		msg:     "Grow herbs to make medicine",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "clear_land", X: float64(24 + IconW*0), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeBarren,
+		cp:      cp,
+		msg:     "Clear land for buildings",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "cancel", X: float64(24 + IconW*1), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
@@ -193,7 +195,7 @@ func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
 		return suggestion
 	}
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
-	if len(fc.farm.Land) == 0 {
+	if fc.UseType == 0 {
 		return &gui.Suggestion{
 			Message: "Select land cultivation method, then allocate land\nfor various purposes like growing vegetables, grain,\ntrees and sheep by clicking on the land.",
 			Icon:    "farm_mixed", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
@@ -215,7 +217,7 @@ func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
 			Icon: "artifacts/sheep", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
-	if landDist[economy.FarmFieldUseTypeForestry] < 5 {
+	if landDist[economy.FarmFieldUseTypeForestry] < 4 {
 		return &gui.Suggestion{
 			Message: ("Make sure to grow some trees for firewood and building materials.\nTrees grow slowly and don't need much work, so it's best\n" +
 				"to allocate a bit more land for them."),
@@ -229,53 +231,55 @@ func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
 			Icon: "warning", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
 	}
-	if fc.UseType == economy.FarmFieldUseTypeWheat {
-		return &gui.Suggestion{
-			Message: ("Grow wheat to produce grain. It will need to be\nturned into flour using waterwheel mills,\nthen baked as bread."),
-			Icon:    "artifacts/grain", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+	/*
+		if fc.UseType == economy.FarmFieldUseTypeWheat {
+			return &gui.Suggestion{
+				Message: ("Grow wheat to produce grain. It will need to be\nturned into flour using waterwheel mills,\nthen baked as bread."),
+				Icon:    "artifacts/grain", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			}
 		}
-	}
-	if fc.UseType == economy.FarmFieldUseTypeHerb {
-		return &gui.Suggestion{
-			Message: ("Grow herbs to produce medicine."),
-			Icon:    "artifacts/herb", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		if fc.UseType == economy.FarmFieldUseTypeHerb {
+			return &gui.Suggestion{
+				Message: ("Grow herbs to produce medicine."),
+				Icon:    "artifacts/herb", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			}
 		}
-	}
-	if fc.UseType == economy.FarmFieldUseTypeReed {
-		return &gui.Suggestion{
-			Message: ("Grow reed to produce thatch for roofs or paper."),
-			Icon:    "artifacts/reed", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		if fc.UseType == economy.FarmFieldUseTypeReed {
+			return &gui.Suggestion{
+				Message: ("Grow reed to produce thatch for roofs or paper."),
+				Icon:    "artifacts/reed", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			}
 		}
-	}
-	if fc.UseType == economy.FarmFieldUseTypeOrchard {
-		return &gui.Suggestion{
-			Message: ("Grow an orchard to produce fruits."),
-			Icon:    "artifacts/fruit", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		if fc.UseType == economy.FarmFieldUseTypeOrchard {
+			return &gui.Suggestion{
+				Message: ("Grow an orchard to produce fruits."),
+				Icon:    "artifacts/fruit", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			}
 		}
-	}
-	if fc.UseType == economy.FarmFieldUseTypeForestry {
-		return &gui.Suggestion{
-			Message: "Grow trees for firewood and building materials.",
-			Icon:    "artifacts/log", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		if fc.UseType == economy.FarmFieldUseTypeForestry {
+			return &gui.Suggestion{
+				Message: "Grow trees for firewood and building materials.",
+				Icon:    "artifacts/log", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			}
 		}
-	}
-	if fc.UseType == economy.FarmFieldUseTypeVegetables {
-		return &gui.Suggestion{
-			Message: "Grow vegetables for food.",
-			Icon:    "artifacts/vegetable", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		if fc.UseType == economy.FarmFieldUseTypeVegetables {
+			return &gui.Suggestion{
+				Message: "Grow vegetables for food.",
+				Icon:    "artifacts/vegetable", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			}
 		}
-	}
-	if fc.UseType == economy.FarmFieldUseTypePasture {
-		return &gui.Suggestion{
-			Message: "Raise sheep for food and textile.",
-			Icon:    "artifacts/sheep", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		if fc.UseType == economy.FarmFieldUseTypePasture {
+			return &gui.Suggestion{
+				Message: "Raise sheep for food and textile.",
+				Icon:    "artifacts/sheep", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			}
 		}
-	}
-	if fc.UseType == economy.FarmFieldUseTypeBarren {
-		return &gui.Suggestion{
-			Message: ("Clear land in order to build houses on them."),
-			Icon:    "clear_land", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+		if fc.UseType == economy.FarmFieldUseTypeBarren {
+			return &gui.Suggestion{
+				Message: ("Clear land in order to build houses on them."),
+				Icon:    "clear_land", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
+			}
 		}
-	}
+	*/
 	return nil
 }

@@ -52,6 +52,9 @@ type InfraBuildButton struct {
 
 func (b *InfraBuildButton) SetHoover(h bool) {
 	b.b.SetHoover(h)
+	if h && b.ic.cp != nil && b.msg != "" {
+		b.ic.cp.HelperMessage(b.msg)
+	}
 }
 
 func (b InfraBuildButton) Click() {

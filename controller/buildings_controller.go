@@ -363,7 +363,7 @@ func (bc *BuildingsController) GetHelperSuggestions() *gui.Suggestion {
 		name := building.BuildingTypeName(bc.Plan.BuildingType)
 		return &gui.Suggestion{
 			Message: ("Design your " + name + ". First pick wall material\nand click to build units. Afterwards pick\n" +
-				"a roof material and add a roof. Alternatively,\nuse some of the default plans."),
+				"a roof material and add a roof. Alternatively,\nclick the numbers to use default plans."),
 			Icon: name, X: LargeIconD*2 + 24, Y: BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)*2,
 		}
 	}
@@ -553,11 +553,14 @@ func (bc *BuildingsController) GenerateButtons() {
 
 	extensionPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD*3)
 	for i, e := range building.ExtensionTypes(bc.bt) {
+		msg := e.Description
 		bc.p.AddButton(&ExtensionButton{
-			b:   &gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i)*LargeIconD + 24, Y: extensionPanelTop, SX: LargeIconS, SY: LargeIconS},
+			b: &gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i)*LargeIconD + 24, Y: extensionPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
+				bc.cp.HelperMessage(msg)
+			}},
 			t:   e,
 			bc:  bc,
-			msg: e.Description,
+			msg: msg,
 		})
 	}
 
