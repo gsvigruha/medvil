@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
+	"medvil/model/building"
 	"medvil/model/economy"
 	"medvil/model/social"
 	"medvil/model/vehicles"
@@ -102,12 +103,12 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	s := IconS / 2
 	p.AddButton(&HouseholdControllerButton{
 		b: &gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 24 - s, Y: PersonGUIY * ControlPanelSY, SX: s, SY: s, OnHoover: func() {
-			cp.HelperMessage("Add people to this household")
+			cp.HelperMessage("Add people to this " + building.BuildingTypeName(h.Building.Plan.BuildingType))
 		}},
 		h: h, action: IncreaseHouseholdTargetNumPeople})
 	p.AddButton(&HouseholdControllerButton{
 		b: &gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 24 - s, Y: PersonGUIY*ControlPanelSY + s, SX: s, SY: s, OnHoover: func() {
-			cp.HelperMessage("Remove people from this household")
+			cp.HelperMessage("Remove people from this " + building.BuildingTypeName(h.Building.Plan.BuildingType))
 		}},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
 	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(h.GetHeating())/100, false)
@@ -202,7 +203,7 @@ func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Veh
 
 func GetHouseholdHelperSuggestions(h *social.Household) *gui.Suggestion {
 	if h.TargetNumPeople < 2 {
-		return &gui.Suggestion{Message: "Add people to your house.\nPeople will move over from the townhall.", Icon: "person", X: ControlPanelSX - 24, Y: PersonGUIY*ControlPanelSY + IconS/4}
+		return &gui.Suggestion{Message: "Add people to your " + building.BuildingTypeName(h.Building.Plan.BuildingType) + ".\nPeople will move over from the townhall.", Icon: "person", X: ControlPanelSX - 24, Y: PersonGUIY*ControlPanelSY + IconS/4}
 	}
 	return nil
 }

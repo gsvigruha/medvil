@@ -15,6 +15,11 @@ var TileRoof = &Roof{M: materials.GetMaterial("tile"), RoofType: RoofTypeSplit}
 var BrickRoof = &Roof{M: materials.GetMaterial("brick"), RoofType: RoofTypeFlat}
 var SandstoneRoof = &Roof{M: materials.GetMaterial("sandstone"), RoofType: RoofTypeFlat}
 
+type BuildingDefaultPlan struct {
+	P    *BuildingPlan
+	Name string
+}
+
 // Farms
 
 var Farm1 = &PlanUnits{
@@ -27,7 +32,7 @@ var Farm2 = &PlanUnits{
 	Roof:   ReedRoof,
 }
 
-var Farm1Plan = &BuildingPlan{
+var Farm1Plan = &BuildingDefaultPlan{Name: "Small farm", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -36,9 +41,9 @@ var Farm1Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeFarm,
-}
+}}
 
-var Farm2Plan = &BuildingPlan{
+var Farm2Plan = &BuildingDefaultPlan{Name: "Medium farm", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -47,9 +52,9 @@ var Farm2Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeFarm,
-}
+}}
 
-var Farm3Plan = &BuildingPlan{
+var Farm3Plan = &BuildingDefaultPlan{Name: "Large farm", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -58,21 +63,21 @@ var Farm3Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeFarm,
-}
+}}
 
 // Mines
 
 var Mine1 = &PlanUnits{
-	Floors: []Floor{WoodFloor, WoodFloor},
-	Roof:   ReedRoof,
-}
-
-var Mine2 = &PlanUnits{
 	Floors: []Floor{StoneFloor, StoneFloor},
 	Roof:   TileRoof,
 }
 
-var Mine1Plan = &BuildingPlan{
+var Mine2 = &PlanUnits{
+	Floors: []Floor{WoodFloor, WoodFloor},
+	Roof:   ReedRoof,
+}
+
+var Mine1Plan = &BuildingDefaultPlan{Name: "Mine (stone material)", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -81,9 +86,9 @@ var Mine1Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeMine,
-}
+}}
 
-var Mine2Plan = &BuildingPlan{
+var Mine2Plan = &BuildingDefaultPlan{Name: "Mine (wood material)", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -92,7 +97,7 @@ var Mine2Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeMine,
-}
+}}
 
 // Workshops
 
@@ -102,7 +107,7 @@ var WorkshopUnit = &PlanUnits{
 	Extension: &BuildingExtension{T: Workshop},
 }
 
-var Workshop1Plan = &BuildingPlan{
+var Workshop1Plan = &BuildingDefaultPlan{Name: "Regular workshop", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -111,7 +116,7 @@ var Workshop1Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeWorkshop,
-}
+}}
 
 var WorkshopCookerUnit = &PlanUnits{
 	Floors:    []Floor{BrickFloor, BrickFloor},
@@ -119,7 +124,7 @@ var WorkshopCookerUnit = &PlanUnits{
 	Extension: &BuildingExtension{T: Cooker},
 }
 
-var Workshop2Plan = &BuildingPlan{
+var Workshop2Plan = &BuildingDefaultPlan{Name: "Workshop with a cooker", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -128,7 +133,7 @@ var Workshop2Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeWorkshop,
-}
+}}
 
 var WorkshopUnits = &PlanUnits{
 	Floors: []Floor{BrickFloor, BrickFloor},
@@ -139,7 +144,7 @@ var WaterWheelUnit = &PlanUnits{
 	Extension: &BuildingExtension{T: WaterMillWheel},
 }
 
-var Workshop3Plan = &BuildingPlan{
+var Workshop3Plan = &BuildingDefaultPlan{Name: "Workshop with a waterwheel", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -148,13 +153,13 @@ var Workshop3Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeWorkshop,
-}
+}}
 
 var KilnUnit = &PlanUnits{
 	Extension: &BuildingExtension{T: Kiln},
 }
 
-var Workshop4Plan = &BuildingPlan{
+var Workshop4Plan = &BuildingDefaultPlan{Name: "Workshop with a kiln", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -163,13 +168,13 @@ var Workshop4Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeWorkshop,
-}
+}}
 
 var ForgeUnit = &PlanUnits{
 	Extension: &BuildingExtension{T: Forge},
 }
 
-var Workshop5Plan = &BuildingPlan{
+var Workshop5Plan = &BuildingDefaultPlan{Name: "Workshop with a forge", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -178,7 +183,7 @@ var Workshop5Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeWorkshop,
-}
+}}
 
 // Factories
 
@@ -187,7 +192,7 @@ var Factory1 = &PlanUnits{
 	Roof:   BrickRoof,
 }
 
-var Factory1Plan = &BuildingPlan{
+var Factory1Plan = &BuildingDefaultPlan{Name: "Factory (brick material)", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -196,14 +201,14 @@ var Factory1Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeFactory,
-}
+}}
 
 var Factory2 = &PlanUnits{
 	Floors: []Floor{SandstoneFloor, SandstoneFloor},
 	Roof:   SandstoneRoof,
 }
 
-var Factory2Plan = &BuildingPlan{
+var Factory2Plan = &BuildingDefaultPlan{Name: "Factory (stone material)", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -212,7 +217,7 @@ var Factory2Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeFactory,
-}
+}}
 
 // Towers
 
@@ -221,7 +226,7 @@ var Tower1 = &PlanUnits{
 	Roof:   TileRoof,
 }
 
-var Tower1Plan = &BuildingPlan{
+var Tower1Plan = &BuildingDefaultPlan{Name: "Small stone tower", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -230,14 +235,14 @@ var Tower1Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeTower,
-}
+}}
 
 var Tower2 = &PlanUnits{
 	Floors: []Floor{StoneFloor, StoneFloor, StoneFloor},
 	Roof:   TileRoof,
 }
 
-var Tower2Plan = &BuildingPlan{
+var Tower2Plan = &BuildingDefaultPlan{Name: "Large stone tower", P: &BuildingPlan{
 	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
 		{nil, nil, nil, nil, nil},
 		{nil, nil, nil, nil, nil},
@@ -246,20 +251,20 @@ var Tower2Plan = &BuildingPlan{
 		{nil, nil, nil, nil, nil},
 	},
 	BuildingType: BuildingTypeTower,
-}
+}}
 
-func DefaultPlans(bt BuildingType) []*BuildingPlan {
+func DefaultPlans(bt BuildingType) []*BuildingDefaultPlan {
 	switch bt {
 	case BuildingTypeFarm:
-		return []*BuildingPlan{Farm1Plan, Farm2Plan, Farm3Plan}
+		return []*BuildingDefaultPlan{Farm1Plan, Farm2Plan, Farm3Plan}
 	case BuildingTypeMine:
-		return []*BuildingPlan{Mine1Plan, Mine2Plan}
+		return []*BuildingDefaultPlan{Mine1Plan, Mine2Plan}
 	case BuildingTypeWorkshop:
-		return []*BuildingPlan{Workshop1Plan, Workshop2Plan, Workshop3Plan, Workshop4Plan, Workshop5Plan}
+		return []*BuildingDefaultPlan{Workshop1Plan, Workshop2Plan, Workshop3Plan, Workshop4Plan, Workshop5Plan}
 	case BuildingTypeFactory:
-		return []*BuildingPlan{Factory1Plan, Factory2Plan}
+		return []*BuildingDefaultPlan{Factory1Plan, Factory2Plan}
 	case BuildingTypeTower:
-		return []*BuildingPlan{Tower1Plan, Tower2Plan}
+		return []*BuildingDefaultPlan{Tower1Plan, Tower2Plan}
 	}
 	return nil
 }
