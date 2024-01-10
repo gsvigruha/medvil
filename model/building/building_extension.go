@@ -13,7 +13,7 @@ type BuildingExtensionType struct {
 
 var WaterMillWheel = &BuildingExtensionType{Name: "water_mill_wheel", OnWater: true, InUnit: false, Description: "Waterwheels are needed for milling."}
 var Forge = &BuildingExtensionType{Name: "forge", OnWater: false, InUnit: false, Description: "Forges are used to work metals."}
-var Kiln = &BuildingExtensionType{Name: "kiln", OnWater: false, InUnit: false, Description: "Kilns are needed to burn clay."}
+var Kiln = &BuildingExtensionType{Name: "kiln", OnWater: false, InUnit: false, Description: "Kilns are needed to make bricks and tiles from clay."}
 var Cooker = &BuildingExtensionType{Name: "cooker", OnWater: false, InUnit: true, Description: "Cookers are used to make food and chemicals."}
 var Workshop = &BuildingExtensionType{Name: "workshop", OnWater: false, InUnit: true, Description: "Workshops are used to work raw materials."}
 var Deck = &BuildingExtensionType{Name: "deck", OnWater: true, InUnit: false}
