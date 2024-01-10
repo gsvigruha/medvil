@@ -531,10 +531,9 @@ func (bc *BuildingsController) GenerateButtons() {
 		bc:  bc,
 	})
 	for i, m := range building.RoofMaterials(bc.bt) {
-		materialName := m.Name
 		bc.p.AddButton(&RoofButton{
 			b: &gui.ButtonGUI{Icon: "building/" + m.Name, X: float64(i)*LargeIconD + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage("Select " + materialName + " for roofs")
+				bc.cp.HelperMessage("Select roof material")
 			}},
 			m:  m,
 			bc: bc,
@@ -543,10 +542,9 @@ func (bc *BuildingsController) GenerateButtons() {
 
 	floorsPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD*2)
 	for i, m := range building.FloorMaterials(bc.bt) {
-		materialName := m.Name
 		bc.p.AddButton(&FloorButton{
 			b: &gui.ButtonGUI{Icon: "building/" + m.Name, X: float64(i)*LargeIconD + 24, Y: floorsPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage("Select " + materialName + " for walls")
+				bc.cp.HelperMessage("Select wall material")
 			}},
 			m:  m,
 			bc: bc,
@@ -565,7 +563,7 @@ func (bc *BuildingsController) GenerateButtons() {
 
 	bc.p.AddButton(&RotationButton{
 		b: &gui.ButtonGUI{Icon: "building/rotate_" + strconv.Itoa(int(bc.Direction)), X: LargeIconD*5 + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			bc.cp.HelperMessage("Rotate plan")
+			bc.cp.HelperMessage("Rotate building plan")
 		}},
 		bc: bc,
 	})
