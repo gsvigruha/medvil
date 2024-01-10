@@ -130,7 +130,9 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 		TaskToControlPanel(cp, p, i%tirm, TaskGUIY*ControlPanelSY+float64(i/tirm*IconH), task, tiw)
 	}
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/boat", X: 24, Y: VehicleGUIY * ControlPanelSY, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/boat", X: 24, Y: VehicleGUIY * ControlPanelSY, SX: IconS, SY: IconS, OnHoover: func() {
+			cp.HelperMessage("Start or stop using boats and waterways")
+		}},
 		Highlight: func() bool { return h.IsBoatEnabled() },
 		ClickImpl: func() {
 			h.BoatEnabled = !h.BoatEnabled
