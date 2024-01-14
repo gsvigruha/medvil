@@ -30,23 +30,23 @@ func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 	tp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
 	HouseholdToControlPanel(cp, hp, tower.Household, "tower")
 	tc := &TowerController{towerPanel: tp, householdPanel: hp, tower: tower, cp: cp}
-	tc.UseType = military.MilitaryLandUseTypeNone
+	tc.UseType = military.MilitaryLandUseTypePatrol
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	tp.AddTextLabel("Set patrol path", 24, hcy-IconS/4.0)
 	tp.AddButton(&LandUseButton{
-		b:       gui.ButtonGUI{Icon: "cancel", X: float64(10), Y: hcy, SX: IconS, SY: IconS},
-		luc:     tc,
-		useType: military.MilitaryLandUseTypeNone,
-		cp:      cp,
-		msg:     "Stop patrolling",
-	})
-	tp.AddButton(&LandUseButton{
-		b:       gui.ButtonGUI{Icon: "artifacts/shield", X: float64(10 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
+		b:       gui.ButtonGUI{Icon: "artifacts/shield", X: float64(10), Y: hcy, SX: IconS, SY: IconS},
 		luc:     tc,
 		useType: military.MilitaryLandUseTypePatrol,
 		cp:      cp,
 		msg:     "Start patrolling to hold back the outlaws",
+	})
+	tp.AddButton(&LandUseButton{
+		b:       gui.ButtonGUI{Icon: "cancel", X: float64(10 + IconW*1), Y: hcy, SX: IconS, SY: IconS},
+		luc:     tc,
+		useType: military.MilitaryLandUseTypeNone,
+		cp:      cp,
+		msg:     "Stop patrolling",
 	})
 
 	cp.SetDynamicPanel(tc)
@@ -78,12 +78,14 @@ func (tc *TowerController) Refresh() {
 
 func (tc *TowerController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	fields := tc.tower.GetFields()
-	if !rf.F.Allocated && tc.UseType == military.MilitaryLandUseTypePatrol && tc.tower.FieldWithinDistance(rf.F) {
+	if !rf.F.Allocated && tc.UseType == military.MilitaryLandUseTypePatrol && tc.tower.FieldWithinDistance(rf.F) && rf.F.Walkable() {
 		fields = append(fields, social.PatrolLand{
 			X: rf.F.X,
 			Y: rf.F.Y,
 			F: rf.F,
 		})
+	} else if tc.UseType != military.MilitaryLandUseTypeNone {
+		fields = append(fields, &navigation.BlockedField{F: rf.F})
 	}
 	return fields
 }
@@ -100,7 +102,7 @@ func (tc *TowerController) HandleClick(c *Controller, rf *renderer.RenderedField
 			return true
 		}
 	}
-	if !rf.F.Allocated && tc.UseType == military.MilitaryLandUseTypePatrol && tc.tower.FieldWithinDistance(rf.F) {
+	if !rf.F.Allocated && tc.UseType == military.MilitaryLandUseTypePatrol && tc.tower.FieldWithinDistance(rf.F) && rf.F.Walkable() {
 		tc.tower.Land = append(tc.tower.Land, social.PatrolLand{
 			X: rf.F.X,
 			Y: rf.F.Y,
