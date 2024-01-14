@@ -89,9 +89,9 @@ func (t *BuildingTask) Description() string {
 	if t.C.Building != nil {
 		return "Build a new " + building.BuildingTypeName(t.C.Building.Plan.BuildingType)
 	} else if t.C.Road != nil {
-		return "Build road"
+		return "Build roads"
 	} else if t.C.Statue != nil {
-		return "Build statue"
+		return "Build a statue"
 	}
 	return ""
 }

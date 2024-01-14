@@ -263,7 +263,7 @@ func (t *AgriculturalTask) Description() string {
 	case AgriculturalTaskHarvesting:
 		return "Harvest crops"
 	case AgriculturalTaskPlantingAppleTree:
-		return "Plant an apple tree"
+		return "Plant a fruit tree"
 	case AgriculturalTaskPlantingOakTree:
 		return "Plant an oak tree"
 	case AgriculturalTaskPlantingReed:
@@ -273,9 +273,9 @@ func (t *AgriculturalTask) Description() string {
 	case AgriculturalTaskReedCutting:
 		return "Harvest reed"
 	case AgriculturalTaskGrazing:
-		return "Graze sheep between spring and fall"
+		return "Graze sheeps between the spring and the fall"
 	case AgriculturalTaskCorralling:
-		return "Corral sheep for the winter"
+		return "Corral sheeps during the winter"
 	}
 	return ""
 }
