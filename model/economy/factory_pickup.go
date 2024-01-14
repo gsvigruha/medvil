@@ -81,3 +81,7 @@ func (t *FactoryPickupTask) IsFieldCenter() bool {
 		return false
 	}
 }
+
+func (t *FactoryPickupTask) Description() string {
+	return "Pick up a vehicle at the factory"
+}

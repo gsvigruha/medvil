@@ -45,3 +45,7 @@ func (t *SellTask) Motion() uint8 {
 func (t *SellTask) IconName() string {
 	return "sell"
 }
+
+func (t *SellTask) Description() string {
+	return "Sell goods at the market"
+}

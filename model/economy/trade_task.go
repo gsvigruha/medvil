@@ -85,3 +85,7 @@ func (t *TradeTask) Expired(Calendar *time.CalendarType) bool {
 func (t *TradeTask) Motion() uint8 {
 	return navigation.MotionStand
 }
+
+func (t *TradeTask) Description() string {
+	return "Trade goods between markets"
+}

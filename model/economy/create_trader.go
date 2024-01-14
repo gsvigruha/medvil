@@ -52,3 +52,7 @@ func (t *CreateTraderTask) Motion() uint8 {
 func (t *CreateTraderTask) IsFieldCenter() bool {
 	return false
 }
+
+func (t *CreateTraderTask) Description() string {
+	return "Create a trader"
+}

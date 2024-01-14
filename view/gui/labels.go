@@ -70,12 +70,13 @@ const ImageLabelStyleHighlight = 1
 const ImageLabelStyleDisabled = 2
 
 type ImageLabel struct {
-	X     float64
-	Y     float64
-	SX    float64
-	SY    float64
-	Icon  string
-	Style uint8
+	X        float64
+	Y        float64
+	SX       float64
+	SY       float64
+	Icon     string
+	Style    uint8
+	OnHoover func()
 }
 
 func (l *ImageLabel) Render(cv *canvas.Canvas) {
@@ -91,6 +92,16 @@ func (l *ImageLabel) Render(cv *canvas.Canvas) {
 }
 
 func (l *ImageLabel) CaptureClick(x float64, y float64) {}
+
+func (l *ImageLabel) SetHoover(h bool) {
+	if l.OnHoover != nil && h {
+		l.OnHoover()
+	}
+}
+
+func (l *ImageLabel) Contains(x float64, y float64) bool {
+	return l.X <= x && l.X+l.SX >= x && l.Y <= y && l.Y+l.SY >= y
+}
 
 type DoubleImageLabel struct {
 	X       float64

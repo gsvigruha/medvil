@@ -99,3 +99,7 @@ func (t *TransportTask) Expired(Calendar *time.CalendarType) bool {
 func (t *TransportTask) Motion() uint8 {
 	return navigation.MotionStand
 }
+
+func (t *TransportTask) Description() string {
+	return "Transport goods"
+}

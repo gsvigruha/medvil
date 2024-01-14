@@ -51,3 +51,7 @@ func (t *ManufactureTask) Expired(Calendar *time.CalendarType) bool {
 func (t *ManufactureTask) Motion() uint8 {
 	return navigation.MotionStand
 }
+
+func (t *ManufactureTask) Description() string {
+	return "Manufactoring: " + t.M.Name
+}

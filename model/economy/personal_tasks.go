@@ -92,6 +92,10 @@ func (t *EatTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
+func (t *EatTask) Description() string {
+	return "Eat food"
+}
+
 func (t *DrinkTask) Destination() navigation.Destination {
 	return t.F
 }
@@ -119,6 +123,10 @@ func (t *DrinkTask) Expired(Calendar *time.CalendarType) bool {
 
 func (t *DrinkTask) Motion() uint8 {
 	return navigation.MotionStand
+}
+
+func (t *DrinkTask) Description() string {
+	return "Drink"
 }
 
 func (t *HealTask) Destination() navigation.Destination {
@@ -150,6 +158,10 @@ func (t *HealTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
+func (t *HealTask) Description() string {
+	return "Heal"
+}
+
 func (t *RelaxTask) Destination() navigation.Destination {
 	return t.F
 }
@@ -177,6 +189,10 @@ func (t *RelaxTask) Expired(Calendar *time.CalendarType) bool {
 
 func (t *RelaxTask) Motion() uint8 {
 	return navigation.MotionStand
+}
+
+func (t *RelaxTask) Description() string {
+	return "Relax"
 }
 
 func (t *GoHomeTask) Destination() navigation.Destination {
@@ -208,6 +224,10 @@ func (t *GoHomeTask) Motion() uint8 {
 	return navigation.MotionStand
 }
 
+func (t *GoHomeTask) Description() string {
+	return "Go home"
+}
+
 func (t *GoToTask) Destination() navigation.Destination {
 	return t.F
 }
@@ -234,4 +254,8 @@ func (t *GoToTask) Expired(Calendar *time.CalendarType) bool {
 
 func (t *GoToTask) Motion() uint8 {
 	return navigation.MotionStand
+}
+
+func (t *GoToTask) Description() string {
+	return "Go to place"
 }

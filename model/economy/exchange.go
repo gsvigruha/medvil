@@ -121,3 +121,7 @@ func (t *ExchangeTask) AddSellTask(st *SellTask) {
 func (t *ExchangeTask) Motion() uint8 {
 	return navigation.MotionStand
 }
+
+func (t *ExchangeTask) Description() string {
+	return "Buy and sell goods at the market"
+}

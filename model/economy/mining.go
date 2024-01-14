@@ -103,3 +103,7 @@ func (t *MiningTask) Expired(Calendar *time.CalendarType) bool {
 func (t *MiningTask) Motion() uint8 {
 	return navigation.MotionMine
 }
+
+func (t *MiningTask) Description() string {
+	return "Mine"
+}

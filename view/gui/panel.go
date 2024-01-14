@@ -42,6 +42,15 @@ func (p *Panel) CaptureMove(x float64, y float64) {
 			p.Buttons[i].SetHoover(false)
 		}
 	}
+	for i := range p.Labels {
+		if l, ok := p.Labels[i].(*ImageLabel); ok {
+			if l.Contains(x, y) {
+				l.SetHoover(true)
+			} else {
+				l.SetHoover(false)
+			}
+		}
+	}
 	for i := range p.Panels {
 		p.Panels[i].CaptureMove(x, y)
 	}

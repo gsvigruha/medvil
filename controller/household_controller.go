@@ -170,12 +170,10 @@ func ArtifactQStr(q uint16) string {
 func ArtifactsToControlPanel(cp *ControlPanel, p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	p.AddButton(&gui.ImageButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "artifacts/" + a.Name, X: float64(24 + xI*IconW), Y: top + float64(yI*IconH), SX: IconS, SY: IconS},
-		ClickImpl: func() {
+	p.AddLabel(&gui.ImageLabel{Icon: "artifacts/" + a.Name, X: float64(24 + xI*IconW), Y: top + float64(yI*IconH), SX: IconS, SY: IconS,
+		Style: gui.ImageLabelStyleRegular, OnHoover: func() {
 			ArtifactToHelperPanel(cp.GetHelperPanel(), a)
-		},
-	})
+		}})
 	p.AddTextLabel(ArtifactQStr(q), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 
@@ -186,13 +184,10 @@ func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task e
 	} else if task.IsPaused() {
 		style = gui.ImageLabelStyleRegular
 	}
-	p.AddButton(&gui.ImageButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "tasks/" + economy.IconName(task), X: float64(24 + i*w), Y: y, SX: IconS, SY: IconS},
-		Style:     style,
-		ClickImpl: func() {
+	p.AddLabel(&gui.ImageLabel{Icon: "tasks/" + economy.IconName(task), X: float64(24 + i*w), Y: y, SX: IconS, SY: IconS,
+		Style: style, OnHoover: func() {
 			TaskToHelperPanel(cp.GetHelperPanel(), task)
-		},
-	})
+		}})
 }
 
 func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Vehicle, w int) {

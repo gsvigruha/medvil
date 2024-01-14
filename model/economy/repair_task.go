@@ -65,3 +65,7 @@ func (t *RepairTask) Expired(Calendar *time.CalendarType) bool {
 func (t *RepairTask) Motion() uint8 {
 	return navigation.MotionBuild
 }
+
+func (t *RepairTask) Description() string {
+	return "Repair buildings, roads or walls"
+}

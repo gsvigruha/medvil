@@ -253,3 +253,29 @@ func (t *AgriculturalTask) Motion() uint8 {
 		return navigation.MotionFieldWork
 	}
 }
+
+func (t *AgriculturalTask) Description() string {
+	switch t.T {
+	case AgriculturalTaskPloughing:
+		return "Plough land so it can grow crops"
+	case AgriculturalTaskSowing:
+		return "Sow crops"
+	case AgriculturalTaskHarvesting:
+		return "Harvest crops"
+	case AgriculturalTaskPlantingAppleTree:
+		return "Plant apple tree"
+	case AgriculturalTaskPlantingOakTree:
+		return "Plant oak tree"
+	case AgriculturalTaskPlantingReed:
+		return "Plant reed"
+	case AgriculturalTaskTreeCutting:
+		return "Cut tree for logs"
+	case AgriculturalTaskReedCutting:
+		return "Harvest reed"
+	case AgriculturalTaskGrazing:
+		return "Graze sheep"
+	case AgriculturalTaskCorralling:
+		return "Corral sheep"
+	}
+	return ""
+}
