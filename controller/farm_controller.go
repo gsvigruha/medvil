@@ -155,6 +155,8 @@ func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedFi
 			UseType: fc.UseType,
 			F:       rf.F,
 		})
+	} else {
+		fields = append(fields, &navigation.BlockedField{F: rf.F})
 	}
 	return fields
 }
