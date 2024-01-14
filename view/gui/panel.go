@@ -42,6 +42,15 @@ func (p *Panel) CaptureMove(x float64, y float64) {
 			p.Buttons[i].SetHoover(false)
 		}
 	}
+	for i := range p.Labels {
+		if l, ok := p.Labels[i].(LabelWithTooltip); ok {
+			if l.Contains(x, y) {
+				l.SetHoover(true)
+			} else {
+				l.SetHoover(false)
+			}
+		}
+	}
 	for i := range p.Panels {
 		p.Panels[i].CaptureMove(x, y)
 	}
@@ -131,8 +140,8 @@ func (p *Panel) AddDoubleImageLabel(icon string, subicon string, x, y, sx, sy fl
 	p.Labels = append(p.Labels, &DoubleImageLabel{Icon: icon, SubIcon: subicon, X: x, Y: y, SX: sx, SY: sy, Style: style})
 }
 
-func (p *Panel) AddScaleLabel(icon string, x, y, sx, sy, scaleW, scale float64, stacked bool) {
-	p.Labels = append(p.Labels, &ScaleLabel{Icon: icon, X: x, Y: y, SX: sx, SY: sy, ScaleW: scaleW, Scale: scale, Stacked: stacked})
+func (p *Panel) AddScaleLabel(icon string, x, y, sx, sy, scaleW, scale float64, stacked bool, onHoover func(string)) {
+	p.Labels = append(p.Labels, &ScaleLabel{Icon: icon, X: x, Y: y, SX: sx, SY: sy, ScaleW: scaleW, Scale: scale, Stacked: stacked, OnHoover: onHoover})
 }
 
 func (p *Panel) AddTextureLabel(texture string, x, y, sx, sy float64) {

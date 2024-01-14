@@ -36,7 +36,10 @@ func MarketplaceToMarketPanel(cp *ControlPanel, mp *gui.Panel, m *social.Marketp
 	MoneyToControlPanel(cp, mp, m.Town.Townhall.Household, m, 100, 24, LargeIconD*2+float64(IconH)+24)
 	mp.AddTextLabel("marketplace / "+m.Town.Name, 200, LargeIconD*2+float64(IconH)+24)
 
-	mp.AddScaleLabel("barrel", 24, MarketplaceGUIY*ControlPanelSY, IconS, IconS, 4, m.Storage.UsedVolumeCapacity(), false)
+	mp.AddScaleLabel("barrel", 24, MarketplaceGUIY*ControlPanelSY, IconS, IconS, 4, m.Storage.UsedVolumeCapacity(), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Storage full: " + scaleStr)
+		})
 	var aI = 1
 	for _, a := range artifacts.All {
 		if q, ok := m.Storage.Artifacts[a]; ok {

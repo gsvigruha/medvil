@@ -63,3 +63,7 @@ func (t *VehicleConstructionTask) Expired(Calendar *time.CalendarType) bool {
 func (t *VehicleConstructionTask) Motion() uint8 {
 	return navigation.MotionStand
 }
+
+func (t *VehicleConstructionTask) Description() string {
+	return "Construct vehicles"
+}

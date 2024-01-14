@@ -11,6 +11,7 @@ const RepairTaskMaxProgress = 30 * 24
 type Repairable interface {
 	Repair()
 	RepairCost() []artifacts.Artifacts
+	Name() string
 }
 
 type RepairTask struct {
@@ -64,4 +65,8 @@ func (t *RepairTask) Expired(Calendar *time.CalendarType) bool {
 
 func (t *RepairTask) Motion() uint8 {
 	return navigation.MotionBuild
+}
+
+func (t *RepairTask) Description() string {
+	return "Repair " + t.Repairable.Name()
 }

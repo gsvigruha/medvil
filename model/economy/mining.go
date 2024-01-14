@@ -103,3 +103,21 @@ func (t *MiningTask) Expired(Calendar *time.CalendarType) bool {
 func (t *MiningTask) Motion() uint8 {
 	return navigation.MotionMine
 }
+
+func (t *MiningTask) Description() string {
+	return "Mine " + MineUseTypeArtifact(t.UseType).Name
+}
+
+func MineUseTypeArtifact(useType uint8) *artifacts.Artifact {
+	switch useType {
+	case MineFieldUseTypeClay:
+		return clay
+	case MineFieldUseTypeGold:
+		return gold
+	case MineFieldUseTypeIron:
+		return iron
+	case MineFieldUseTypeStone:
+		return stone
+	}
+	return nil
+}

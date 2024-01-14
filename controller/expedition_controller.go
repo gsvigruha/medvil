@@ -46,7 +46,10 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 		Highlight: func() bool { return false },
 		ClickImpl: func() { expedition.DecTargetNumPeople() }})
 
-	p.AddScaleLabel("barrel", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, expedition.Resources.UsedVolumeCapacity(), false)
+	p.AddScaleLabel("barrel", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, expedition.Resources.UsedVolumeCapacity(), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Storage full: " + scaleStr)
+		})
 	var aI = 1
 	for _, a := range artifacts.All {
 		var q uint16 = 0

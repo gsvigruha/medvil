@@ -111,8 +111,14 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 			cp.HelperMessage("Remove people from this " + building.BuildingTypeName(h.Building.Plan.BuildingType))
 		}},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
-	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(h.GetHeating())/100, false)
-	p.AddScaleLabel("barrel", 24+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false)
+	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(h.GetHeating())/100, false,
+		func(scaleStr string) {
+			cp.HelperMessage("Heating level: " + scaleStr)
+		})
+	p.AddScaleLabel("barrel", 24+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Storage full: " + scaleStr)
+		})
 	var aI = 2
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {
@@ -150,10 +156,22 @@ func PersonToPanel(cp *ControlPanel, p *gui.Panel, i int, person *social.Person,
 	} else if person.Equipment.Tool {
 		p.AddImageLabel("tasks/toolsmith", float64(24+i*w)+16, top+16, 24, 24, gui.ImageLabelStyleRegular)
 	}
-	p.AddScaleLabel("food", float64(24+i*w), top+float64(IconH), IconS, IconS, 4, float64(person.Food)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("drink", float64(24+i*w), top+float64(IconH*2), IconS, IconS, 4, float64(person.Water)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("health", float64(24+i*w), top+float64(IconH*3), IconS, IconS, 4, float64(person.Health)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("happiness", float64(24+i*w), top+float64(IconH*4), IconS, IconS, 4, float64(person.Happiness)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("food", float64(24+i*w), top+float64(IconH), IconS, IconS, 4, float64(person.Food)/float64(social.MaxPersonState), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Food level: " + scaleStr)
+		})
+	p.AddScaleLabel("drink", float64(24+i*w), top+float64(IconH*2), IconS, IconS, 4, float64(person.Water)/float64(social.MaxPersonState), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Drink level: " + scaleStr)
+		})
+	p.AddScaleLabel("health", float64(24+i*w), top+float64(IconH*3), IconS, IconS, 4, float64(person.Health)/float64(social.MaxPersonState), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Health: " + scaleStr)
+		})
+	p.AddScaleLabel("happiness", float64(24+i*w), top+float64(IconH*4), IconS, IconS, 4, float64(person.Happiness)/float64(social.MaxPersonState), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Happiness level: " + scaleStr)
+		})
 	if person.Task != nil {
 		TaskToControlPanel(cp, p, i, top+float64(IconH*5), person.Task, w)
 	}
@@ -170,12 +188,10 @@ func ArtifactQStr(q uint16) string {
 func ArtifactsToControlPanel(cp *ControlPanel, p *gui.Panel, i int, a *artifacts.Artifact, q uint16, top float64) {
 	xI := i % IconRowMax
 	yI := i / IconRowMax
-	p.AddButton(&gui.ImageButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "artifacts/" + a.Name, X: float64(24 + xI*IconW), Y: top + float64(yI*IconH), SX: IconS, SY: IconS},
-		ClickImpl: func() {
+	p.AddLabel(&gui.ImageLabel{Icon: "artifacts/" + a.Name, X: float64(24 + xI*IconW), Y: top + float64(yI*IconH), SX: IconS, SY: IconS,
+		Style: gui.ImageLabelStyleRegular, OnHoover: func() {
 			ArtifactToHelperPanel(cp.GetHelperPanel(), a)
-		},
-	})
+		}})
 	p.AddTextLabel(ArtifactQStr(q), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 
@@ -186,13 +202,10 @@ func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task e
 	} else if task.IsPaused() {
 		style = gui.ImageLabelStyleRegular
 	}
-	p.AddButton(&gui.ImageButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "tasks/" + economy.IconName(task), X: float64(24 + i*w), Y: y, SX: IconS, SY: IconS},
-		Style:     style,
-		ClickImpl: func() {
+	p.AddLabel(&gui.ImageLabel{Icon: "tasks/" + economy.IconName(task), X: float64(24 + i*w), Y: y, SX: IconS, SY: IconS,
+		Style: style, OnHoover: func() {
 			TaskToHelperPanel(cp.GetHelperPanel(), task)
-		},
-	})
+		}})
 }
 
 func VehicleToControlPanel(p *gui.Panel, i int, y float64, vehicle *vehicles.Vehicle, w int) {

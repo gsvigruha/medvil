@@ -49,3 +49,7 @@ func (t *PatrolTask) Motion() uint8 {
 func (t *PatrolTask) Equipped(e *economy.EquipmentType) bool {
 	return e.Weapon
 }
+
+func (t *PatrolTask) Description() string {
+	return "Patrol to protect your town from outlaws"
+}

@@ -3,7 +3,6 @@ package social
 import (
 	"encoding/json"
 	"math/rand"
-	"medvil/model/artifacts"
 	"medvil/model/economy"
 	"medvil/model/navigation"
 	"medvil/model/terrain"
@@ -12,11 +11,6 @@ import (
 )
 
 const MineMaxDistance = 15
-
-var GoldOre = artifacts.GetArtifact("gold_ore")
-var IronOre = artifacts.GetArtifact("iron_ore")
-var Clay = artifacts.GetArtifact("clay")
-var Stone = artifacts.GetArtifact("stone")
 
 type MineLand struct {
 	X       uint16
@@ -125,7 +119,7 @@ func (m *Mine) ElapseTime(Calendar *time.CalendarType, imap navigation.IMap) {
 			if m.Optimize && m.Household.Town.Marketplace != nil {
 				var profits []float64
 				for _, land := range m.Land {
-					profits = append(profits, float64(m.Household.Town.Marketplace.Prices[MineUseTypeArtifact(land.UseType)]))
+					profits = append(profits, float64(m.Household.Town.Marketplace.Prices[economy.MineUseTypeArtifact(land.UseType)]))
 				}
 				land := m.Land[util.RandomIndexWeighted(profits)]
 				m.Household.AddTask(&economy.MiningTask{F: land.F, UseType: land.UseType})
@@ -170,18 +164,4 @@ func (m *Mine) GetLandDistribution() map[uint8]int {
 		}
 	}
 	return result
-}
-
-func MineUseTypeArtifact(useType uint8) *artifacts.Artifact {
-	switch useType {
-	case economy.MineFieldUseTypeClay:
-		return Clay
-	case economy.MineFieldUseTypeGold:
-		return GoldOre
-	case economy.MineFieldUseTypeIron:
-		return IronOre
-	case economy.MineFieldUseTypeStone:
-		return Stone
-	}
-	return nil
 }

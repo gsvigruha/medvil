@@ -54,3 +54,7 @@ func (r *Road) Repair() {
 func (r *Road) RepairCost() []artifacts.Artifacts {
 	return r.T.Cost
 }
+
+func (r *Road) Name() string {
+	return "road"
+}

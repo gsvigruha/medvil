@@ -344,7 +344,7 @@ func (p *ControlPanel) IsInfraType() bool {
 }
 
 func (p *ControlPanel) HelperMessage(msg string) {
-	p.GetHelperPanel().AddTextLabel(msg, ControlPanelSX*0.03, ControlPanelSY*0.95)
+	p.GetHelperPanel().AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
 }
 
 func (p *ControlPanel) GetSuggestion() {

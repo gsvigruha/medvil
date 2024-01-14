@@ -49,3 +49,7 @@ func (t *BuyTask) Motion() uint8 {
 func (t *BuyTask) IconName() string {
 	return "buy"
 }
+
+func (t *BuyTask) Description() string {
+	return "Buy goods at the market"
+}

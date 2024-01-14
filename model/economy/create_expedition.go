@@ -45,3 +45,7 @@ func (t *CreateExpeditionTask) Motion() uint8 {
 func (t *CreateExpeditionTask) IsFieldCenter() bool {
 	return false
 }
+
+func (t *CreateExpeditionTask) Description() string {
+	return "Create an expedition"
+}

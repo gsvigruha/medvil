@@ -84,3 +84,14 @@ func (t *BuildingTask) Motion() uint8 {
 	}
 	return navigation.MotionStand
 }
+
+func (t *BuildingTask) Description() string {
+	if t.C.Building != nil {
+		return "Build a new " + building.BuildingTypeName(t.C.Building.Plan.BuildingType)
+	} else if t.C.Road != nil {
+		return "Build roads"
+	} else if t.C.Statue != nil {
+		return "Build a statue"
+	}
+	return ""
+}
