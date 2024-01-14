@@ -38,7 +38,7 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 		luc:     mc,
 		useType: economy.MineFieldUseTypeNone,
 		cp:      cp,
-		msg:     "Give land back",
+		msg:     "Stop mining",
 	})
 	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/stone", X: float64(24 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
@@ -124,7 +124,7 @@ func (mc *MineController) GetActiveFields(c *Controller, rf *renderer.RenderedFi
 			UseType: mc.UseType,
 			F:       rf.F,
 		})
-	} else {
+	} else if mc.UseType != economy.MineFieldUseTypeNone {
 		fields = append(fields, &navigation.BlockedField{F: rf.F})
 	}
 	return fields

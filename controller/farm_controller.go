@@ -97,7 +97,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: FarmFieldUseTypeDisallocate,
 		cp:      cp,
-		msg:     "Give back land",
+		msg:     "Stop farming",
 	})
 	fc.RefreshLandUseButtons()
 
@@ -156,7 +156,7 @@ func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedFi
 			UseType: fc.UseType,
 			F:       rf.F,
 		})
-	} else {
+	} else if fc.UseType != FarmFieldUseTypeDisallocate {
 		fields = append(fields, &navigation.BlockedField{F: rf.F})
 	}
 	return fields
