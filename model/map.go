@@ -213,8 +213,9 @@ func (m *Map) CheckBuildingBaseField(pu *building.PlanUnits, bt building.Buildin
 	return f.Buildable()
 }
 
-func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan, direction uint8) []navigation.FieldWithContext {
+func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan, direction uint8) ([]navigation.FieldWithContext, bool) {
 	var fields []navigation.FieldWithContext
+	var ok = true
 	for i := uint16(0); i < 5; i++ {
 		for j := uint16(0); j < 5; j++ {
 			bx := int(x+i) - 2
@@ -225,15 +226,16 @@ func (m *Map) GetBuildingBaseFields(x, y uint16, bp *building.BuildingPlan, dire
 					if m.CheckBuildingBaseField(bp.BaseShape[i][j], bp.BuildingType, f, direction) {
 						fields = append(fields, f)
 					} else {
-						return nil
+						fields = append(fields, &navigation.BlockedField{F: f})
+						ok = false
 					}
 				} else {
-					return nil
+					ok = false
 				}
 			}
 		}
 	}
-	return fields
+	return fields, ok
 }
 
 func (m *Map) SetBuildingUnits(b *building.Building, construction bool) {
@@ -250,11 +252,12 @@ func (m *Map) SetBuildingUnits(b *building.Building, construction bool) {
 }
 
 func (m *Map) IsBuildingPossible(x, y uint16, bp *building.BuildingPlan, direction uint8) bool {
-	return m.GetBuildingBaseFields(x, y, bp, direction) != nil
+	_, ok := m.GetBuildingBaseFields(x, y, bp, direction)
+	return ok
 }
 
 func (m *Map) AddBuilding(x, y uint16, bp *building.BuildingPlan, construction bool, direction uint8) *building.Building {
-	if m.GetBuildingBaseFields(x, y, bp, direction) == nil {
+	if _, ok := m.GetBuildingBaseFields(x, y, bp, direction); !ok {
 		return nil
 	}
 	b := &building.Building{X: x, Y: y, Plan: *bp, Shape: building.GetShape(bp.BuildingType, x, y), Direction: direction}

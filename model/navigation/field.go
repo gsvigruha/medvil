@@ -25,6 +25,18 @@ type FieldWithContext interface {
 	Context() string
 }
 
+type BlockedField struct {
+	F *Field
+}
+
+func (bf *BlockedField) Field() *Field {
+	return bf.F
+}
+
+func (bf *BlockedField) Context() string {
+	return "blocked"
+}
+
 const SurroundingSame uint8 = 0
 const SurroundingWater uint8 = 1
 const SurroundingGrass uint8 = 2

@@ -123,6 +123,8 @@ func (mc *MineController) GetActiveFields(c *Controller, rf *renderer.RenderedFi
 			UseType: mc.UseType,
 			F:       rf.F,
 		})
+	} else {
+		fields = append(fields, &navigation.BlockedField{F: rf.F})
 	}
 	return fields
 }

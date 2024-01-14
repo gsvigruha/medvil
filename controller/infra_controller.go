@@ -113,8 +113,9 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 func (ic *InfraController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	if ic.CheckField(c, rf) {
 		return []navigation.FieldWithContext{rf.F}
+	} else {
+		return []navigation.FieldWithContext{&navigation.BlockedField{F: rf.F}}
 	}
-	return nil
 }
 
 func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField) bool {
