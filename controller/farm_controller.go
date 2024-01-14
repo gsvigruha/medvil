@@ -34,6 +34,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 	fc := &FarmController{householdPanel: hp, farmPanel: fp, farm: farm, UseType: economy.FarmFieldUseTypeBarren, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
+	fp.AddTextLabel("Allocate farmland", 24, hcy-IconS/4.0)
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/vegetable", X: float64(24 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,
@@ -96,7 +97,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: FarmFieldUseTypeDisallocate,
 		cp:      cp,
-		msg:     "Give back land",
+		msg:     "Stop farming",
 	})
 	fc.RefreshLandUseButtons()
 
@@ -147,7 +148,7 @@ func (fc *FarmController) Refresh() {
 
 func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedField) []navigation.FieldWithContext {
 	fields := fc.farm.GetFields()
-	if fc.farm.FieldUsableFor(fc.cp.C.Map, rf.F, fc.UseType) && !rf.F.Allocated &&
+	if fc.farm.FieldUsableFor(fc.cp.C.Map, rf.F, fc.UseType) && !rf.F.Allocated && fc.UseType != FarmFieldUseTypeDisallocate &&
 		(fc.farm.FieldWithinDistance(rf.F) || fc.UseType == economy.FarmFieldUseTypeBarren && fc.farm.FieldWithinDistanceClearing(rf.F)) {
 		fields = append(fields, social.FarmLand{
 			X:       rf.F.X,
@@ -155,7 +156,7 @@ func (fc *FarmController) GetActiveFields(c *Controller, rf *renderer.RenderedFi
 			UseType: fc.UseType,
 			F:       rf.F,
 		})
-	} else {
+	} else if fc.UseType != FarmFieldUseTypeDisallocate {
 		fields = append(fields, &navigation.BlockedField{F: rf.F})
 	}
 	return fields

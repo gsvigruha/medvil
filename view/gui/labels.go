@@ -35,7 +35,7 @@ func (l *TextLabel) Render(cv *canvas.Canvas) {
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 192})
 		cv.FillRect(l.X, l.Y, l.SX, l.SY)
 	}
-	cv.SetFillStyle("#FED")
+	cv.SetFillStyle("#EDC")
 	if l.Large {
 		cv.SetFont(Font, FontSize*1.5)
 	} else {

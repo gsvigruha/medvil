@@ -17,13 +17,15 @@ type FactoryController struct {
 	cp             *ControlPanel
 }
 
+var FactoryControllerGUIBottomY = 0.75
+
 func FactoryToControlPanel(cp *ControlPanel, factory *social.Factory) {
 	hp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	fp := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop + HouseholdControllerSY, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY - HouseholdControllerSY}
 	HouseholdToControlPanel(cp, hp, factory.Household, "factory")
 	fc := &FactoryController{factoryPanel: fp, householdPanel: hp, factory: factory, cp: cp}
 
-	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
+	hcy := FactoryControllerGUIBottomY * ControlPanelSY
 	for i, vc := range economy.GetVehicleConstructions(factory.Household.Building.Plan.GetExtensions()) {
 		fp.AddPanel(CreateOrderPanelForFactory(cp, 10, float64(i*IconH)+hcy, factory, vc, cp.C.Map))
 	}

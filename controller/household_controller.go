@@ -14,14 +14,14 @@ import (
 const IconRowMax = 9
 
 var PersonGUIY = 0.175
-var ArtifactsGUIY = 0.45
+var ArtifactsGUIY = 0.425
 var TaskGUIY = 0.6
 
 const MaxNumTasks = 24
 
 var VehicleGUIY = 0.7
 var HouseholdControllerSY = 0.7
-var HouseholdControllerGUIBottomY = 0.75
+var HouseholdControllerGUIBottomY = 0.775
 
 type HouseholdControllerButton struct {
 	b      *gui.ButtonGUI
@@ -119,6 +119,7 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 		func(scaleStr string) {
 			cp.HelperMessage("Storage full: " + scaleStr)
 		})
+	p.AddTextLabel("Goods", 24, ArtifactsGUIY*ControlPanelSY-IconS/4.0)
 	var aI = 2
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {
@@ -126,15 +127,16 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 			aI++
 		}
 	}
+
+	p.AddTextLabel("Tasks ("+strconv.Itoa(len(h.Tasks))+")", 24, TaskGUIY*ControlPanelSY-IconS/4.0)
 	tiw, tirm := taskIconW(h)
 	for i, task := range h.Tasks {
 		if i >= MaxNumTasks {
-			tasksStr := strconv.Itoa(len(h.Tasks))
-			p.AddTextLabel(tasksStr, ControlPanelSX-24-float64(len(tasksStr))*gui.FontSize*0.5, TaskGUIY*ControlPanelSY+float64(IconH*2))
 			break
 		}
 		TaskToControlPanel(cp, p, i%tirm, TaskGUIY*ControlPanelSY+float64(i/tirm*IconH), task, tiw)
 	}
+	p.AddTextLabel("Vehicles", 24, VehicleGUIY*ControlPanelSY-IconS/4.0)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/boat", X: 24, Y: VehicleGUIY * ControlPanelSY, SX: IconS, SY: IconS, OnHoover: func() {
 			cp.HelperMessage("Start or stop using boats and waterways")
