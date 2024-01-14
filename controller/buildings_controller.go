@@ -426,7 +426,8 @@ func (bc *BuildingsController) GetActiveFields(c *Controller, rf *renderer.Rende
 	if !bc.HasValidFloorsAndRoof() {
 		return nil
 	}
-	return c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
+	fields, _ := c.Map.GetBuildingBaseFields(rf.F.X, rf.F.Y, bc.Plan, building.DirectionNone)
+	return fields
 }
 
 func (bc *BuildingsController) activeSupplier() social.Supplier {

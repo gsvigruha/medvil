@@ -14,15 +14,23 @@ func RenderActiveFields(cv *canvas.Canvas, transparent bool, c *controller.Contr
 		for _, f := range fields {
 			for _, rf := range c.RenderedFields {
 				if rf.F.X == f.Field().X && rf.F.Y == f.Field().Y {
-					if transparent {
-						cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 160})
+					if f.Context() == "blocked" {
+						if transparent {
+							cv.SetStrokeStyle(color.RGBA{R: 192, G: 0, B: 0, A: 160})
+						} else {
+							cv.SetStrokeStyle(color.RGBA{R: 192, G: 0, B: 0, A: 255})
+						}
 					} else {
-						cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
+						if transparent {
+							cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 160})
+						} else {
+							cv.SetStrokeStyle(color.RGBA{R: 0, G: 192, B: 0, A: 255})
+						}
 					}
 					cv.SetLineWidth(2)
 					rf.Draw(cv)
 					cv.Stroke()
-					if f.Context() != "" {
+					if f.Context() != "" && f.Context() != "blocked" {
 						midX, midY := rf.MidScreenPoint()
 						a := artifacts.GetArtifact(f.Context())
 						cv.DrawImage(filepath.FromSlash("icon/gui/artifacts/"+a.Name+".png"), midX-16, midY-32, 32, 32)
