@@ -231,3 +231,7 @@ func (b *Building) Repair() {
 func (b *Building) RepairCost() []artifacts.Artifacts {
 	return b.Plan.RepairCost()
 }
+
+func (b *Building) Name() string {
+	return BuildingTypeName(b.Plan.BuildingType)
+}

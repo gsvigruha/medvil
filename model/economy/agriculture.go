@@ -257,15 +257,15 @@ func (t *AgriculturalTask) Motion() uint8 {
 func (t *AgriculturalTask) Description() string {
 	switch t.T {
 	case AgriculturalTaskPloughing:
-		return "Plough land so it can grow crops"
+		return "Plough land to grow crops"
 	case AgriculturalTaskSowing:
 		return "Sow crops"
 	case AgriculturalTaskHarvesting:
 		return "Harvest crops"
 	case AgriculturalTaskPlantingAppleTree:
-		return "Plant apple tree"
+		return "Plant an apple tree"
 	case AgriculturalTaskPlantingOakTree:
-		return "Plant oak tree"
+		return "Plant an oak tree"
 	case AgriculturalTaskPlantingReed:
 		return "Plant reed"
 	case AgriculturalTaskTreeCutting:
@@ -273,9 +273,9 @@ func (t *AgriculturalTask) Description() string {
 	case AgriculturalTaskReedCutting:
 		return "Harvest reed"
 	case AgriculturalTaskGrazing:
-		return "Graze sheep"
+		return "Graze sheep between spring and fall"
 	case AgriculturalTaskCorralling:
-		return "Corral sheep"
+		return "Corral sheep for the winter"
 	}
 	return ""
 }

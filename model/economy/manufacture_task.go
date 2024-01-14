@@ -53,5 +53,5 @@ func (t *ManufactureTask) Motion() uint8 {
 }
 
 func (t *ManufactureTask) Description() string {
-	return "Manufactoring: " + t.M.Name
+	return "Manufacturing: " + t.M.Name
 }

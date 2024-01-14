@@ -105,5 +105,19 @@ func (t *MiningTask) Motion() uint8 {
 }
 
 func (t *MiningTask) Description() string {
-	return "Mine"
+	return "Mine " + MineUseTypeArtifact(t.UseType).Name
+}
+
+func MineUseTypeArtifact(useType uint8) *artifacts.Artifact {
+	switch useType {
+	case MineFieldUseTypeClay:
+		return clay
+	case MineFieldUseTypeGold:
+		return gold
+	case MineFieldUseTypeIron:
+		return iron
+	case MineFieldUseTypeStone:
+		return stone
+	}
+	return nil
 }

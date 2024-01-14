@@ -63,7 +63,7 @@ func (t *DemolishTask) Motion() uint8 {
 
 func (t *DemolishTask) Description() string {
 	if t.Building != nil {
-		return "Demolish a building"
+		return "Demolish buildings"
 	} else if t.Road != nil {
 		return "Demolish roads"
 	}

@@ -87,7 +87,7 @@ func (t *BuildingTask) Motion() uint8 {
 
 func (t *BuildingTask) Description() string {
 	if t.C.Building != nil {
-		return "Build " + building.BuildingTypeName(t.C.Building.Plan.BuildingType)
+		return "Build a new " + building.BuildingTypeName(t.C.Building.Plan.BuildingType)
 	} else if t.C.Road != nil {
 		return "Build road"
 	} else if t.C.Statue != nil {
