@@ -27,8 +27,14 @@ func TraderToControlPanel(cp *ControlPanel, trader *social.Trader) {
 func TraderToPanel(cp *ControlPanel, p *gui.Panel, trader *social.Trader) {
 	MoneyToControlPanel(cp, p, trader.SourceExchange.Town.Townhall.Household, trader, 100, 10, LargeIconD+float64(IconH)+24)
 	PersonToPanel(cp, p, 0, trader.Person, IconW, PersonGUIY*ControlPanelSY)
-	p.AddScaleLabel("heating", 10, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(trader.GetHeating())/100, false)
-	p.AddScaleLabel("barrel", 10+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, trader.Resources.UsedVolumeCapacity(), false)
+	p.AddScaleLabel("heating", 10, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(trader.GetHeating())/100, false,
+		func(scaleStr string) {
+			cp.HelperMessage("Heating level: " + scaleStr)
+		})
+	p.AddScaleLabel("barrel", 10+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, trader.Resources.UsedVolumeCapacity(), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Storage full: " + scaleStr)
+		})
 	var aI = 2
 	for _, a := range artifacts.All {
 		if q, ok := trader.Resources.Artifacts[a]; ok {

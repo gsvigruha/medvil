@@ -21,7 +21,10 @@ var ArtifactOrder = []*artifacts.Artifact{
 func ConstructionToControlPanel(cp *ControlPanel, c *building.Construction) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
 	top := ConstructionControllerTop * ControlPanelSY
-	p.AddScaleLabel("tasks/building", 24, top, IconS, IconS, 4, float64(c.Progress)/float64(c.MaxProgress), false)
+	p.AddScaleLabel("tasks/building", 24, top, IconS, IconS, 4, float64(c.Progress)/float64(c.MaxProgress), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Building completion: " + scaleStr)
+		})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + IconW*7), Y: top, SX: IconS, SY: IconS, OnHoover: func() {
 			cp.HelperMessage("Demolish construction")

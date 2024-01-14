@@ -111,8 +111,14 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 			cp.HelperMessage("Remove people from this " + building.BuildingTypeName(h.Building.Plan.BuildingType))
 		}},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
-	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(h.GetHeating())/100, false)
-	p.AddScaleLabel("barrel", 24+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false)
+	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(h.GetHeating())/100, false,
+		func(scaleStr string) {
+			cp.HelperMessage("Heating level: " + scaleStr)
+		})
+	p.AddScaleLabel("barrel", 24+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Storage full: " + scaleStr)
+		})
 	var aI = 2
 	for _, a := range artifacts.All {
 		if q, ok := h.Resources.Artifacts[a]; ok {
@@ -150,10 +156,22 @@ func PersonToPanel(cp *ControlPanel, p *gui.Panel, i int, person *social.Person,
 	} else if person.Equipment.Tool {
 		p.AddImageLabel("tasks/toolsmith", float64(24+i*w)+16, top+16, 24, 24, gui.ImageLabelStyleRegular)
 	}
-	p.AddScaleLabel("food", float64(24+i*w), top+float64(IconH), IconS, IconS, 4, float64(person.Food)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("drink", float64(24+i*w), top+float64(IconH*2), IconS, IconS, 4, float64(person.Water)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("health", float64(24+i*w), top+float64(IconH*3), IconS, IconS, 4, float64(person.Health)/float64(social.MaxPersonState), false)
-	p.AddScaleLabel("happiness", float64(24+i*w), top+float64(IconH*4), IconS, IconS, 4, float64(person.Happiness)/float64(social.MaxPersonState), false)
+	p.AddScaleLabel("food", float64(24+i*w), top+float64(IconH), IconS, IconS, 4, float64(person.Food)/float64(social.MaxPersonState), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Food level: " + scaleStr)
+		})
+	p.AddScaleLabel("drink", float64(24+i*w), top+float64(IconH*2), IconS, IconS, 4, float64(person.Water)/float64(social.MaxPersonState), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Drink level: " + scaleStr)
+		})
+	p.AddScaleLabel("health", float64(24+i*w), top+float64(IconH*3), IconS, IconS, 4, float64(person.Health)/float64(social.MaxPersonState), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Health: " + scaleStr)
+		})
+	p.AddScaleLabel("happiness", float64(24+i*w), top+float64(IconH*4), IconS, IconS, 4, float64(person.Happiness)/float64(social.MaxPersonState), false,
+		func(scaleStr string) {
+			cp.HelperMessage("Happiness level: " + scaleStr)
+		})
 	if person.Task != nil {
 		TaskToControlPanel(cp, p, i, top+float64(IconH*5), person.Task, w)
 	}

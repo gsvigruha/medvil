@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"path/filepath"
+	"strconv"
 )
 
 var Font = filepath.FromSlash("texture/font/Go-Regular.ttf")
@@ -12,6 +13,11 @@ var FontSize = 12.0
 type Label interface {
 	Render(cv *canvas.Canvas)
 	CaptureClick(x float64, y float64)
+}
+
+type LabelWithTooltip interface {
+	SetHoover(h bool)
+	Contains(x float64, y float64) bool
 }
 
 type TextLabel struct {
@@ -129,14 +135,15 @@ func (l *DoubleImageLabel) Render(cv *canvas.Canvas) {
 func (l *DoubleImageLabel) CaptureClick(x float64, y float64) {}
 
 type ScaleLabel struct {
-	X       float64
-	Y       float64
-	SX      float64
-	SY      float64
-	ScaleW  float64
-	Icon    string
-	Scale   float64
-	Stacked bool
+	X        float64
+	Y        float64
+	SX       float64
+	SY       float64
+	ScaleW   float64
+	Icon     string
+	Scale    float64
+	Stacked  bool
+	OnHoover func(string)
 }
 
 func (l *ScaleLabel) Render(cv *canvas.Canvas) {
@@ -161,6 +168,16 @@ func (l *ScaleLabel) Render(cv *canvas.Canvas) {
 }
 
 func (l *ScaleLabel) CaptureClick(x float64, y float64) {}
+
+func (l *ScaleLabel) SetHoover(h bool) {
+	if l.OnHoover != nil && h {
+		l.OnHoover(strconv.FormatFloat(l.Scale*100, 'f', 0, 32) + "%")
+	}
+}
+
+func (l *ScaleLabel) Contains(x float64, y float64) bool {
+	return l.X <= x && l.X+l.SX >= x && l.Y <= y && l.Y+l.SY >= y
+}
 
 type TextureLabel struct {
 	X       float64
