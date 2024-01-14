@@ -32,6 +32,7 @@ func MineToControlPanel(cp *ControlPanel, mine *social.Mine) {
 	mc := &MineController{householdPanel: hp, minePanel: mp, mine: mine, UseType: economy.MineFieldUseTypeNone, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
+	mp.AddTextLabel("Pick deposits to mine", 24, hcy-IconS/4.0)
 	mp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "cancel", X: float64(24), Y: hcy + float64(IconH), SX: IconS, SY: IconS},
 		luc:     mc,

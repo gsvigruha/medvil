@@ -58,7 +58,7 @@ func (l *ChartsLabel) Draw(cv *canvas.Canvas) {
 		l.drawChart(cv, "#22B", ch*1, []string{"icon/gui/barrel"}, stats.HistoryElement.GetArtifacts, false)
 		l.drawChart(cv, "#22B", ch*2, []string{"icon/gui/market", "icon/gui/barrel"}, stats.HistoryElement.GetExchangedQuantity, true)
 		l.drawChart(cv, "#22B", ch*3, []string{"icon/gui/market", "icon/gui/coin"}, stats.HistoryElement.GetExchangedPrice, true)
-		l.helperMsg = "Products and market transactions"
+		l.helperMsg = "Goods produced and traded at the market"
 	case 3:
 		l.drawChart(cv, "#22B", ch*1, icons(economy.FoodArtifacts), stats.HistoryElement.GetFoodPrice, false)
 		l.drawChart(cv, "#22B", ch*2, icons(economy.HouseholdItems), stats.HistoryElement.GetHouseholdItemPrices, false)
@@ -242,7 +242,7 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 			ClickImpl: func() { cl.state = 1 }})
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "tasks/exchange", X: float64(24 + LargeIconD*1), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				cp.HelperMessage("Macro economics")
+				cp.HelperMessage("Goods produced and traded at the market")
 			}},
 			ClickImpl: func() { cl.state = 2 }})
 		p.AddButton(&gui.SimpleButton{

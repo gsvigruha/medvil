@@ -34,6 +34,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 	fc := &FarmController{householdPanel: hp, farmPanel: fp, farm: farm, UseType: economy.FarmFieldUseTypeBarren, cp: cp}
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
+	fp.AddTextLabel("Allocate farmland", 24, hcy-IconS/4.0)
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "artifacts/vegetable", X: float64(24 + IconW*0), Y: hcy, SX: IconS, SY: IconS},
 		luc:     fc,

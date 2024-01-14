@@ -33,6 +33,7 @@ func TowerToControlPanel(cp *ControlPanel, tower *social.Tower) {
 	tc.UseType = military.MilitaryLandUseTypeNone
 
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
+	tp.AddTextLabel("Set patrol path", 24, hcy-IconS/4.0)
 	tp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "cancel", X: float64(10), Y: hcy, SX: IconS, SY: IconS},
 		luc:     tc,
