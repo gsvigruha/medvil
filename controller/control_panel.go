@@ -111,8 +111,10 @@ func (p *ControlPanel) Clear() {
 	}
 }
 
-func (p *ControlPanel) GetHelperPanel() *gui.Panel {
-	p.helperPanel.Clear()
+func (p *ControlPanel) GetHelperPanel(clear bool) *gui.Panel {
+	if clear {
+		p.helperPanel.Clear()
+	}
 	return p.helperPanel
 }
 
@@ -344,7 +346,7 @@ func (p *ControlPanel) IsInfraType() bool {
 }
 
 func (p *ControlPanel) HelperMessage(msg string) {
-	p.GetHelperPanel().AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
+	p.GetHelperPanel(true).AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
 }
 
 func (p *ControlPanel) GetSuggestion() {

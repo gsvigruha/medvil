@@ -100,6 +100,10 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	for i := len(h.People); i < int(h.TargetNumPeople); i++ {
 		p.AddImageLabel("person", float64(24+i*piw), PersonGUIY*ControlPanelSY, IconS, IconS, gui.ImageLabelStyleDisabled)
 	}
+	if h.TargetNumPeople > 0 {
+		p.AddImageLabel("arrow_xsmall_down", float64(24+int(h.TargetNumPeople-1)*piw), PersonGUIY*ControlPanelSY-IconS, IconS, IconS, gui.ImageLabelStyleRegular)
+	}
+
 	s := IconS / 2
 	p.AddButton(&HouseholdControllerButton{
 		b: &gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 24 - s, Y: PersonGUIY * ControlPanelSY, SX: s, SY: s, OnHoover: func() {
@@ -192,7 +196,7 @@ func ArtifactsToControlPanel(cp *ControlPanel, p *gui.Panel, i int, a *artifacts
 	yI := i / IconRowMax
 	p.AddLabel(&gui.ImageLabel{Icon: "artifacts/" + a.Name, X: float64(24 + xI*IconW), Y: top + float64(yI*IconH), SX: IconS, SY: IconS,
 		Style: gui.ImageLabelStyleRegular, OnHoover: func() {
-			ArtifactToHelperPanel(cp.GetHelperPanel(), a)
+			ArtifactToHelperPanel(cp.GetHelperPanel(true), a)
 		}})
 	p.AddTextLabel(ArtifactQStr(q), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
@@ -206,7 +210,7 @@ func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task e
 	}
 	p.AddLabel(&gui.ImageLabel{Icon: "tasks/" + economy.IconName(task), X: float64(24 + i*w), Y: y, SX: IconS, SY: IconS,
 		Style: style, OnHoover: func() {
-			TaskToHelperPanel(cp.GetHelperPanel(), task)
+			TaskToHelperPanel(cp.GetHelperPanel(true), task)
 		}})
 }
 

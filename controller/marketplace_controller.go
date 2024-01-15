@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/tfriedel6/canvas"
 	"medvil/model/artifacts"
 	"medvil/model/social"
@@ -43,7 +44,7 @@ func MarketplaceToMarketPanel(cp *ControlPanel, mp *gui.Panel, m *social.Marketp
 	var aI = 1
 	for _, a := range artifacts.All {
 		if q, ok := m.Storage.Artifacts[a]; ok {
-			ArtifactsToMarketPanel(mp, aI, a, q, m)
+			ArtifactsToMarketPanel(cp, mp, aI, a, q, m)
 			aI++
 		}
 	}
@@ -59,12 +60,16 @@ func MarketplaceToMarketPanel(cp *ControlPanel, mp *gui.Panel, m *social.Marketp
 	}
 }
 
-func ArtifactsToMarketPanel(mp *gui.Panel, i int, a *artifacts.Artifact, q uint16, m *social.Marketplace) {
+func ArtifactsToMarketPanel(cp *ControlPanel, mp *gui.Panel, i int, a *artifacts.Artifact, q uint16, m *social.Marketplace) {
 	rowH := int(IconS * 2)
 	xI := i % IconRowMaxButtons
 	yI := i / IconRowMaxButtons
 	w := int(float64(IconW) * float64(IconRowMax) / float64(IconRowMaxButtons))
-	mp.AddImageLabel("artifacts/"+a.Name, float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH), IconS, IconS, gui.ImageLabelStyleRegular)
+	mp.AddLabel(&gui.ImageLabel{Icon: "artifacts/" + a.Name, X: float64(24 + xI*w), Y: MarketplaceGUIY*ControlPanelSY + float64(yI*rowH), SX: IconS, SY: IconS,
+		Style: gui.ImageLabelStyleRegular, OnHoover: func() {
+			ArtifactToHelperPanel(cp.GetHelperPanel(true), a)
+			cp.GetHelperPanel(false).AddTextLabel(fmt.Sprintf("Quantity: %v, Price: %v gold coins", q, m.Prices[a]), 24+float64(IconW), ControlPanelSY*0.95+IconS+gui.FontSize*1.2)
+		}})
 	mp.AddTextLabel(strconv.Itoa(int(q)), float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4))
 	mp.AddPanel(gui.CreateNumberPanel(float64(24+xI*w), MarketplaceGUIY*ControlPanelSY+float64(yI*rowH+IconH+4), float64(IconW+8), gui.FontSize*1.5, 0, 1000, 10, "$%v", false,
 		func() int { return int(m.Prices[a]) },
