@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strconv"
 	"time"
 )
@@ -30,6 +31,16 @@ func init() {
 }
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			crashLog := string(debug.Stack())
+			fmt.Println(crashLog)
+			f, _ := os.Create("crash.log")
+			f.Write([]byte(crashLog))
+			f.Close()
+		}
+	}()
+
 	if os.Getenv("MEDVIL_PROFILE") == "1" {
 		// This crashes the Mac app bundle for some reason
 		defer profile.Start(profile.ProfilePath(".")).Stop()
