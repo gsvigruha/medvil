@@ -100,7 +100,9 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	for i := len(h.People); i < int(h.TargetNumPeople); i++ {
 		p.AddImageLabel("person", float64(24+i*piw), PersonGUIY*ControlPanelSY, IconS, IconS, gui.ImageLabelStyleDisabled)
 	}
-	p.AddImageLabel("arrow_xsmall_down", float64(24+int(h.TargetNumPeople-1)*piw), PersonGUIY*ControlPanelSY-IconS, IconS, IconS, gui.ImageLabelStyleRegular)
+	if h.TargetNumPeople > 0 {
+		p.AddImageLabel("arrow_xsmall_down", float64(24+int(h.TargetNumPeople-1)*piw), PersonGUIY*ControlPanelSY-IconS, IconS, IconS, gui.ImageLabelStyleRegular)
+	}
 
 	s := IconS / 2
 	p.AddButton(&HouseholdControllerButton{
