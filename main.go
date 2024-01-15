@@ -33,9 +33,12 @@ func init() {
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
+			crashMsg := fmt.Sprintf("%v", r)
 			crashLog := string(debug.Stack())
+			fmt.Println(crashMsg)
 			fmt.Println(crashLog)
 			f, _ := os.Create("crash.log")
+			f.Write([]byte(crashMsg))
 			f.Write([]byte(crashLog))
 			f.Close()
 		}
