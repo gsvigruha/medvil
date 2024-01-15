@@ -322,7 +322,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 	if Calendar.Day == 30 && Calendar.Hour == 0 {
 		if town.Settings.RoadRepairs {
 			for _, road := range town.Roads {
-				if road.Road.Broken && town.Townhall.Household.NumTasks("repair", economy.BuildingTaskTag(road)) == 0 {
+				if road.Road != nil && road.Road.Broken && town.Townhall.Household.NumTasks("repair", economy.BuildingTaskTag(road)) == 0 {
 					f := m.GetField(road.X, road.Y)
 					res := &artifacts.Resources{}
 					res.Init(25)
@@ -340,7 +340,7 @@ func (town *Town) ElapseTime(Calendar *time.CalendarType, m IMap) {
 				wf := m.GetField(wall.F.X, wall.F.Y)
 				res := &artifacts.Resources{}
 				res.Init(25)
-				if wall.Building.Broken && town.Townhall.Household.NumTasks("repair", economy.BuildingTaskTag(wf)) == 0 {
+				if wall.Building != nil && wall.Building.Broken && town.Townhall.Household.NumTasks("repair", economy.BuildingTaskTag(wf)) == 0 {
 					town.Townhall.Household.AddTask(&economy.RepairTask{
 						Repairable: wall.Building,
 						Field:      wall.F,
