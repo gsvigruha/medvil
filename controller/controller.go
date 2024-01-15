@@ -259,7 +259,7 @@ func (c *Controller) Reset() {
 	c.SelectedExpedition = nil
 	c.ClickHandler = nil
 	c.KeyHandler = nil
-	c.ControlPanel.GetHelperPanel()
+	c.ControlPanel.GetHelperPanel(true)
 }
 
 func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
