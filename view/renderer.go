@@ -27,6 +27,10 @@ func Render(ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Contro
 	c.SwapRenderedObjects()
 	RenderActiveFields(cv, true, c)
 	c.ControlPanel.Render(cv, c)
+	if !c.ControlPanel.HelperPanel.IsEmpty() {
+		c.ControlPanel.HelperPanel.Render(c.ControlPanel.HelperBuffer)
+		cv.DrawImage(c.ControlPanel.HelperBuffer, c.X, c.Y, c.ControlPanel.HelperPanel.SX, c.ControlPanel.HelperPanel.SY)
+	}
 }
 
 func RenderPhase(phase int, ic *ImageCache, cv *canvas.Canvas, m model.Map, c *controller.Controller) {

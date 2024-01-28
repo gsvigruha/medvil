@@ -26,7 +26,7 @@ type ControlSubPanel interface {
 type ControlPanel struct {
 	topPanel       *gui.Panel
 	dynamicPanel   ControlSubPanel
-	helperPanel    *gui.Panel
+	HelperPanel    *gui.Panel
 	dateLabel      *gui.TextLabel
 	moneyLabel     *gui.TextLabel
 	peopleLabel    *gui.TextLabel
@@ -36,6 +36,7 @@ type ControlPanel struct {
 	suggestion     *gui.Suggestion
 	C              *Controller
 	buffer         *canvas.Canvas
+	HelperBuffer   *canvas.Canvas
 }
 
 type ControlPanelButton struct {
@@ -113,9 +114,9 @@ func (p *ControlPanel) Clear() {
 
 func (p *ControlPanel) GetHelperPanel(clear bool) *gui.Panel {
 	if clear {
-		p.helperPanel.Clear()
+		p.HelperPanel.Clear()
 	}
-	return p.helperPanel
+	return p.HelperPanel
 }
 
 func (p *ControlPanel) SetDims(size uint8) {
@@ -169,14 +170,20 @@ func (p *ControlPanel) SetupDims(width, height int) {
 		p.SetDims(c.ViewSettings.Size)
 	}
 
-	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, c.ctx)
-	p.buffer = canvas.New(offscreen)
+	{
+		offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, c.ctx)
+		p.buffer = canvas.New(offscreen)
+	}
 
 	p.topPanel.SX = ControlPanelSX
 	p.topPanel.SY = ControlPanelSY
-	p.helperPanel.Y = ControlPanelSY * 0.95
-	p.helperPanel.SX = ControlPanelSX
-	p.helperPanel.SY = ControlPanelSY * 0.05
+	p.HelperPanel.Y = ControlPanelSY * 0.95
+	p.HelperPanel.SX = ControlPanelSX
+	p.HelperPanel.SY = ControlPanelSY * 0.05
+	{
+		offscreen, _ := goglbackend.NewOffscreen(int(p.HelperPanel.SX), int(p.HelperPanel.SY), false, c.ctx)
+		p.HelperBuffer = canvas.New(offscreen)
+	}
 
 	if c.Map != nil {
 		p.GenerateButtons()
@@ -187,7 +194,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.C = c
 
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
-	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
+	p.HelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
 
 	p.SetupDims(p.C.W, p.C.H)
 }
@@ -300,9 +307,6 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 		p.topPanel.Render(p.buffer)
 		if p.dynamicPanel != nil {
 			p.dynamicPanel.Render(p.buffer)
-		}
-		if !p.helperPanel.IsEmpty() {
-			p.helperPanel.Render(p.buffer)
 		}
 		p.GetSuggestion()
 	}
