@@ -103,7 +103,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 
 	fp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24 + IconS + gui.FontSize*10 + LargeIconD, Y: hcy - gui.FontSize/2.0, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			cp.HelperMessage("Optimize land based on profitability. Needs paper.", true)
+			cp.HelperMessage("Optimize land based on profit using paper.", true)
 		}},
 		Highlight: func() bool { return farm.AutoSwitch },
 		ClickImpl: func() {
