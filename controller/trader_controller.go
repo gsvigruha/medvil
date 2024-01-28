@@ -29,11 +29,11 @@ func TraderToPanel(cp *ControlPanel, p *gui.Panel, trader *social.Trader) {
 	PersonToPanel(cp, p, 0, trader.Person, IconW, PersonGUIY*ControlPanelSY)
 	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(trader.GetHeating())/100, false,
 		func(scaleStr string) {
-			cp.HelperMessage("Heating level: " + scaleStr)
+			cp.HelperMessage("Heating level: "+scaleStr, false)
 		})
 	p.AddScaleLabel("barrel", 24+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, trader.Resources.UsedVolumeCapacity(), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Storage full: " + scaleStr)
+			cp.HelperMessage("Storage full: "+scaleStr, false)
 		})
 	var aI = 2
 	for _, a := range artifacts.All {

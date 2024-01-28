@@ -26,7 +26,7 @@ type TownhallControllerButton struct {
 func (b *TownhallControllerButton) Click() {
 	b.tc.subPanel = b.subPanel
 	if !b.tc.cp.C.ViewSettings.ShowSuggestions {
-		b.tc.cp.HelperMessage(b.helperMsg)
+		b.tc.cp.HelperMessage(b.helperMsg, true)
 	}
 }
 
@@ -146,7 +146,7 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp.AddImageLabel("infra/cobble_road", 24, top+LargeIconD*5, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			tc.cp.HelperMessage("Start or stop repairing roads")
+			tc.cp.HelperMessage("Start or stop repairing roads", true)
 		}},
 		Highlight: func() bool { return town.Settings.RoadRepairs },
 		ClickImpl: func() {
@@ -157,7 +157,7 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp.AddImageLabel("infra/wall_small", 24, top+LargeIconD*6, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "tasks/repair", X: 24 + LargeIconD, Y: top + LargeIconD*6, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			tc.cp.HelperMessage("Start or stop repairing walls")
+			tc.cp.HelperMessage("Start or stop repairing walls", true)
 		}},
 		Highlight: func() bool { return town.Settings.WallRepairs },
 		ClickImpl: func() {
@@ -168,7 +168,7 @@ func RefreshSubPanels(tc *TownhallController) {
 	tp.AddImageLabel("market", 24, top+LargeIconD*7, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: 24 + LargeIconD, Y: top + LargeIconD*7, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			tc.cp.HelperMessage("Enable or disable trading with this city")
+			tc.cp.HelperMessage("Enable or disable trading with this city", true)
 		}},
 		Highlight: func() bool { return town.Settings.Trading },
 		ClickImpl: func() {
@@ -178,7 +178,7 @@ func RefreshSubPanels(tc *TownhallController) {
 
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "barrel", X: 24 + LargeIconD, Y: top + LargeIconD*8, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items")
+			tc.cp.HelperMessage("Start or stop collecting nearby abandoned items", true)
 		}},
 		Highlight: func() bool { return town.Settings.ArtifactCollection },
 		ClickImpl: func() {
@@ -188,7 +188,7 @@ func RefreshSubPanels(tc *TownhallController) {
 
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: 24 + LargeIconD, Y: top + LargeIconD*9, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			tc.cp.HelperMessage("Start or stop minting gold coins")
+			tc.cp.HelperMessage("Start or stop minting gold coins", true)
 		}},
 		Highlight: func() bool { return town.Settings.Coinage },
 		ClickImpl: func() {
@@ -198,7 +198,7 @@ func RefreshSubPanels(tc *TownhallController) {
 
 	tp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "town", X: 24 + LargeIconD, Y: top + LargeIconD*10, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			tc.cp.HelperMessage("Start or stop relying on supplies")
+			tc.cp.HelperMessage("Start or stop relying on supplies", true)
 		}},
 		Highlight: func() bool { return town.Settings.UseSupplier },
 		ClickImpl: func() {
@@ -323,11 +323,11 @@ func ArtifactStorageToControlPanel(p *gui.Panel, cp *ControlPanel, st map[*artif
 				if st[a] < 0 {
 					st[a] = -st[a]
 					offloadButton.Icon = "arrow_small_up"
-					cp.HelperMessage("Transport goods to the destination town")
+					cp.HelperMessage("Transport goods to the destination town", true)
 				} else if st[a] > 0 {
 					st[a] = -st[a]
 					offloadButton.Icon = "arrow_small_down"
-					cp.HelperMessage("Transport goods back")
+					cp.HelperMessage("Transport goods back", true)
 				}
 			},
 		}
@@ -434,7 +434,7 @@ func CreateTraderButtonForTownhall(x, y float64, tc *TownhallController, vc *eco
 	p.AddImageLabel("vehicles/"+vc.Name, 24, y, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + 240, Y: y + float64(IconH/4), SX: IconS, SY: IconS, OnHoover: func() {
-			tc.cp.HelperMessage("Create a new trader")
+			tc.cp.HelperMessage("Create a new trader", true)
 		}},
 		ClickImpl: func() {
 			h := tc.th.Household
@@ -460,7 +460,7 @@ func CreateTraderButtonForTownhall(x, y float64, tc *TownhallController, vc *eco
 func SelectTraderButton(x, y float64, th *TownhallController, t *social.Trader) gui.Button {
 	return &gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "trader", X: x, Y: y, SX: IconS, SY: IconS, OnHoover: func() {
-			th.cp.HelperMessage("Select trader")
+			th.cp.HelperMessage("Select trader", true)
 		}},
 		ClickImpl: func() {
 			th.activeTrader = t
@@ -476,7 +476,7 @@ func CreateExpeditionButtonForTownhall(x, y float64, tc *TownhallController, vc 
 	p.AddImageLabel("vehicles/"+vc.Name, 24, y, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: x + 240, Y: y + float64(IconH/4), SX: IconS, SY: IconS, OnHoover: func() {
-			tc.cp.HelperMessage("Create a new expedition")
+			tc.cp.HelperMessage("Create a new expedition", true)
 		}},
 		ClickImpl: func() {
 			h := tc.th.Household
@@ -502,7 +502,7 @@ func CreateExpeditionButtonForTownhall(x, y float64, tc *TownhallController, vc 
 func SelectExpeditionButton(x, y float64, tc *TownhallController, e *social.Expedition) gui.Button {
 	return &gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/" + e.Vehicle.T.Name, X: x, Y: y, SX: IconS, SY: IconS, OnHoover: func() {
-			tc.cp.HelperMessage("Select expedition")
+			tc.cp.HelperMessage("Select expedition", true)
 		}},
 		ClickImpl: func() {
 			tc.activeExpedition = e

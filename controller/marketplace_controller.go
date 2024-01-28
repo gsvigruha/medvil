@@ -39,7 +39,7 @@ func MarketplaceToMarketPanel(cp *ControlPanel, mp *gui.Panel, m *social.Marketp
 
 	mp.AddScaleLabel("barrel", 24, MarketplaceGUIY*ControlPanelSY, IconS, IconS, 4, m.Storage.UsedVolumeCapacity(), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Storage full: " + scaleStr)
+			cp.HelperMessage("Storage full: "+scaleStr, false)
 		})
 	var aI = 1
 	for _, a := range artifacts.All {

@@ -107,21 +107,21 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	s := IconS / 2
 	p.AddButton(&HouseholdControllerButton{
 		b: &gui.ButtonGUI{Icon: "plus", X: ControlPanelSX - 24 - s, Y: PersonGUIY * ControlPanelSY, SX: s, SY: s, OnHoover: func() {
-			cp.HelperMessage("Add people to this " + building.BuildingTypeName(h.Building.Plan.BuildingType))
+			cp.HelperMessage("Add people to this "+building.BuildingTypeName(h.Building.Plan.BuildingType), true)
 		}},
 		h: h, action: IncreaseHouseholdTargetNumPeople})
 	p.AddButton(&HouseholdControllerButton{
 		b: &gui.ButtonGUI{Icon: "minus", X: ControlPanelSX - 24 - s, Y: PersonGUIY*ControlPanelSY + s, SX: s, SY: s, OnHoover: func() {
-			cp.HelperMessage("Remove people from this " + building.BuildingTypeName(h.Building.Plan.BuildingType))
+			cp.HelperMessage("Remove people from this "+building.BuildingTypeName(h.Building.Plan.BuildingType), true)
 		}},
 		h: h, action: DecreaseHouseholdTargetNumPeople})
 	p.AddScaleLabel("heating", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, float64(h.GetHeating())/100, false,
 		func(scaleStr string) {
-			cp.HelperMessage("Heating level: " + scaleStr)
+			cp.HelperMessage("Heating level: "+scaleStr, false)
 		})
 	p.AddScaleLabel("barrel", 24+float64(IconW), ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, h.Resources.UsedVolumeCapacity(), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Storage full: " + scaleStr)
+			cp.HelperMessage("Storage full: "+scaleStr, false)
 		})
 	p.AddTextLabel("Goods", 24, ArtifactsGUIY*ControlPanelSY-IconS/4.0)
 	var aI = 2
@@ -143,12 +143,12 @@ func HouseholdToControlPanel(cp *ControlPanel, p *gui.Panel, h *social.Household
 	p.AddTextLabel("Vehicles", 24, VehicleGUIY*ControlPanelSY-IconS/4.0)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "vehicles/boat", X: 24, Y: VehicleGUIY * ControlPanelSY, SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Start or stop using boats and waterways")
+			cp.HelperMessage("Start or stop using boats and waterways", true)
 		}},
 		Highlight: func() bool { return h.IsBoatEnabled() },
 		ClickImpl: func() {
 			h.BoatEnabled = !h.BoatEnabled
-			cp.HelperMessage("Start or stop using boats and waterways")
+			cp.HelperMessage("Start or stop using boats and waterways", true)
 		}})
 	for i, vehicle := range h.Vehicles {
 		VehicleToControlPanel(p, i, VehicleGUIY*ControlPanelSY, vehicle, IconW)
@@ -164,19 +164,19 @@ func PersonToPanel(cp *ControlPanel, p *gui.Panel, i int, person *social.Person,
 	}
 	p.AddScaleLabel("food", float64(24+i*w), top+float64(IconH), IconS, IconS, 4, float64(person.Food)/float64(social.MaxPersonState), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Food level: " + scaleStr)
+			cp.HelperMessage("Food level: "+scaleStr, false)
 		})
 	p.AddScaleLabel("drink", float64(24+i*w), top+float64(IconH*2), IconS, IconS, 4, float64(person.Water)/float64(social.MaxPersonState), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Drink level: " + scaleStr)
+			cp.HelperMessage("Drink level: "+scaleStr, false)
 		})
 	p.AddScaleLabel("health", float64(24+i*w), top+float64(IconH*3), IconS, IconS, 4, float64(person.Health)/float64(social.MaxPersonState), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Health: " + scaleStr)
+			cp.HelperMessage("Health: "+scaleStr, false)
 		})
 	p.AddScaleLabel("happiness", float64(24+i*w), top+float64(IconH*4), IconS, IconS, 4, float64(person.Happiness)/float64(social.MaxPersonState), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Happiness level: " + scaleStr)
+			cp.HelperMessage("Happiness level: "+scaleStr, false)
 		})
 	if person.Task != nil {
 		TaskToControlPanel(cp, p, i, top+float64(IconH*5), person.Task, w)

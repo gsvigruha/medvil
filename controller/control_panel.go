@@ -25,19 +25,20 @@ type ControlSubPanel interface {
 }
 
 type ControlPanel struct {
-	topPanel       *gui.Panel
-	dynamicPanel   ControlSubPanel
-	HelperPanel    *gui.Panel
-	dateLabel      *gui.TextLabel
-	moneyLabel     *gui.TextLabel
-	peopleLabel    *gui.TextLabel
-	artifactsLabel *gui.TextLabel
-	buildingsLabel *gui.TextLabel
-	timeButton     *ControlPanelButton
-	suggestion     *gui.Suggestion
-	C              *Controller
-	buffer         *canvas.Canvas
-	HelperBuffer   *canvas.Canvas
+	topPanel            *gui.Panel
+	dynamicPanel        ControlSubPanel
+	HelperPanel         *gui.Panel
+	selectedHelperPanel *gui.Panel
+	dateLabel           *gui.TextLabel
+	moneyLabel          *gui.TextLabel
+	peopleLabel         *gui.TextLabel
+	artifactsLabel      *gui.TextLabel
+	buildingsLabel      *gui.TextLabel
+	timeButton          *ControlPanelButton
+	suggestion          *gui.Suggestion
+	C                   *Controller
+	buffer              *canvas.Canvas
+	HelperBuffer        *canvas.Canvas
 }
 
 type ControlPanelButton struct {
@@ -199,6 +200,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.HelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
+	p.selectedHelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
 
 	p.SetupDims(p.C.W, p.C.H)
 }
@@ -221,7 +223,7 @@ func (p *ControlPanel) GenerateButtons() {
 	iconTop := 15 + IconS
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "house", X: float64(24 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Create buildings")
+			p.HelperMessage("Create buildings", true)
 		}},
 		Highlight: func() bool { return p.IsBuildingType() },
 		ClickImpl: func() {
@@ -250,37 +252,37 @@ func (p *ControlPanel) GenerateButtons() {
 		}})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "infra", X: float64(24 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Create infrastructure like roads or walls")
+			p.HelperMessage("Create infrastructure like roads or walls", true)
 		}},
 		Highlight: func() bool { return p.IsInfraType() },
 		ClickImpl: func() { c.ShowInfraController() }})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Demolish buildings")
+			p.HelperMessage("Demolish buildings", true)
 		},
 			Disabled: func() bool { return c.GetActiveTownhall() == nil }},
 		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },
 		ClickImpl: func() { c.ShowDemolishController() }})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "map", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("View map and charts")
+			p.HelperMessage("View map and charts", true)
 		}},
 		Highlight: func() bool { return p.IsDynamicPanelType("MapController") },
 		ClickImpl: func() { c.ShowMapController() }})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "library", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Load, save and settings")
+			p.HelperMessage("Load, save and settings", true)
 		}},
 		Highlight: func() bool { return p.IsDynamicPanelType("LibraryController") },
 		ClickImpl: func() { c.ShowLibraryController() }})
 	p.topPanel.AddButton(&ControlPanelButton{
 		b: gui.ButtonGUI{Icon: "cancel", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Cancel")
+			p.HelperMessage("Cancel", true)
 		}},
 		c: c, action: CPActionCancel})
 	p.timeButton = &ControlPanelButton{
 		b: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Speed up game")
+			p.HelperMessage("Speed up game", true)
 		}},
 		c: c, action: CPActionTimeScaleChange}
 
@@ -319,6 +321,9 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 			p.HelperBuffer.SetLineWidth(2)
 			p.HelperBuffer.StrokeRect(1, 1, p.HelperPanel.SX-2, p.HelperPanel.SY-2)
 			p.HelperPanel.Render(p.HelperBuffer)
+		}
+		if !p.selectedHelperPanel.IsEmpty() {
+			p.selectedHelperPanel.Render(p.buffer)
 		}
 		p.GetSuggestion()
 	}
@@ -364,8 +369,19 @@ func (p *ControlPanel) IsInfraType() bool {
 	return ok
 }
 
-func (p *ControlPanel) HelperMessage(msg string) {
-	p.GetHelperPanel(true).AddTextLabel(msg, 24, float64(IconH)/2.0+IconS-gui.FontSize/2.0)
+func (p *ControlPanel) SelectedHelperMessage(msg string) {
+	p.selectedHelperPanel.Clear()
+	p.selectedHelperPanel.AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
+}
+
+func (p *ControlPanel) HelperMessage(msg string, actionable bool) {
+	hp := p.GetHelperPanel(true)
+	if actionable {
+		hp.AddImageLabel("arrow_small_right", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
+		hp.AddTextLabel(msg, 24+float64(IconW), float64(IconH)/2.0+IconS-gui.FontSize/2.0)
+	} else {
+		hp.AddTextLabel(msg, 24, float64(IconH)/2.0+IconS-gui.FontSize/2.0)
+	}
 }
 
 func (p *ControlPanel) GetSuggestion() {

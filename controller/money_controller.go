@@ -48,7 +48,7 @@ func MoneyToControlPanel(cp *ControlPanel, p *gui.Panel, srcWallet economy.Walle
 	if srcWallet != nil {
 		p.AddButton(&MoneyControllerButton{
 			b: gui.ButtonGUI{Icon: "plus", X: x + gui.FontSize*4, Y: y - gui.FontSize*0.8, SX: gui.FontSize, SY: gui.FontSize, OnHoover: func() {
-				cp.HelperMessage("Send money from the townhall")
+				cp.HelperMessage("Send money from the townhall", true)
 			}},
 			sourceWallet: srcWallet,
 			targetWallet: targetWallet,

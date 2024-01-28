@@ -53,13 +53,13 @@ type InfraBuildButton struct {
 func (b *InfraBuildButton) SetHoover(h bool) {
 	b.b.SetHoover(h)
 	if h && b.ic.cp != nil && b.msg != "" {
-		b.ic.cp.HelperMessage(b.msg)
+		b.ic.cp.HelperMessage(b.msg, true)
 	}
 }
 
 func (b InfraBuildButton) Click() {
 	b.ic.it = b.it
-	b.ic.cp.HelperMessage(b.msg)
+	b.ic.cp.HelperMessage(b.msg, true)
 }
 
 func (b InfraBuildButton) Render(cv *canvas.Canvas) {

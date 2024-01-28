@@ -70,7 +70,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus", X: 24, Y: nTop + float64(IconS*6.5), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Start a new game")
+			cp.HelperMessage("Start a new game", true)
 		}},
 		ClickImpl: func() {
 			go cp.C.NewMap(*config)
@@ -110,7 +110,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "load", X: float64(24 + IconW*0), Y: lasTop, SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Load game")
+			cp.HelperMessage("Load game", true)
 		}},
 		ClickImpl: func() {
 			go cp.C.Load(filesDropdown.GetSelectedValue())
@@ -119,7 +119,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	saveButton := &gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "save", X: float64(24 + IconW*1), Y: lasTop, SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Save game to an existing file")
+			cp.HelperMessage("Save game to an existing file", true)
 		}},
 		ClickImpl: func() {
 			go cp.C.Save(filesDropdown.GetSelectedValue())
@@ -131,7 +131,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 
 	plusButton := &gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "plus_save", X: float64(24 + IconW*1), Y: lasTop + float64(IconH*1), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Save game to a new file")
+			cp.HelperMessage("Save game to a new file", true)
 		}},
 		ClickImpl: func() {
 			go cp.C.Save(lc.fileTextField.Text + ".mdvl")
@@ -146,7 +146,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddLargeTextLabel("Settings", 24, settingsTop)
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "warning_slim", X: 24 + float64(IconW)*0, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Show warning icons for households")
+			cp.HelperMessage("Show warning icons for households", true)
 		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowHouseIcons },
 		ClickImpl: func() {
@@ -155,7 +155,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "flag", X: 24 + float64(IconW)*1, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Show flags for allocated land")
+			cp.HelperMessage("Show flags for allocated land", true)
 		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowAllocatedFields },
 		ClickImpl: func() {
@@ -164,7 +164,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "label", X: 24 + float64(IconW)*2, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Show town and expedition labels")
+			cp.HelperMessage("Show town and expedition labels", true)
 		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowLabels },
 		ClickImpl: func() {
@@ -173,7 +173,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Show suggestions and descriptions")
+			cp.HelperMessage("Show suggestions and descriptions", true)
 		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
 		ClickImpl: func() {
@@ -184,7 +184,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	if cp.C.Map == nil {
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "icon_size", X: 24, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
-				cp.HelperMessage("Adjust icon sizes")
+				cp.HelperMessage("Adjust icon sizes", true)
 			}},
 			Highlight: func() bool { return cp.C.ViewSettings.Size == SizeAuto },
 			ClickImpl: func() {
@@ -196,7 +196,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		p.AddDynamicTextLabel(func() string { return IconSizeStr(cp.C.ViewSettings.Size) }, 24, settingsTop+float64(IconH)*3)
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "size", X: 24 + float64(IconW), Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
-				cp.HelperMessage("Resolution: " + ResolutionStr(cp.C.ViewSettings.Resolution) + " (applied after restart)")
+				cp.HelperMessage("Resolution: "+ResolutionStr(cp.C.ViewSettings.Resolution)+" (applied after restart)", true)
 			}},
 			Highlight: func() bool { return false },
 			ClickImpl: func() {
@@ -206,7 +206,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		p.AddDynamicTextLabel(func() string { return ResolutionStr(cp.C.ViewSettings.Resolution) }, 24+float64(IconW)-gui.FontSize*0.4, settingsTop+float64(IconH)*3)
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "screen", X: 24 + float64(IconW)*2, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
-				cp.HelperMessage("Full screen (applied after restart)")
+				cp.HelperMessage("Full screen (applied after restart)", true)
 			}},
 			Highlight: func() bool { return cp.C.ViewSettings.FullScreen },
 			ClickImpl: func() {
@@ -215,7 +215,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			}})
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "chart", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH)*2, SX: IconS, SY: IconS, OnHoover: func() {
-				cp.HelperMessage("Chart history length")
+				cp.HelperMessage("Chart history length", true)
 			}},
 			Highlight: func() bool { return false },
 			ClickImpl: func() {
@@ -235,7 +235,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "cancel_gold", X: 24, Y: ControlPanelSY*0.85 + float64(IconH)/2, SX: IconS, SY: IconS,
 			OnHoover: func() {
-				cp.HelperMessage("Stop game in progress")
+				cp.HelperMessage("Stop game in progress", true)
 			},
 			Disabled: func() bool { return cp.C.Map == nil }},
 		ClickImpl: func() {
@@ -245,7 +245,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "quit", X: 24 + float64(IconW), Y: ControlPanelSY*0.85 + float64(IconH)/2, SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Quit Medville")
+			cp.HelperMessage("Quit Medville", true)
 		}},
 		ClickImpl: func() {
 			cp.C.Window.Close()

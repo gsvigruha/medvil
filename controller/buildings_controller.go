@@ -308,7 +308,6 @@ func (b ExtensionButton) Click() {
 	b.bc.RoofM = nil
 	b.bc.ExtensionT = b.t
 	b.bc.del = b.del
-	b.bc.cp.HelperMessage(b.msg)
 }
 
 func (b ExtensionButton) Render(cv *canvas.Canvas) {
@@ -515,7 +514,7 @@ func (bc *BuildingsController) GenerateButtons() {
 		planName := plan.Name
 		bc.p.AddButton(&DefaultPlanButton{
 			b: &gui.ButtonGUI{Icon: "blueprint", X: float64(i)*LargeIconD + 24, Y: defaultPlanTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage("Pick default plan: " + planName)
+				bc.cp.HelperMessage("Pick default plan: "+planName, true)
 			}},
 			p:  plan.P,
 			bc: bc,
@@ -526,7 +525,7 @@ func (bc *BuildingsController) GenerateButtons() {
 	roofPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD)
 	bc.p.AddButton(&RoofButton{
 		b: &gui.ButtonGUI{Icon: "demolish", X: float64(LargeIconD)*4 + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			bc.cp.HelperMessage("Remove roof or wall")
+			bc.cp.HelperMessage("Remove roof or wall", true)
 		}},
 		del: true,
 		bc:  bc,
@@ -534,7 +533,7 @@ func (bc *BuildingsController) GenerateButtons() {
 	for i, m := range building.RoofMaterials(bc.bt) {
 		bc.p.AddButton(&RoofButton{
 			b: &gui.ButtonGUI{Icon: "building/" + m.Name, X: float64(i)*LargeIconD + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage("Select roof material")
+				bc.cp.HelperMessage("Select roof material", true)
 			}},
 			m:  m,
 			bc: bc,
@@ -545,7 +544,7 @@ func (bc *BuildingsController) GenerateButtons() {
 	for i, m := range building.FloorMaterials(bc.bt) {
 		bc.p.AddButton(&FloorButton{
 			b: &gui.ButtonGUI{Icon: "building/" + m.Name, X: float64(i)*LargeIconD + 24, Y: floorsPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage("Select wall material")
+				bc.cp.HelperMessage("Select wall material", true)
 			}},
 			m:  m,
 			bc: bc,
@@ -557,7 +556,7 @@ func (bc *BuildingsController) GenerateButtons() {
 		msg := e.Description
 		bc.p.AddButton(&ExtensionButton{
 			b: &gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i)*LargeIconD + 24, Y: extensionPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(msg)
+				bc.cp.HelperMessage(msg, true)
 			}},
 			t:   e,
 			bc:  bc,
@@ -567,7 +566,7 @@ func (bc *BuildingsController) GenerateButtons() {
 
 	bc.p.AddButton(&RotationButton{
 		b: &gui.ButtonGUI{Icon: "building/rotate_" + strconv.Itoa(int(bc.Direction)), X: LargeIconD*5 + 24, Y: roofPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			bc.cp.HelperMessage("Rotate building plan")
+			bc.cp.HelperMessage("Rotate building plan", true)
 		}},
 		bc: bc,
 	})
@@ -638,8 +637,6 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *Buil
 
 	bc.GenerateButtons()
 
-	cp.HelperMessage(HelperMessageForBuildingType(bt))
-
 	return bc
 }
 
@@ -669,19 +666,19 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 	if bc.cp.C.ActiveSupplier != nil && bc.cp.C.ActiveSupplier.BuildHousesEnabled() {
 		bc.p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "farm", X: float64(24 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeFarm))
+				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeFarm), true)
 			}},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeFarm) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFarm) }})
 		bc.p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "mine", X: float64(24 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeMine))
+				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeMine), true)
 			}},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeMine) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMine) }})
 		bc.p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "workshop", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeWorkshop))
+				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeWorkshop), true)
 			}, Disabled: func() bool {
 				return !bc.cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeFarm)
 			}},
@@ -689,7 +686,7 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeWorkshop) }})
 		bc.p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "factory", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeFactory))
+				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeFactory), true)
 			}, Disabled: func() bool {
 				return !bc.cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeWorkshop)
 			}},
@@ -697,7 +694,7 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeFactory) }})
 		bc.p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "tower", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeTower))
+				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeTower), true)
 			}, Disabled: func() bool {
 				return !bc.cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeWorkshop)
 			}},
@@ -707,7 +704,7 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 	if bc.cp.C.ActiveSupplier != nil {
 		bc.p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "townhall", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeTownhall))
+				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeTownhall), true)
 			}, Disabled: func() bool {
 				return !bc.cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeWorkshop)
 			}},
@@ -717,7 +714,7 @@ func (bc *BuildingsController) GenerateBuildingTypebuttons() {
 	if bc.cp.C.ActiveSupplier != nil && bc.cp.C.ActiveSupplier.BuildMarketplaceEnabled() {
 		bc.p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "market", X: float64(24 + LargeIconD*6), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeMarket))
+				bc.cp.HelperMessage(HelperMessageForBuildingType(building.BuildingTypeMarket), true)
 			}},
 			Highlight: func() bool { return bc.cp.IsBuildingTypeOf(building.BuildingTypeMarket) },
 			ClickImpl: func() { SetupBuildingsController(bc.cp, building.BuildingTypeMarket) }})

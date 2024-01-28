@@ -23,11 +23,11 @@ func ConstructionToControlPanel(cp *ControlPanel, c *building.Construction) {
 	top := ConstructionControllerTop * ControlPanelSY
 	p.AddScaleLabel("tasks/building", 24, top, IconS, IconS, 4, float64(c.Progress)/float64(c.MaxProgress), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Building completion: " + scaleStr)
+			cp.HelperMessage("Building completion: "+scaleStr, false)
 		})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + IconW*7), Y: top, SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Demolish construction")
+			cp.HelperMessage("Demolish construction", true)
 		}},
 		ClickImpl: func() {
 			c.Delete()
@@ -46,6 +46,6 @@ func ConstructionToControlPanel(cp *ControlPanel, c *building.Construction) {
 			i++
 		}
 	}
-	cp.HelperMessage("Construction in progress")
+	cp.SelectedHelperMessage("Construction in progress")
 	cp.SetDynamicPanel(p)
 }
