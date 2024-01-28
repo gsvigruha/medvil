@@ -28,7 +28,7 @@ type ControlPanel struct {
 	topPanel            *gui.Panel
 	dynamicPanel        ControlSubPanel
 	HelperPanel         *gui.Panel
-	selectedHelperPanel *gui.Panel
+	SelectedHelperPanel *gui.Panel
 	dateLabel           *gui.TextLabel
 	moneyLabel          *gui.TextLabel
 	peopleLabel         *gui.TextLabel
@@ -200,7 +200,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.HelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
-	p.selectedHelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
+	p.SelectedHelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
 
 	p.SetupDims(p.C.W, p.C.H)
 }
@@ -322,8 +322,8 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 			p.HelperBuffer.StrokeRect(1, 1, p.HelperPanel.SX-2, p.HelperPanel.SY-2)
 			p.HelperPanel.Render(p.HelperBuffer)
 		}
-		if !p.selectedHelperPanel.IsEmpty() {
-			p.selectedHelperPanel.Render(p.buffer)
+		if !p.SelectedHelperPanel.IsEmpty() {
+			p.SelectedHelperPanel.Render(p.buffer)
 		}
 		p.GetSuggestion()
 	}
@@ -370,8 +370,8 @@ func (p *ControlPanel) IsInfraType() bool {
 }
 
 func (p *ControlPanel) SelectedHelperMessage(msg string) {
-	p.selectedHelperPanel.Clear()
-	p.selectedHelperPanel.AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
+	p.SelectedHelperPanel.Clear()
+	p.SelectedHelperPanel.AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
 }
 
 func (p *ControlPanel) HelperMessage(msg string, actionable bool) {

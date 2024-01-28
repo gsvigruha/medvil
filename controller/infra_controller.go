@@ -59,7 +59,7 @@ func (b *InfraBuildButton) SetHoover(h bool) {
 
 func (b InfraBuildButton) Click() {
 	b.ic.it = b.it
-	b.ic.cp.HelperMessage(b.msg, true)
+	b.ic.cp.SelectedHelperMessage(b.msg)
 }
 
 func (b InfraBuildButton) Render(cv *canvas.Canvas) {

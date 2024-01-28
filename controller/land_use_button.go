@@ -31,7 +31,7 @@ func (b *LandUseButton) SetHoover(h bool) {
 func (b LandUseButton) Click() {
 	b.luc.SetUseType(b.useType)
 	if b.cp != nil && b.msg != "" {
-		b.cp.HelperMessage(b.msg, true)
+		b.cp.SelectedHelperMessage(b.msg)
 	}
 }
 

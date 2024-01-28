@@ -260,6 +260,7 @@ func (c *Controller) Reset() {
 	c.ClickHandler = nil
 	c.KeyHandler = nil
 	c.ControlPanel.GetHelperPanel(true)
+	c.ControlPanel.SelectedHelperPanel.Clear()
 }
 
 func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
