@@ -378,10 +378,10 @@ func (p *ControlPanel) HelperMessage(msg string, actionable bool) {
 	hp := p.GetHelperPanel(true)
 	if actionable {
 		hp.AddImageLabel("arrow_small_right", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
-		hp.AddTextLabel(msg, 24+float64(IconW), float64(IconH)/2.0+IconS-gui.FontSize/2.0)
 	} else {
-		hp.AddTextLabel(msg, 24, float64(IconH)/2.0+IconS-gui.FontSize/2.0)
+		hp.AddImageLabel("help", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
 	}
+	hp.AddTextLabel(msg, 24+float64(IconW), float64(IconH)/2.0+IconS-gui.FontSize/2.0)
 }
 
 func (p *ControlPanel) GetSuggestion() {

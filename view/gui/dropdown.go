@@ -15,6 +15,7 @@ type DropDown struct {
 	Icons    []string
 	Selected int
 	Open     bool
+	Hoover   bool
 }
 
 const IconPadding = 4.0
@@ -36,6 +37,14 @@ func (d *DropDown) SetSelectedValue(v string) {
 	}
 }
 
+func (d *DropDown) SetHoover(h bool) {
+	d.Hoover = h
+}
+
+func (d *DropDown) Contains(x float64, y float64) bool {
+	return d.X <= x && d.X+d.SX >= x && d.Y <= y && d.Y+d.SY >= y
+}
+
 func (d *DropDown) Render(cv *canvas.Canvas) {
 	cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 192})
 	if d.Open {
@@ -55,6 +64,10 @@ func (d *DropDown) Render(cv *canvas.Canvas) {
 			cv.DrawImage(filepath.FromSlash("icon/gui/"+d.Icons[i]+".png"), d.X, d.Y+float64(i)*d.SY+d.SY, d.SY, d.SY)
 			cv.FillText(t, d.X+d.SY+IconPadding, d.Y+float64(i)*d.SY+d.SY*2-textPadding)
 		}
+	}
+	if d.Hoover {
+		cv.SetStrokeStyle("#DDD")
+		cv.StrokeRect(d.X-1, d.Y-1, d.SX+2, d.SY+2)
 	}
 }
 

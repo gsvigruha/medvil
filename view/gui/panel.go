@@ -51,6 +51,13 @@ func (p *Panel) CaptureMove(x float64, y float64) {
 			}
 		}
 	}
+	for i := range p.DropDowns {
+		if p.DropDowns[i].Contains(x, y) {
+			p.DropDowns[i].SetHoover(true)
+		} else {
+			p.DropDowns[i].SetHoover(false)
+		}
+	}
 	for i := range p.Panels {
 		p.Panels[i].CaptureMove(x, y)
 	}
