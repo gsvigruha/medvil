@@ -5,6 +5,7 @@ import (
 	"medvil/model/economy"
 	"medvil/model/social"
 	"medvil/view/gui"
+	"strconv"
 )
 
 type WorkshopController struct {
@@ -67,7 +68,7 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 
 	wp.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "tasks/calculate", X: 24 + IconS + gui.FontSize*10 + LargeIconD, Y: hcy - gui.FontSize/2.0, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			cp.HelperMessage("Optimize tasks based on profitability. Needs paper.", true)
+			cp.HelperMessage("Optimize tasks based on profit using paper.", true)
 		}},
 		Highlight: func() bool { return workshop.AutoSwitch },
 		ClickImpl: func() {
@@ -80,13 +81,23 @@ func WorkshopToControlPanel(cp *ControlPanel, workshop *social.Workshop) {
 func (wc *WorkshopController) UpdateSubPanel() {
 	hcy := HouseholdControllerGUIBottomY * ControlPanelSY
 	if wc.workshop.Manufacture != nil {
+		mp := wc.workshop.Household.Town.Marketplace
+		priceY := hcy + LargeIconD + float64(IconH) + IconS - gui.FontSize/2.0
+		inputCost := int(mp.Price(wc.workshop.Manufacture.Inputs))
+		outputCost := int(mp.Price(wc.workshop.Manufacture.Outputs))
+
 		var aI = 0
+		wc.workshopSubPanel.AddTextLabel("$"+strconv.Itoa(inputCost), 24, priceY)
 		for _, a := range wc.workshop.Manufacture.Inputs {
 			ArtifactsToControlPanel(wc.cp, wc.workshopSubPanel, aI, a.A, a.Quantity, hcy+LargeIconD)
 			aI++
 		}
 		wc.workshopSubPanel.AddImageLabel("arrow", float64(24+aI*IconW), hcy+LargeIconD, IconS, IconS, gui.ImageLabelStyleRegular)
 		aI++
+		wc.workshopSubPanel.AddTextLabel("$"+strconv.Itoa(outputCost), 24+float64(IconW*aI), priceY)
+
+		profitStr := float64(outputCost)/float64(inputCost)*100 - 100.0
+		wc.workshopSubPanel.AddTextLabel(strconv.FormatFloat(profitStr, 'f', 0, 32)+"% profit", 24+float64(IconW*(aI+1)), priceY)
 		for _, a := range wc.workshop.Manufacture.Outputs {
 			ArtifactsToControlPanel(wc.cp, wc.workshopSubPanel, aI, a.A, a.Quantity, hcy+LargeIconD)
 			aI++

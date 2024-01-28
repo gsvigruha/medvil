@@ -51,7 +51,7 @@ func (w *Workshop) ElapseTime(Calendar *time.CalendarType, m navigation.IMap) {
 		if w.Manufacture != nil && (w.Household.Town.Settings.Coinage || w.Manufacture.Name != "goldsmith") {
 			purchasableInputs := artifacts.Purchasable(w.Manufacture.Inputs)
 			maxUnitCost := float64(mp.Price(w.Manufacture.Outputs)) / ProfitCostRatio
-			if float64(mp.Price(purchasableInputs)) < maxUnitCost {
+			if w.IsManufactureProfitable() {
 				transportQ := MinProductTransportQuantity(purchasableInputs)
 				batch := artifacts.Multiply(purchasableInputs, transportQ)
 				tag := economy.SingleTag(economy.TagManufactureInput)
