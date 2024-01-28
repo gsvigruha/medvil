@@ -5,6 +5,7 @@ import (
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/model/building"
 	"medvil/view/gui"
+	"path/filepath"
 	"reflect"
 	"strconv"
 )
@@ -24,18 +25,20 @@ type ControlSubPanel interface {
 }
 
 type ControlPanel struct {
-	topPanel       *gui.Panel
-	dynamicPanel   ControlSubPanel
-	helperPanel    *gui.Panel
-	dateLabel      *gui.TextLabel
-	moneyLabel     *gui.TextLabel
-	peopleLabel    *gui.TextLabel
-	artifactsLabel *gui.TextLabel
-	buildingsLabel *gui.TextLabel
-	timeButton     *ControlPanelButton
-	suggestion     *gui.Suggestion
-	C              *Controller
-	buffer         *canvas.Canvas
+	topPanel            *gui.Panel
+	dynamicPanel        ControlSubPanel
+	HelperPanel         *gui.Panel
+	SelectedHelperPanel *gui.Panel
+	dateLabel           *gui.TextLabel
+	moneyLabel          *gui.TextLabel
+	peopleLabel         *gui.TextLabel
+	artifactsLabel      *gui.TextLabel
+	buildingsLabel      *gui.TextLabel
+	timeButton          *ControlPanelButton
+	suggestion          *gui.Suggestion
+	C                   *Controller
+	buffer              *canvas.Canvas
+	HelperBuffer        *canvas.Canvas
 }
 
 type ControlPanelButton struct {
@@ -91,6 +94,8 @@ func CPActionTimeScaleChange(c *Controller) {
 }
 
 func (p *ControlPanel) Refresh() {
+	p.HelperPanel.Clear()
+	p.topPanel.CaptureMove(p.C.X, p.C.Y)
 	p.dateLabel.Text = strconv.Itoa(
 		int(p.C.Map.Calendar.Day)) + ", " +
 		strconv.Itoa(int(p.C.Map.Calendar.Month)) + ", " +
@@ -101,6 +106,7 @@ func (p *ControlPanel) Refresh() {
 	p.artifactsLabel.Text = strconv.Itoa(int(stats.Global.Artifacts))
 	p.buildingsLabel.Text = strconv.Itoa(int(stats.Global.Buildings))
 	if p.dynamicPanel != nil {
+		p.dynamicPanel.CaptureMove(p.C.X, p.C.Y)
 		p.dynamicPanel.Refresh()
 	}
 }
@@ -113,9 +119,9 @@ func (p *ControlPanel) Clear() {
 
 func (p *ControlPanel) GetHelperPanel(clear bool) *gui.Panel {
 	if clear {
-		p.helperPanel.Clear()
+		p.HelperPanel.Clear()
 	}
-	return p.helperPanel
+	return p.HelperPanel
 }
 
 func (p *ControlPanel) SetDims(size uint8) {
@@ -169,14 +175,20 @@ func (p *ControlPanel) SetupDims(width, height int) {
 		p.SetDims(c.ViewSettings.Size)
 	}
 
-	offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, c.ctx)
-	p.buffer = canvas.New(offscreen)
+	{
+		offscreen, _ := goglbackend.NewOffscreen(int(ControlPanelSX), int(ControlPanelSY), false, c.ctx)
+		p.buffer = canvas.New(offscreen)
+	}
 
 	p.topPanel.SX = ControlPanelSX
 	p.topPanel.SY = ControlPanelSY
-	p.helperPanel.Y = ControlPanelSY * 0.95
-	p.helperPanel.SX = ControlPanelSX
-	p.helperPanel.SY = ControlPanelSY * 0.05
+	p.HelperPanel.Y = ControlPanelSY * 0.95
+	p.HelperPanel.SX = ControlPanelSX
+	p.HelperPanel.SY = float64(IconH) * 2.0
+	{
+		offscreen, _ := goglbackend.NewOffscreen(int(p.HelperPanel.SX), int(p.HelperPanel.SY), false, c.ctx)
+		p.HelperBuffer = canvas.New(offscreen)
+	}
 
 	if c.Map != nil {
 		p.GenerateButtons()
@@ -187,7 +199,8 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 	p.C = c
 
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
-	p.helperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
+	p.HelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
+	p.SelectedHelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
 
 	p.SetupDims(p.C.W, p.C.H)
 }
@@ -210,7 +223,7 @@ func (p *ControlPanel) GenerateButtons() {
 	iconTop := 15 + IconS
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "house", X: float64(24 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Create buildings")
+			p.HelperMessage("Create buildings", true)
 		}},
 		Highlight: func() bool { return p.IsBuildingType() },
 		ClickImpl: func() {
@@ -239,37 +252,37 @@ func (p *ControlPanel) GenerateButtons() {
 		}})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "infra", X: float64(24 + LargeIconD*1), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Create infrastructure like roads or walls")
+			p.HelperMessage("Create infrastructure like roads or walls", true)
 		}},
 		Highlight: func() bool { return p.IsInfraType() },
 		ClickImpl: func() { c.ShowInfraController() }})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Demolish buildings")
+			p.HelperMessage("Demolish buildings", true)
 		},
 			Disabled: func() bool { return c.GetActiveTownhall() == nil }},
 		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },
 		ClickImpl: func() { c.ShowDemolishController() }})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "map", X: float64(24 + LargeIconD*3), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("View map and charts")
+			p.HelperMessage("View map and charts", true)
 		}},
 		Highlight: func() bool { return p.IsDynamicPanelType("MapController") },
 		ClickImpl: func() { c.ShowMapController() }})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "library", X: float64(24 + LargeIconD*4), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Load, save and settings")
+			p.HelperMessage("Load, save and settings", true)
 		}},
 		Highlight: func() bool { return p.IsDynamicPanelType("LibraryController") },
 		ClickImpl: func() { c.ShowLibraryController() }})
 	p.topPanel.AddButton(&ControlPanelButton{
 		b: gui.ButtonGUI{Icon: "cancel", X: float64(24 + LargeIconD*5), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Cancel")
+			p.HelperMessage("Cancel", true)
 		}},
 		c: c, action: CPActionCancel})
 	p.timeButton = &ControlPanelButton{
 		b: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Speed up game")
+			p.HelperMessage("Speed up game", true)
 		}},
 		c: c, action: CPActionTimeScaleChange}
 
@@ -301,14 +314,25 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 		if p.dynamicPanel != nil {
 			p.dynamicPanel.Render(p.buffer)
 		}
-		if !p.helperPanel.IsEmpty() {
-			p.helperPanel.Render(p.buffer)
+		if !p.HelperPanel.IsEmpty() {
+			p.HelperBuffer.SetFillStyle(filepath.FromSlash("texture/wood.png"))
+			p.HelperBuffer.FillRect(0, 0, p.HelperPanel.SX, p.HelperPanel.SY)
+			p.HelperBuffer.SetStrokeStyle("#DDD")
+			p.HelperBuffer.SetLineWidth(2)
+			p.HelperBuffer.StrokeRect(1, 1, p.HelperPanel.SX-2, p.HelperPanel.SY-2)
+			p.HelperPanel.Render(p.HelperBuffer)
+		}
+		if !p.SelectedHelperPanel.IsEmpty() {
+			p.SelectedHelperPanel.Render(p.buffer)
 		}
 		p.GetSuggestion()
 	}
 	cv.DrawImage(p.buffer, 0, 0, ControlPanelSX, ControlPanelSY)
 	if p.suggestion != nil && p.C.ViewSettings.ShowSuggestions {
 		p.suggestion.Render(cv, LargeIconS, LargeIconD)
+	}
+	if !p.HelperPanel.IsEmpty() {
+		cv.DrawImage(p.HelperBuffer, c.X, c.Y, p.HelperPanel.SX, p.HelperPanel.SY)
 	}
 }
 
@@ -345,8 +369,19 @@ func (p *ControlPanel) IsInfraType() bool {
 	return ok
 }
 
-func (p *ControlPanel) HelperMessage(msg string) {
-	p.GetHelperPanel(true).AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
+func (p *ControlPanel) SelectedHelperMessage(msg string) {
+	p.SelectedHelperPanel.Clear()
+	p.SelectedHelperPanel.AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
+}
+
+func (p *ControlPanel) HelperMessage(msg string, actionable bool) {
+	hp := p.GetHelperPanel(true)
+	if actionable {
+		hp.AddImageLabel("arrow_small_right", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
+		hp.AddTextLabel(msg, 24+float64(IconW), float64(IconH)/2.0+IconS-gui.FontSize/2.0)
+	} else {
+		hp.AddTextLabel(msg, 24, float64(IconH)/2.0+IconS-gui.FontSize/2.0)
+	}
 }
 
 func (p *ControlPanel) GetSuggestion() {

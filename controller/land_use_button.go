@@ -24,14 +24,14 @@ type LandUseButton struct {
 func (b *LandUseButton) SetHoover(h bool) {
 	b.b.SetHoover(h)
 	if h && b.cp != nil && b.msg != "" {
-		b.cp.HelperMessage(b.msg)
+		b.cp.HelperMessage(b.msg, true)
 	}
 }
 
 func (b LandUseButton) Click() {
 	b.luc.SetUseType(b.useType)
 	if b.cp != nil && b.msg != "" {
-		b.cp.HelperMessage(b.msg)
+		b.cp.SelectedHelperMessage(b.msg)
 	}
 }
 

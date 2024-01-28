@@ -116,7 +116,7 @@ func (l *ChartsLabel) drawLegend(cv *canvas.Canvas, x, y float64, c string) {
 }
 
 func (l *ChartsLabel) CaptureClick(x float64, y float64) {
-	l.cp.HelperMessage(l.helperMsg)
+	l.cp.SelectedHelperMessage(l.helperMsg)
 }
 
 func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []string, fn ElementLookup, sum bool) {
@@ -237,33 +237,33 @@ func DrawStats(cp *ControlPanel, p *gui.Panel) {
 
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "person", X: float64(24 + LargeIconD*0), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				cp.HelperMessage("Population statistics")
+				cp.HelperMessage("Population statistics", true)
 			}},
 			ClickImpl: func() { cl.state = 1 }})
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "tasks/exchange", X: float64(24 + LargeIconD*1), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				cp.HelperMessage("Goods produced and traded at the market")
+				cp.HelperMessage("Goods produced and traded at the market", true)
 			}},
 			ClickImpl: func() { cl.state = 2 }})
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "coin", X: float64(24 + LargeIconD*2), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				cp.HelperMessage("Prices")
+				cp.HelperMessage("Prices", true)
 			}},
 			ClickImpl: func() { cl.state = 3 }})
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "tasks/transport", X: float64(24 + LargeIconD*3), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				cp.HelperMessage("Length of various tasks")
+				cp.HelperMessage("Length of various tasks", true)
 			}},
 			ClickImpl: func() { cl.state = 4 }})
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "classes", X: float64(24 + LargeIconD*4), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				cp.HelperMessage("Social classes")
+				cp.HelperMessage("Social classes", true)
 			}},
 			ClickImpl: func() { cl.state = 5 }})
 
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: ControlPanelSY * 0.5, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				cp.HelperMessage("Timescale")
+				cp.HelperMessage("Timescale", true)
 			}},
 			ClickImpl: func() {
 				switch cl.timeScale {

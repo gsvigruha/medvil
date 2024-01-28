@@ -48,7 +48,7 @@ func ExpeditionToPanel(cp *ControlPanel, p *gui.Panel, expedition *social.Expedi
 
 	p.AddScaleLabel("barrel", 24, ArtifactsGUIY*ControlPanelSY, IconS, IconS, 4, expedition.Resources.UsedVolumeCapacity(), false,
 		func(scaleStr string) {
-			cp.HelperMessage("Storage full: " + scaleStr)
+			cp.HelperMessage("Storage full: "+scaleStr, false)
 		})
 	var aI = 1
 	for _, a := range artifacts.All {

@@ -13,7 +13,7 @@ func DemolishToControlPanel(cp *ControlPanel, th *social.Townhall) {
 		return
 	}
 	dc := &DemolishController{th: th}
-	cp.HelperMessage("Click on buildings to demolish them")
+	cp.SelectedHelperMessage("Click on buildings to demolish them")
 
 	cp.SetDynamicPanel(dc)
 	cp.C.ClickHandler = dc

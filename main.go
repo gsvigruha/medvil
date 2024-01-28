@@ -89,8 +89,8 @@ func main() {
 				time.Sleep(time.Duration(FrameRenderTimeNs-elapsed.Nanoseconds()) * time.Nanosecond)
 			}
 		} else {
-			c.ControlPanel.Render(cv, c)
 			cv.DrawImage(filepath.FromSlash("icon/gui/background.png"), controller.ControlPanelSX, 0, float64(cv.Width())-controller.ControlPanelSX, float64(cv.Height()))
+			c.ControlPanel.Render(cv, c)
 		}
 		c.RenderTick()
 	})

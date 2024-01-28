@@ -12,7 +12,7 @@ func TaskToHelperPanel(p *gui.Panel, task economy.Task) {
 	if task.Blocked() {
 		style = gui.ImageLabelStyleDisabled
 	}
-	y := ControlPanelSY * 0.95
+	y := float64(IconH) / 4.0
 	p.AddTextLabel(task.Description(), 24, y+IconS+gui.FontSize*1.2)
 	p.AddImageLabel("tasks/"+economy.IconName(task), 24, y, IconS, IconS, style)
 	switch v := task.(type) {
@@ -57,7 +57,7 @@ func ArtifactsToHelperPanel(p *gui.Panel, as []artifacts.Artifacts, sx, y float6
 }
 
 func ArtifactToHelperPanel(p *gui.Panel, a *artifacts.Artifact) {
-	y := ControlPanelSY * 0.95
+	y := float64(IconH) / 2.0
 	p.AddImageLabel("artifacts/"+a.Name, 24, y, IconS, IconS, gui.ImageLabelStyleRegular)
 	p.AddTextLabel(a.Description, 24+float64(IconW), y+IconS-gui.FontSize/2.0)
 }
