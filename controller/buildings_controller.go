@@ -308,6 +308,7 @@ func (b ExtensionButton) Click() {
 	b.bc.RoofM = nil
 	b.bc.ExtensionT = b.t
 	b.bc.del = b.del
+	b.bc.cp.SelectedHelperMessage(b.msg)
 }
 
 func (b ExtensionButton) Render(cv *canvas.Canvas) {
@@ -636,6 +637,7 @@ func CreateBuildingsController(cp *ControlPanel, bt building.BuildingType) *Buil
 		Perspective: &cp.C.Perspective}
 
 	bc.GenerateButtons()
+	cp.SelectedHelperMessage(HelperMessageForBuildingType(bt))
 
 	return bc
 }

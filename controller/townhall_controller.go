@@ -26,7 +26,7 @@ type TownhallControllerButton struct {
 func (b *TownhallControllerButton) Click() {
 	b.tc.subPanel = b.subPanel
 	if !b.tc.cp.C.ViewSettings.ShowSuggestions {
-		b.tc.cp.HelperMessage(b.helperMsg, true)
+		b.tc.cp.SelectedHelperMessage(b.helperMsg)
 	}
 }
 
@@ -40,6 +40,9 @@ func (b *TownhallControllerButton) Render(cv *canvas.Canvas) {
 
 func (b *TownhallControllerButton) SetHoover(h bool) {
 	b.b.SetHoover(h)
+	if h {
+		b.tc.cp.HelperMessage(b.helperMsg, true)
+	}
 }
 
 func (b *TownhallControllerButton) Contains(x float64, y float64) bool {
@@ -78,10 +81,11 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 	tc.buttons = []*TownhallControllerButton{
 		&TownhallControllerButton{
 			tc: tc, subPanel: hp, b: gui.ButtonGUI{Icon: "town", X: float64(24 + LargeIconD*0), Y: top, SX: LargeIconS, SY: LargeIconS},
+			helperMsg: "View status"
 		},
 		&TownhallControllerButton{
 			tc: tc, subPanel: mp, b: gui.ButtonGUI{Icon: "taxes", X: float64(24 + LargeIconD*1), Y: top, SX: LargeIconS, SY: LargeIconS},
-			helperMsg: "Adjust taxes, subsidies and switch on/off activities.",
+			helperMsg: "Adjust taxes and switch on/off activities.",
 		},
 		&TownhallControllerButton{
 			tc: tc, subPanel: sp, b: gui.ButtonGUI{Icon: "barrel", X: float64(24 + LargeIconD*2), Y: top, SX: LargeIconS, SY: LargeIconS},
