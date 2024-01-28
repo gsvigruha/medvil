@@ -105,6 +105,7 @@ func (p *ControlPanel) Refresh() {
 	p.artifactsLabel.Text = strconv.Itoa(int(stats.Global.Artifacts))
 	p.buildingsLabel.Text = strconv.Itoa(int(stats.Global.Buildings))
 	if p.dynamicPanel != nil {
+		p.dynamicPanel.CaptureMove(p.C.X, p.C.Y)
 		p.dynamicPanel.Refresh()
 	}
 }

@@ -116,7 +116,6 @@ func (l *ChartsLabel) drawLegend(cv *canvas.Canvas, x, y float64, c string) {
 }
 
 func (l *ChartsLabel) CaptureClick(x float64, y float64) {
-	l.cp.HelperMessage(l.helperMsg)
 }
 
 func (l *ChartsLabel) drawChart(cv *canvas.Canvas, c string, y int, icons []string, fn ElementLookup, sum bool) {
