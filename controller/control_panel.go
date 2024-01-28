@@ -5,6 +5,7 @@ import (
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 	"medvil/model/building"
 	"medvil/view/gui"
+	"path/filepath"
 	"reflect"
 	"strconv"
 )
@@ -92,6 +93,8 @@ func CPActionTimeScaleChange(c *Controller) {
 }
 
 func (p *ControlPanel) Refresh() {
+	p.HelperPanel.Clear()
+	p.topPanel.CaptureMove(p.C.X, p.C.Y)
 	p.dateLabel.Text = strconv.Itoa(
 		int(p.C.Map.Calendar.Day)) + ", " +
 		strconv.Itoa(int(p.C.Map.Calendar.Month)) + ", " +
@@ -179,7 +182,7 @@ func (p *ControlPanel) SetupDims(width, height int) {
 	p.topPanel.SY = ControlPanelSY
 	p.HelperPanel.Y = ControlPanelSY * 0.95
 	p.HelperPanel.SX = ControlPanelSX
-	p.HelperPanel.SY = ControlPanelSY * 0.05
+	p.HelperPanel.SY = float64(IconH) * 2.0
 	{
 		offscreen, _ := goglbackend.NewOffscreen(int(p.HelperPanel.SX), int(p.HelperPanel.SY), false, c.ctx)
 		p.HelperBuffer = canvas.New(offscreen)
@@ -308,11 +311,22 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 		if p.dynamicPanel != nil {
 			p.dynamicPanel.Render(p.buffer)
 		}
+		if !p.HelperPanel.IsEmpty() {
+			p.HelperBuffer.SetFillStyle(filepath.FromSlash("texture/wood.png"))
+			p.HelperBuffer.FillRect(0, 0, p.HelperPanel.SX, p.HelperPanel.SY)
+			p.HelperBuffer.SetStrokeStyle("#DDD")
+			p.HelperBuffer.SetLineWidth(2)
+			p.HelperBuffer.StrokeRect(1, 1, p.HelperPanel.SX-2, p.HelperPanel.SY-2)
+			p.HelperPanel.Render(p.HelperBuffer)
+		}
 		p.GetSuggestion()
 	}
 	cv.DrawImage(p.buffer, 0, 0, ControlPanelSX, ControlPanelSY)
 	if p.suggestion != nil && p.C.ViewSettings.ShowSuggestions {
 		p.suggestion.Render(cv, LargeIconS, LargeIconD)
+	}
+	if !p.HelperPanel.IsEmpty() {
+		cv.DrawImage(p.HelperBuffer, c.X, c.Y, p.HelperPanel.SX, p.HelperPanel.SY)
 	}
 }
 
@@ -350,7 +364,7 @@ func (p *ControlPanel) IsInfraType() bool {
 }
 
 func (p *ControlPanel) HelperMessage(msg string) {
-	p.GetHelperPanel(true).AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
+	p.GetHelperPanel(true).AddTextLabel(msg, 24, float64(IconH)/2.0+IconS-gui.FontSize/2.0)
 }
 
 func (p *ControlPanel) GetSuggestion() {
