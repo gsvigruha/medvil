@@ -377,7 +377,7 @@ func (p *ControlPanel) SelectedHelperMessage(msg string) {
 func (p *ControlPanel) HelperMessage(msg string, actionable bool) {
 	hp := p.GetHelperPanel(true)
 	if actionable {
-		hp.AddImageLabel("arrow_small_right", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
+		hp.AddImageLabel("click", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
 	} else {
 		hp.AddImageLabel("help", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
 	}
