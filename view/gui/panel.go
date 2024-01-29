@@ -35,6 +35,14 @@ func (p *Panel) Render(cv *canvas.Canvas) {
 }
 
 func (p *Panel) CaptureMove(x float64, y float64) {
+	for i := range p.DropDowns {
+		if p.DropDowns[i].Contains(x, y) {
+			p.DropDowns[i].SetHoover(true)
+			return
+		} else {
+			p.DropDowns[i].SetHoover(false)
+		}
+	}
 	for i := range p.Buttons {
 		if p.Buttons[i].Contains(x, y) {
 			p.Buttons[i].SetHoover(true)
@@ -49,13 +57,6 @@ func (p *Panel) CaptureMove(x float64, y float64) {
 			} else {
 				l.SetHoover(false)
 			}
-		}
-	}
-	for i := range p.DropDowns {
-		if p.DropDowns[i].Contains(x, y) {
-			p.DropDowns[i].SetHoover(true)
-		} else {
-			p.DropDowns[i].SetHoover(false)
 		}
 	}
 	for i := range p.Panels {

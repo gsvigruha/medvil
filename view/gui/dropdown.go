@@ -16,6 +16,7 @@ type DropDown struct {
 	Selected int
 	Open     bool
 	Hoover   bool
+	my       float64
 }
 
 const IconPadding = 4.0
@@ -42,7 +43,12 @@ func (d *DropDown) SetHoover(h bool) {
 }
 
 func (d *DropDown) Contains(x float64, y float64) bool {
-	return d.X <= x && d.X+d.SX >= x && d.Y <= y && d.Y+d.SY >= y
+	if d.Open {
+		d.my = y
+		return d.X <= x && d.X+d.SX >= x && d.Y <= y && d.Y+d.SY*float64(len(d.Options)+1) >= y
+	} else {
+		return d.X <= x && d.X+d.SX >= x && d.Y <= y && d.Y+d.SY >= y
+	}
 }
 
 func (d *DropDown) Render(cv *canvas.Canvas) {
@@ -67,7 +73,12 @@ func (d *DropDown) Render(cv *canvas.Canvas) {
 	}
 	if d.Hoover {
 		cv.SetStrokeStyle("#DDD")
-		cv.StrokeRect(d.X-1, d.Y-1, d.SX+2, d.SY+2)
+		if d.Open {
+			dy := float64(int((d.my-d.Y-d.SY)/d.SY)+1) * d.SY
+			cv.StrokeRect(d.X-1, d.Y-1+dy, d.SX+2, d.SY+2)
+		} else {
+			cv.StrokeRect(d.X-1, d.Y-1, d.SX+2, d.SY+2)
+		}
 	}
 }
 
