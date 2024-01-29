@@ -92,11 +92,13 @@ func TownhallToControlPanel(cp *ControlPanel, th *social.Townhall) {
 			helperMsg: "Store or offload goods.",
 		},
 		&TownhallControllerButton{
-			tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS},
+			tc: tc, subPanel: tp, b: gui.ButtonGUI{Icon: "trader", X: float64(24 + LargeIconD*3), Y: top, SX: LargeIconS, SY: LargeIconS,
+				Disabled: func() bool { return !cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeFactory) }},
 			helperMsg: "Create traders to trade goods with other towns.",
 		},
 		&TownhallControllerButton{
-			tc: tc, subPanel: ep, b: gui.ButtonGUI{Icon: "expedition", X: float64(24 + LargeIconD*4), Y: top, SX: LargeIconS, SY: LargeIconS},
+			tc: tc, subPanel: ep, b: gui.ButtonGUI{Icon: "expedition", X: float64(24 + LargeIconD*4), Y: top, SX: LargeIconS, SY: LargeIconS,
+				Disabled: func() bool { return !cp.C.ActiveSupplier.HasHousehold(building.BuildingTypeFactory) }},
 			helperMsg: "Start expeditions to found new towns.",
 		},
 	}
