@@ -182,7 +182,6 @@ func (p *ControlPanel) SetupDims(width, height int) {
 
 	p.topPanel.SX = ControlPanelSX
 	p.topPanel.SY = ControlPanelSY
-	p.HelperPanel.Y = ControlPanelSY * 0.95
 	p.HelperPanel.SX = ControlPanelSX
 	p.HelperPanel.SY = float64(IconH) * 2.0
 	{
@@ -200,7 +199,7 @@ func (p *ControlPanel) Setup(c *Controller, ctx *goglbackend.GLContext) {
 
 	p.topPanel = &gui.Panel{X: 0, Y: 0, SX: ControlPanelSX, SY: ControlPanelSY}
 	p.HelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
-	p.SelectedHelperPanel = &gui.Panel{X: 0, Y: ControlPanelSY * 0.95, SX: ControlPanelSX, SY: ControlPanelSY * 0.05}
+	p.SelectedHelperPanel = &gui.Panel{}
 
 	p.SetupDims(p.C.W, p.C.H)
 }
@@ -314,6 +313,7 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 		if p.dynamicPanel != nil {
 			p.dynamicPanel.Render(p.buffer)
 		}
+
 		if !p.HelperPanel.IsEmpty() {
 			p.HelperBuffer.SetFillStyle(filepath.FromSlash("texture/wood.png"))
 			p.HelperBuffer.FillRect(0, 0, p.HelperPanel.SX, p.HelperPanel.SY)
