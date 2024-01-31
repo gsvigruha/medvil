@@ -396,7 +396,7 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 	if p.C.Map != nil {
 		if len(p.C.Map.Countries[0].Towns[0].Farms) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {
 			return &gui.Suggestion{
-				Message: "Build farms. Your town needs farms to produce\ngrain, sheep, textile and logs.",
+				Message: "Build farms. Your town needs farms to produce\nfood or logs.",
 				Icon:    "farm", X: float64(24 + LargeIconD*1), Y: IconS + 15 + LargeIconD/2.0,
 			}
 		} else if len(p.C.Map.Countries[0].Towns[0].Workshops) == 0 && len(p.C.Map.Countries[0].Towns[0].Constructions) == 0 {

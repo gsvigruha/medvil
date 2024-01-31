@@ -646,7 +646,7 @@ func HelperMessageForBuildingType(bt building.BuildingType) string {
 	var helperMsg string
 	switch bt {
 	case building.BuildingTypeFarm:
-		helperMsg = "Build farms to grow food or wood."
+		helperMsg = "Build farms to produce food or logs."
 	case building.BuildingTypeWorkshop:
 		helperMsg = "Build workshops to transform materials to products."
 	case building.BuildingTypeMine:
