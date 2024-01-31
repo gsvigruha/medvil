@@ -646,19 +646,19 @@ func HelperMessageForBuildingType(bt building.BuildingType) string {
 	var helperMsg string
 	switch bt {
 	case building.BuildingTypeFarm:
-		helperMsg = "Build farms to produce food or logs."
+		helperMsg = "Build farms to produce food or logs"
 	case building.BuildingTypeWorkshop:
-		helperMsg = "Build workshops to transform materials to products."
+		helperMsg = "Build workshops to create products"
 	case building.BuildingTypeMine:
-		helperMsg = "Build mines to extract metals, stone and clay."
+		helperMsg = "Build mines to extract metals, stone and clay"
 	case building.BuildingTypeFactory:
-		helperMsg = "Build factories to build vehicles."
+		helperMsg = "Build factories to build vehicles"
 	case building.BuildingTypeTownhall:
-		helperMsg = "Establish a new town."
+		helperMsg = "Establish a new town"
 	case building.BuildingTypeMarket:
-		helperMsg = "Build a marketplace for your town."
+		helperMsg = "Build a marketplace for your town"
 	case building.BuildingTypeTower:
-		helperMsg = "Build towers to protect your town."
+		helperMsg = "Build towers to protect your town"
 	}
 	return helperMsg
 }

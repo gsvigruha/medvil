@@ -222,7 +222,7 @@ func (p *ControlPanel) GenerateButtons() {
 	iconTop := 15 + IconS
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "house", X: float64(24 + LargeIconD*0), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Create buildings", true)
+			p.HelperMessage("Create buildings like farms or workshops", true)
 		}},
 		Highlight: func() bool { return p.IsBuildingType() },
 		ClickImpl: func() {
