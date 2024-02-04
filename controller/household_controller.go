@@ -183,7 +183,7 @@ func PersonToPanel(cp *ControlPanel, p *gui.Panel, i int, person *social.Person,
 	}
 }
 
-func ArtifactQStr(q uint16) string {
+func artifactQStrForIcon(q uint16) string {
 	var qStr = strconv.Itoa(int(q))
 	if q == artifacts.InfiniteQuantity {
 		qStr = "∞"
@@ -198,7 +198,7 @@ func ArtifactsToControlPanel(cp *ControlPanel, p *gui.Panel, i int, a *artifacts
 		Style: gui.ImageLabelStyleRegular, OnHoover: func() {
 			ArtifactToHelperPanel(cp.GetHelperPanel(true), a)
 		}})
-	p.AddTextLabel(ArtifactQStr(q), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
+	p.AddTextLabel(artifactQStrForIcon(q), float64(24+xI*IconW), top+float64(yI*IconH+IconH+4))
 }
 
 func TaskToControlPanel(cp *ControlPanel, p *gui.Panel, i int, y float64, task economy.Task, w int) {
