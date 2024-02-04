@@ -84,14 +84,23 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 	farm := c.ReverseReferences.BuildingToFarm[b]
 	if farm != nil {
 		iconsFromHousehold(farm.Household, farm.Household.Town.Transfers.Farm.Threshold, &icons, &msg)
+		if len(farm.Land) == 0 {
+			msg = append(msg, "configure")
+		}
 	}
 	workshop := c.ReverseReferences.BuildingToWorkshop[b]
 	if workshop != nil {
 		iconsFromHousehold(workshop.Household, workshop.Household.Town.Transfers.Workshop.Threshold, &icons, &msg)
+		if workshop.Manufacture == nil {
+			msg = append(msg, "configure")
+		}
 	}
 	mine := c.ReverseReferences.BuildingToMine[b]
 	if mine != nil {
 		iconsFromHousehold(mine.Household, mine.Household.Town.Transfers.Mine.Threshold, &icons, &msg)
+		if len(mine.Land) == 0 {
+			msg = append(msg, "configure")
+		}
 	}
 	factory := c.ReverseReferences.BuildingToFactory[b]
 	if factory != nil {
@@ -105,6 +114,7 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 	if market != nil {
 		if int(market.Money) < int(market.Town.Stats.Global.Money)/10 {
 			icons = append(icons, coinI)
+			msg = append(msg, "send money")
 		}
 	}
 
