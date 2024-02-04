@@ -35,7 +35,7 @@ func ConstructionToControlPanel(cp *ControlPanel, c *building.Construction) {
 		}})
 	var i = 1
 	p.AddLabel(&gui.ImageLabel{Icon: "coin", X: 24, Y: top + float64(IconH*2), SX: IconS, SY: IconS, Style: gui.ImageLabelStyleRegular, OnHoover: func() {
-		cp.HelperMessage("Total materials needed for the building", false)
+		cp.HelperMessage("Total materials needed for the construction", false)
 	}})
 	for _, a := range c.Cost {
 		ArtifactsToControlPanel(cp, p, i, a.A, a.Quantity, top+float64(IconH*2))
@@ -43,7 +43,7 @@ func ConstructionToControlPanel(cp *ControlPanel, c *building.Construction) {
 	}
 	i = 1
 	p.AddLabel(&gui.ImageLabel{Icon: "barrel", X: 24, Y: top + float64(IconH*4), SX: IconS, SY: IconS, Style: gui.ImageLabelStyleRegular, OnHoover: func() {
-		cp.HelperMessage("Materials stored at this construction", false)
+		cp.HelperMessage("Materials transported to this construction", false)
 	}})
 	for _, a := range ArtifactOrder {
 		if q, ok := c.Storage.Artifacts[a]; ok {

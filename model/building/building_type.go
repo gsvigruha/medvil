@@ -156,6 +156,16 @@ func BuildingTypeName(bt BuildingType) string {
 		return "townhall"
 	case BuildingTypeMarket:
 		return "market"
+	case BuildingTypeRoad:
+		return "road"
+	case BuildingTypeCanal:
+		return "canal"
+	case BuildingTypeBridge:
+		return "bridge"
+	case BuildingTypeWall:
+		return "wall"
+	case BuildingTypeGate:
+		return "gate"
 	}
 	return ""
 }

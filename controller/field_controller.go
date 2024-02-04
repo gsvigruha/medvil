@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/tfriedel6/canvas"
 	"math"
+	"medvil/model/artifacts"
 	"medvil/model/navigation"
 	"medvil/view/gui"
 	"path/filepath"
@@ -20,12 +21,20 @@ func treeDeathRateStr(rate float64) string {
 	return strconv.Itoa(int(math.Pow(1.0-rate, 30*12*10) * 100))
 }
 
+func artifactQStr(q uint16) string {
+	var qStr = strconv.Itoa(int(q))
+	if q == artifacts.InfiniteQuantity {
+		qStr = "infinite"
+	}
+	return qStr
+}
+
 func FieldToControlPanel(cp *ControlPanel, f *navigation.Field) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: ControlPanelDynamicPanelSY}
 	p.AddTextureLabel("terrain/"+f.Terrain.T.Name, 24, FieldGUIY*ControlPanelSY, LargeIconS, LargeIconS)
 	if f.Deposit != nil {
 		p.AddImageLabel("terrain/"+f.Deposit.T.Name, 24, FieldGUIY*ControlPanelSY+LargeIconD, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
-		p.AddTextLabel(ArtifactQStr(f.Deposit.Q), 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)
+		p.AddTextLabel(artifactQStr(f.Deposit.Q)+" "+f.Deposit.T.A.Name, 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconD+LargeIconS/2)
 	} else {
 		if f.Plantable(false) {
 			p.AddTextLabel("Tree soil quality: "+treeDeathRateStr(cp.C.Map.TreeDeathRate(f))+"%", 24+LargeIconD, FieldGUIY*ControlPanelSY+LargeIconS*0.8)

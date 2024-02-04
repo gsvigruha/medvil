@@ -188,6 +188,10 @@ func GetAllManufactureNames() []string {
 	return result
 }
 
+func GetManufactureNamesForET(t *building.BuildingExtensionType) []string {
+	return GetManufactureNames([]*building.BuildingExtension{&building.BuildingExtension{T: t}})
+}
+
 func GetManufactureNames(extensions []*building.BuildingExtension) []string {
 	var filteredExtensions []*building.BuildingExtension
 	for _, extension := range extensions {
