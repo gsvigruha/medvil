@@ -13,17 +13,18 @@ var ConstructionInputs = []*artifacts.Artifact{
 }
 
 type Construction struct {
-	Building    *Building
-	Road        *Road
-	Statue      *Statue
-	X           uint16
-	Y           uint16
-	Progress    uint16
-	MaxProgress uint16
-	Cost        []artifacts.Artifacts
-	Storage     *artifacts.Resources
-	T           BuildingType
-	Expired     bool
+	Building      *Building
+	Road          *Road
+	Statue        *Statue
+	X             uint16
+	Y             uint16
+	Progress      uint16
+	MaxProgress   uint16
+	Cost          []artifacts.Artifacts
+	Storage       *artifacts.Resources
+	ArtifactsUsed uint16
+	T             BuildingType
+	Expired       bool
 }
 
 func (c *Construction) IsComplete() bool {

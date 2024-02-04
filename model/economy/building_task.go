@@ -24,8 +24,7 @@ func (t *BuildingTask) Destination() navigation.Destination {
 func (t *BuildingTask) Complete(m navigation.IMap, tool bool) bool {
 	if !t.Started && !t.Blocked() {
 		if len(t.C.Cost) > 0 {
-			a := t.C.Storage.GetArtifacts()[0]
-			t.C.Storage.Remove(a, 1)
+			t.C.ArtifactsUsed++
 		}
 		t.Started = true
 	}
@@ -41,7 +40,7 @@ func (t *BuildingTask) Complete(m navigation.IMap, tool bool) bool {
 }
 
 func (t *BuildingTask) Blocked() bool {
-	return !t.Started && t.C.Storage.IsEmpty() && len(t.C.Cost) > 0
+	return !t.Started && uint32(t.C.ArtifactsUsed) >= t.C.Storage.NumArtifacts() && len(t.C.Cost) > 0
 }
 
 func (t *BuildingTask) Name() string {
