@@ -9,11 +9,13 @@ var StoneFloor = Floor{M: materials.GetMaterial("stone")}
 var WoodFloor = Floor{M: materials.GetMaterial("wood")}
 var BrickFloor = Floor{M: materials.GetMaterial("brick")}
 var SandstoneFloor = Floor{M: materials.GetMaterial("sandstone")}
+var MarbleFloor = Floor{M: materials.GetMaterial("marble")}
 
 var ReedRoof = &Roof{M: materials.GetMaterial("reed"), RoofType: RoofTypeSplit}
 var TileRoof = &Roof{M: materials.GetMaterial("tile"), RoofType: RoofTypeSplit}
 var BrickRoof = &Roof{M: materials.GetMaterial("brick"), RoofType: RoofTypeFlat}
 var SandstoneRoof = &Roof{M: materials.GetMaterial("sandstone"), RoofType: RoofTypeFlat}
+var CopperRoof = &Roof{M: materials.GetMaterial("copper"), RoofType: RoofTypeSplit}
 
 type BuildingDefaultPlan struct {
 	P    *BuildingPlan
@@ -253,6 +255,32 @@ var Tower2Plan = &BuildingDefaultPlan{Name: "Large stone tower", P: &BuildingPla
 	BuildingType: BuildingTypeTower,
 }}
 
+var Townhall1Floors = &PlanUnits{
+	Floors: []Floor{MarbleFloor},
+	Roof:   CopperRoof,
+}
+
+var Townhall2Floors = &PlanUnits{
+	Floors: []Floor{MarbleFloor, MarbleFloor},
+	Roof:   CopperRoof,
+}
+
+var Townhall3Floors = &PlanUnits{
+	Floors: []Floor{MarbleFloor, MarbleFloor, MarbleFloor},
+	Roof:   CopperRoof,
+}
+
+var Townhall1Plan = &BuildingDefaultPlan{Name: "Large stone tower", P: &BuildingPlan{
+	BaseShape: [BuildingBaseMaxSize][BuildingBaseMaxSize]*PlanUnits{
+		{nil, nil, nil, nil, nil},
+		{nil, nil, nil, nil, nil},
+		{nil, Townhall2Floors, Townhall3Floors, nil},
+		{nil, nil, Townhall1Floors, nil, nil},
+		{nil, nil, nil, nil, nil},
+	},
+	BuildingType: BuildingTypeTownhall,
+}}
+
 func DefaultPlans(bt BuildingType) []*BuildingDefaultPlan {
 	switch bt {
 	case BuildingTypeFarm:
@@ -265,6 +293,8 @@ func DefaultPlans(bt BuildingType) []*BuildingDefaultPlan {
 		return []*BuildingDefaultPlan{Factory1Plan, Factory2Plan}
 	case BuildingTypeTower:
 		return []*BuildingDefaultPlan{Tower1Plan, Tower2Plan}
+	case BuildingTypeTownhall:
+		return []*BuildingDefaultPlan{Townhall1Plan}
 	}
 	return nil
 }

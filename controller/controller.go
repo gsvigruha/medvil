@@ -281,6 +281,15 @@ func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 		}
 	} else if c.SelectedTraveller != nil {
 		return c.SelectedTraveller.GetPathFields(c.Map)
+	} else {
+		rf := c.CaptureRenderedField(c.X, c.Y)
+		if rf != nil && rf.F.Building.GetBuilding() != nil {
+			var fields []navigation.FieldWithContext
+			for _, coords := range rf.F.Building.GetBuilding().GetBuildingXYs(true) {
+				fields = append(fields, c.Map.GetField(coords[0], coords[1]))
+			}
+			return fields
+		}
 	}
 	return nil
 }
