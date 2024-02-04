@@ -90,7 +90,7 @@ func RenderField(phase int, ic *ImageCache, cv *canvas.Canvas, rf renderer.Rende
 					}
 				}
 			}
-			if c.ViewSettings.ShowHouseIcons {
+			if c.ViewSettings.ShowHouseIcons || f.Building.GetBuilding() == c.HooveredBuilding {
 				DrawHouseholdIcons(cv, rf, f, len(components), c)
 			}
 			if c.ViewSettings.ShowLabels {
