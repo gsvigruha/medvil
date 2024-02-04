@@ -311,6 +311,11 @@ func (b ExtensionButton) Click() {
 		b.bc.ExtensionT = b.t
 		b.bc.del = b.del
 		b.bc.cp.SelectedHelperMessage(b.msg)
+		if b.bc.ExtensionT.InUnit && b.bc.Plan.BaseShape[2][2] != nil && len(b.bc.Plan.BaseShape[2][2].Floors) > 0 {
+			b.bc.Plan.BaseShape[2][2].Extension = &building.BuildingExtension{T: b.bc.ExtensionT}
+			b.bc.GenerateButtons()
+			b.bc.GenerateBuildingTypebuttons()
+		}
 	}
 }
 

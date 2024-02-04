@@ -10,6 +10,7 @@ import (
 	"medvil/view/buildings"
 	"medvil/view/gui"
 	"path/filepath"
+	"strings"
 )
 
 var coinI = filepath.FromSlash("icon/gui/coin.png")
@@ -24,9 +25,10 @@ var personI = filepath.FromSlash("icon/gui/person.png")
 var woodI = filepath.FromSlash("texture/wood.png")
 var warnI = filepath.FromSlash("icon/gui/warning_slim.png")
 
-func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string) {
+func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string, msg *[]string) {
 	if int(h.Money) < moneyThreshold {
 		*icons = append(*icons, coinI)
+		*msg = append(*msg, "send money")
 	}
 
 	if len(h.People) > 0 {
@@ -63,6 +65,7 @@ func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string
 		}
 	} else {
 		*icons = append(*icons, personI)
+		*msg = append(*msg, "add people")
 	}
 }
 
@@ -76,31 +79,42 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 	midX, midY := rf.MidScreenPoint()
 
 	var icons []string
+	var msg []string
 
 	farm := c.ReverseReferences.BuildingToFarm[b]
 	if farm != nil {
-		iconsFromHousehold(farm.Household, farm.Household.Town.Transfers.Farm.Threshold, &icons)
+		iconsFromHousehold(farm.Household, farm.Household.Town.Transfers.Farm.Threshold, &icons, &msg)
+		if len(farm.Land) == 0 {
+			msg = append(msg, "configure")
+		}
 	}
 	workshop := c.ReverseReferences.BuildingToWorkshop[b]
 	if workshop != nil {
-		iconsFromHousehold(workshop.Household, workshop.Household.Town.Transfers.Workshop.Threshold, &icons)
+		iconsFromHousehold(workshop.Household, workshop.Household.Town.Transfers.Workshop.Threshold, &icons, &msg)
+		if workshop.Manufacture == nil {
+			msg = append(msg, "configure")
+		}
 	}
 	mine := c.ReverseReferences.BuildingToMine[b]
 	if mine != nil {
-		iconsFromHousehold(mine.Household, mine.Household.Town.Transfers.Mine.Threshold, &icons)
+		iconsFromHousehold(mine.Household, mine.Household.Town.Transfers.Mine.Threshold, &icons, &msg)
+		if len(mine.Land) == 0 {
+			msg = append(msg, "configure")
+		}
 	}
 	factory := c.ReverseReferences.BuildingToFactory[b]
 	if factory != nil {
-		iconsFromHousehold(factory.Household, factory.Household.Town.Transfers.Factory.Threshold, &icons)
+		iconsFromHousehold(factory.Household, factory.Household.Town.Transfers.Factory.Threshold, &icons, &msg)
 	}
 	townhall := c.ReverseReferences.BuildingToTownhall[b]
 	if townhall != nil {
-		iconsFromHousehold(townhall.Household, int(townhall.Household.Town.Stats.Global.Money)/10, &icons)
+		iconsFromHousehold(townhall.Household, int(townhall.Household.Town.Stats.Global.Money)/10, &icons, &msg)
 	}
 	market := c.ReverseReferences.BuildingToMarketplace[b]
 	if market != nil {
 		if int(market.Money) < int(market.Town.Stats.Global.Money)/10 {
 			icons = append(icons, coinI)
+			msg = append(msg, "send money")
 		}
 	}
 
@@ -119,6 +133,10 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 		for i, icon := range icons {
 			cv.DrawImage(icon, left+float64(i)*s+s/2, midY-z-s, s, s)
 		}
+	}
+
+	if len(msg) > 0 && b == c.HooveredBuilding {
+		c.ControlPanel.SelectedHelperMessage("Click to " + strings.Join(msg, ", "))
 	}
 }
 
