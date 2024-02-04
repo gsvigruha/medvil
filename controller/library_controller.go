@@ -173,7 +173,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 		}})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "help", X: 24 + float64(IconW)*3, Y: settingsTop + float64(IconH), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Show suggestions and descriptions", true)
+			cp.HelperMessage("Show suggestion messages", true)
 		}},
 		Highlight: func() bool { return cp.C.ViewSettings.ShowSuggestions },
 		ClickImpl: func() {

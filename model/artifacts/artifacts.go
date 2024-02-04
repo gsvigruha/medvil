@@ -33,7 +33,7 @@ var All = [...]*Artifact{
 	&Artifact{Name: "fruit", M: materials.GetMaterial("organic"), V: 1, Idx: 15, Description: "Fruits: food, increases health, happiness"},
 	&Artifact{Name: "vegetable", M: materials.GetMaterial("organic"), V: 1, Idx: 16, Description: "Vegetables: food, increases health"},
 	&Artifact{Name: "grain", M: materials.GetMaterial("organic"), V: 1, Idx: 17, Description: "Grain can be turned into flour"},
-	&Artifact{Name: "flour", M: materials.GetMaterial("organic"), V: 1, Idx: 18, Description: "FLour is used to bake bread"},
+	&Artifact{Name: "flour", M: materials.GetMaterial("organic"), V: 1, Idx: 18, Description: "Flour is used to bake bread"},
 	&Artifact{Name: "bread", M: materials.GetMaterial("organic"), V: 1, Idx: 19, Description: "Bread is high quality food"},
 	&Artifact{Name: "meat", M: materials.GetMaterial("organic"), V: 1, Idx: 20, Description: "Meat is high quality food"},
 	&Artifact{Name: "water", M: materials.GetMaterial("water"), V: 1, Idx: 21, Description: "Water is needed to reduce thirst"},
