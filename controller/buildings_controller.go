@@ -4,6 +4,7 @@ import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
 	"medvil/model/building"
+	"medvil/model/economy"
 	"medvil/model/materials"
 	"medvil/model/navigation"
 	"medvil/model/social"
@@ -304,11 +305,13 @@ type ExtensionButton struct {
 }
 
 func (b ExtensionButton) Click() {
-	b.bc.UnitM = nil
-	b.bc.RoofM = nil
-	b.bc.ExtensionT = b.t
-	b.bc.del = b.del
-	b.bc.cp.SelectedHelperMessage(b.msg)
+	if !b.b.Disabled() {
+		b.bc.UnitM = nil
+		b.bc.RoofM = nil
+		b.bc.ExtensionT = b.t
+		b.bc.del = b.del
+		b.bc.cp.SelectedHelperMessage(b.msg)
+	}
 }
 
 func (b ExtensionButton) Render(cv *canvas.Canvas) {
@@ -506,6 +509,22 @@ func (bc *BuildingsController) HandleClick(c *Controller, rf *renderer.RenderedF
 	return false
 }
 
+func multilineJoin(s []string, sep1, sep2 string, n int) string {
+	var result string
+	for i, e := range s {
+		if i < len(s)-1 {
+			if i%n == n-1 {
+				result = result + e + sep2
+			} else {
+				result = result + e + sep1
+			}
+		} else {
+			result = result + e
+		}
+	}
+	return result
+}
+
 func (bc *BuildingsController) GenerateButtons() {
 	bc.p.Buttons = nil
 	bc.p.Labels = nil
@@ -554,14 +573,17 @@ func (bc *BuildingsController) GenerateButtons() {
 
 	extensionPanelTop := BuildingButtonPanelTop*ControlPanelSY + float64(LargeIconD*3)
 	for i, e := range building.ExtensionTypes(bc.bt) {
-		msg := e.Description
+		msg1 := e.Description
+		msg2 := e.Description + "\nNeeded for " + multilineJoin(economy.GetManufactureNamesForET(e), ", ", ",\n", 3) + "."
 		bc.p.AddButton(&ExtensionButton{
 			b: &gui.ButtonGUI{Icon: "building/" + e.Name, X: float64(i)*LargeIconD + 24, Y: extensionPanelTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-				bc.cp.HelperMessage(msg, true)
+				bc.cp.MultilineHelperMessage(msg2, true)
+			}, Disabled: func() bool {
+				return len(bc.Plan.GetExtensions()) > 0
 			}},
 			t:   e,
 			bc:  bc,
-			msg: msg,
+			msg: msg1,
 		})
 	}
 

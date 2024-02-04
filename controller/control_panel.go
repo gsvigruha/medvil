@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 var ControlPanelSX = 300.0
@@ -372,6 +373,19 @@ func (p *ControlPanel) IsInfraType() bool {
 func (p *ControlPanel) SelectedHelperMessage(msg string) {
 	p.SelectedHelperPanel.Clear()
 	p.SelectedHelperPanel.AddTextLabel(msg, 24, ControlPanelSY*0.95+IconS-gui.FontSize/2.0)
+}
+
+func (p *ControlPanel) MultilineHelperMessage(msg string, actionable bool) {
+	hp := p.GetHelperPanel(true)
+	if actionable {
+		hp.AddImageLabel("click", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
+	} else {
+		hp.AddImageLabel("help", 24, float64(IconH)/2.0, IconS, IconS, gui.ImageLabelStyleRegular)
+	}
+	lines := strings.Split(msg, "\n")
+	for i, line := range lines {
+		hp.AddTextLabel(line, 24+float64(IconW), float64(IconH)/2.0+IconS-float64(len(lines))*(gui.FontSize+4)/2.0+float64(i)*(gui.FontSize+4))
+	}
 }
 
 func (p *ControlPanel) HelperMessage(msg string, actionable bool) {
