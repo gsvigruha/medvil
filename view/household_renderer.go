@@ -67,36 +67,37 @@ func iconsFromHousehold(h *social.Household, moneyThreshold int, icons *[]string
 }
 
 func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigation.Field, k int, c *controller.Controller) {
-	if f.Building.GetBuilding().X != f.X || f.Building.GetBuilding().Y != f.Y {
+	b := f.Building.GetBuilding()
+	if b.X != f.X || b.Y != f.Y {
 		return
 	}
 
-	z := float64(k+1) * buildings.BuildingUnitHeight * buildings.DZ
+	z := (float64(k) + 0.5) * buildings.BuildingUnitHeight * buildings.DZ
 	midX, midY := rf.MidScreenPoint()
 
 	var icons []string
 
-	farm := c.ReverseReferences.BuildingToFarm[f.Building.GetBuilding()]
+	farm := c.ReverseReferences.BuildingToFarm[b]
 	if farm != nil {
 		iconsFromHousehold(farm.Household, farm.Household.Town.Transfers.Farm.Threshold, &icons)
 	}
-	workshop := c.ReverseReferences.BuildingToWorkshop[f.Building.GetBuilding()]
+	workshop := c.ReverseReferences.BuildingToWorkshop[b]
 	if workshop != nil {
 		iconsFromHousehold(workshop.Household, workshop.Household.Town.Transfers.Workshop.Threshold, &icons)
 	}
-	mine := c.ReverseReferences.BuildingToMine[f.Building.GetBuilding()]
+	mine := c.ReverseReferences.BuildingToMine[b]
 	if mine != nil {
 		iconsFromHousehold(mine.Household, mine.Household.Town.Transfers.Mine.Threshold, &icons)
 	}
-	factory := c.ReverseReferences.BuildingToFactory[f.Building.GetBuilding()]
+	factory := c.ReverseReferences.BuildingToFactory[b]
 	if factory != nil {
 		iconsFromHousehold(factory.Household, factory.Household.Town.Transfers.Factory.Threshold, &icons)
 	}
-	townhall := c.ReverseReferences.BuildingToTownhall[f.Building.GetBuilding()]
+	townhall := c.ReverseReferences.BuildingToTownhall[b]
 	if townhall != nil {
 		iconsFromHousehold(townhall.Household, int(townhall.Household.Town.Stats.Global.Money)/10, &icons)
 	}
-	market := c.ReverseReferences.BuildingToMarketplace[f.Building.GetBuilding()]
+	market := c.ReverseReferences.BuildingToMarketplace[b]
 	if market != nil {
 		if int(market.Money) < int(market.Town.Stats.Global.Money)/10 {
 			icons = append(icons, coinI)
@@ -104,13 +105,19 @@ func DrawHouseholdIcons(cv *canvas.Canvas, rf renderer.RenderedField, f *navigat
 	}
 
 	if len(icons) > 0 {
-		s := controller.IconS * 0.6
+		var s float64
+		if b == c.HooveredBuilding {
+			s = controller.IconS
+		} else {
+			s = controller.IconS * 0.6
+		}
+
 		cv.SetFillStyle(color.RGBA{R: 0, G: 0, B: 0, A: 192})
 		left := midX - float64(len(icons))*s/2
-		cv.FillRect(left-s*0.15, midY-z, float64(len(icons)+1)*s, s)
-		cv.DrawImage(warnI, left-s*0.15, midY-z, s, s)
+		cv.FillRect(left-s*0.15, midY-z-s, float64(len(icons)+1)*s, s)
+		cv.DrawImage(warnI, left-s*0.15, midY-z-s, s, s)
 		for i, icon := range icons {
-			cv.DrawImage(icon, left+float64(i)*s+s/2, midY-z, s, s)
+			cv.DrawImage(icon, left+float64(i)*s+s/2, midY-z-s, s, s)
 		}
 	}
 }

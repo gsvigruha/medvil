@@ -15,19 +15,22 @@ import (
 )
 
 type LibraryController struct {
+	cp                     *ControlPanel
 	p                      *gui.Panel
 	fileTextField          *gui.TextLabel
 	historyLengthTextField *gui.TextLabel
 }
 
 func (lc *LibraryController) CaptureKey(key glfw.Key) {
-	if (key >= glfw.KeyA && key <= glfw.KeyZ) || key == glfw.KeySpace || (key >= glfw.Key0 && key <= glfw.Key9) {
-		if len(lc.fileTextField.Text) < 20 {
-			lc.fileTextField.Text = lc.fileTextField.Text + strings.ToLower(string(key))
-		}
-	} else if key == glfw.KeyBackspace {
-		if len(lc.fileTextField.Text) > 0 {
-			lc.fileTextField.Text = lc.fileTextField.Text[:len(lc.fileTextField.Text)-1]
+	if lc.cp.C.Map != nil {
+		if (key >= glfw.KeyA && key <= glfw.KeyZ) || key == glfw.KeySpace || (key >= glfw.Key0 && key <= glfw.Key9) {
+			if len(lc.fileTextField.Text) < 20 {
+				lc.fileTextField.Text = lc.fileTextField.Text + strings.ToLower(string(key))
+			}
+		} else if key == glfw.KeyBackspace {
+			if len(lc.fileTextField.Text) > 0 {
+				lc.fileTextField.Text = lc.fileTextField.Text[:len(lc.fileTextField.Text)-1]
+			}
 		}
 	}
 }
@@ -55,7 +58,7 @@ func (lc *LibraryController) GetHelperSuggestions() *gui.Suggestion {
 
 func LibraryToControlPanel(cp *ControlPanel) {
 	p := &gui.Panel{X: 0, Y: ControlPanelDynamicPanelTop, SX: ControlPanelSX, SY: HouseholdControllerSY}
-	lc := &LibraryController{p: p}
+	lc := &LibraryController{cp: cp, p: p}
 
 	p.AddLargeTextLabel("New", 24, ControlPanelSY*0.15)
 	nTop := ControlPanelSY * 0.15
@@ -129,18 +132,20 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	}
 	p.AddButton(saveButton)
 
-	plusButton := &gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "plus_save", X: float64(24 + IconW*1), Y: lasTop + float64(IconH*1), SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Save game to a new file", true)
-		}},
-		ClickImpl: func() {
-			go cp.C.Save(lc.fileTextField.Text + ".mdvl")
-			CPActionCancel(cp.C)
-		}}
-	plusButton.Disabled = func() bool { return cp.C.Map == nil }
-	p.AddButton(plusButton)
+	if cp.C.Map != nil {
+		plusButton := &gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "plus_save", X: float64(24 + IconW*1), Y: lasTop + float64(IconH*1), SX: IconS, SY: IconS, OnHoover: func() {
+				cp.HelperMessage("Save game to a new file", true)
+			}},
+			ClickImpl: func() {
+				go cp.C.Save(lc.fileTextField.Text + ".mdvl")
+				CPActionCancel(cp.C)
+			}}
+		plusButton.Disabled = func() bool { return cp.C.Map == nil }
+		p.AddButton(plusButton)
 
-	lc.fileTextField = p.AddEditableTextLabel(float64(24+IconW*2), lasTop+float64(IconH*1), IconS+gui.FontSize*12, IconS)
+		lc.fileTextField = p.AddEditableTextLabel(float64(24+IconW*2), lasTop+float64(IconH*1), IconS+gui.FontSize*12, IconS)
+	}
 
 	settingsTop := ControlPanelSY * 0.65
 	p.AddLargeTextLabel("Settings", 24, settingsTop)

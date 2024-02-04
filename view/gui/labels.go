@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"path/filepath"
 	"strconv"
+	"time"
 )
 
 var Font = filepath.FromSlash("texture/font/Go-Regular.ttf")
@@ -42,7 +43,11 @@ func (l *TextLabel) Render(cv *canvas.Canvas) {
 		cv.SetFont(Font, FontSize)
 	}
 	if l.Editable {
-		cv.FillText(l.Text, l.X+8, l.Y+(l.SY+FontSize)/2)
+		if time.Now().UnixMilli()%1000 < 500 {
+			cv.FillText(l.Text, l.X+8, l.Y+(l.SY+FontSize)/2)
+		} else {
+			cv.FillText(l.Text+"_", l.X+8, l.Y+(l.SY+FontSize)/2)
+		}
 	} else {
 		cv.FillText(l.Text, l.X, l.Y)
 	}

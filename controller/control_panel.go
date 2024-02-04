@@ -182,7 +182,7 @@ func (p *ControlPanel) SetupDims(width, height int) {
 
 	p.topPanel.SX = ControlPanelSX
 	p.topPanel.SY = ControlPanelSY
-	p.HelperPanel.SX = ControlPanelSX
+	p.HelperPanel.SX = ControlPanelSX + LargeIconD
 	p.HelperPanel.SY = float64(IconH) * 2.0
 	{
 		offscreen, _ := goglbackend.NewOffscreen(int(p.HelperPanel.SX), int(p.HelperPanel.SY), false, c.ctx)

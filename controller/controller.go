@@ -115,6 +115,7 @@ type Controller struct {
 	SelectedTraveller         *navigation.Traveller
 	SelectedTrader            *social.Trader
 	SelectedExpedition        *social.Expedition
+	HooveredBuilding          *building.Building
 	ReverseReferences         *model.ReverseReferences
 	ControlPanel              *ControlPanel
 	Country                   *social.Country
@@ -282,8 +283,10 @@ func (c *Controller) GetActiveFields() []navigation.FieldWithContext {
 	} else if c.SelectedTraveller != nil {
 		return c.SelectedTraveller.GetPathFields(c.Map)
 	} else {
+		c.HooveredBuilding = nil
 		rf := c.CaptureRenderedField(c.X, c.Y)
 		if rf != nil && rf.F.Building.GetBuilding() != nil {
+			c.HooveredBuilding = rf.F.Building.GetBuilding()
 			var fields []navigation.FieldWithContext
 			for _, coords := range rf.F.Building.GetBuilding().GetBuildingXYs(true) {
 				fields = append(fields, c.Map.GetField(coords[0], coords[1]))
