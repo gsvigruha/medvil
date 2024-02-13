@@ -112,9 +112,13 @@ func LibraryToControlPanel(cp *ControlPanel) {
 	p.AddDropDown(filesDropdown)
 
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "load", X: float64(24 + IconW*0), Y: lasTop, SX: IconS, SY: IconS, OnHoover: func() {
-			cp.HelperMessage("Load game", true)
-		}},
+		ButtonGUI: gui.ButtonGUI{Icon: "load", X: float64(24 + IconW*0), Y: lasTop, SX: IconS, SY: IconS,
+			OnHoover: func() {
+				cp.HelperMessage("Load game", true)
+			},
+			Disabled: func() bool {
+				return filesDropdown.GetSelectedValue() == ""
+			}},
 		ClickImpl: func() {
 			go cp.C.Load(filesDropdown.GetSelectedValue())
 			CPActionCancel(cp.C)
@@ -128,7 +132,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 			go cp.C.Save(filesDropdown.GetSelectedValue())
 		}}
 	saveButton.Disabled = func() bool {
-		return cp.C.Map == nil || strings.HasPrefix(filesDropdown.GetSelectedValue(), "example")
+		return cp.C.Map == nil || filesDropdown.GetSelectedValue() == "" || strings.HasPrefix(filesDropdown.GetSelectedValue(), "example")
 	}
 	p.AddButton(saveButton)
 
@@ -141,7 +145,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 				go cp.C.Save(lc.fileTextField.Text + ".mdvl")
 				CPActionCancel(cp.C)
 			}}
-		plusButton.Disabled = func() bool { return cp.C.Map == nil }
+		plusButton.Disabled = func() bool { return cp.C.Map == nil || lc.fileTextField.Text == "" }
 		p.AddButton(plusButton)
 
 		lc.fileTextField = p.AddEditableTextLabel(float64(24+IconW*2), lasTop+float64(IconH*1), IconS+gui.FontSize*12, IconS)
