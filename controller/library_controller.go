@@ -145,7 +145,7 @@ func LibraryToControlPanel(cp *ControlPanel) {
 				go cp.C.Save(lc.fileTextField.Text + ".mdvl")
 				CPActionCancel(cp.C)
 			}}
-		plusButton.Disabled = func() bool { return cp.C.Map == nil }
+		plusButton.Disabled = func() bool { return cp.C.Map == nil || lc.fileTextField.Text == "" }
 		p.AddButton(plusButton)
 
 		lc.fileTextField = p.AddEditableTextLabel(float64(24+IconW*2), lasTop+float64(IconH*1), IconS+gui.FontSize*12, IconS)
