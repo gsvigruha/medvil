@@ -215,7 +215,7 @@ func (fc *FarmController) GetHelperSuggestions() *gui.Suggestion {
 	}
 	if landDist[economy.FarmFieldUseTypePasture] < 2 {
 		return &gui.Suggestion{
-			Message: ("Sheeps are useful, they produce meat and materials for clothes.\nThey take several years to mature though. The villagers will\n" +
+			Message: ("Sheeps are useful, they produce meat and materials for clothes.\nIt takes several years to raise sheep. The villagers will\n" +
 				"sell the sheep at the marketplace. you will need a butchershop,\na certain type of workshop, to produce meat and leather."),
 			Icon: "artifacts/sheep", X: float64(24 + IconW*4), Y: hcy + float64(IconH),
 		}
