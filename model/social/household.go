@@ -32,6 +32,7 @@ var Clothes = artifacts.GetArtifact("clothes")
 var IronBar = artifacts.GetArtifact("iron_bar")
 var Paper = artifacts.GetArtifact("paper")
 var Water = artifacts.GetArtifact("water")
+var Sheep = artifacts.GetArtifact("sheep")
 
 const LogToFirewood = 5
 const MinLog = 1
@@ -328,8 +329,9 @@ func NotInputOrProduct(*artifacts.Artifact) bool {
 func (h *Household) SellArtifacts(isInput func(*artifacts.Artifact) bool, isProduct func(*artifacts.Artifact) bool) {
 	resourcesFull := h.Resources.Full()
 	for a, q := range h.Resources.Artifacts {
-		qToSell := h.ArtifactToSell(a, q, isInput(a), isProduct(a), resourcesFull)
-		if qToSell > 0 && (resourcesFull || float64(ProductTransportQuantity(a))*float64(h.Town.Marketplace.Prices[a]) >= float64(h.GetMoney())*MinIncomeRatio) {
+		noLimit := resourcesFull || a == Sheep
+		qToSell := h.ArtifactToSell(a, q, isInput(a), isProduct(a), noLimit)
+		if qToSell > 0 && (noLimit || float64(ProductTransportQuantity(a))*float64(h.Town.Marketplace.Prices[a]) >= float64(h.GetMoney())*MinIncomeRatio) {
 			tag := economy.SingleTag(economy.TagSellArtifacts, a.Idx)
 			if NumBatchesSimple(qToSell, ProductTransportQuantity(a)) > h.NumTasks("exchange", tag) {
 				goods := []artifacts.Artifacts{artifacts.Artifacts{A: a, Quantity: ProductTransportQuantityWithLimit(a, qToSell)}}
@@ -343,7 +345,7 @@ func (h *Household) SellArtifacts(isInput func(*artifacts.Artifact) bool, isProd
 	}
 }
 
-func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput, isProduct, resourcesFull bool) uint16 {
+func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput, isProduct, noLimit bool) uint16 {
 	if isInput {
 		return 0
 	}
@@ -412,7 +414,7 @@ func (h *Household) ArtifactToSell(a *artifacts.Artifact, q uint16, isInput, isP
 			return 0
 		}
 	}
-	if result >= ProductTransportQuantity(a) || resourcesFull {
+	if result >= ProductTransportQuantity(a) || noLimit {
 		return result
 	}
 	return 0
