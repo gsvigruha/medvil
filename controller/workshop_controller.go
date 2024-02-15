@@ -97,7 +97,7 @@ func (wc *WorkshopController) UpdateSubPanel() {
 		wc.workshopSubPanel.AddTextLabel("$"+strconv.Itoa(outputCost), 24+float64(IconW*aI), priceY)
 
 		profitStr := float64(outputCost)/float64(inputCost)*100 - 100.0
-		wc.workshopSubPanel.AddTextLabel(strconv.FormatFloat(profitStr, 'f', 0, 32)+"% profit", 24+float64(IconW*(aI+1)), priceY)
+		wc.workshopSubPanel.AddTextLabel(strconv.FormatFloat(profitStr, 'f', 0, 32)+"% profit", 24+float64(IconW)*(float64(aI)+1.5), priceY)
 		for _, a := range wc.workshop.Manufacture.Outputs {
 			ArtifactsToControlPanel(wc.cp, wc.workshopSubPanel, aI, a.A, a.Quantity, hcy+LargeIconD)
 			aI++
