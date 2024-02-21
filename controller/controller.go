@@ -159,6 +159,9 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 		if key == glfw.KeyE {
 			c.Perspective = (c.Perspective - 1) % 4
 		}
+		if key == glfw.KeyP {
+			CPActionTimeScalePause(c)
+		}
 		if key == glfw.KeyUp || key == glfw.KeyW {
 			c.DY = -1
 		}

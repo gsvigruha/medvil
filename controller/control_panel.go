@@ -18,7 +18,8 @@ var ControlPanelDynamicPanelSY = 0.6
 
 const CPButtonHighlightNone = 0
 const CPButtonHighlightSmall = 1
-const CPButtonHighlightLarge = 2
+const CPButtonHighlightMedium = 2
+const CPButtonHighlightLarge = 3
 
 type ControlSubPanel interface {
 	Panel
@@ -57,6 +58,9 @@ func (b ControlPanelButton) Render(cv *canvas.Canvas) {
 	if b.highlight == CPButtonHighlightSmall {
 		cv.SetFillStyle("#48C")
 		cv.FillRect(b.b.X, b.b.Y, b.b.SX, b.b.SY)
+	} else if b.highlight == CPButtonHighlightMedium {
+		cv.SetFillStyle("#69C")
+		cv.FillRect(b.b.X, b.b.Y, b.b.SX, b.b.SY)
 	} else if b.highlight == CPButtonHighlightLarge {
 		cv.SetFillStyle("#8AD")
 		cv.FillRect(b.b.X, b.b.Y, b.b.SX, b.b.SY)
@@ -81,16 +85,29 @@ func CPActionCancel(c *Controller) {
 	c.ControlPanel.dynamicPanel = nil
 }
 
+func CPActionTimeScalePause(c *Controller) {
+	if c.TimeSpeed > 0 {
+		c.TimeSpeed = 0
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightNone
+	} else {
+		c.TimeSpeed = 1
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightSmall
+	}
+}
+
 func CPActionTimeScaleChange(c *Controller) {
 	if c.TimeSpeed == 1 {
 		c.TimeSpeed = 5
-		c.ControlPanel.timeButton.highlight = CPButtonHighlightSmall
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightMedium
 	} else if c.TimeSpeed == 5 {
 		c.TimeSpeed = 20
 		c.ControlPanel.timeButton.highlight = CPButtonHighlightLarge
+	} else if c.TimeSpeed == 20 {
+		c.TimeSpeed = 0
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightNone
 	} else {
 		c.TimeSpeed = 1
-		c.ControlPanel.timeButton.highlight = CPButtonHighlightNone
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightSmall
 	}
 }
 
@@ -282,9 +299,9 @@ func (p *ControlPanel) GenerateButtons() {
 		c: c, action: CPActionCancel})
 	p.timeButton = &ControlPanelButton{
 		b: gui.ButtonGUI{Icon: "time", X: float64(24 + LargeIconD*6), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Speed up game", true)
+			p.HelperMessage("Speed up / pause game", true)
 		}},
-		c: c, action: CPActionTimeScaleChange}
+		c: c, action: CPActionTimeScaleChange, highlight: CPButtonHighlightSmall}
 
 	p.topPanel.AddButton(p.timeButton)
 }
