@@ -85,6 +85,16 @@ func CPActionCancel(c *Controller) {
 	c.ControlPanel.dynamicPanel = nil
 }
 
+func CPActionTimeScalePause(c *Controller) {
+	if c.TimeSpeed > 0 {
+		c.TimeSpeed = 0
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightNone
+	} else {
+		c.TimeSpeed = 1
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightSmall
+	}
+}
+
 func CPActionTimeScaleChange(c *Controller) {
 	if c.TimeSpeed == 1 {
 		c.TimeSpeed = 5

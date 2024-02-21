@@ -329,7 +329,7 @@ func NotInputOrProduct(*artifacts.Artifact) bool {
 func (h *Household) SellArtifacts(isInput func(*artifacts.Artifact) bool, isProduct func(*artifacts.Artifact) bool) {
 	resourcesFull := h.Resources.Full()
 	for a, q := range h.Resources.Artifacts {
-		noLimit := resourcesFull || a == Sheep
+		noLimit := resourcesFull || (a == Sheep && q == 1)
 		qToSell := h.ArtifactToSell(a, q, isInput(a), isProduct(a), noLimit)
 		if qToSell > 0 && (noLimit || float64(ProductTransportQuantity(a))*float64(h.Town.Marketplace.Prices[a]) >= float64(h.GetMoney())*MinIncomeRatio) {
 			tag := economy.SingleTag(economy.TagSellArtifacts, a.Idx)
