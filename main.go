@@ -73,11 +73,13 @@ func main() {
 			c.Refresh()
 			ic.Clean()
 
-			for i := 0; i < c.TimeSpeed; i++ {
-				c.MapLock.Lock()
-				c.Map.Calendar.Tick()
-				c.Map.ElapseTime()
-				c.MapLock.Unlock()
+			if !c.Paused {
+				for i := 0; i < c.TimeSpeed; i++ {
+					c.MapLock.Lock()
+					c.Map.Calendar.Tick()
+					c.Map.ElapseTime()
+					c.MapLock.Unlock()
+				}
 			}
 
 			elapsed := time.Since(start)
