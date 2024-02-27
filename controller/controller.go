@@ -12,6 +12,7 @@ import (
 	"medvil/model/navigation"
 	"medvil/model/social"
 	"medvil/renderer"
+	"medvil/view/gui"
 	"os"
 	"path/filepath"
 	"sync"
@@ -182,8 +183,18 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 			c.Load(GetLatestFile())
 		}
 		if key == glfw.KeyEscape {
-			c.Save("latest_autosave.mdvl")
-			c.Window.Close()
+			c.Paused = true
+			c.ControlPanel.popup = gui.CreatePopup("Do you want to quit your game?", float64(c.W), float64(c.H), LargeIconS,
+				func() {
+					c.Save("latest_autosave.mdvl")
+					c.Map = nil
+					c.ControlPanel.popup = nil
+					c.ShowLibraryController()
+				},
+				func() {
+					c.Paused = false
+					c.ControlPanel.popup = nil
+				})
 		}
 	}
 	if action == glfw.Release {
@@ -305,6 +316,9 @@ func (c *Controller) MouseButtonCallback(wnd *glfw.Window, button glfw.MouseButt
 	if action == glfw.Press && button == glfw.MouseButton1 {
 		c.RenderCnt = MaxRenderCnt
 		c.ControlPanel.CaptureClick(c.X, c.Y)
+		if c.Map == nil {
+			return
+		}
 		if c.X < ControlPanelSX {
 			return
 		}

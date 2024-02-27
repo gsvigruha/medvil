@@ -38,6 +38,7 @@ type ControlPanel struct {
 	buildingsLabel      *gui.TextLabel
 	timeButton          *ControlPanelButton
 	suggestion          *gui.Suggestion
+	popup               *gui.Panel
 	C                   *Controller
 	buffer              *canvas.Canvas
 	HelperBuffer        *canvas.Canvas
@@ -321,12 +322,18 @@ func (p *ControlPanel) CaptureClick(x, y float64) {
 	if p.dynamicPanel != nil {
 		p.dynamicPanel.CaptureClick(x, y)
 	}
+	if p.popup != nil {
+		p.popup.CaptureClick(x, y)
+	}
 }
 
 func (p *ControlPanel) CaptureMove(x, y float64) {
 	p.topPanel.CaptureMove(x, y)
 	if p.dynamicPanel != nil {
 		p.dynamicPanel.CaptureMove(x, y)
+	}
+	if p.popup != nil {
+		p.popup.CaptureMove(x, y)
 	}
 }
 
@@ -356,6 +363,9 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 	}
 	if !p.HelperPanel.IsEmpty() {
 		cv.DrawImage(p.HelperBuffer, c.X, c.Y, p.HelperPanel.SX, p.HelperPanel.SY)
+	}
+	if p.popup != nil {
+		p.popup.Render(cv)
 	}
 }
 
