@@ -188,6 +188,7 @@ func (c *Controller) KeyboardCallback(wnd *glfw.Window, key glfw.Key, code int, 
 				func() {
 					c.Save("latest_autosave.mdvl")
 					c.Map = nil
+					c.Paused = false
 					c.ControlPanel.popup = nil
 					c.ShowLibraryController()
 				},
