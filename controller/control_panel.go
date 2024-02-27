@@ -86,28 +86,33 @@ func CPActionCancel(c *Controller) {
 }
 
 func CPActionTimeScalePause(c *Controller) {
-	if c.TimeSpeed > 0 {
-		c.TimeSpeed = 0
-		c.ControlPanel.timeButton.highlight = CPButtonHighlightNone
-	} else {
-		c.TimeSpeed = 1
-		c.ControlPanel.timeButton.highlight = CPButtonHighlightSmall
-	}
+	c.Paused = !c.Paused
+	setTimeButtonHighlight(c)
 }
 
 func CPActionTimeScaleChange(c *Controller) {
 	if c.TimeSpeed == 1 {
 		c.TimeSpeed = 5
-		c.ControlPanel.timeButton.highlight = CPButtonHighlightMedium
 	} else if c.TimeSpeed == 5 {
 		c.TimeSpeed = 20
-		c.ControlPanel.timeButton.highlight = CPButtonHighlightLarge
-	} else if c.TimeSpeed == 20 {
-		c.TimeSpeed = 0
-		c.ControlPanel.timeButton.highlight = CPButtonHighlightNone
 	} else {
 		c.TimeSpeed = 1
-		c.ControlPanel.timeButton.highlight = CPButtonHighlightSmall
+	}
+	c.Paused = false
+	setTimeButtonHighlight(c)
+}
+
+func setTimeButtonHighlight(c *Controller) {
+	if c.Paused {
+		c.ControlPanel.timeButton.highlight = CPButtonHighlightNone
+	} else {
+		if c.TimeSpeed == 1 {
+			c.ControlPanel.timeButton.highlight = CPButtonHighlightSmall
+		} else if c.TimeSpeed == 5 {
+			c.ControlPanel.timeButton.highlight = CPButtonHighlightMedium
+		} else if c.TimeSpeed == 20 {
+			c.ControlPanel.timeButton.highlight = CPButtonHighlightLarge
+		}
 	}
 }
 

@@ -122,6 +122,7 @@ type Controller struct {
 	ClickHandler              ClickHandler
 	KeyHandler                KeyHandler
 	TimeSpeed                 int
+	Paused                    bool
 	RenderCnt                 int
 	ctx                       *goglbackend.GLContext
 }
