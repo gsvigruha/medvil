@@ -32,15 +32,15 @@ func (s *Splash) Setup(w, h int) {
 	ph := float64(h) * 0.6
 	p := &gui.Panel{X: px, Y: py, SX: pw, SY: ph}
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "cancel", X: px + LargeIconS*0 + 24, Y: py + 24, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "house", X: px + LargeIconS*0 + 24, Y: py + 24, SX: IconS, SY: IconS},
 		ClickImpl: func() { s.page = SplashPageGameplay },
 	})
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "cancel", X: px + LargeIconS*1 + 24, Y: py + 24, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "settings", X: px + LargeIconS*1 + 24, Y: py + 24, SX: IconS, SY: IconS},
 		ClickImpl: func() { s.page = SplashPageControls },
 	})
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "cancel", X: px + LargeIconS*2 + 24, Y: py + 24, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: px + LargeIconS*2 + 24, Y: py + 24, SX: IconS, SY: IconS},
 		ClickImpl: func() { s.page = SplashPageEconomics },
 	})
 
