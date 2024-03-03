@@ -39,6 +39,7 @@ type ControlPanel struct {
 	timeButton          *ControlPanelButton
 	suggestion          *gui.Suggestion
 	popup               *gui.Panel
+	splash              *Splash
 	C                   *Controller
 	buffer              *canvas.Canvas
 	HelperBuffer        *canvas.Canvas
@@ -325,6 +326,9 @@ func (p *ControlPanel) CaptureClick(x, y float64) {
 	if p.popup != nil {
 		p.popup.CaptureClick(x, y)
 	}
+	if p.splash != nil {
+		p.splash.CaptureClick(x, y)
+	}
 }
 
 func (p *ControlPanel) CaptureMove(x, y float64) {
@@ -334,6 +338,9 @@ func (p *ControlPanel) CaptureMove(x, y float64) {
 	}
 	if p.popup != nil {
 		p.popup.CaptureMove(x, y)
+	}
+	if p.splash != nil {
+		p.splash.CaptureMove(x, y)
 	}
 }
 
@@ -366,6 +373,9 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 	}
 	if p.popup != nil {
 		p.popup.Render(cv)
+	}
+	if p.splash != nil {
+		p.splash.Render(cv)
 	}
 }
 
@@ -483,4 +493,13 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 		}
 	}
 	return nil
+}
+
+func (p *ControlPanel) SetupSplash() {
+	if p.C.Map == nil {
+		p.splash = &Splash{}
+		p.splash.Setup(p.C.W, p.C.H)
+	} else {
+		p.splash = nil
+	}
 }
