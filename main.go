@@ -63,9 +63,6 @@ func main() {
 	fmt.Println("Init done")
 	fmt.Println("CPUs: " + strconv.Itoa(runtime.NumCPU()))
 
-	splash := &controller.Splash{}
-	splash.Setup(c.W, c.H)
-
 	wnd.MainLoop(func() {
 		if c.Map != nil {
 			start := time.Now()
@@ -98,7 +95,6 @@ func main() {
 			c.ControlPanel.CaptureMove(c.X, c.Y)
 			cv.DrawImage(filepath.FromSlash("icon/gui/background.png"), controller.ControlPanelSX, 0, float64(cv.Width())-controller.ControlPanelSX, float64(cv.Height()))
 			c.ControlPanel.Render(cv, c)
-			splash.Render(cv)
 		}
 		c.RenderTick()
 	})

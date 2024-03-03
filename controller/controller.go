@@ -278,6 +278,7 @@ func (c *Controller) Reset() {
 	c.KeyHandler = nil
 	c.ControlPanel.GetHelperPanel(true)
 	c.ControlPanel.SelectedHelperPanel.Clear()
+	c.ControlPanel.SetupSplash()
 }
 
 func (c *Controller) CaptureRenderedField(x, y float64) *renderer.RenderedField {
@@ -435,6 +436,7 @@ func Link(window Window, ctx *goglbackend.GLContext) *Controller {
 	controlPanel := &ControlPanel{}
 	c := &Controller{H: H, W: W, Window: window, ControlPanel: controlPanel, TimeSpeed: 1}
 	controlPanel.Setup(c, ctx)
+	controlPanel.SetupSplash()
 	wnd.SetKeyCallback(c.KeyboardCallback)
 	wnd.SetMouseButtonCallback(c.MouseButtonCallback)
 	wnd.SetCursorPosCallback(c.MouseMoveCallback)
