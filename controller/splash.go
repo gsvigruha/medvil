@@ -39,10 +39,12 @@ func (s *Splash) Setup(w, h int) {
 		ButtonGUI: gui.ButtonGUI{Icon: "settings", X: px + LargeIconS*1 + 24, Y: py + 24, SX: IconS, SY: IconS},
 		ClickImpl: func() { s.page = SplashPageControls },
 	})
-	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: px + LargeIconS*2 + 24, Y: py + 24, SX: IconS, SY: IconS},
-		ClickImpl: func() { s.page = SplashPageEconomics },
-	})
+	/*
+		p.AddButton(&gui.SimpleButton{
+			ButtonGUI: gui.ButtonGUI{Icon: "coin", X: px + LargeIconS*2 + 24, Y: py + 24, SX: IconS, SY: IconS},
+			ClickImpl: func() { s.page = SplashPageEconomics },
+		})
+	*/
 
 	spy := py + LargeIconD + 24
 	sph := ph - LargeIconD - 24
@@ -73,19 +75,20 @@ func (s *Splash) Setup(w, h int) {
 		lines := []string{
 			"The purpose of the game is to expand your city while developing an increasingly complex economy.",
 			"You can create buildings, add people to them and configure their function.",
-			"You cannot control people directly. Your population automatically expands until your buildings are full.",
+			"You cannot control people directly, but you can observe how they feel and what are they doing.",
+			"Your population expands automatically until your buildings are full.",
 			"",
-			"First, build farms and configure them to be self sustaining by growing trees and vegetables.",
+			"At first, build farms and configure them to be self sustaining by growing trees and vegetables.",
 			"",
 			"Second, build workshops and configure them to be butchers, mills, bakers or sew clothes.",
 			"At this stage your town can sustain a small population.",
 			"",
 			"Third, mine rocks and clay so you can produce building materials with more complex workshops.",
-			"This will enable you expanding your town.",
+			"This will enable you expanding your town and your villagers can repair their buildings.",
 			"",
-			"In the later stages of development, you can start mining silver to make vehicles,",
-			"or gold to increase your money supply. You can also establish new towns and establish",
-			"trade routes between them.",
+			"In the later stages of development, you can start mining silver to make vehicles.",
+			"Mining gold and minting coins increases your money supply, which is great when you are expanding.",
+			"You can also establish new towns and establish trade routes between them.",
 		}
 		AddLines(gp, lines, px+24, spy+24+LargeIconD)
 		s.gp = gp
