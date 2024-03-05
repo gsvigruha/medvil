@@ -498,7 +498,7 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 func (p *ControlPanel) SetupSplash() {
 	if p.C.Map == nil {
 		p.splash = &Splash{}
-		p.splash.Setup(p.C.W, p.C.H)
+		p.splash.Setup(p, p.C.W, p.C.H)
 	} else {
 		p.splash = nil
 	}
