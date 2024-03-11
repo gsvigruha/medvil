@@ -53,7 +53,10 @@ func (s *Splash) Setup(cp *ControlPanel, w, h int) {
 	})
 	p.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "barrel", X: px + LargeIconS*2 + 24, Y: py + 24, SX: IconS, SY: IconS},
-		ClickImpl: func() { s.page = SplashPageEconomics },
+		ClickImpl: func() {
+			s.page = SplashPageEconomics
+			s.addEconomicsLabels(s.controlPanel, s.ep)
+		},
 	})
 
 	spy := py + LargeIconD + 24
@@ -106,6 +109,7 @@ func (s *Splash) Setup(cp *ControlPanel, w, h int) {
 
 	{
 		ep := &gui.Panel{X: px, Y: spy, SX: pw, SY: sph}
+		s.selectedA = artifacts.GetArtifact("bread")
 		s.addEconomicsLabels(cp, ep)
 		s.ep = ep
 	}
@@ -192,13 +196,13 @@ func (s *Splash) renderNodes(a *artifacts.Artifact, nodes map[string]*EconomicCh
 
 func (s *Splash) addEconomicsLabels(cp *ControlPanel, p *gui.Panel) {
 	p.Clear()
-	p.AddLargeTextLabel("Economics", p.X+24, p.Y+24)
+	p.AddLargeTextLabel("Economic production chain", p.X+24, p.Y+24)
 	var nodes map[string]*EconomicChainNode = make(map[string]*EconomicChainNode)
 
 	var y = p.Y + 24 + LargeIconD
 	p.AddImageLabel("person", p.X+p.SX-24-LargeIconD*2, p.Y+24+LargeIconD, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	y = y + LargeIconD
-	for _, aName := range []string{"bread", "vegetable", "fruit", "meat", "log", "textile", "leather", "beer", "medicine", "tools"} {
+	for _, aName := range []string{"vegetable", "fruit", "bread", "meat", "log", "textile", "leather", "beer", "medicine", "tools"} {
 		a := artifacts.GetArtifact(aName)
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "artifacts/" + a.Name, X: p.X + p.SX - 24 - LargeIconD*2, Y: y, SX: IconS, SY: IconS},
@@ -247,7 +251,7 @@ func (s *Splash) addEconomicsLabels(cp *ControlPanel, p *gui.Panel) {
 	setupWorkshopType(building.Forge, nodes)
 	setupWorkshopType(building.Cooker, nodes)
 
-	if s.selectedA != nil {
+	if s.page == SplashPageEconomics && s.selectedA != nil {
 		x := s.ep.X + s.ep.SX - 24 - LargeIconD*3
 		y := s.ep.Y + s.ep.SY/2
 		s.ep.AddLabel(&gui.ImageLabel{Icon: "artifacts/" + s.selectedA.Name, X: x, Y: y, SX: IconS, SY: IconS,
