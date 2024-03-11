@@ -3,6 +3,7 @@ package gui
 import (
 	"github.com/tfriedel6/canvas"
 	"image/color"
+	"math"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -222,3 +223,28 @@ func (l *CustomImageLabel) Render(cv *canvas.Canvas) {
 }
 
 func (l *CustomImageLabel) CaptureClick(x float64, y float64) {}
+
+type ArrowLabel struct {
+	SX float64
+	SY float64
+	EX float64
+	EY float64
+}
+
+func (l *ArrowLabel) Render(cv *canvas.Canvas) {
+	cv.SetFillStyle("#EDC")
+	cv.SetLineWidth(2)
+	d := 4.0
+	angle := math.Atan2(l.EY-l.SY, l.EX-l.SX)
+	cv.BeginPath()
+	cv.MoveTo(l.SX, l.SY)
+	cv.LineTo(l.EX+math.Cos(angle+math.Pi)*d, l.EY+math.Sin(angle+math.Pi)*d)
+	cv.LineTo(l.EX+math.Cos(angle+math.Pi*3/4)*d, l.EY+math.Sin(angle+math.Pi*3/4)*d)
+	cv.LineTo(l.EX, l.EY)
+	cv.LineTo(l.EX+math.Cos(angle-math.Pi*3/4)*d, l.EY+math.Sin(angle-math.Pi*3/4)*d)
+	cv.LineTo(l.EX+math.Cos(angle+math.Pi)*d, l.EY+math.Sin(angle+math.Pi)*d)
+	cv.ClosePath()
+	cv.Stroke()
+}
+
+func (l *ArrowLabel) CaptureClick(x float64, y float64) {}

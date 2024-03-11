@@ -368,14 +368,14 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 	if p.suggestion != nil && p.C.ViewSettings.ShowSuggestions {
 		p.suggestion.Render(cv, LargeIconS, LargeIconD)
 	}
+	if p.splash != nil {
+		p.splash.Render(cv)
+	}
 	if !p.HelperPanel.IsEmpty() {
 		cv.DrawImage(p.HelperBuffer, c.X, c.Y, p.HelperPanel.SX, p.HelperPanel.SY)
 	}
 	if p.popup != nil {
 		p.popup.Render(cv)
-	}
-	if p.splash != nil {
-		p.splash.Render(cv)
 	}
 }
 
@@ -498,7 +498,7 @@ func (p *ControlPanel) GetHelperSuggestions() *gui.Suggestion {
 func (p *ControlPanel) SetupSplash() {
 	if p.C.Map == nil {
 		p.splash = &Splash{}
-		p.splash.Setup(p.C.W, p.C.H)
+		p.splash.Setup(p, p.C.W, p.C.H)
 	} else {
 		p.splash = nil
 	}
