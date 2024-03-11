@@ -368,14 +368,14 @@ func (p *ControlPanel) Render(cv *canvas.Canvas, c *Controller) {
 	if p.suggestion != nil && p.C.ViewSettings.ShowSuggestions {
 		p.suggestion.Render(cv, LargeIconS, LargeIconD)
 	}
+	if p.splash != nil {
+		p.splash.Render(cv)
+	}
 	if !p.HelperPanel.IsEmpty() {
 		cv.DrawImage(p.HelperBuffer, c.X, c.Y, p.HelperPanel.SX, p.HelperPanel.SY)
 	}
 	if p.popup != nil {
 		p.popup.Render(cv)
-	}
-	if p.splash != nil {
-		p.splash.Render(cv)
 	}
 }
 
