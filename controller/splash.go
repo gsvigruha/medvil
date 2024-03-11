@@ -52,7 +52,7 @@ func (s *Splash) Setup(cp *ControlPanel, w, h int) {
 		ClickImpl: func() { s.page = SplashPageControls },
 	})
 	p.AddButton(&gui.SimpleButton{
-		ButtonGUI: gui.ButtonGUI{Icon: "coin", X: px + LargeIconS*2 + 24, Y: py + 24, SX: IconS, SY: IconS},
+		ButtonGUI: gui.ButtonGUI{Icon: "barrel", X: px + LargeIconS*2 + 24, Y: py + 24, SX: IconS, SY: IconS},
 		ClickImpl: func() { s.page = SplashPageEconomics },
 	})
 
@@ -130,6 +130,8 @@ type EconomicChainNode struct {
 	Parents         []*EconomicChainNode
 	ProducerIcon    string
 	ProducerSubIcon string
+	Description     string
+	SubDescription  string
 }
 
 func setupWorkshopType(et *building.BuildingExtensionType, nodes map[string]*EconomicChainNode) {
@@ -138,7 +140,11 @@ func setupWorkshopType(et *building.BuildingExtensionType, nodes map[string]*Eco
 		m := economy.GetManufacture(mName)
 		for _, output := range m.Outputs {
 			if _, ok := nodes[output.A.Name]; !ok {
-				nodes[output.A.Name] = &EconomicChainNode{A: output.A, ProducerIcon: "workshop", ProducerSubIcon: "building/" + et.Name}
+				nodes[output.A.Name] = &EconomicChainNode{
+					A: output.A, ProducerIcon: "workshop", ProducerSubIcon: "building/" + et.Name,
+					Description:    HelperMessageForBuildingType(building.BuildingTypeWorkshop),
+					SubDescription: et.Description,
+				}
 				for _, input := range m.Inputs {
 					nodes[output.A.Name].Parents = append(nodes[output.A.Name].Parents, nodes[input.A.Name])
 				}
@@ -159,16 +165,16 @@ func (s *Splash) renderNodes(a *artifacts.Artifact, nodes map[string]*EconomicCh
 	if nodes[a.Name].ProducerSubIcon != "" {
 		s.ep.AddLabel(&gui.ImageLabel{Icon: nodes[a.Name].ProducerIcon, X: x - LargeIconD/2, Y: y, SX: LargeIconS, SY: LargeIconS,
 			Style: gui.ImageLabelStyleRegular, OnHoover: func() {
-				//s.controlPanel.HelperMessage(HelperMessageForBuildingType(nodes[a.Name].ProducerIcon), true)
+				s.controlPanel.HelperMessage(nodes[a.Name].Description, false)
 			}})
 		s.ep.AddLabel(&gui.ImageLabel{Icon: nodes[a.Name].ProducerSubIcon, X: x + LargeIconD/2, Y: y, SX: LargeIconS, SY: LargeIconS,
 			Style: gui.ImageLabelStyleRegular, OnHoover: func() {
-				//ArtifactToHelperPanel(s.controlPanel.GetHelperPanel(true), aJ)
+				s.controlPanel.HelperMessage(nodes[a.Name].SubDescription, false)
 			}})
 	} else {
 		s.ep.AddLabel(&gui.ImageLabel{Icon: nodes[a.Name].ProducerIcon, X: x, Y: y, SX: LargeIconS, SY: LargeIconS,
 			Style: gui.ImageLabelStyleRegular, OnHoover: func() {
-				//s.controlPanel.HelperMessage(HelperMessageForBuildingType(nodes[a.Name].ProducerIcon), true)
+				s.controlPanel.HelperMessage(nodes[a.Name].Description, false)
 			}})
 	}
 	y = y + LargeIconD
@@ -192,7 +198,7 @@ func (s *Splash) addEconomicsLabels(cp *ControlPanel, p *gui.Panel) {
 	var y = p.Y + 24 + LargeIconD
 	p.AddImageLabel("person", p.X+p.SX-24-LargeIconD*2, p.Y+24+LargeIconD, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	y = y + LargeIconD
-	for _, aName := range []string{"bread", "vegetable", "fruit", "meat", "log", "textile", "leather", "beer", "medicine", "tools", "sword", "shield"} {
+	for _, aName := range []string{"bread", "vegetable", "fruit", "meat", "log", "textile", "leather", "beer", "medicine", "tools"} {
 		a := artifacts.GetArtifact(aName)
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "artifacts/" + a.Name, X: p.X + p.SX - 24 - LargeIconD*2, Y: y, SX: IconS, SY: IconS},
@@ -209,7 +215,7 @@ func (s *Splash) addEconomicsLabels(cp *ControlPanel, p *gui.Panel) {
 	y = p.Y + 24 + LargeIconD
 	p.AddImageLabel("house", p.X+p.SX-24-LargeIconD, y, LargeIconS, LargeIconS, gui.ImageLabelStyleRegular)
 	y = y + LargeIconD
-	for _, aName := range []string{"cube", "brick", "board", "tile", "thatch", "paper"} {
+	for _, aName := range []string{"cube", "brick", "board", "tile", "thatch", "paper", "sword", "shield"} {
 		a := artifacts.GetArtifact(aName)
 		p.AddButton(&gui.SimpleButton{
 			ButtonGUI: gui.ButtonGUI{Icon: "artifacts/" + a.Name, X: p.X + p.SX - 24 - LargeIconD, Y: y, SX: IconS, SY: IconS},
@@ -226,14 +232,14 @@ func (s *Splash) addEconomicsLabels(cp *ControlPanel, p *gui.Panel) {
 
 	for _, aName := range []string{"log", "vegetable", "fruit", "herb", "sheep", "wool", "grain", "reed"} {
 		a := artifacts.GetArtifact(aName)
-		nodes[a.Name] = &EconomicChainNode{A: a, ProducerIcon: "farm"}
+		nodes[a.Name] = &EconomicChainNode{A: a, ProducerIcon: "farm", Description: HelperMessageForBuildingType(building.BuildingTypeFarm)}
 	}
 	for _, aName := range []string{"clay", "stone", "iron_ore", "gold_ore"} {
 		a := artifacts.GetArtifact(aName)
-		nodes[a.Name] = &EconomicChainNode{A: a, ProducerIcon: "mine"}
+		nodes[a.Name] = &EconomicChainNode{A: a, ProducerIcon: "mine", Description: HelperMessageForBuildingType(building.BuildingTypeMine)}
 	}
 	water := artifacts.GetArtifact("water")
-	nodes[water.Name] = &EconomicChainNode{A: water, ProducerIcon: "house"}
+	nodes[water.Name] = &EconomicChainNode{A: water, ProducerIcon: "house", Description: "Any building can collect water"}
 
 	setupWorkshopType(building.Workshop, nodes)
 	setupWorkshopType(building.WaterMillWheel, nodes)

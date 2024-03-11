@@ -18,7 +18,7 @@ var All = [...]*Artifact{
 	&Artifact{Name: "board", M: materials.GetMaterial("wood"), V: 3, Idx: 2, Description: "Wooden boards are for buildings or vehicles"},
 	&Artifact{Name: "reed", M: materials.GetMaterial("reed"), V: 1, Idx: 3, Description: "Reeds are needed for paper or roof thatching"},
 	&Artifact{Name: "stone", M: materials.GetMaterial("stone"), V: 2, Idx: 4, Description: "Raw stones are used to make stone cubes"},
-	&Artifact{Name: "cube", M: materials.GetMaterial("stone"), V: 2, Idx: 5, Description: "Stones cubes are used for buildings or roads"},
+	&Artifact{Name: "cube", M: materials.GetMaterial("stone"), V: 2, Idx: 5, Description: "Stone cubes are used for buildings or roads"},
 	&Artifact{Name: "clay", M: materials.GetMaterial("clay"), V: 2, Idx: 6, Description: "Raw clay is needed to make brick, tiles or pots"},
 	&Artifact{Name: "brick", M: materials.GetMaterial("brick"), V: 2, Idx: 7, Description: "Bricks are used as building materials"},
 	&Artifact{Name: "thatch", M: materials.GetMaterial("thatch"), V: 2, Idx: 8, Description: "Thatches are used as roof materials"},
