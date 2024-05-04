@@ -282,7 +282,7 @@ func (p *ControlPanel) GenerateButtons() {
 		ClickImpl: func() { c.ShowInfraController() }})
 	p.topPanel.AddButton(&gui.SimpleButton{
 		ButtonGUI: gui.ButtonGUI{Icon: "demolish", X: float64(24 + LargeIconD*2), Y: iconTop, SX: LargeIconS, SY: LargeIconS, OnHoover: func() {
-			p.HelperMessage("Demolish buildings", true)
+			p.HelperMessage("Demolish buildings, roads or walls", true)
 		},
 			Disabled: func() bool { return c.GetActiveTownhall() == nil }},
 		Highlight: func() bool { return p.IsDynamicPanelType("DemolishController") },

@@ -33,6 +33,7 @@ const InfraTypeFountain = 41
 const InfraTypeObelisk = 42
 const InfraTypeOakTree = 51
 const InfraTypeAppleTree = 52
+const InfraTypeClearLand = 53
 
 const InfraPanelTop = 0.1
 
@@ -106,6 +107,8 @@ func (ic *InfraController) CheckField(c *Controller, rf *renderer.RenderedField)
 		return rf.F.StatueCompatible()
 	} else if ic.it == InfraTypeOakTree || ic.it == InfraTypeAppleTree {
 		return rf.F.Plantable(true)
+	} else if ic.it == InfraTypeClearLand {
+		return rf.F.Plant != nil && rf.F.Plant.IsTree() && !rf.F.Allocated
 	}
 	return false
 }
@@ -157,6 +160,8 @@ func (ic *InfraController) HandleClick(c *Controller, rf *renderer.RenderedField
 				activeTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingOakTree, F: rf.F, Start: *c.Map.Calendar})
 			} else if ic.it == InfraTypeAppleTree {
 				activeTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskPlantingAppleTree, F: rf.F, Start: *c.Map.Calendar})
+			} else if ic.it == InfraTypeClearLand {
+				activeTown.Townhall.Household.AddTask(&economy.AgriculturalTask{T: economy.AgriculturalTaskTreeCutting, F: rf.F, Start: *c.Map.Calendar})
 			}
 			return true
 		}
@@ -320,18 +325,26 @@ func InfraToControlPanel(cp *ControlPanel) {
 		})
 
 		p.AddButton(&InfraBuildButton{
-			b:   &gui.ButtonGUI{Icon: "infra/oak_tree", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
+			b:   &gui.ButtonGUI{Icon: "clear_land", X: float64(24 + LargeIconD*0), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
+			it:  InfraTypeClearLand,
+			msg: "Clear land from trees to build buildings.",
+			ic:  ic,
+		})
+
+		p.AddButton(&InfraBuildButton{
+			b:   &gui.ButtonGUI{Icon: "infra/oak_tree", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
 			it:  InfraTypeOakTree,
 			msg: "Trees make your population happy and healthy.",
 			ic:  ic,
 		})
 
 		p.AddButton(&InfraBuildButton{
-			b:   &gui.ButtonGUI{Icon: "infra/apple_tree", X: float64(24 + LargeIconD*1), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
+			b:   &gui.ButtonGUI{Icon: "infra/apple_tree", X: float64(24 + LargeIconD*2), Y: top + float64(LargeIconD*5), SX: LargeIconS, SY: LargeIconS},
 			it:  InfraTypeAppleTree,
 			msg: "Trees make your population happy and healthy.",
 			ic:  ic,
 		})
+
 	}
 
 	cp.SetDynamicPanel(ic)
