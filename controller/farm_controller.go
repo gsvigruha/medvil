@@ -90,7 +90,7 @@ func FarmToControlPanel(cp *ControlPanel, farm *social.Farm) {
 		luc:     fc,
 		useType: economy.FarmFieldUseTypeBarren,
 		cp:      cp,
-		msg:     "Clear land for buildings",
+		msg:     "Clear land from trees to build buildings",
 	})
 	fp.AddButton(&LandUseButton{
 		b:       gui.ButtonGUI{Icon: "cancel", X: float64(24 + IconW*1), Y: hcy + float64(IconH*2), SX: IconS, SY: IconS},
